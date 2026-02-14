@@ -1,8 +1,127 @@
 {
   "extends": "@react-native/typescript-config",
   "compilerOptions": {
-    "types": ["jest"],
+    /* Language and Environment */
+    "target": "ES2022",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    /* Modules */
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": false,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "preserveSymlinks": true,
+    /* JavaScript Support */
+    "allowJs": true,
+    "checkJs": false,
+    /* Emit */
+    "noEmit": true,
+    "isolatedModules": true,
+    /* JSX */
+    "jsx": "react-native",
+    /* Type Checking */
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    /* Completeness */
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
+    /* Project Structure */
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@assets/*": [
+        "./src/assets/*"
+      ],
+      "@types/*": [
+        "./src/types/*"
+      ],
+      "@store/*": [
+        "./src/store/*"
+      ],
+      "@screens/*": [
+        "./src/screens/*"
+      ],
+      "@services/*": [
+        "./src/services/*"
+      ],
+      "@hooks/*": [
+        "./src/hooks/*"
+      ],
+      "@utils/*": [
+        "./src/utils/*"
+      ],
+      "@translations/*": [
+        "./src/translations/*"
+      ],
+      "@navigations/*": [
+        "./src/navigations/*"
+      ],
+      "@constants/*": [
+        "./src/constants/*"
+      ],
+      "@theme/*": [
+        "./src/theme/*"
+      ],
+      "@contexts/*": [
+        "./src/contexts/*"
+      ]
+    }
   },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["**/node_modules", "**/Pods"]
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.config.js",
+    "Gemfile",
+    "ios/build",
+    "android/build",
+    "**/Pods",
+    "**/build",
+    "**/.expo",
+    "**/dist",
+    "**/coverage",
+    "**/.gradle",
+    "**/__tests__",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "**/__mocks__",
+    ".history",
+    ".vscode",
+    ".expo",
+    "*.code-workspace"
+  ],
+  "include": [
+    "src/**/*",
+    "index.js",
+    "index.native.js",
+    "App.tsx",
+    "app.json",
+    "svg.d.ts",
+    "global.d.ts",
+    "**/*.d.ts"
+  ]
 }
