@@ -1,0 +1,96 @@
+{
+    "screen": {
+        "creation": "Create your account",
+        "connexion": "Connection",
+        "verifyAccount": "Validate your account",
+        "identityVerification": "Identity verification",
+        "findPro": "What service do you need?"
+    },
+    "ui": {
+        "form": {
+            "email": {
+                "label": "Email",
+                "placeholder": "example@email.com"
+            },
+            "siret": {
+                "label": "SIRET",
+                "placeholder": "Number of SIRET"
+            },
+            "societe": {
+                "label": "Company",
+                "placeholder": "Company name"
+            },
+            "password": {
+                "label": "Password",
+                "placeholder": "Enter password"
+            },
+            "confirmPassword": {
+                "label": "Confirm password",
+                "placeholder": "Enter password"
+            },
+            "newPassword": {
+                "label": "New password",
+                "placeholder": "Enter password"
+            },
+            "firstName": {
+                "label": "First name",
+                "placeholder": "Enter your first name"
+            },
+            "lastName": {
+                "label": "Last name",
+                "placeholder": "Enter your last name"
+            },
+            "phone": {
+                "label": "Phone",
+                "placeholder": "phone number"
+            },
+            "postCode": {
+                "label": "Post code",
+                "placeholder": "Enter your postal code"
+            },
+            "code": {
+                "label": "Validation Code"
+            },
+            "adress": {
+                "label": "Address",
+                "placeholder": "Enter your adress details"
+            },
+            "error": {
+                "required": "This field is required",
+                "invalid": "This field is invalid",
+                "length": "This field must be at least 8 characters",
+                "match": "Confirmation password does not match"
+            }
+        },
+        "steps": {
+            "information": "-your information",
+            "societe": "-company details"
+        },
+        "button": {
+            "send": "Send",
+            "cancel": "Cancel",
+            "add": "Add",
+            "update": "Update",
+            "remove": "Remove",
+            "ok": "OK",
+            "delete": "Delete",
+            "resendCode": "Resend the verification code",
+            "provider": "User",
+            "professional": "Professional",
+            "signIn": "SignIn",
+            "signUp": "Create Account",
+            "validate": "Validate",
+            "depanne": "Help me out",
+            "next": "Next",
+            "previous": "Previous"
+        }
+    },
+    "terms": {
+        "welcome": "Welcome To Pro24Home",
+        "notClient": "Not yet a member ?",
+        "createAccount": "Create your account",
+        "client": "Already a member?",
+        "loginAccount": "Sign In",
+        "labelCode": "Please enter the validation code received by SMS"
+    }
+}
