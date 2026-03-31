@@ -1,31 +1,123 @@
 // screens/auth/component/professional_form/index.tsx
-import { Button } from '@components/Button/Button';
-import { Field } from '@components/Field';
-import { Spinner } from '@components/Modal/AppSpinner';
+import { Button, Field, Spinner } from '@components';
+import { validateProfessionalRegistration, mapApiError, prepareRegistrationPayload } from '@services';
 import { Colors } from '@utils/constant';
-import { horizontalScale, verticalScale } from '@utils/normalizedCss';
-import React, { useEffect, useState } from 'react';
+import { StyleSheet } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View, Alert, useWindowDimensions } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import styled from 'styled-components/native';
+
+
 
 // Import from new Redux architecture
+import { useState, useEffect} from "react";
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import type { RegisterProfessionalRequest, Service } from '@store/api/api.types';
+import { useRegisterProfessionalMutation } from '@store/api/endpoints/auth';
+import { selectAuthLoading, setError, setLoading } from '@store/slices/authSlice';
 
 // Components
 import ListeServices from './ListServices';
 import Text from '@components/Text';
-import { useRegisterProfessionalMutation } from '@store/api/endpoints/auth';
-import { selectAuthLoading, setError, setLoading } from '@store/slices/authSlice';
+import { verticalScale } from '@utils/normalizedCss';
+
 import { colors } from '@theme/index';
 import ServicesSkeleton from './ServicesSkeleton';
 import { Toast } from 'react-native-toast-notifications';
 
+
+
+const Container = styled(View)`
+  flex: 1;
+  align-items: center;
+  backgroundColor: ${colors.white};
+  paddingTop: ${verticalScale(5)}px;
+  justifyContent: center;
+`;
+
+const StepIndicator = styled(View)`
+  flexDirection: row;
+  justifyContent: center;
+  alignItems: center;
+  marginBottom: ${verticalScale(5)}px;
+  marginTop: ${verticalScale(5)}px;
+  position: relative;
+`;
+
+const StepDot = styled(View)`
+  width: 12px;
+  height: 12px;
+  borderRadius: 6px;
+  backgroundColor: ${colors.gray100};
+  marginHorizontal: 8px;
+  zIndex: 1;
+`;
+
+const StepDotActive = styled(StepDot)`
+  backgroundColor: ${colors.primary};
+  transform: scale(1.2);
+`;
+
+const StepDotCompleted = styled(StepDot)`
+  backgroundColor: ${colors.success};
+`;
+
+const StepLine = styled(View)`
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  height: 2px;
+  backgroundColor: ${colors.gray100};
+  zIndex: 0;
+`;
+
+const StepTitle = styled(Text)`
+  textAlign: center;
+  marginBottom: ${verticalScale(5)}px;
+  color: ${colors.textPrimary};
+`;
+
+const StepContainer = styled(View)``;
+
+const ButtonGroup = styled(View)`
+  flexDirection: row;
+  justifyContent: space-between;
+  alignItems: center;
+  marginTop: ${verticalScale(5)}px;
+`;
+
+const ErrorText = styled(Text)`
+  color: ${Colors.danger};
+  marginTop: ${verticalScale(10)}px;
+  textAlign: center;
+`;
+
+const ScrollContainer = styled(KeyboardAwareScrollView)`
+  flexGrow: 1;
+  paddingHorizontal: ${verticalScale(20)}px;
+  paddingVertical: ${verticalScale(5)}px;
+`;
+
+const PreviousButton = styled(Button)`
+  flex: 1;
+  marginRight: ${verticalScale(10)}px;
+`;
+
+const NextButton = styled(Button)`
+  flex: 1;
+  marginLeft: ${verticalScale(10)}px;
+`;
+
+const SubmitButton = styled(Button)`
+  flex: 1;
+`;
+
 // Types
 interface ProfessionalFormProps {
-    onSuccess?: () => void;
+    onSuccess?: (data: RegisterProfessionalRequest) => void;
     onError?: (error: any) => void;
     services: Service[];
     servicesLoading?: boolean;
@@ -47,6 +139,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
     const [step, setStep] = useState(0);
     const [selectedServices, setSelectedServices] = useState<number[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submittedData, setSubmittedData] = useState<RegisterProfessionalRequest | null>(null);
 
     const { control, handleSubmit, trigger, formState: { errors } } = useForm<RegisterProfessionalRequest>({
         defaultValues: {
@@ -76,10 +169,10 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
 
     // Handle registration success
     useEffect(() => {
-        if (isSuccess && onSuccess) {
-            onSuccess();
+        if (isSuccess && onSuccess && submittedData) {
+            onSuccess(submittedData);
         }
-    }, [isSuccess, onSuccess]);
+    }, [isSuccess, onSuccess, submittedData]);
 
     // Handle API errors
     useEffect(() => {
@@ -141,11 +234,11 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
         // For services step, just proceed if at least one service is selected
         if (step === 3) {
             if (selectedServices.length === 0) {
-                Alert.alert(
-                    t('common.error'),
-                    t('ui.form.services.required'),
-                    [{ text: t('common.ok') }]
-                );
+                Toast.show(t('ui.form.services.required'), {
+                    type: 'danger',
+                    placement: 'bottom',
+                    duration: 4000,
+                });
                 return;
             }
             setStep(prev => prev + 1);
@@ -161,11 +254,11 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
             // Scroll to first error
             const firstErrorField = Object.keys(errors)[0];
             if (firstErrorField) {
-                Alert.alert(
-                    t('common.error'),
-                    errors[firstErrorField as keyof RegisterProfessionalRequest]?.message as string,
-                    [{ text: t('common.ok') }]
-                );
+                Toast.show(errors[firstErrorField as keyof RegisterProfessionalRequest]?.message as string, {
+                    type: 'danger',
+                    placement: 'bottom',
+                    duration: 4000,
+                });
             }
         }
     };
@@ -180,34 +273,63 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
 
     const onSubmit = async (data: RegisterProfessionalRequest) => {
         try {
+            // Validate data before submission
+            const validationErrors = validateProfessionalRegistration(data, selectedServices);
+            if (validationErrors.length > 0) {
+                validationErrors.forEach(err => {
+                    Toast.show(err.message, {
+                        type: 'danger',
+                        placement: 'bottom',
+                        duration: 4000,
+                    });
+                });
+                return;
+            }
+
             setIsSubmitting(true);
             dispatch(setLoading(true));
 
-            // Get OneSignal device token (implement based on your setup)
-            const onesignalKey = 'onesignal-device-token-here'; // Replace with actual token
+            // Store the submitted data for success callback
+            setSubmittedData(data);
 
-            const registrationData: RegisterProfessionalRequest = {
-                ...data,
-                services: selectedServices,
-                onesignal_key: onesignalKey,
-                lang: 'fr',
-                // Add commercial_id and source if available
-                // commercial_id: 1,
-                // source: 'mobile_app',
-            };
+            // Prepare the registration data with defaults
+            const registrationData = prepareRegistrationPayload(
+                data,
+                'professional',
+                'onesignal-device-token-here',
+                selectedServices
+            );
 
             console.log('Submitting professional registration:', {
                 ...registrationData,
                 password: '***HIDDEN***'
             });
 
-            await registerProfessional(registrationData).unwrap();
+            const result = await registerProfessional(registrationData).unwrap();
 
-            console.log('Professional registration successful');
+            console.log('Professional registration successful:', result);
+
+            // Show success message from API response
+            const successMessage = result?.message || t('auth.registrationSuccess');
+            Toast.show(successMessage, {
+                type: 'success',
+                placement: 'bottom',
+                duration: 3000,
+            });
+
             dispatch(setLoading(false));
             setIsSubmitting(false);
 
         } catch (err) {
+            // Map API errors to structured format
+            const apiErrors = mapApiError(err);
+            apiErrors.forEach(apiError => {
+                Toast.show(apiError.message, {
+                    type: 'danger',
+                    placement: 'bottom',
+                    duration: 4000,
+                });
+            });
             console.error('Registration failed:', err);
             dispatch(setLoading(false));
             setIsSubmitting(false);
@@ -215,29 +337,24 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
     };
 
     const renderStepIndicator = () => (
-        <View style={styles.stepIndicator}>
-            {steps.map((_, index) => (
-                <View
-                    key={index}
-                    style={[
-                        styles.stepDot,
-                        index === step && styles.stepDotActive,
-                        index < step && styles.stepDotCompleted,
-                    ]}
-                />
-            ))}
-            <View style={styles.stepLine} />
-        </View>
+        <StepIndicator>
+            {steps.map((_, index) => {
+                if (index === step) return <StepDotActive key={index} />;
+                if (index < step) return <StepDotCompleted key={index} />;
+                return <StepDot key={index} />;
+            })}
+            <StepLine />
+        </StepIndicator>
     );
 
     const renderStepTitle = () => (
-        <Text variant="medium" style={styles.stepTitle}>
+        <StepTitle variant="medium">
             {steps[step]?.title ?? ''}
-        </Text>
+        </StepTitle>
     );
 
     return (
-        <KeyboardAwareScrollView
+        <ScrollContainer
             contentContainerStyle={styles.scroll}
             enableOnAndroid
             enableAutomaticScroll
@@ -246,7 +363,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
             extraScrollHeight={30}
             keyboardOpeningTime={0}>
 
-            <View style={styles.container}>
+            <Container>
                 {renderStepIndicator()}
                 {renderStepTitle()}
 
@@ -255,7 +372,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                     <ServicesSkeleton rows={8} />
                 ) :
                     step === 0 && (
-                        <View style={styles.stepContainer}>
+                        <StepContainer>
                             <Field<RegisterProfessionalRequest>
                                 name="first_name"
                                 label={t('ui.form.firstName.label')}
@@ -303,7 +420,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                                     },
                                 }}
                                 accessoryLeft="fa-user"
-                                containerStyle={styles.field}
+                                containerStyle={[styles.field, { width: screen_width * 0.80 }]}
                                 animated
                                 shakeOnError
                             />
@@ -325,7 +442,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                                     },
                                 }}
                                 accessoryLeft="fa-map-marker-alt"
-                                containerStyle={styles.field}
+                                containerStyle={[styles.field, { width: screen_width * 0.80 }]}
                                 animated
                                 shakeOnError
                             />
@@ -343,12 +460,12 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                                 rules={{
                                     required: t('ui.form.postCode.required'),
                                     pattern: {
-                                        value: /^\d{5}$/,
+                                        value: /^\d{4}$/,
                                         message: t('ui.form.postCode.invalid'),
                                     },
                                 }}
                                 accessoryLeft="fa-map-marker-alt"
-                                containerStyle={styles.field}
+                                containerStyle={[styles.field, { width: screen_width * 0.80 }]}
                                 animated
                                 shakeOnError
                             />
@@ -368,16 +485,16 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                                         message: t('ui.form.phone.invalid'),
                                     },
                                 }}
-                                containerStyle={styles.field}
+                                containerStyle={[styles.field, { width: screen_width * 0.80 }]}
                                 animated
                                 shakeOnError
                             />
-                        </View>
+                        </StepContainer>
                     )}
 
                 {/* Step 1: Company Information */}
                 {step === 1 && (
-                    <View style={styles.stepContainer}>
+                    <StepContainer>
                         <Field<RegisterProfessionalRequest>
                             name="company_name"
                             label={t('ui.form.companyName.label')}
@@ -421,12 +538,12 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                             shakeOnError
                             helperText={t('ui.form.siret.helper')}
                         />
-                    </View>
+                    </StepContainer>
                 )}
 
                 {/* Step 2: Security Information */}
                 {step === 2 && (
-                    <View style={styles.stepContainer}>
+                    <StepContainer>
                         <Field<RegisterProfessionalRequest>
                             name="email"
                             label={t('ui.form.email.label')}
@@ -463,32 +580,31 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                             helperText={t('ui.form.password.helper')}
 
                         />
-                    </View>
+                    </StepContainer>
                 )}
 
                 {/* Step 3: Services Selection */}
                 {step === 3 && (
-                    <View style={styles.stepContainer}>
+                    <StepContainer>
                         <ListeServices
                             services={services}
                             selectedServices={selectedServices}
                             onSelect={handleServiceSelection}
                         />
                         {selectedServices.length === 0 && (
-                            <Text style={styles.errorText} variant="regular">
+                            <ErrorText variant="regular">
                                 {t('ui.form.services.required')}
-                            </Text>
+                            </ErrorText>
                         )}
-                    </View>
+                    </StepContainer>
                 )}
 
                 {/* Navigation Buttons */}
-                <View style={styles.buttonGroup}>
+                <ButtonGroup>
                     {step > 0 && (
-                        <Button
+                        <PreviousButton
                             title={t('ui.button.previous')}
                             onPress={prevStep}
-                            style={styles.previousButton}
                             variant="outline"
                             size="medium"
                             disabled={isLoading || authLoading || isSubmitting}
@@ -496,20 +612,18 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                     )}
 
                     {step < steps.length - 1 ? (
-                        <Button
+                        <NextButton
                             title={t('ui.button.next')}
                             onPress={nextStep}
-                            style={styles.nextButton}
                             variant="primary"
                             size="medium"
                             disabled={isLoading || authLoading || isSubmitting || servicesLoading}
                             loading={isLoading || authLoading}
                         />
                     ) : (
-                        <Button
+                        <SubmitButton
                             title={t('ui.button.signUp')}
                             onPress={handleSubmit(onSubmit)}
-                            style={styles.submitButton}
                             variant="primary"
                             size="medium"
                             disabled={isLoading || authLoading || isSubmitting || selectedServices.length === 0}
@@ -517,7 +631,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                             fullWidth
                         />
                     )}
-                </View>
+                </ButtonGroup>
 
                 {/* Loading Spinner */}
                 {(isLoading || authLoading || isSubmitting) && (
@@ -530,86 +644,19 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                         size={600}
                         color={colors.primary} />
                 )}
-
-
-
-
-            </View>
-        </KeyboardAwareScrollView>
+            </Container>
+        </ScrollContainer>
     );
 };
 
 const styles = StyleSheet.create({
+    field: {
+        marginBottom: verticalScale(5),
+    },
     scroll: {
         flexGrow: 1,
-    },
-    container: {
-        flex: 1,
-    },
-    stepIndicator: {
-        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: verticalScale(10),
-        marginTop: verticalScale(10),
-        position: 'relative',
-    },
-    stepDot: {
-        width: 12,
-        height: 12,
-        borderRadius: 6,
-        backgroundColor: colors.gray100,
-        marginHorizontal: 8,
-        zIndex: 1,
-    },
-    stepDotActive: {
-        backgroundColor: colors.primary,
-        transform: [{ scale: 1.2 }],
-    },
-    stepDotCompleted: {
-        backgroundColor: colors.success,
-    },
-    stepLine: {
-        position: 'absolute',
-        top: 5,
-        left: 5,
-        right: 5,
-        height: 2,
-        backgroundColor: colors.gray100,
-        zIndex: 0,
-    },
-    stepTitle: {
-        textAlign: 'center',
-        marginBottom: verticalScale(10),
-        color: colors.textPrimary,
-    },
-    stepContainer: {
-
-    },
-    field: {
-        paddingHorizontal: horizontalScale(3),
-    },
-    buttonGroup: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: verticalScale(15),
-    },
-    previousButton: {
-        flex: 1,
-        marginRight: horizontalScale(10),
-    },
-    nextButton: {
-        flex: 1,
-        marginLeft: horizontalScale(10),
-    },
-    submitButton: {
-        flex: 1,
-    },
-    errorText: {
-        color: Colors.danger,
-        marginTop: verticalScale(10),
-        textAlign: 'center',
     },
 });
 

@@ -1,11 +1,12 @@
+import { IRole } from "@utils/constant";
+
 export type AppStackType = {
     SignIn: { role?: 'client' | 'professional' };
     RegisterScreen: { role?: 'client' | 'professional' };
-
     ForgetPassword: undefined;
     RecoverPassword: undefined;
     EditProfile: undefined;
-    //VerifyEmail: { email?: string | null; role: IRole | null };
+    VerifyScreen: { email?: string | null; role: IRole | null };
     Welcome: undefined;
     VerifyDocument: undefined;
     AddVehicle: undefined;

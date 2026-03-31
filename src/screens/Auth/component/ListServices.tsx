@@ -4,8 +4,7 @@ import { View, FlatList, StyleSheet, Pressable, Animated, useWindowDimensions } 
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 import type { Service } from '@store/api/api.types';
-import Text from '@components/Text';
-import SvgIcon from '@components/Icon/SvgIcon';
+import { Text, SvgIcon } from '@components';
 import { verticalScale, horizontalScale } from '@utils/normalizedCss';
 import { colors } from '@theme/index';
 

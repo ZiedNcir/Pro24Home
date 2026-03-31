@@ -5,7 +5,8 @@ import { Colors } from '@utils/constant';
 import { fontPixel, horizontalScale, verticalScale, moderateScale } from '@utils/normalizedCss';
 import Text from '@components/Text';
 import { Spinner } from '@components/Modal/AppSpinner';
-import SvgIcon, { IconName } from '@components/Icon/SvgIcon';
+import { SvgIcon } from '@components/Icon';
+import type { IconName } from '@components/Icon/SvgIcon';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'warning' | 'positive';
 export type ButtonSize = 'small' | 'medium' | 'large' | 'xlarge';

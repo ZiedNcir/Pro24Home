@@ -28,7 +28,8 @@ import PhoneInput from 'react-native-phone-input';
 
 // Components
 import Text from '@components/Text';
-import SvgIcon, { IconName } from '@components/Icon/SvgIcon';
+import { SvgIcon } from '@components/Icon';
+import type { IconName } from '@components/Icon/SvgIcon';
 
 // Hooks
 import useToggle from '@hooks/useToggle';
@@ -43,6 +44,7 @@ import {
 
 // Validation utils
 import { Regex } from '@utils/constant';
+import { colors } from '@theme/index';
 
 // Configure LayoutAnimation for Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -690,8 +692,9 @@ export function Field<T extends FieldValues>({
                         {accessoryLeft ? (
                             <SvgIcon
                                 name={accessoryLeft}
-                                size={18}
-                                color={disabled ? 'gray' : 'grayDark'}
+                                size={15}
+                                color={disabled ? colors.gray200 : colors.gray700}
+                                style={{ marginRight: horizontalScale(8) }}
                             />
                         ) : null}
 
@@ -741,16 +744,24 @@ export function Field<T extends FieldValues>({
                             disabled={disabled}
                         >
                             <SvgIcon
-                                name={securePassword ? 'eye' : 'eye-slashed'}
-                                size={26}
-                                color={disabled ? 'gray' : 'textSecondary'}
+                                name={securePassword ? 'fa-eye' : 'fa-eye-slash'}
+                                size={24}
+                                color={
+                                    disabled
+                                        ? colors.gray200
+                                        : fieldState.invalid
+                                            ? theme.colors.danger
+                                            : focus
+                                                ? theme.colors.primary
+                                                : colors.gray700
+                                }
                             />
                         </IconButton>
                     ) : accessoryRight ? (
                         <SvgIcon
                             name={accessoryRight}
-                            size={20}
-                            color={disabled ? 'gray' : 'textSecondary'}
+                            size={10}
+                            color={colors.black}
                             style={{ marginHorizontal: horizontalScale(6) }}
                         />
                     ) : rightText ? (

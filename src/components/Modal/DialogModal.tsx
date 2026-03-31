@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/native';
-import Text from '@components/Text';
-import { Colors } from '@utils/constant';
+import { Text, Button, SvgIcon, CustomModal } from '@components/index';
+import type { IconName } from '../Icon/SvgIcon';
+import { Colors } from '../../utils/constant';
 import {
     horizontalScale,
     verticalScale,
@@ -9,9 +10,6 @@ import {
     fontPixel,
     WIDTH_SCREEN,
 } from '@utils/normalizedCss';
-import { Button } from '@components/Button/Button';
-import CustomModal from './CustomModal';
-import SvgIcon, { IconName } from '@components/Icon/SvgIcon';
 
 interface DialogModalProps {
     /** Controls modal visibility */

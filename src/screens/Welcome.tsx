@@ -1,156 +1,159 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Dimensions } from 'react-native';
+import { Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 import { fontPixel, horizontalScale, verticalScale, moderateScale } from '@utils/normalizedCss';
 //import { appNavigate } from '../../navigations/navigation';
 import Text from '@components/Text';
 import { PrimaryButton, OutlineButton, GhostButton } from '@components/Button/Button';
-import SvgIcon from '@components/Icon/SvgIcon';
+import { SvgIcon } from '@components/Icon';
 import { Spinner } from '@components/Modal/AppSpinner';
 import { colors } from '@theme/index';
-import { useNavigation } from '@react-navigation/core';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation, NavigationProp } from '@react-navigation/core';
+import { ScreenContainer } from '@components/index';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
+type RootStackParamList = {
+  VerifyScreen: { role: 'client' };
+  RegisterScreen: { role: 'client' | 'professional' };
+};
+
 interface WelcomeProps {
-    // Optional props for customization
-    showAnimation?: boolean;
+  // Optional props for customization
+  showAnimation?: boolean;
 }
 
 const Welcome: React.FC<WelcomeProps> = ({ }) => {
-    const { t } = useTranslation();
-    const navigation = useNavigation();
-    const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const [loading, setLoading] = useState(false);
 
-    const handleClientPress = async () => {
-        setLoading(true);
-        // Simulate API call or check
-        await new Promise(resolve => setTimeout(resolve, 500));
-        setLoading(false);
-        ///appNavigate('SignIn', { role: 'client' });
-    };
+  const handleClientPress = async () => {
+    setLoading(true);
+    // Simulate API call or check
+    await new Promise(resolve => setTimeout(resolve, 500));
+    setLoading(false);
+    navigation.navigate('RegisterScreen', { role: 'client' });
+  };
 
-    const handleProfessionalSignUp = () => {
-        navigation.navigate('RegisterScreen', { role: 'professional' });
-    };
+  const handleProfessionalSignUp = () => {
+    navigation.navigate('RegisterScreen', { role: 'professional' });
+  };
 
-    const handleProfessionalSignIn = () => {
-        //appNavigate('SignIn', { role: 'professional' });
-    };
+  const handleProfessionalSignIn = () => {
+    //appNavigate('SignIn', { role: 'professional' });
+  };
 
-    return (
-        <SafeAreaView>
-            <Container>
+  return (
+    <ScreenContainer>
+      <Container>
 
-                <ScrollView
-                    contentContainerStyle={styles.scrollContent}
-                    showsVerticalScrollIndicator={false}
-                >
-                    <Content>
-                        <CardContainer>
-                            <GlassCard>
-                                <WelcomeImage
-                                    source={require('@assets/images/welcome_img.png')}
-                                    resizeMode="center"
-                                />
-                                <TitleContainer>
-                                    <Title variant="regularSmall" color={colors.primary}>
-                                        {t('terms.welcome')}
-                                    </Title>
-                                </TitleContainer>
 
-                                <Description variant="regular" color={colors.black}>
-                                    Trouvez votre dépanneur près de chez vous{' '}
-                                    <Text variant="medium" color={colors.primary}>
-                                        en quelques minutes
-                                    </Text>
-                                </Description>
+        <Content>
+          <CardContainer>
+            <GlassCard>
+              <WelcomeImage
+                source={require('@assets/images/welcome_img.png')}
+                resizeMode="center"
+              />
+              <TitleContainer>
+                <Title variant="regularSmall" color={colors.primary}>
+                  {t('terms.welcome')}
+                </Title>
+              </TitleContainer>
 
-                                <Section>
-                                    <SectionTitle variant="medium" color={colors.black}>
-                                        Je suis un Client
-                                    </SectionTitle>
-                                    <PrimaryButton
-                                        title="Dépanner moi"
-                                        onPress={handleClientPress}
-                                        fullWidth
-                                        rounded
-                                        size="large"
-                                        leftIcon="fa-user"
-                                        loading={loading}
-                                        loadingText="Chargement..."
-                                    />
-                                </Section>
+              <Description variant="regular" color={colors.black}>
+                Trouvez votre dépanneur près de chez vous{' '}
+                <Text variant="medium" color={colors.primary}>
+                  en quelques minutes
+                </Text>
+              </Description>
 
-                                <Section>
-                                    <Divider>
-                                        <DividerLine />
-                                        <DividerText variant="notification" color={colors.gray600}>
-                                            Professionnels
-                                        </DividerText>
-                                        <DividerLine />
-                                    </Divider>
+              <Section>
+                <SectionTitle variant="medium" color={colors.black}>
+                  Je suis un Client
+                </SectionTitle>
+                <PrimaryButton
+                  title="Dépanner moi"
+                  onPress={handleClientPress}
+                  fullWidth
+                  rounded
+                  size="large"
+                  leftIcon="fa-user"
+                  loading={loading}
+                  loadingText="Chargement..."
+                />
+              </Section>
 
-                                    <HelperText variant="notification" color={colors.black}>
-                                        Vous êtes un professionnel ?{'\n'} Rejoigner-nous !
-                                    </HelperText>
+              <Section>
+                <Divider>
+                  <DividerLine />
+                  <DividerText variant="notification" color={colors.gray600}>
+                    Professionnels
+                  </DividerText>
+                  <DividerLine />
+                </Divider>
 
-                                    <ButtonGroup>
-                                        <OutlineButton
-                                            title="Devenir Pro24"
-                                            onPress={handleProfessionalSignUp}
-                                            fullWidth
-                                            rounded
-                                            size="large"
+                <HelperText variant="notification" color={colors.black}>
+                  Vous êtes un professionnel ?{'\n'} Rejoigner-nous !
+                </HelperText>
 
-                                            style={styles.proButton}
-                                        />
+                <ButtonGroup>
+                  <OutlineButton
+                    title="Devenir Pro24"
+                    onPress={handleProfessionalSignUp}
+                    fullWidth
+                    rounded
+                    size="large"
 
-                                        <GhostButton
-                                            title="Se Connecter"
-                                            onPress={handleProfessionalSignIn}
-                                            fullWidth
-                                            rounded
-                                            size="large"
+                    style={styles.proButton}
+                  />
 
-                                        />
-                                    </ButtonGroup>
+                  <GhostButton
+                    title="Se Connecter"
+                    onPress={handleProfessionalSignIn}
+                    fullWidth
+                    rounded
+                    size="large"
 
-                                </Section>
+                  />
+                </ButtonGroup>
 
-                                <Footer>
-                                    <SecurityInfo>
-                                        <SvgIcon name="fa-shield" size={16} color={colors.success} />
-                                        <Text variant="notification" color={colors.black} style={{ marginLeft: 8 }}>
-                                            🔐 Sécurité & Confidentialité garanties
-                                        </Text>
-                                    </SecurityInfo>
-                                    <Copyright variant="notification" color={colors.gray600}>
-                                        © 2024 Pro24. Tous droits réservés.
-                                    </Copyright>
-                                </Footer>
-                            </GlassCard>
-                        </CardContainer>
-                    </Content>
-                </ScrollView>
-            </Container>
+              </Section>
 
-            <Spinner
-                visible={loading}
-                onRequestClose={() => setLoading(false)}
-                animationType="rotate"
-                color={colors.primary}
-                message="Chargement..."
-            />
-        </SafeAreaView>
-    );
+              <Footer>
+                <SecurityInfo>
+                  <SvgIcon name="fa-shield" size={16} color={colors.success} />
+                  <Text variant="notification" color={colors.black} style={{ marginLeft: 8 }}>
+                    🔐 Sécurité & Confidentialité garanties
+                  </Text>
+                </SecurityInfo>
+                <Copyright variant="notification" color={colors.gray600}>
+                  © 2024 Pro24. Tous droits réservés.
+                </Copyright>
+              </Footer>
+            </GlassCard>
+          </CardContainer>
+        </Content>
+      </Container>
+
+      <Spinner
+        visible={loading}
+        onRequestClose={() => setLoading(false)}
+        animationType="rotate"
+        color={colors.primary}
+        message="Chargement..."
+      />
+    </ScreenContainer>
+  );
 };
 
 // Styled Components
+
 const Container = styled.View`
   background-color: ${colors.background};
+  flex: 1;
 `;
 
 
@@ -158,16 +161,12 @@ const Content = styled.View`
   flex: 1;
 `;
 
-
-
 const WelcomeImage = styled.Image`
   width: ${SCREEN_WIDTH * 0.55}px;
   height: ${SCREEN_HEIGHT * 0.27}px;
   align-self: center;
   margin-bottom: ${verticalScale(6)}px;
 `;
-
-
 
 const CardContainer = styled.View`
   flex: 1;
@@ -279,20 +278,20 @@ const Copyright = styled(Text)`
 
 
 const styles = {
-    background: {
-        flex: 1,
-        width: '100%',
-        height: '100%',
+  background: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
 
 
-    },
-    scrollContent: {
-        flexGrow: 1,
-    },
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
 
-    proButton: {
-        borderWidth: 2,
-    },
+  proButton: {
+    borderWidth: 2,
+  },
 };
 
 export default Welcome;

@@ -8,6 +8,7 @@ import { AppStackType } from './constant/core';
 
 import Welcome from '@screens/Welcome';
 import { RegisterScreen } from '@screens/Auth/RegisterScreen';
+import { VerifyAccountScreen } from '@screens/Auth/VerifyScreen';
 
 
 
@@ -42,6 +43,7 @@ const AppNavigator: React.FC = () => {
           }}
         />
         <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+        <Stack.Screen name="VerifyScreen" component={VerifyAccountScreen} />
 
         {/* Main Tabs */}
 

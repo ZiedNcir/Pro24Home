@@ -6,8 +6,6 @@ import { FontAwesomeIcon as FaIcon } from '@fortawesome/react-native-fontawesome
 import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 
 // Import all SVG icons
-import eyeIcon from '@assets/svg/eye.svg';
-import eyeSlashedIcon from '@assets/svg/eye-sashed.svg';
 import profile from '@assets/svg/profile-circle.svg';
 import homeIcon from '@assets/svg/home.svg';
 import ArrowLeftIcon from '@assets/svg/arrowLeft.svg';
@@ -71,10 +69,13 @@ import {
     faExclamationCircle,
     faFolderOpen,
     faChevronUp,
-    faChevronDown
+    faChevronDown,
+    faEye,
+    faEyeSlash
 } from '@fortawesome/free-solid-svg-icons';
 
-import { AppColor, Colors } from '@utils/constant';
+import { AppColor } from '@utils/constant';
+import { colors } from '@theme/index';
 
 // Define icon names as union type - include both SVG and FontAwesome icons
 export type IconName =
@@ -142,7 +143,9 @@ export type IconName =
     | 'fa-exclamation-circle'
     | 'fa-folder-open'
     | 'fa-chevron-up'
-    | 'fa-chevron-down';
+    | 'fa-chevron-down'
+    | 'fa-eye'
+    | 'fa-eye-slash';
 
 export interface SvgIconProps {
     name: IconName;
@@ -155,8 +158,6 @@ export interface SvgIconProps {
 
 // Map SVG icon names to components
 const svgIconMap: Record<string, React.FC<SvgProps>> = {
-    'eye': eyeIcon,
-    'eye-slashed': eyeSlashedIcon,
     'profile': profile,
     'home': homeIcon,
     'arrow-left': ArrowLeftIcon,
@@ -222,18 +223,20 @@ const faIconMap: Record<string, IconDefinition> = {
     'fa-folder-open': faFolderOpen,
     'fa-chevron-up': faChevronUp,
     'fa-chevron-down': faChevronDown,
+    'fa-eye': faEye,
+    'fa-eye-slash': faEyeSlash
 };
 
 const SvgIcon: FC<SvgIconProps> = ({
     name,
-    size = 24,
+    size = 20,
     color = 'black',
     strokeWidth = 1.5,
     style,
     testID,
     ...rest
 }) => {
-    const finalColor = color in Colors ? Colors[color as keyof typeof Colors] : color;
+    const finalColor = color in colors ? colors[color as keyof typeof colors] : color;
 
     // Check if it's a FontAwesome icon
     const faIcon = faIconMap[name];

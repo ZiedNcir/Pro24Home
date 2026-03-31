@@ -38,3 +38,8 @@ setupListeners(store.dispatch);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+// Barrel exports for hooks and selectors
+export { useAppDispatch, useAppSelector } from './hooks';
+export { selectAuthLoading, selectIsAuthenticated, selectUser, setCredentials, setLoading, setError } from './slices/authSlice';
+export * from './api/index';
