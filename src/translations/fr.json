@@ -1,11 +1,12 @@
 {
     "screen": {
         "creation": "Créer votre compte",
+        "creationClient": "Créer votre compte client",
+        "creationPro": "Créer votre compte professionnel",
         "connexion": "Connexion",
         "verifyAccount": "Valider votre compte",
-        "identityVerification": "Vérification d’identité",
-        "findPro": "De quel service avez-vous besoin ?",
-        "creationPro": "Créer votre compte professionnel"
+        "identityVerification": "Vérification d'identité",
+        "findPro": "De quel service avez-vous besoin ?"
     },
     "ui": {
         "form": {
@@ -37,11 +38,6 @@
                 "invalid": "Format de mot de passe invalide",
                 "helper": "8 caractères minimum, avec majuscule, minuscule chiffre et caractère spécial",
                 "requirements": "Doit contenir : majuscule, minuscule, chiffre, caractère spécial",
-                "passwordLenght": "Minimum 8 caractères",
-                "passwordUppercase": "Au moins une majuscule",
-                "passwordLowercase": "Au moins une minuscule",
-                "passwordNumber": "Au moins un chiffre",
-                "passwordSpecial": "Au moins un caractère spécial (@$!%*?&)"
             },
             "passwordConfirm": {
                 "label": "Confirmer le mot de passe",
@@ -74,9 +70,10 @@
                 "invalid": "Numéro SIRET invalide (14 chiffres requis)",
                 "helper": "14 chiffres (ex: 12345678901234)"
             },
-            "societe": {
-                "label": "Société",
-                "placeholder": "Nom de votre Société"
+            "code": {
+                "label": "Code de validation",
+                "invalid": "Code invalide",
+                "resendIn": "Renvoyer le code dans"
             },
             "personalInfo": {
                 "label": "Informations personnelles"
@@ -99,6 +96,20 @@
                 "placeholder": "Nom de votre entreprise",
                 "required": "Le nom de l'entreprise est requis",
                 "minLength": "Le nom doit contenir au moins 2 caractères"
+            },
+            "error": {
+                "required": "Ce champ est requis",
+                "invalid": "Ce champ est invalide",
+                "invalidEmail": "Format d'email invalide",
+                "invalidUrl": "URL invalide",
+                "numericOnly": "Chiffres uniquement",
+                "alphanumericOnly": "Lettres et chiffres uniquement",
+                "noNumbers": "Ne doit pas contenir de chiffres",
+                "passwordLength": "Minimum 8 caractères",
+                "passwordUppercase": "Au moins une majuscule",
+                "passwordLowercase": "Au moins une minuscule",
+                "passwordNumber": "Au moins un chiffre",
+                "passwordSpecial": "Au moins un caractère spécial (@$!%*?&)"
             }
         },
         "button": {
@@ -123,7 +134,14 @@
     },
     "auth": {
         "registering": "Inscription en cours...",
-        "registrationFailed": "Échec de l'inscription. Veuillez réessayer."
+        "registrationFailed": "Échec de l'inscription. Veuillez réessayer.",
+        "registrationSuccess": "Inscription réussie. Veuillez vérifier votre email.",
+        "verificationSuccess": "Email vérifié avec succès !",
+        "verificationFailed": "Échec de la vérification. Veuillez vérifier le code et réessayer.",
+        "codeSent": "Code de vérification envoyé à votre email.",
+        "resendFailed": "Échec de l'envoi du code. Veuillez réessayer.",
+        "verifying": "Vérification en cours...",
+        "resending": "Envoi du code..."
     },
     "common": {
         "error": "Erreur",
@@ -132,9 +150,12 @@
     "terms": {
         "welcome": "Bienvenue sur Pro24Home",
         "notClient": "Pas encore membre ?",
-        "createAccount": "Creer votre compte",
-        "client": "Déja membre ?",
-        "loginAccount": "se connecter",
+        "createAccount": "Créer votre compte",
+        "client": "Déjà membre ?",
+        "loginAccount": "Se connecter",
         "labelCode": "Veuillez entrez le code de validation reçu par SMS"
+    },
+    "services": {
+        "loadFailed": "Échec du chargement des services"
     }
 }

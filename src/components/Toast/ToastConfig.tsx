@@ -1,8 +1,8 @@
 // src/components/Toast/ToastConfig.tsx
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import Text from '@components/Text';
-import SvgIcon, { IconName } from '@components/Icon/SvgIcon';
+import { Text, SvgIcon } from '@components';
+import type { IconName } from '@components/Icon/SvgIcon';
 import { useTheme } from '@theme/ThemeProvider';
 
 interface CustomToastProps {

@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import { Animated, View, Easing, StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
 import CustomModal from './CustomModal';
-import SvgIcon, { IconName } from '@components/Icon/SvgIcon';
-import Text from '@components/Text'
+import { SvgIcon, Text } from '@components';
+import type { IconName } from '@components/Icon/SvgIcon';
 
 
 

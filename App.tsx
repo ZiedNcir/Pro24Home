@@ -1,6 +1,6 @@
 // App.tsx
 import React, { useEffect } from 'react';
-import { StatusBar, LogBox } from 'react-native';
+import { LogBox } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import { LogLevel, OneSignal } from 'react-native-onesignal';
 import { ToastProvider } from 'react-native-toast-notifications';
@@ -67,6 +67,7 @@ function App(): React.JSX.Element {
           offsetBottom={40}
           swipeEnabled={true}
         >
+
           <SafeAreaProvider>
 
 

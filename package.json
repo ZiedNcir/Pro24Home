@@ -33,7 +33,7 @@
     "react-native": "0.83.1",
     "react-native-confirmation-code-field": "^8.0.1",
     "react-native-country-picker-modal": "^2.0.0",
-    "react-native-date-picker": "^5.0.13",
+    "react-native-date-picker": "^5.0.12",
     "react-native-gesture-handler": "^2.30.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-localize": "^3.6.1",

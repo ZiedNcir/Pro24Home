@@ -47,6 +47,10 @@ const authSlice = createSlice({
                 rememberMe?: boolean;
             }>
         ) => {
+            if (!action.payload.user) {
+                console.error('setCredentials: user is undefined');
+                return;
+            }
             state.user = action.payload.user;
             state.token = action.payload.token;
             state.refreshToken = action.payload.refreshToken || null;

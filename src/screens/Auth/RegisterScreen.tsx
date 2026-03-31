@@ -1,25 +1,30 @@
 // screens/auth/RegisterScreen.tsx
 import React, { useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity, Alert } from 'react-native';
+import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { Colors } from '@utils/constant';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Toast } from 'react-native-toast-notifications';
 import { verticalScale } from '@utils/normalizedCss';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Components
-import Text from '@components/Text';
+import { Text, ScreenContainer, NavigationHeader } from '@components/index';
 
-// New Redux imports
+// Redux
 import { useAppSelector } from '@store/hooks';
-
-// OneSignal integration
 import { selectAuthLoading, selectIsAuthenticated } from '@store/slices/authSlice';
+
+// Screens & Forms
 import ProfessionalForm from './component/ProfessionalForm';
 import ClientForm from './component/ClientForm';
 import { useGetServicesQuery } from '@store/api/endpoints/auth';
-import SvgIcon from '@components/Icon/SvgIcon';
 
 // Types
+import { AppStackType } from '../../navigation/constant/core';
+
+type AppNavigationProp = NativeStackNavigationProp<AppStackType>;
+
 interface RouteParams {
     role?: 'client' | 'professional';
 }
@@ -27,7 +32,8 @@ interface RouteParams {
 export const RegisterScreen = () => {
     const { t } = useTranslation();
     const route = useRoute();
-    const navigation = useNavigation();
+    const navigation = useNavigation<AppNavigationProp>();
+    const insets = useSafeAreaInsets();
 
 
     const params = route.params as RouteParams;
@@ -58,17 +64,20 @@ export const RegisterScreen = () => {
     useEffect(() => {
         if (servicesError && params.role === 'professional') {
             console.error('Failed to load services:', servicesError);
-            Alert.alert(
-                t('common.error'),
-                t('services.loadFailed'),
-                [{ text: t('common.ok') }]
-            );
+            Toast.show(t('services.loadFailed'), {
+                type: 'danger',
+                placement: 'bottom',
+                duration: 4000,
+            });
         }
     }, [servicesError, t, params.role]);
 
-    const handleUserRegistrationSuccess = () => {
+    const handleUserRegistrationSuccess = (data: any) => {
         console.log('Client registration successful');
-        // Navigation is handled by the isAuthenticated useEffect
+        navigation.navigate('VerifyScreen', {
+            email: data.email,
+            role: 'client'
+        });
     };
 
     const handleUserRegistrationError = (error: any) => {
@@ -76,9 +85,12 @@ export const RegisterScreen = () => {
         // Error is handled in the FormUser component
     };
 
-    const handleProfessionalRegistrationSuccess = () => {
+    const handleProfessionalRegistrationSuccess = (data: any) => {
         console.log('Professional registration successful');
-        // Navigation is handled by the isAuthenticated useEffect
+        navigation.navigate('VerifyScreen', {
+            email: data.email,
+            role: 'professional'
+        });
     };
 
     const handleProfessionalRegistrationError = (error: any) => {
@@ -106,14 +118,8 @@ export const RegisterScreen = () => {
 
 
     return (
-        <View style={styles.container}>
-            {/* Logo */}
-            <SvgIcon
-                name="logo-pro24"
-                style={styles.logo}
-                size={verticalScale(150)}
-
-            />
+        <ScreenContainer >
+            <NavigationHeader />
 
             <View style={styles.header}>
                 <Text variant="title" style={styles.title}>
@@ -138,7 +144,7 @@ export const RegisterScreen = () => {
 
                 {/* Link to sign in */}
                 <TouchableOpacity
-                    style={styles.bottomText}
+                    style={[styles.bottomText, { marginBottom: Math.max(insets.bottom- verticalScale(25) ) }]}
                     onPress={navigateToSignIn}
                     disabled={authLoading}>
                     <Text variant="medium">{t('terms.client') || 'Déjà inscrit ?'} </Text>
@@ -149,26 +155,14 @@ export const RegisterScreen = () => {
             </View>
 
 
-        </View>
+        </ScreenContainer>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: Colors.white,
-        paddingTop: verticalScale(10),
-    },
-    centered: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     header: {
         alignItems: 'center',
         flex: 1,
-    },
-    logo: {
-        alignSelf: 'center',
     },
     title: {
         textAlign: 'center',
@@ -176,9 +170,7 @@ const styles = StyleSheet.create({
     bottomText: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        marginTop: verticalScale(10),
-        marginBottom: verticalScale(30),
         alignSelf: 'flex-end',
-        marginRight: verticalScale(10),
+        marginRight: verticalScale(15),
     },
 });

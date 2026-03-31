@@ -2,6 +2,7 @@ import type {
     ApiResponse,
     AuthResponse,
     User,
+    UserType,
     RegisterClientRequest,
     RegisterProfessionalRequest,
     LoginRequest,
@@ -53,14 +54,19 @@ export const authApiEndpoints = api.injectEndpoints({
             async onQueryStarted(_, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
-                    // Dispatch setCredentials after successful registration
-                    dispatch({
-                        type: 'auth/setCredentials',
-                        payload: {
-                            user: data.user,
-                            token: data.token,
-                        },
-                    });
+                    // Only dispatch setCredentials if we have user data
+                    if (data.user) {
+                        // Dispatch setCredentials after successful registration
+                        dispatch({
+                            type: 'auth/setCredentials',
+                            payload: {
+                                user: { ...data.user, type: UserType.CLIENT },
+                                token: data.token,
+                            },
+                        });
+                    } else {
+                        console.warn('Registration response missing user data:', data);
+                    }
                 } catch (error) {
                     console.error('Client registration failed:', error);
                 }
@@ -78,14 +84,19 @@ export const authApiEndpoints = api.injectEndpoints({
             async onQueryStarted(_, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
-                    // Dispatch setCredentials after successful registration
-                    dispatch({
-                        type: 'auth/setCredentials',
-                        payload: {
-                            user: data.user,
-                            token: data.token,
-                        },
-                    });
+                    // Only dispatch setCredentials if we have user data
+                    if (data.user) {
+                        // Dispatch setCredentials after successful registration
+                        dispatch({
+                            type: 'auth/setCredentials',
+                            payload: {
+                                user: { ...data.user, type: UserType.PROFESSIONAL },
+                                token: data.token,
+                            },
+                        });
+                    } else {
+                        console.warn('Professional registration response missing user data:', data);
+                    }
                 } catch (error) {
                     console.error('Professional registration failed:', error);
                 }

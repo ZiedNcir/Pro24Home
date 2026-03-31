@@ -1,6 +1,8 @@
 {
     "screen": {
         "creation": "Create your account",
+        "creationClient": "Create your client account",
+        "creationPro": "Create your professional account",
         "connexion": "Connection",
         "verifyAccount": "Validate your account",
         "identityVerification": "Identity verification",
@@ -10,11 +12,22 @@
         "form": {
             "email": {
                 "label": "Email",
-                "placeholder": "example@email.com"
+                "placeholder": "example@email.com",
+                "required": "Email is required",
+                "invalidEmail": "Invalid email format"
+            },
+            "companyName": {
+                "label": "Company Name",
+                "placeholder": "Your company name",
+                "required": "Company name is required",
+                "minLength": "Company name must be at least 2 characters"
             },
             "siret": {
                 "label": "SIRET",
-                "placeholder": "Number of SIRET"
+                "placeholder": "Number of SIRET",
+                "required": "SIRET number is required",
+                "invalid": "Invalid SIRET number (14 digits required)",
+                "helper": "14 digits (ex: 12345678901234)"
             },
             "societe": {
                 "label": "Company",
@@ -22,7 +35,10 @@
             },
             "password": {
                 "label": "Password",
-                "placeholder": "Enter password"
+                "placeholder": "Enter password",
+                "required": "Password is required",
+                "helper": "Minimum 8 characters with uppercase, lowercase, number and special character",
+                "minLength": "Password must be at least {{count}} characters"
             },
             "confirmPassword": {
                 "label": "Confirm password",
@@ -34,32 +50,72 @@
             },
             "firstName": {
                 "label": "First name",
-                "placeholder": "Enter your first name"
+                "placeholder": "Enter your first name",
+                "required": "First name is required",
+                "minLength": "First name must be at least 2 characters",
+                "maxLength": "First name cannot exceed 50 characters"
             },
             "lastName": {
                 "label": "Last name",
-                "placeholder": "Enter your last name"
+                "placeholder": "Enter your last name",
+                "required": "Last name is required",
+                "minLength": "Last name must be at least 2 characters",
+                "maxLength": "Last name cannot exceed 50 characters"
+            },
+            "address": {
+                "label": "Address",
+                "placeholder": "Enter your full address",
+                "required": "Address is required",
+                "minLength": "Address must be at least 5 characters"
             },
             "phone": {
                 "label": "Phone",
-                "placeholder": "phone number"
+                "placeholder": "phone number",
+                "required": "Phone number is required",
+                "invalid": "Invalid phone number"
             },
             "postCode": {
                 "label": "Post code",
-                "placeholder": "Enter your postal code"
+                "placeholder": "12345",
+                "required": "Postal code is required",
+                "invalid": "Invalid postal code (5 digits required)"
             },
             "code": {
-                "label": "Validation Code"
+                "label": "Validation Code",
+                "invalid": "Invalid code",
+                "resendIn": "Resend code in"
             },
-            "adress": {
-                "label": "Address",
-                "placeholder": "Enter your adress details"
+            "personalInfo": {
+                "label": "Personal Information"
+            },
+            "companyInfo": {
+                "label": "Company Information"
+            },
+            "security": {
+                "label": "Security"
+            },
+            "services": {
+                "label": "My Services",
+                "required": "Please select at least one service",
+                "empty": "No services available",
+                "selectAll": "Select All",
+                "deselectAll": "Deselect All"
             },
             "error": {
                 "required": "This field is required",
                 "invalid": "This field is invalid",
                 "length": "This field must be at least 8 characters",
-                "match": "Confirmation password does not match"
+                "match": "Confirmation password does not match",
+                "invalidEmail": "Invalid email format",
+                "invalidUrl": "Invalid URL",
+                "numericOnly": "Numbers only",
+                "alphanumericOnly": "Letters and numbers only",
+                "noNumbers": "Must not contain numbers",
+                "passwordLength": "Minimum 8 characters",
+                "passwordUppercase": "At least one uppercase letter",
+                "passwordLowercase": "At least one lowercase letter",
+                "passwordNumber": "At least one number",
+                "passwordSpecial": "At least one special character (@$!%*?&)"
             }
         },
         "steps": {
@@ -75,15 +131,34 @@
             "ok": "OK",
             "delete": "Delete",
             "resendCode": "Resend the verification code",
-            "provider": "User",
+            "provider": "Service Provider",
             "professional": "Professional",
-            "signIn": "SignIn",
+            "signIn": "Sign In",
             "signUp": "Create Account",
             "validate": "Validate",
             "depanne": "Help me out",
             "next": "Next",
-            "previous": "Previous"
+            "previous": "Previous",
+            "pay": "Pay"
         }
+    },
+    "auth": {
+        "registering": "Registering...",
+        "registrationFailed": "Registration failed. Please try again.",
+        "registrationSuccess": "Registration successful. Please verify your email.",
+        "verificationSuccess": "Email verified successfully!",
+        "verificationFailed": "Verification failed. Please check the code and try again.",
+        "codeSent": "Verification code sent to your email.",
+        "resendFailed": "Failed to resend code. Please try again.",
+        "verifying": "Verifying code...",
+        "resending": "Sending code..."
+    },
+    "common": {
+        "error": "Error",
+        "ok": "OK"
+    },
+    "services": {
+        "loadFailed": "Failed to load services"
     },
     "terms": {
         "welcome": "Welcome To Pro24Home",
