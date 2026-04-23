@@ -12,7 +12,7 @@ import styled from 'styled-components/native';
 
 
 // Import from new Redux architecture
-import { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import type { RegisterProfessionalRequest, Service } from '@store/api/api.types';
 import { useRegisterProfessionalMutation } from '@store/api/endpoints/auth';
@@ -21,7 +21,7 @@ import { selectAuthLoading, setError, setLoading } from '@store/slices/authSlice
 // Components
 import ListeServices from './ListServices';
 import Text from '@components/Text';
-import { verticalScale } from '@utils/normalizedCss';
+import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 
 import { colors } from '@theme/index';
 import ServicesSkeleton from './ServicesSkeleton';
@@ -32,55 +32,57 @@ import { Toast } from 'react-native-toast-notifications';
 const Container = styled(View)`
   flex: 1;
   align-items: center;
-  backgroundColor: ${colors.white};
-  paddingTop: ${verticalScale(5)}px;
+  paddingTop: ${verticalScale(2)}px;
   justifyContent: center;
+`;
+
+const StepContainer = styled(View)`
+  width: 100%;
 `;
 
 const StepIndicator = styled(View)`
-  flexDirection: row;
-  justifyContent: center;
-  alignItems: center;
-  marginBottom: ${verticalScale(5)}px;
-  marginTop: ${verticalScale(5)}px;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-bottom: ${verticalScale(8)}px;
+  margin-top: ${verticalScale(8)}px;
+  padding-horizontal: ${horizontalScale(12)}px;
   position: relative;
-`;
-
-const StepDot = styled(View)`
-  width: 12px;
-  height: 12px;
-  borderRadius: 6px;
-  backgroundColor: ${colors.gray100};
-  marginHorizontal: 8px;
-  zIndex: 1;
-`;
-
-const StepDotActive = styled(StepDot)`
-  backgroundColor: ${colors.primary};
-  transform: scale(1.2);
-`;
-
-const StepDotCompleted = styled(StepDot)`
-  backgroundColor: ${colors.success};
 `;
 
 const StepLine = styled(View)`
   position: absolute;
   top: 5px;
-  left: 5px;
-  right: 5px;
+  left: ${horizontalScale(18)}px;
+  right: ${horizontalScale(18)}px;
   height: 2px;
-  backgroundColor: ${colors.gray100};
-  zIndex: 0;
+  background-color: ${colors.gray300};
+  z-index: 0;
+`;
+
+const StepDot = styled(View)`
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  background-color: ${colors.gray100};
+  z-index: 1;
+`;
+
+const StepDotActive = styled(StepDot)`
+  background-color: ${colors.primary};
+  transform: scale(1.2);
+`;
+
+const StepDotCompleted = styled(StepDot)`
+  background-color: ${colors.success};
 `;
 
 const StepTitle = styled(Text)`
-  textAlign: center;
-  marginBottom: ${verticalScale(5)}px;
-  color: ${colors.textPrimary};
+  text-align: center;
+  margin-bottom: ${verticalScale(5)}px;
+  color: #000;
 `;
-
-const StepContainer = styled(View)``;
 
 const ButtonGroup = styled(View)`
   flexDirection: row;

@@ -37,7 +37,7 @@
                 "placeholder": "Votre mot de passe",
                 "invalid": "Format de mot de passe invalide",
                 "helper": "8 caractères minimum, avec majuscule, minuscule chiffre et caractère spécial",
-                "requirements": "Doit contenir : majuscule, minuscule, chiffre, caractère spécial",
+                "requirements": "Doit contenir : majuscule, minuscule, chiffre, caractère spécial"
             },
             "passwordConfirm": {
                 "label": "Confirmer le mot de passe",
@@ -135,6 +135,7 @@
     "auth": {
         "registering": "Inscription en cours...",
         "registrationFailed": "Échec de l'inscription. Veuillez réessayer.",
+        "loginFailed": "Échec de connection. Veuillez réessayer.",
         "registrationSuccess": "Inscription réussie. Veuillez vérifier votre email.",
         "verificationSuccess": "Email vérifié avec succès !",
         "verificationFailed": "Échec de la vérification. Veuillez vérifier le code et réessayer.",
@@ -151,6 +152,7 @@
         "welcome": "Bienvenue sur Pro24Home",
         "notClient": "Pas encore membre ?",
         "createAccount": "Créer votre compte",
+        "forgetPassword": "Mot de passe oublier ?",
         "client": "Déjà membre ?",
         "loginAccount": "Se connecter",
         "labelCode": "Veuillez entrez le code de validation reçu par SMS"

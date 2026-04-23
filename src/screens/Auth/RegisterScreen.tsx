@@ -46,10 +46,6 @@ export const RegisterScreen = () => {
     // Get services for professional form
     const { data: services, isLoading: servicesLoading, error: servicesError } = useGetServicesQuery({ lang: 'fr' });
 
-
-
-
-
     // Redirect to home if already authenticated
     useEffect(() => {
         if (isAuthenticated) {
@@ -118,7 +114,14 @@ export const RegisterScreen = () => {
 
 
     return (
-        <ScreenContainer >
+        <ScreenContainer
+            mode="light"
+            scrollable
+            paddingHorizontal={10}
+            paddingVertical={0}
+            backgroundImage={require('@assets/images/background_ligth.png')}
+            useImageBackground
+        >
             <NavigationHeader />
 
             <View style={styles.header}>
@@ -144,7 +147,7 @@ export const RegisterScreen = () => {
 
                 {/* Link to sign in */}
                 <TouchableOpacity
-                    style={[styles.bottomText, { marginBottom: Math.max(insets.bottom- verticalScale(25) ) }]}
+                    style={[styles.bottomText, { marginBottom: Math.max(insets.bottom - verticalScale(25)) }]}
                     onPress={navigateToSignIn}
                     disabled={authLoading}>
                     <Text variant="medium">{t('terms.client') || 'Déjà inscrit ?'} </Text>

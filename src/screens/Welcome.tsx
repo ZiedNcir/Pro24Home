@@ -2,36 +2,38 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions } from 'react-native';
 import styled from 'styled-components/native';
-import { fontPixel, horizontalScale, verticalScale, moderateScale } from '@utils/normalizedCss';
-//import { appNavigate } from '../../navigations/navigation';
+import {
+  fontPixel,
+  horizontalScale,
+  verticalScale,
+  moderateScale,
+} from '@utils/normalizedCss';
 import Text from '@components/Text';
 import { PrimaryButton, OutlineButton, GhostButton } from '@components/Button/Button';
-import { SvgIcon } from '@components/Icon';
 import { Spinner } from '@components/Modal/AppSpinner';
 import { colors } from '@theme/index';
 import { useNavigation, NavigationProp } from '@react-navigation/core';
 import { ScreenContainer } from '@components/index';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 type RootStackParamList = {
   VerifyScreen: { role: 'client' };
   RegisterScreen: { role: 'client' | 'professional' };
+  SignIn: { role: 'client' };
 };
 
 interface WelcomeProps {
-  // Optional props for customization
   showAnimation?: boolean;
 }
 
-const Welcome: React.FC<WelcomeProps> = ({ }) => {
+const Welcome: React.FC<WelcomeProps> = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [loading, setLoading] = useState(false);
 
   const handleClientPress = async () => {
     setLoading(true);
-    // Simulate API call or check
     await new Promise(resolve => setTimeout(resolve, 500));
     setLoading(false);
     navigation.navigate('RegisterScreen', { role: 'client' });
@@ -42,28 +44,35 @@ const Welcome: React.FC<WelcomeProps> = ({ }) => {
   };
 
   const handleProfessionalSignIn = () => {
-    //appNavigate('SignIn', { role: 'professional' });
+    navigation.navigate('SignIn', { role: 'client' });
   };
 
   return (
-    <ScreenContainer>
+    <ScreenContainer
+      mode="light"
+      scrollable
+      paddingHorizontal={0}
+      paddingVertical={0}
+      backgroundImage={require('@assets/images/background_ligth.png')}
+      useImageBackground
+      imageResizeMode="cover"
+    >
       <Container>
-
-
-        <Content>
+        <ContentWrapper>
           <CardContainer>
-            <GlassCard>
+            <Card>
               <WelcomeImage
                 source={require('@assets/images/welcome_img.png')}
-                resizeMode="center"
+                resizeMode="contain"
               />
+
               <TitleContainer>
-                <Title variant="regularSmall" color={colors.primary}>
-                  {t('terms.welcome')}
+                <Title color={colors.primary}>
+                  {t('terms.welcome') || 'Welcome To Pro24Home'}
                 </Title>
               </TitleContainer>
 
-              <Description variant="regular" color={colors.black}>
+              <Description color={colors.black}>
                 Trouvez votre dépanneur près de chez vous{' '}
                 <Text variant="medium" color={colors.primary}>
                   en quelques minutes
@@ -71,9 +80,10 @@ const Welcome: React.FC<WelcomeProps> = ({ }) => {
               </Description>
 
               <Section>
-                <SectionTitle variant="medium" color={colors.black}>
+                <SectionTitle color={colors.black}>
                   Je suis un Client
                 </SectionTitle>
+
                 <PrimaryButton
                   title="Dépanner moi"
                   onPress={handleClientPress}
@@ -86,17 +96,17 @@ const Welcome: React.FC<WelcomeProps> = ({ }) => {
                 />
               </Section>
 
-              <Section>
-                <Divider>
-                  <DividerLine />
-                  <DividerText variant="notification" color={colors.gray600}>
-                    Professionnels
-                  </DividerText>
-                  <DividerLine />
-                </Divider>
+              <Divider>
+                <DividerLine />
+                <DividerText variant="notification" color={colors.gray600}>
+                  Professionnels
+                </DividerText>
+                <DividerLine />
+              </Divider>
 
-                <HelperText variant="notification" color={colors.black}>
-                  Vous êtes un professionnel ?{'\n'} Rejoigner-nous !
+              <Section>
+                <HelperText color={colors.black}>
+                  Vous êtes un professionnel ?{'\n'}Rejoignez-nous !
                 </HelperText>
 
                 <ButtonGroup>
@@ -106,7 +116,6 @@ const Welcome: React.FC<WelcomeProps> = ({ }) => {
                     fullWidth
                     rounded
                     size="large"
-
                     style={styles.proButton}
                   />
 
@@ -116,128 +125,105 @@ const Welcome: React.FC<WelcomeProps> = ({ }) => {
                     fullWidth
                     rounded
                     size="large"
-
                   />
                 </ButtonGroup>
-
               </Section>
-
-              <Footer>
-                <SecurityInfo>
-                  <SvgIcon name="fa-shield" size={16} color={colors.success} />
-                  <Text variant="notification" color={colors.black} style={{ marginLeft: 8 }}>
-                    🔐 Sécurité & Confidentialité garanties
-                  </Text>
-                </SecurityInfo>
-                <Copyright variant="notification" color={colors.gray600}>
-                  © 2024 Pro24. Tous droits réservés.
-                </Copyright>
-              </Footer>
-            </GlassCard>
+            </Card>
           </CardContainer>
-        </Content>
-      </Container>
+        </ContentWrapper>
 
-      <Spinner
-        visible={loading}
-        onRequestClose={() => setLoading(false)}
-        animationType="rotate"
-        color={colors.primary}
-        message="Chargement..."
-      />
+        <Spinner
+          visible={loading}
+          onRequestClose={() => setLoading(false)}
+          animationType="rotate"
+          color={colors.primary}
+          message="Chargement..."
+        />
+      </Container>
     </ScreenContainer>
   );
 };
 
-// Styled Components
-
 const Container = styled.View`
-  background-color: ${colors.background};
   flex: 1;
 `;
 
-
-const Content = styled.View`
+const ContentWrapper = styled.View`
   flex: 1;
-`;
-
-const WelcomeImage = styled.Image`
-  width: ${SCREEN_WIDTH * 0.55}px;
-  height: ${SCREEN_HEIGHT * 0.27}px;
-  align-self: center;
-  margin-bottom: ${verticalScale(6)}px;
+  justify-content: center;
+  padding-top: ${verticalScale(24)}px;
 `;
 
 const CardContainer = styled.View`
-  flex: 1;
-  padding-horizontal: ${horizontalScale(10)}px;
-  margin-top: ${verticalScale(5)}px;
-  margin-bottom: ${verticalScale(15)}px;
+  padding-horizontal: ${horizontalScale(18)}px;
 `;
 
-const GlassCard = styled.View`
+const Card = styled.View`
   width: 100%;
-  border-radius: ${moderateScale(26)}px;
-  padding-horizontal: ${horizontalScale(26)}px;
-  padding-top: ${verticalScale(15)}px;
-  padding-bottom: ${verticalScale(15)}px;
-  background-color: rgba(255, 255, 255, 0.92);
+  max-width: ${SCREEN_WIDTH - horizontalScale(36)}px;
+  align-self: center;
+  border-radius: ${moderateScale(30)}px;
+  padding-horizontal: ${horizontalScale(24)}px;
+  padding-top: ${verticalScale(24)}px;
+  background-color: rgba(255, 255, 255, 0.96);
   border-width: 1px;
-  border-color: rgba(255, 255, 255, 0.75);
-  elevation: 10;
+  border-color: rgba(255, 255, 255, 0.72);
   shadow-color: #000;
   shadow-offset: 0px ${verticalScale(8)}px;
-  shadow-opacity: 0.12;
+  shadow-opacity: 0.08;
   shadow-radius: ${moderateScale(18)}px;
+  elevation: 6;
 `;
 
+const WelcomeImage = styled.Image`
+  width: ${SCREEN_WIDTH * 0.52}px;
+  height: ${verticalScale(180)}px;
+  align-self: center;
+  margin-bottom: ${verticalScale(12)}px;
+`;
 
 const TitleContainer = styled.View`
   align-items: center;
-  margin-bottom: ${verticalScale(16)}px;
+  margin-bottom: ${verticalScale(14)}px;
 `;
 
 const Title = styled(Text)`
   text-align: center;
-  font-size: ${fontPixel(26)}px;
+  font-size: ${fontPixel(30)}px;
   line-height: ${fontPixel(38)}px;
   font-weight: 800;
 `;
 
-
-
 const Description = styled(Text)`
   text-align: center;
-  opacity: 0.9;
-  margin-bottom: ${verticalScale(12)}px;
-  line-height: ${fontPixel(24)}px;
+  margin-bottom: ${verticalScale(24)}px;
+  line-height: ${fontPixel(22)}px;
   font-size: ${fontPixel(16)}px;
   padding-horizontal: ${horizontalScale(8)}px;
 `;
 
-
 const Section = styled.View`
-  margin-bottom: ${verticalScale(10)}px;
+  margin-bottom: ${verticalScale(18)}px;
 `;
 
 const SectionTitle = styled(Text)`
   text-align: center;
-  margin-bottom: ${verticalScale(12)}px;
+  margin-bottom: ${verticalScale(14)}px;
   font-size: ${fontPixel(18)}px;
-  font-weight: 600;
+  font-weight: 700;
 `;
 
 const Divider = styled.View`
   flex-direction: row;
   align-items: center;
-  margin-vertical: ${verticalScale(12)}px;
+  margin-bottom: ${verticalScale(18)}px;
 `;
 
 const DividerLine = styled.View`
   flex: 1;
   height: 1px;
   background-color: ${colors.gray300};
-  opacity: 0.35;
+  opacity: 0.4;
 `;
 
 const DividerText = styled(Text)`
@@ -247,52 +233,20 @@ const DividerText = styled(Text)`
 
 const HelperText = styled(Text)`
   text-align: center;
-  margin-bottom: ${verticalScale(12)}px;
-  opacity: 0.85;
+  margin-bottom: ${verticalScale(14)}px;
   font-size: ${fontPixel(14)}px;
-  line-height: ${fontPixel(18)}px;
+  line-height: ${fontPixel(20)}px;
+  font-weight: 600;
 `;
 
 const ButtonGroup = styled.View`
   gap: ${verticalScale(12)}px;
 `;
 
-
-const Footer = styled.View`
-  margin-top: ${verticalScale(5)}px;
-  align-items: center;
-`;
-
-const SecurityInfo = styled.View`
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: ${verticalScale(12)}px;
-`;
-
-const Copyright = styled(Text)`
-  text-align: center;
-  font-size: ${fontPixel(12)}px;
-  opacity: 0.7;
-`;
-
-
-
 const styles = {
-  background: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-
-
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-
   proButton: {
     borderWidth: 2,
   },
 };
 
 export default Welcome;
-

@@ -1,3 +1,4 @@
-// Barrel export for Auth screens
-export { RegisterScreen } from './RegisterScreen';
-export { VerifyScreen } from './VerifyScreen';
+
+export {  RegisterScreen } from './RegisterScreen';
+export {  VerifyAccountScreen } from './VerifyScreen';
+export {  SignIn } from './SignIn';
