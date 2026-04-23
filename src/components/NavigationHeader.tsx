@@ -4,9 +4,9 @@ import { TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { verticalScale } from '@utils/normalizedCss';
-import { Colors } from '@utils/constant';
 import { SvgIcon } from './index';
 import { AppStackType } from '../navigation/constant/core';
+import { colors } from '@theme/index';
 
 type AppNavigationProp = NativeStackNavigationProp<AppStackType>;
 
@@ -18,7 +18,7 @@ interface NavigationHeaderProps {
 }
 
 const NavigationHeader: React.FC<NavigationHeaderProps> = ({
-    logoSize = verticalScale(100),
+    logoSize = verticalScale(150),
     showBackButton = true,
     backButtonTestID = 'back-button',
     onBackPress,
@@ -41,7 +41,7 @@ const NavigationHeader: React.FC<NavigationHeaderProps> = ({
                     onPress={handleBackPress}
                     testID={backButtonTestID}
                 >
-                    <SvgIcon name="fa-chevron-left" size={24} color={Colors.black} />
+                    <SvgIcon name="fa-chevron-left" size={verticalScale(20)} color={colors.primary} />
                 </TouchableOpacity>
             )}
 
@@ -57,14 +57,18 @@ const NavigationHeader: React.FC<NavigationHeaderProps> = ({
 const styles = StyleSheet.create({
     backButton: {
         position: 'absolute',
-        top: verticalScale(30),
+        top: verticalScale(20),
         left: verticalScale(20),
         zIndex: 1,
-        padding: verticalScale(8),
+        padding: verticalScale(5),
+        borderRadius: verticalScale(30),
+        backgroundColor: colors.white,
     },
     logo: {
-        alignSelf: 'flex-start',
-        left: verticalScale(20),
+        alignSelf: 'center',
+
+        marginTop: verticalScale(-40),
+
     },
 });
 

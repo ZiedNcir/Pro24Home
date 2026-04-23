@@ -6,7 +6,7 @@
         "connexion": "Connection",
         "verifyAccount": "Validate your account",
         "identityVerification": "Identity verification",
-        "findPro": "What service do you need?"
+        "findPro": "What service do you need ?"
     },
     "ui": {
         "form": {
@@ -145,6 +145,7 @@
     "auth": {
         "registering": "Registering...",
         "registrationFailed": "Registration failed. Please try again.",
+        "loginFailed": "Login failed. Please try again.",
         "registrationSuccess": "Registration successful. Please verify your email.",
         "verificationSuccess": "Email verified successfully!",
         "verificationFailed": "Verification failed. Please check the code and try again.",
@@ -164,6 +165,7 @@
         "welcome": "Welcome To Pro24Home",
         "notClient": "Not yet a member ?",
         "createAccount": "Create your account",
+        "forgetPassword": "Forget your password ? ",
         "client": "Already a member?",
         "loginAccount": "Sign In",
         "labelCode": "Please enter the validation code received by SMS"

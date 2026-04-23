@@ -5,10 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { AppStackType } from './constant/core';
 
-
-import Welcome from '@screens/Welcome';
-import { RegisterScreen } from '@screens/Auth/RegisterScreen';
-import { VerifyAccountScreen } from '@screens/Auth/VerifyScreen';
+import {Welcome, VerifyAccountScreen , RegisterScreen ,SignIn} from '@screens/index';
 
 
 
@@ -44,6 +41,8 @@ const AppNavigator: React.FC = () => {
         />
         <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
         <Stack.Screen name="VerifyScreen" component={VerifyAccountScreen} />
+        <Stack.Screen name="SignIn" component={SignIn} />
+
 
         {/* Main Tabs */}
 

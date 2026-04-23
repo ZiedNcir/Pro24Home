@@ -1,5 +1,5 @@
-import { Button, Field, FieldValidators } from '@components';
-import { validateClientRegistration, mapApiError, prepareRegistrationPayload } from '@services';
+import { Button, Field, FieldValidators } from '@components/index';
+import { validateClientRegistration, mapApiError, prepareRegistrationPayload } from '@services/index';
 import { Spinner } from '@components/Modal/AppSpinner';
 import Text from '@components/Text';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
@@ -26,8 +26,8 @@ const StepIndicator = styled(View)`
   flexDirection: row;
   justifyContent: center;
   alignItems: center;
-  marginBottom: ${verticalScale(10)}px;
-  marginTop: ${verticalScale(10)}px;
+  marginBottom: ${verticalScale(5)}px;
+  marginTop: ${verticalScale(5)}px;
   position: relative;
 `;
 
@@ -55,7 +55,7 @@ const StepLine = styled(View)`
   left: 5px;
   right: 5px;
   height: 2px;
-  backgroundColor: ${colors.gray100};
+  backgroundColor: ${colors.gray500};
   zIndex: 0;
 `;
 
@@ -75,8 +75,8 @@ const StepTitle = styled(Text)`
 `;
 
 const fieldStyle = {
-  marginBottom: verticalScale(5),
-  width: '100%',
+    marginBottom: verticalScale(5),
+    width: '100%',
 };
 
 const ButtonGroup = styled(View)`
@@ -274,16 +274,16 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
             enableResetScrollToCoords={false}>
 
             <FormContainer>
-            <StepIndicator>
-                {steps.map((_, index) => {
-                    if (index === step) return <StepDotActive key={index} />;
-                    if (index < step) return <StepDotCompleted key={index} />;
-                    return <StepDot key={index} />;
-                })}
-                <StepLine />
-            </StepIndicator>
+                <StepIndicator>
+                    {steps.map((_, index) => {
+                        if (index === step) return <StepDotActive key={index} />;
+                        if (index < step) return <StepDotCompleted key={index} />;
+                        return <StepDot key={index} />;
+                    })}
+                    <StepLine />
+                </StepIndicator>
 
-            <StepTitle variant="medium">
+                <StepTitle variant="medium">
                     {step === 0 ? t('ui.form.personalInfo.label') : t('ui.form.security.label')}
                 </StepTitle>
 
@@ -423,7 +423,7 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                             returnKeyType="next"
                             rules={FieldValidators.required(t('ui.form.email.required'))}
                             accessoryLeft="fa-exclamation-circle"
-                             containerStyle={[fieldStyle, { width: screenWidth * 0.80 }]}
+                            containerStyle={[fieldStyle, { width: screenWidth * 0.80 }]}
                         />
 
                         {/* Password */}
@@ -439,7 +439,7 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                             returnKeyType="next"
                             rules={FieldValidators.required(t('ui.form.password.required'))}
                             accessoryLeft="fa-lock"
-                             containerStyle={[fieldStyle, { width: screenWidth * 0.80 }]}
+                            containerStyle={[fieldStyle, { width: screenWidth * 0.80 }]}
                         />
                     </>
                 )}
@@ -464,7 +464,7 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                                 onPress={nextStep}
                                 variant="primary"
                                 size="medium"
-                                disabled={isLoading || authLoading|| !isValid}
+                                disabled={isLoading || authLoading || !isValid}
                                 loading={isLoading || authLoading}
                                 fullWidth
                             />
@@ -476,7 +476,7 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                                 onPress={handleSubmit(onSubmit)}
                                 variant="primary"
                                 size="medium"
-                                disabled={isLoading || authLoading }
+                                disabled={isLoading || authLoading}
                                 loading={isLoading || authLoading}
                                 fullWidth
                             />
