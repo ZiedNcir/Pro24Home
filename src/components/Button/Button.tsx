@@ -331,7 +331,7 @@ const SubtitleText = styled(Text) <{
 `;
 
 const IconWrapper = styled.View<{
-    position: 'left' | 'right';
+    position: 'left' | 'right' | 'center';
     hasText: boolean;
 }>`
   ${({ position, hasText }) => {
@@ -417,7 +417,7 @@ export const Button: FC<ButtonProps> = ({
     const dimensions = getButtonDimensions(size, type, fullWidth, width);
 
     // Determine which icon to use
-    const effectiveLeftIcon = leftIcon || (!rightIcon && icon ? icon : undefined);
+    // const effectiveLeftIcon = leftIcon || (!rightIcon && icon ? icon : undefined);
     const effectiveRightIcon = rightIcon || (leftIcon && icon ? undefined : icon);
 
     // Check if button has text content
@@ -480,7 +480,7 @@ export const Button: FC<ButtonProps> = ({
 
         return (
             <>
-                {renderIcon(effectiveLeftIcon, 'left')}
+
 
                 {(title || subtitle || loadingText) && (
                     <TextContainer>

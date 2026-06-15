@@ -1,4 +1,4 @@
-import type {
+import {
     ApiResponse,
     AuthResponse,
     User,
@@ -11,6 +11,7 @@ import type {
     Service,
 } from '../api.types';
 import { api } from '../baseApi';
+import { fetchUserProfile } from '../../slices/user.slice';
 
 export const authApiEndpoints = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -30,12 +31,17 @@ export const authApiEndpoints = api.injectEndpoints({
                         type: 'auth/setCredentials',
                         payload: {
                             user: data.user,
-                            token: data.token,
+                            token: data.access_token,
                             // Your API returns token in AuthResponse, adjust if needed
                             refreshToken: '', // Add if your API returns refresh token
                             rememberMe: true, // Add if your login request includes rememberMe
                         },
                     });
+
+                    // Fetch additional user profile data
+                    if (data.user?.id) {
+                        dispatch(fetchUserProfile(data.user.id));
+                    }
                 } catch (error) {
                     // Handle error in the component or use setError
                     console.error('Login failed:', error);
@@ -61,9 +67,12 @@ export const authApiEndpoints = api.injectEndpoints({
                             type: 'auth/setCredentials',
                             payload: {
                                 user: { ...data.user, type: UserType.CLIENT },
-                                token: data.token,
+                                token: data.access_token,
                             },
                         });
+
+                        // Fetch additional user profile data
+                        dispatch(fetchUserProfile(data.user.id));
                     } else {
                         console.warn('Registration response missing user data:', data);
                     }
@@ -91,9 +100,12 @@ export const authApiEndpoints = api.injectEndpoints({
                             type: 'auth/setCredentials',
                             payload: {
                                 user: { ...data.user, type: UserType.PROFESSIONAL },
-                                token: data.token,
+                                token: data.access_token,
                             },
                         });
+
+                        // Fetch additional user profile data
+                        dispatch(fetchUserProfile(data.user.id));
                     } else {
                         console.warn('Professional registration response missing user data:', data);
                     }

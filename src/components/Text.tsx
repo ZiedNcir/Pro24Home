@@ -91,26 +91,3 @@ const Text: FC<TextProps> = ({
 };
 
 export default Text;
-
-/*
-| Variant      | Font             | Usage               |
-| ------------ | ---------------- | ------------------- |
-| title        | Poppins SemiBold | Écran principal     |
-| header       | Poppins Regular  | Section             |
-| medium       | Inter Medium     | Sous-titre / bouton |
-| regular      | Inter Regular    | Texte principal     |
-| regularSmall | Inter Regular    | Texte secondaire    |
-| helper       | Inter Regular    | Aide                |
-| bold         | Inter Bold       | Emphase             |
-| notification | Inter Medium     | Badge / info        |
-
-<Text variant="title">Dépannage urgent</Text>
-<Text variant="header">Détails de l’intervention</Text>
-
-<Text variant="regular">
-  Un technicien est en route vers votre domicile.
-</Text>
-
-<Text variant="medium">Appeler le technicien</Text>
-<Text variant="notification" color="primary">Nouveau</Text>
-*/

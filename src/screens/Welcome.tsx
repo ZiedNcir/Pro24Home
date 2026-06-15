@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions } from 'react-native';
+import { Dimensions, Animated } from 'react-native';
 import styled from 'styled-components/native';
 import {
   fontPixel,
@@ -31,6 +31,15 @@ const Welcome: React.FC<WelcomeProps> = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [loading, setLoading] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
 
   const handleClientPress = async () => {
     setLoading(true);
@@ -60,7 +69,7 @@ const Welcome: React.FC<WelcomeProps> = () => {
       <Container>
         <ContentWrapper>
           <CardContainer>
-            <Card>
+            <AnimatedCard style={{ opacity: fadeAnim }}>
               <WelcomeImage
                 source={require('@assets/images/welcome_img.png')}
                 resizeMode="contain"
@@ -128,7 +137,7 @@ const Welcome: React.FC<WelcomeProps> = () => {
                   />
                 </ButtonGroup>
               </Section>
-            </Card>
+            </AnimatedCard>
           </CardContainer>
         </ContentWrapper>
 
@@ -145,7 +154,7 @@ const Welcome: React.FC<WelcomeProps> = () => {
 };
 
 const Container = styled.View`
-  flex: 1;
+flex: 1;
 `;
 
 const ContentWrapper = styled.View`
@@ -174,6 +183,8 @@ const Card = styled.View`
   shadow-radius: ${moderateScale(18)}px;
   elevation: 6;
 `;
+
+const AnimatedCard = Animated.createAnimatedComponent(Card);
 
 const WelcomeImage = styled.Image`
   width: ${SCREEN_WIDTH * 0.52}px;

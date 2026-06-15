@@ -1,18 +1,29 @@
 // src/components/ScreenContainer.tsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   ViewProps,
   StatusBar,
   ScrollView,
   ScrollViewProps,
-  ImageSourcePropType,
   ImageBackground,
+  ImageSourcePropType,
   StyleSheet,
+  Platform,
 } from 'react-native';
 import styled, { css } from 'styled-components/native';
-import { Edge, SafeAreaView } from 'react-native-safe-area-context';
-import { verticalScale, horizontalScale } from '@utils/normalizedCss';
+import {
+  SafeAreaView,
+  Edge,
+} from 'react-native-safe-area-context';
+
+import SystemNavigationBar from 'react-native-system-navigation-bar';
+
+import {
+  horizontalScale,
+  verticalScale,
+} from '@utils/normalizedCss';
+
 import { colors } from '@theme/index';
 
 type Mode = 'light' | 'dark';
@@ -26,81 +37,24 @@ interface ScreenContainerProps extends ViewProps {
   backgroundImage?: ImageSourcePropType;
   useImageBackground?: boolean;
   imageResizeMode?: 'cover' | 'contain' | 'stretch' | 'repeat' | 'center';
-  contentMaxWidth?: number;
-  centered?: boolean;
   mode?: Mode;
+  centered?: boolean;
   withTopSafeArea?: boolean;
   withBottomSafeArea?: boolean;
   statusBarStyle?: 'light-content' | 'dark-content' | 'default';
-  statusBarBackgroundColor?: string;
   translucent?: boolean;
   contentContainerStyle?: ScrollViewProps['contentContainerStyle'];
 }
 
-interface RootProps {
-  backgroundColor: string;
-}
-
-interface InnerProps {
-  paddingHorizontal: number;
-  paddingVertical: number;
-  contentMaxWidth?: number;
-  centered?: boolean;
-}
-
 const getBackgroundByMode = (mode: Mode) => {
-  if (mode === 'dark') {
-    return colors?.black || '#0D0F12';
-  }
-  return colors?.background || '#F6F6F7';
+  return mode === 'dark'
+    ? colors?.black || '#0D0F12'
+    : colors?.background || '#F6F6F7';
 };
 
 const getStatusBarStyleByMode = (mode: Mode) => {
   return mode === 'dark' ? 'light-content' : 'dark-content';
 };
-
-const Root = styled(View) <RootProps>`
-  flex: 1;
-  background-color: ${({ backgroundColor }) => backgroundColor};
-`;
-
-const ForegroundSafeArea = styled(SafeAreaView)`
-  flex: 1;
-`;
-
-const BaseInnerStyles = css<InnerProps>`
-  flex: 1;
-  width: 100%;
-  align-self: center;
-  padding-left: ${({ paddingHorizontal }) => paddingHorizontal}px;
-  padding-right: ${({ paddingHorizontal }) => paddingHorizontal}px;
-  padding-top: ${({ paddingVertical }) => paddingVertical}px;
-  padding-bottom: ${({ paddingVertical }) => paddingVertical}px;
-
-  ${({ contentMaxWidth }) =>
-    contentMaxWidth &&
-    css`
-      max-width: ${contentMaxWidth}px;
-    `}
-
-  ${({ centered }) =>
-    centered &&
-    css`
-      justify-content: center;
-    `}
-`;
-
-const ContentView = styled(View) <InnerProps>`
-  ${BaseInnerStyles}
-`;
-
-const StyledScrollView = styled(ScrollView)`
-  flex: 1;
-`;
-
-const ScrollInner = styled(View) <InnerProps>`
-  ${BaseInnerStyles}
-`;
 
 const ScreenContainer = React.forwardRef<View, ScreenContainerProps>(
   (
@@ -113,13 +67,11 @@ const ScreenContainer = React.forwardRef<View, ScreenContainerProps>(
       backgroundImage,
       useImageBackground = false,
       imageResizeMode = 'cover',
-      contentMaxWidth,
-      centered = false,
       mode = 'light',
+      centered = false,
       withTopSafeArea = true,
-      withBottomSafeArea = true,
+      withBottomSafeArea = false,
       statusBarStyle,
-      statusBarBackgroundColor,
       translucent = true,
       contentContainerStyle,
       ...props
@@ -127,7 +79,9 @@ const ScreenContainer = React.forwardRef<View, ScreenContainerProps>(
     ref,
   ) => {
     const resolvedBackground = backgroundColor || getBackgroundByMode(mode);
-    const resolvedStatusBarStyle = statusBarStyle || getStatusBarStyleByMode(mode);
+    const resolvedStatusBarStyle =
+      statusBarStyle || getStatusBarStyleByMode(mode);
+
     const safeAreaEdges: Edge[] = [];
 
     if (withTopSafeArea) safeAreaEdges.push('top');
@@ -135,34 +89,42 @@ const ScreenContainer = React.forwardRef<View, ScreenContainerProps>(
 
     safeAreaEdges.push('left', 'right');
 
+    useEffect(() => {
+      if (Platform.OS === 'android') {
+        StatusBar.setTranslucent(translucent);
+        StatusBar.setBackgroundColor('transparent');
+        StatusBar.setBarStyle(resolvedStatusBarStyle);
+        SystemNavigationBar.navigationHide();
+      }
+    }, [resolvedStatusBarStyle, translucent]);
+
     const content = scrollable ? (
       <StyledScrollView
         showsVerticalScrollIndicator={false}
         bounces={false}
+        keyboardShouldPersistTaps="handled"
         contentContainerStyle={[{ flexGrow: 1 }, contentContainerStyle]}
         {...(props as ScrollViewProps)}
       >
-        <ScrollInner
+        <ContentInner
           ref={ref}
           paddingHorizontal={paddingHorizontal}
           paddingVertical={paddingVertical}
-          contentMaxWidth={contentMaxWidth}
           centered={centered}
         >
           {children}
-        </ScrollInner>
+        </ContentInner>
       </StyledScrollView>
     ) : (
-      <ContentView
+      <ContentInner
         ref={ref}
         paddingHorizontal={paddingHorizontal}
         paddingVertical={paddingVertical}
-        contentMaxWidth={contentMaxWidth}
         centered={centered}
         {...props}
       >
         {children}
-      </ContentView>
+      </ContentInner>
     );
 
     return (
@@ -170,7 +132,7 @@ const ScreenContainer = React.forwardRef<View, ScreenContainerProps>(
         <StatusBar
           translucent={translucent}
           barStyle={resolvedStatusBarStyle}
-          backgroundColor={statusBarBackgroundColor || 'transparent'}
+          backgroundColor="transparent"
         />
 
         {useImageBackground && backgroundImage ? (
@@ -182,15 +144,47 @@ const ScreenContainer = React.forwardRef<View, ScreenContainerProps>(
           />
         ) : null}
 
-        <ForegroundSafeArea
-          edges={safeAreaEdges}
-        >
-          {content}
-        </ForegroundSafeArea>
+        <SafeContent edges={safeAreaEdges}>{content}</SafeContent>
       </Root>
     );
   },
 );
+
+ScreenContainer.displayName = 'ScreenContainer';
+
+export default ScreenContainer;
+
+const Root = styled.View<{ backgroundColor: string }>`
+  flex: 1;
+  background-color: ${({ backgroundColor }) => backgroundColor};
+`;
+
+const SafeContent = styled(SafeAreaView)`
+  flex: 1;
+`;
+
+const StyledScrollView = styled(ScrollView)`
+  flex: 1;
+`;
+
+const ContentInner = styled(View) <{
+  paddingHorizontal: number;
+  paddingVertical: number;
+  centered?: boolean;
+}>`
+  flex: 1;
+  width: 100%;
+  padding-left: ${({ paddingHorizontal }) => paddingHorizontal}px;
+  padding-right: ${({ paddingHorizontal }) => paddingHorizontal}px;
+  padding-top: ${({ paddingVertical }) => paddingVertical}px;
+  padding-bottom: ${({ paddingVertical }) => paddingVertical}px;
+
+  ${({ centered }) =>
+    centered &&
+    css`
+      justify-content: center;
+    `}
+`;
 
 const styles = StyleSheet.create({
   backgroundImage: {
@@ -198,7 +192,3 @@ const styles = StyleSheet.create({
     height: '100%',
   },
 });
-
-ScreenContainer.displayName = 'ScreenContainer';
-
-export default ScreenContainer;

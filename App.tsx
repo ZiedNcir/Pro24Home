@@ -9,6 +9,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { Provider } from 'react-redux';
 import { store } from './src/store';
+import AuthInitializer from './src/components/AuthInitializer';
 
 // Theme
 import { ThemeProvider } from '@theme/ThemeProvider';
@@ -47,6 +48,7 @@ function App(): React.JSX.Element {
 
   return (
     <Provider store={store}>
+      <AuthInitializer />
       <ThemeProvider initialTheme="light">
         <ToastProvider
           placement="top"

@@ -1,6 +1,6 @@
 // screens/auth/component/professional_form/index.tsx
-import { Button, Field, Spinner } from '@components';
-import { validateProfessionalRegistration, mapApiError, prepareRegistrationPayload } from '@services';
+import { Button, Field, Spinner } from '@components/index';
+import { validateProfessionalRegistration, mapApiError, prepareRegistrationPayload } from '@services/index';
 import { Colors } from '@utils/constant';
 import { StyleSheet } from 'react-native';
 import { useForm } from 'react-hook-form';
