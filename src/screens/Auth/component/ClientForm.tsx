@@ -55,7 +55,7 @@ const StepLine = styled(View)`
   left: 5px;
   right: 5px;
   height: 2px;
-  backgroundColor: ${colors.gray500};
+  backgroundColor: ${colors.gray200};
   zIndex: 0;
 `;
 

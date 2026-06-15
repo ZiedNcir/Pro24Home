@@ -3,10 +3,18 @@ import { IRole } from "@utils/constant";
 export type AppStackType = {
     SignIn: { role?: 'client' | 'professional' };
     RegisterScreen: { role?: 'client' | 'professional' };
+    VerifyScreen: { email?: string | null; role: IRole | null };
+    AccountPendingScreen: undefined;
+    AddAddress: undefined;
+    PriceEstimation: undefined;
+    PaymentTravelFee: undefined;
+    InterventionSuccess: undefined;
+    InterventionDetail: { intervention_id: number };
+    NewIntervention: undefined;
+
     ForgetPassword: undefined;
     RecoverPassword: undefined;
     EditProfile: undefined;
-    VerifyScreen: { email?: string | null; role: IRole | null };
     Welcome: undefined;
     VerifyDocument: undefined;
     AddVehicle: undefined;
@@ -15,7 +23,9 @@ export type AppStackType = {
     ProfitionalPosition: { service_id: number };
     HelpMeOut: { service_id: number };
     //Locations: { data: GooglePlaceData; details: GooglePlaceDetail | null };
-    AddressDetails: undefined;
+
+
+
     Notifications: undefined;
     ProfessionnelHome: undefined;
     Documents: undefined;
@@ -24,4 +34,13 @@ export type AppStackType = {
     //InterventionDetail: { intervention: IIntervention };
     PrixIntervention: { interevention_id: number };
     SelectLocationScreen: { lat: number; lng: number };
+    Tabs: undefined;
+};
+
+export type BottomTabType = {
+    Home: undefined;
+    Documents: undefined;
+    Profile: undefined;
+    SettingPage: undefined;
+    ListIntervention: undefined;
 };

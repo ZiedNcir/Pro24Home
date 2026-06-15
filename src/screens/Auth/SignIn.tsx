@@ -68,7 +68,7 @@ export const SignIn = () => {
 
         navigation.reset({
           index: 0,
-          routes: [{ name: 'HomePageUser' }],
+          routes: [{ name: 'Tabs' }],
         });
       } catch (error: any) {
         console.error('Login error:', error);
@@ -81,6 +81,11 @@ export const SignIn = () => {
             duration: 4000,
           }
         );
+
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'AccountPendingScreen' }],
+        });
       }
     },
     [login, navigation, t]

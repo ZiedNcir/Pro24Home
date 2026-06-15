@@ -14,7 +14,7 @@ export const notificationEndpoints = api.injectEndpoints({
             unread_only?: boolean;
         }>({
             query: (params = {}) => ({
-                url: '/api/get-notifications',
+                url: '/get-notifications',
                 method: 'GET',
                 params,
             }),
@@ -24,7 +24,7 @@ export const notificationEndpoints = api.injectEndpoints({
         // Read Notification
         readNotification: builder.mutation<{ message: string }, number>({
             query: (id) => ({
-                url: `/api/notifications/read/${id}`,
+                url: `/notifications/read/${id}`,
                 method: 'GET',
             }),
             invalidatesTags: ['Notifications'],
@@ -51,7 +51,7 @@ export const notificationEndpoints = api.injectEndpoints({
         // Mark All as Read
         markAllNotificationsAsRead: builder.mutation<{ message: string }, void>({
             query: () => ({
-                url: '/api/notifications/mark-all-read',
+                url: '/notifications/mark-all-read',
                 method: 'POST',
             }),
             invalidatesTags: ['Notifications'],
@@ -59,7 +59,7 @@ export const notificationEndpoints = api.injectEndpoints({
 
         // Get Unread Count
         getUnreadNotificationCount: builder.query<{ count: number }, void>({
-            query: () => '/api/notifications/unread-count',
+            query: () => '/notifications/unread-count',
             providesTags: ['Notifications'],
             transformResponse: (response: any) => ({
                 count: response.data?.count || response.count || 0,

@@ -34,23 +34,156 @@ export enum UserType {
     PROFESSIONAL = 'professional'
 }
 
+/**
+ * Base user information common to all user types
+ */
 export interface BaseUser {
+    /** Unique identifier for the user */
     id: number;
+    /** User's first name */
     first_name: string;
+    /** User's last name */
     last_name: string;
+    /** User's email address */
     email: string;
+    /** User's phone number */
     phone_number: string;
+    /** User's address (optional) */
     address?: string;
+    /** Postal code for the address */
     postal_code?: string;
+    /** OneSignal device token for push notifications */
     onesignal_key?: string;
+    /** Account creation timestamp (ISO 8601 string) */
     created_at: string;
+    /** Last update timestamp (ISO 8601 string) */
     updated_at: string;
 }
 
+/**
+ * Client-specific user information (used in nested user.client object)
+ */
+export interface ClientInfo {
+    /** Client record ID */
+    id: number;
+    /** Reference to the main user ID */
+    user_id: number;
+    /** Client's first name */
+    first_name: string;
+    /** Client's last name */
+    last_name: string;
+    /** Client's address */
+    address: string;
+    /** Postal code */
+    postal_code: string;
+    /** OneSignal device token */
+    onesignal_key?: string;
+    /** Record creation timestamp */
+    created_at: string;
+    /** Record update timestamp */
+    updated_at: string;
+}
+
+/**
+ * Professional-specific user information (used in nested user.professional object)
+ */
+export interface ProfessionalInfo {
+    /** Professional record ID */
+    id: number;
+    /** Reference to the main user ID */
+    user_id: number;
+    /** Company name */
+    company_name: string;
+    /** SIRET number for business identification */
+    siret_number: string;
+    /** Business address */
+    address: string;
+    /** Postal code */
+    postal_code: string;
+    /** Professional's first name */
+    first_name: string;
+    /** Professional's last name */
+    last_name: string;
+    /** Associated service zone ID */
+    zone_id?: number;
+    /** OneSignal device token */
+    onesignal_key?: string;
+    /** Whether the professional is online */
+    online_status: boolean;
+    /** Current latitude */
+    latitude?: number;
+    /** Current longitude */
+    longitude?: number;
+    /** Services offered by the professional */
+    services: Service[];
+    /** Notification preferences */
+    notifications_enabled: boolean;
+    /** Record creation timestamp */
+    created_at: string;
+    /** Record update timestamp */
+    updated_at: string;
+}
+
+/**
+ * Complete user profile with authentication and role-specific data
+ */
+export interface User {
+    /** Unique user identifier */
+    id: number;
+    /** Full display name (computed field) */
+    name: string;
+    /** User's email address */
+    email: string;
+    /** Registration source (null if direct) */
+    source: string | null;
+    /** OneSignal device token */
+    onesignal_key: string | null;
+    /** Email verification timestamp (null if unverified) */
+    email_verified_at: string | null;
+    /** Account creation timestamp */
+    created_at: string;
+    /** Last update timestamp */
+    updated_at: string;
+    /** User type discriminator */
+    type: UserType;
+    /** Verification code for email/phone (null after verification) */
+    verification_code: string | null;
+    /** Verification status (1 = verified, 0 = unverified) */
+    is_verified: number;
+    /** Account activation status (1 = active, 0 = inactive) */
+    is_active: number;
+    /** Number of verification attempts */
+    verification_attempts: number;
+    /** Last verification code sent timestamp */
+    last_verification_sent_at: string | null;
+    /** User's phone number */
+    phone_number: string;
+    /** Notification preferences (1 = enabled, 0 = disabled) */
+    notifications_enabled: number;
+    /** Client-specific data (populated if type === 'client') */
+    client: ClientInfo | null;
+    /** Professional-specific data (populated if type === 'professional') */
+    professional: ProfessionalInfo | null;
+    /** User's uploaded documents */
+    documents: Document[];
+    /** User's saved addresses */
+    address: Address[];
+    /** Professional's registered vehicles */
+    vehicles: Vehicle[];
+}
+
+/**
+ * Legacy Client interface for backward compatibility with existing relations
+ * @deprecated Use ClientInfo for new nested user.client objects
+ */
 export interface Client extends BaseUser {
     type: UserType.CLIENT;
 }
 
+/**
+ * Legacy Professional interface for backward compatibility with existing relations
+ * @deprecated Use ProfessionalInfo for new nested user.professional objects
+ */
 export interface Professional extends BaseUser {
     type: UserType.PROFESSIONAL;
     company_name: string;
@@ -65,11 +198,12 @@ export interface Professional extends BaseUser {
     notifications_enabled: boolean;
 }
 
-export type User = Client | Professional;
-
 // Auth Types
 export interface AuthResponse {
-    token: string;
+    exist: boolean;
+    is_verified: boolean;
+    is_active: boolean;
+    access_token: string;
     user: User;
     message?: string;
 }

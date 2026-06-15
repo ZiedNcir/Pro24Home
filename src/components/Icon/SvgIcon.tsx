@@ -43,6 +43,7 @@ import {
     faTimesCircle,
     faTrash,
     faUser,
+    faUserCheck,
     faHome as faHomeIcon,
     faList,
     faGrinHearts,
@@ -71,7 +72,18 @@ import {
     faChevronUp,
     faChevronDown,
     faEye,
-    faEyeSlash
+    faEyeSlash,
+    faBell,
+    faClock,
+    faCalendar,
+    faHeadset,
+    faShieldAlt,
+    faSignOutAlt,
+    faCheckCircle,
+    faCertificate,
+    faAward
+
+
 } from '@fortawesome/free-solid-svg-icons';
 
 import { AppColor } from '@utils/constant';
@@ -117,6 +129,7 @@ export type IconName =
     | 'fa-times-circle'
     | 'fa-trash'
     | 'fa-user'
+    | 'fa-user-check'
     | 'fa-home'
     | 'fa-list'
     | 'fa-grin-hearts'
@@ -145,8 +158,16 @@ export type IconName =
     | 'fa-chevron-up'
     | 'fa-chevron-down'
     | 'fa-eye'
-    | 'fa-eye-slash';
-
+    | 'fa-eye-slash'
+    | 'fa-clock'
+    | 'fa-bell'
+    | 'fa-calendar'
+    | 'fa-headset'
+    | 'fa-shield-alt'
+    | 'fa-sign-out-alt'
+    | 'fa-check-circle'
+    | 'fa-certificate'
+    | 'fa-award';
 export interface SvgIconProps {
     name: IconName;
     size?: number;
@@ -196,6 +217,7 @@ const faIconMap: Record<string, IconDefinition> = {
     'fa-times-circle': faTimesCircle,
     'fa-trash': faTrash,
     'fa-user': faUser,
+    'fa-user-check': faUserCheck,
     'fa-home': faHomeIcon,
     'fa-list': faList,
     'fa-grin-hearts': faGrinHearts,
@@ -224,7 +246,16 @@ const faIconMap: Record<string, IconDefinition> = {
     'fa-chevron-up': faChevronUp,
     'fa-chevron-down': faChevronDown,
     'fa-eye': faEye,
-    'fa-eye-slash': faEyeSlash
+    'fa-eye-slash': faEyeSlash,
+    'fa-bell': faBell,
+    'fa-clock': faClock,
+    'fa-calendar': faCalendar,
+    'fa-headset': faHeadset,
+    'fa-shield-alt': faShieldAlt,
+    'fa-sign-out-alt': faSignOutAlt,
+    'fa-check-circle': faCheckCircle,
+    'fa-certificate': faCertificate,
+    'fa-award': faAward,
 };
 
 const SvgIcon: FC<SvgIconProps> = ({

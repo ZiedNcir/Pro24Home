@@ -1,4 +1,4 @@
-import { Button, Field, Text } from '@components';
+import { Button, Field, Text } from '@components/index';
 import AppImage from '@components/Image/AppImage';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -37,7 +37,7 @@ const BrandIconContainer = styled.View`
 const DescriptionText = styled.Text`
   margin-top: ${verticalScale(16)}px;
   text-align: center;
-  color: ${({ theme }) => theme.colors.text};
+  color: ${({ theme }) => theme.colors.black};
 `;
 
 const ResendTouchable = styled.TouchableOpacity`
@@ -56,7 +56,7 @@ const TimerContainer = styled.View`
 const TimerText = styled.Text`
   margin-top: ${verticalScale(16)}px;
   text-align: center;
-  color: ${({ theme }) => theme.colors.text};
+  color: ${({ theme }) => theme.colors.black};
 `;
 
 const LoaderContainer = styled.View`
@@ -76,7 +76,7 @@ export const VerifyAccountScreen = () => {
     const navigation = useNavigation<AppNavigationProp>();
     const params = route.params as RouteParams;
     const dispatch = useAppDispatch();
-    
+
     const { Overlay } = useKeyboardOverlay();
     const { handleSubmit, control, getValues } = useForm({
         defaultValues: {
@@ -86,8 +86,8 @@ export const VerifyAccountScreen = () => {
     });
     const [_resending, setResending] = useState(false);
     const [_verifying, setVerifying] = useState(false);
-    const [timer, setTimer] = useState(5*60);
-    
+    const [timer, setTimer] = useState(5 * 60);
+
     // API mutations
     const [verifyAccount] = useVerifyAccountMutation();
     const [resendVerification] = useResendVerificationMutation();
@@ -107,7 +107,7 @@ export const VerifyAccountScreen = () => {
         try {
             setVerifying(true);
             const code = getValues('code');
-            
+
             if (!code || code.length < 4) {
                 Toast.show(t('ui.form.code.invalid') || 'Invalid code', {
                     type: 'warning',
@@ -121,6 +121,7 @@ export const VerifyAccountScreen = () => {
             const result = await verifyAccount({
                 code,
                 email: params.email,
+                phone_number: ''
             }).unwrap();
 
             // Show success message
@@ -135,7 +136,7 @@ export const VerifyAccountScreen = () => {
             if (result.data) {
                 dispatch(setCredentials({
                     user: result.data,
-                    token: result.data.token || '',
+                    token: result.data.access_token || '',
                     refreshToken: result.data.refreshToken,
                 }));
             }
@@ -157,9 +158,9 @@ export const VerifyAccountScreen = () => {
 
         } catch (error: any) {
             console.error('Verification error:', error);
-            
+
             let errorMessage = t('auth.verificationFailed') || 'Verification failed. Please try again.';
-            
+
             if (error?.data?.message) {
                 errorMessage = error.data.message;
             } else if (error?.message) {
@@ -184,7 +185,7 @@ export const VerifyAccountScreen = () => {
 
         try {
             setResending(true);
-            
+
             const result = await resendVerification({
                 email: params.email,
             }).unwrap();
@@ -198,9 +199,9 @@ export const VerifyAccountScreen = () => {
 
         } catch (error: any) {
             console.error('Resend error:', error);
-            
+
             let errorMessage = t('auth.resendFailed') || 'Failed to resend code. Please try again.';
-            
+
             // Check if error contains a wait time message and extract/set 5 minute timer
             if (error?.data?.message) {
                 errorMessage = error.data.message;
@@ -230,74 +231,74 @@ export const VerifyAccountScreen = () => {
     };
 
     return (
-       <ScreenContainer>
-        <NavigationHeader showBackButton={true} logoSize={moderateScale(120)} />
-                <HeaderContainer>
-                    <BrandIconContainer>
-                        <AppImage
-                            source={require('../../assets/images/sms.png')}
-                            style={{
-                                marginTop: verticalScale(5),
-                            }}
-                            resizeMode='contain'
-                            showLoader={false}
-                            width={horizontalScale(280)}
-                            height={verticalScale(240)}
-                        />
-                    </BrandIconContainer>
-
-                    <Text variant="title">{t('screen.verifyAccount')}</Text>
-
-                    <DescriptionText>
-                        {t('terms.labelCode')}
-                    </DescriptionText>
-
-                    <Field
-                        name="code"
-                        required
-                        control={control}
-                        placeholder={t('ui.form.code.label')}
-                        code
-                    />
-
-                    {timer > 0 ? (
-                        <TimerContainer>
-                            <TimerText>
-                                {t('ui.form.code.resendIn')} {formatTimer(timer)}
-                            </TimerText>
-                        </TimerContainer>
-                    ) : (
-                        <ResendTouchable onPress={resendCode}>
-                            <ResendText>
-                                {t('ui.button.resendCode')}
-                            </ResendText>
-                        </ResendTouchable>
-                    )}
-
-                    {(_verifying || _resending) && (
-                        <LoaderContainer>
-                            <Spinner
-                        visible={true}
-                        animationType='dots'
-                        onRequestClose={function (): void {
-                            throw new Error('Function not implemented.');
+        <ScreenContainer>
+            <NavigationHeader showBackButton={true} logoSize={moderateScale(120)} />
+            <HeaderContainer>
+                <BrandIconContainer>
+                    <AppImage
+                        source={require('../../assets/images/sms.png')}
+                        style={{
+                            marginTop: verticalScale(5),
                         }}
+                        resizeMode='contain'
+                        showLoader={false}
+                        width={horizontalScale(280)}
+                        height={verticalScale(240)}
                     />
-                        </LoaderContainer>
-                    )}
+                </BrandIconContainer>
 
-                    <VerifyButtonContainer>
-                        <Button
-                            variant="primary"
-                            title={t('ui.button.validate')}
-                            onPress={handleSubmit(doVerification)}
-                            fullWidth
-                            
-                            disabled={_verifying || _resending}
+                <Text variant="title">{t('screen.verifyAccount')}</Text>
+
+                <DescriptionText>
+                    {t('terms.labelCode')}
+                </DescriptionText>
+
+                <Field
+                    name="code"
+                    required
+                    control={control}
+                    placeholder={t('ui.form.code.label')}
+                    code
+                />
+
+                {timer > 0 ? (
+                    <TimerContainer>
+                        <TimerText>
+                            {t('ui.form.code.resendIn')} {formatTimer(timer)}
+                        </TimerText>
+                    </TimerContainer>
+                ) : (
+                    <ResendTouchable onPress={resendCode}>
+                        <ResendText>
+                            {t('ui.button.resendCode')}
+                        </ResendText>
+                    </ResendTouchable>
+                )}
+
+                {(_verifying || _resending) && (
+                    <LoaderContainer>
+                        <Spinner
+                            visible={true}
+                            animationType='dots'
+                            onRequestClose={function (): void {
+                                throw new Error('Function not implemented.');
+                            }}
                         />
-                    </VerifyButtonContainer>
-                </HeaderContainer>
+                    </LoaderContainer>
+                )}
+
+                <VerifyButtonContainer>
+                    <Button
+                        variant="primary"
+                        title={t('ui.button.validate')}
+                        onPress={handleSubmit(doVerification)}
+                        fullWidth
+
+                        disabled={_verifying || _resending}
+                    />
+                </VerifyButtonContainer>
+            </HeaderContainer>
             <Overlay />
-       </ScreenContainer>
+        </ScreenContainer>
     );
 };
