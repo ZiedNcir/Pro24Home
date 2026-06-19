@@ -192,12 +192,13 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="SignIn" component={SignIn} />
         <Stack.Screen name="AccountPendingScreen" component={AccountPendingScreen} />
 
+        <Stack.Screen name="AddAddress" component={AddAddressScreen} />
+
 
         {/* Main Tabs */}
         <Stack.Screen name="Tabs" component={TabNavigator} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} />
         <Stack.Screen name="NewIntervention" component={NewInterventionScreen} />
-        <Stack.Screen name="AddAddress" component={AddAddressScreen} />
         <Stack.Screen name="PriceEstimation" component={PriceEstimationScreen} />
         <Stack.Screen name="PaymentTravelFee" component={PaymentTravelFeeScreen} />
         <Stack.Screen name="InterventionSuccess" component={InterventionSuccessScreen} />

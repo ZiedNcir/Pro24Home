@@ -1,5 +1,3 @@
-// src/screens/intervention/components/AddressCard.tsx
-
 import React from 'react';
 import styled from 'styled-components/native';
 

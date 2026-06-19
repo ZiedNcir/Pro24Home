@@ -35,6 +35,10 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSCameraUsageDescription</key>
+<string>Nous avons besoin d’accéder à la caméra pour ajouter des photos à votre demande.</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Nous avons besoin d’accéder à vos photos pour les joindre à votre demande.</string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

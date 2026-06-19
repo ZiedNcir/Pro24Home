@@ -17,6 +17,7 @@ import AddressCard from '../components/AddressCard';
 import InfoNotice from '../components/InfoNotice';
 import { InterventionStep } from './types';
 import { colors } from '@theme/index';
+import { useNavigation } from '@react-navigation/core';
 
 const interventionTypes = [
     {
@@ -50,6 +51,7 @@ export const NewInterventionScreen = () => {
     const [selectedType, setSelectedType] = useState(1);
     const [selectedTiming, setSelectedTiming] = useState('asap');
     const [selectedAddress, setSelectedAddress] = useState(1);
+    const navigation = useNavigation();
 
 
     const goNext = () => {
@@ -170,8 +172,8 @@ export const NewInterventionScreen = () => {
                         onPress={() => setSelectedAddress(2)}
                     />
 
-                    <AddAddressButton onPress={() => { }
-                        //appNavigate('AddAddress')
+                    <AddAddressButton onPress={() => { navigation.navigate("AddAddress" as never) }
+
 
                     }>
                         <SvgIcon name="fa-user-plus" size={14} color={colors.primary} />
