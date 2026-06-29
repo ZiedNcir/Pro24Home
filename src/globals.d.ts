@@ -1,4 +1,4 @@
-import { resources } from '@utils/i18n';
+/*import { resources } from '@utils/i18n';
 
 export type IDictionary = (typeof resources)['fr'];
 
@@ -9,4 +9,4 @@ declare module 'react-i18next' {
         keySeparator: '.';
         resources: IDictionary;
     }
-};
+};*/

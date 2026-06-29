@@ -12,12 +12,12 @@ import { Toast } from 'react-native-toast-notifications';
 import styled from 'styled-components/native';
 
 import { ScreenContainer, NavigationHeader, Spinner } from '@components/index';
-import { AppStackType } from '../../navigation/constant/core';
+import { ClientAuthRoutes, ClientAuthStackParamList } from '../../navigation/routes';
 import { useVerifyAccountMutation, useResendVerificationMutation } from '@store/api/endpoints/auth';
 import { useAppDispatch } from '@store/hooks';
 import { setCredentials } from '@store/slices/authSlice';
 
-type AppNavigationProp = NativeStackNavigationProp<AppStackType>;
+type AppNavigationProp = NativeStackNavigationProp<ClientAuthStackParamList>;
 
 interface RouteParams {
     email: string;
@@ -141,19 +141,12 @@ export const VerifyAccountScreen = () => {
                 }));
             }
 
-            // Navigate based on user role
+            // Navigate to splash/welcome after verification
             setTimeout(() => {
-                if (params.role === 'client') {
-                    navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'Welcome' as never }],
-                    });
-                } else {
-                    navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'Welcome' as never }],
-                    });
-                }
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: ClientAuthRoutes.Welcome as never }],
+                });
             }, 2000);
 
         } catch (error: any) {

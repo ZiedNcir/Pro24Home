@@ -17,7 +17,7 @@ import AddressCard from '../components/AddressCard';
 import InfoNotice from '../components/InfoNotice';
 import { InterventionStep } from './types';
 import { colors } from '@theme/index';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
 
 const interventionTypes = [
     {
@@ -172,7 +172,7 @@ export const NewInterventionScreen = () => {
                         onPress={() => setSelectedAddress(2)}
                     />
 
-                    <AddAddressButton onPress={() => { navigation.navigate("AddAddress" as never) }
+                    <AddAddressButton onPress={() => { /* TODO: navigate to add address */ }
 
 
                     }>

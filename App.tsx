@@ -12,16 +12,14 @@ import { store } from './src/store';
 import AuthInitializer from './src/components/AuthInitializer';
 
 // Theme
-import { ThemeProvider } from '@theme/ThemeProvider';
 
 // Components
 
 // Utilities
-import '@utils/i18n';
 
 //import OneSignalListener from '@utils/oneSignalListner';
-import { requestPermissions } from '@utils/permissions';
 import AppNavigator from './src/navigation/AppNavigator';
+import { IconRegistryProvider } from '@components/Icon';
 
 // Initialize FontAwesome
 library.add(fas as any);
@@ -41,7 +39,6 @@ function App(): React.JSX.Element {
     OneSignal.initialize('634beb38-87ce-4fab-877e-cd57d766cb6e');
 
     // Request permissions
-    requestPermissions();
   }, []);
 
 
@@ -49,34 +46,34 @@ function App(): React.JSX.Element {
   return (
     <Provider store={store}>
       <AuthInitializer />
-      <ThemeProvider initialTheme="light">
-        <ToastProvider
-          placement="top"
-          duration={4000}
-          animationType="slide-in"
-          animationDuration={250}
-          successColor="#4CAF50"
-          dangerColor="#F44336"
-          warningColor="#FF9800"
-          normalColor="#FF6B00"
-          textStyle={{
-            fontFamily: 'Inter-Regular',
-            fontSize: 14,
-            color: '#FFFFFF'
-          }}
-          offset={50}
-          offsetTop={30}
-          offsetBottom={40}
-          swipeEnabled={true}
-        >
 
+      <ToastProvider
+        placement="top"
+        duration={4000}
+        animationType="slide-in"
+        animationDuration={250}
+        successColor="#4CAF50"
+        dangerColor="#F44336"
+        warningColor="#FF9800"
+        normalColor="#FF6B00"
+        textStyle={{
+          fontFamily: 'Inter-Regular',
+          fontSize: 14,
+          color: '#FFFFFF'
+        }}
+        offset={50}
+        offsetTop={30}
+        offsetBottom={40}
+        swipeEnabled={true}
+      >
+        <IconRegistryProvider>
           <SafeAreaProvider>
 
 
             <AppNavigator />
           </SafeAreaProvider>
-        </ToastProvider>
-      </ThemeProvider>
+        </IconRegistryProvider>
+      </ToastProvider>
     </Provider>
   );
 }

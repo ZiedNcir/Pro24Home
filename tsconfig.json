@@ -49,6 +49,7 @@
     /* Project Structure */
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "paths": {
       "@components/*": [
         "./src/components/*"
@@ -78,7 +79,7 @@
         "./src/translations/*"
       ],
       "@navigations/*": [
-        "./src/navigations/*"
+        "./src/navigation/*"
       ],
       "@constants/*": [
         "./src/constants/*"

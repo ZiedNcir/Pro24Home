@@ -2,13 +2,9 @@
 import React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { verticalScale } from '@utils/normalizedCss';
 import { SvgIcon } from './index';
-import { AppStackType } from '../navigation/constant/core';
 import { colors } from '@theme/index';
-
-type AppNavigationProp = NativeStackNavigationProp<AppStackType>;
 
 interface NavigationHeaderProps {
     logoSize?: number;
@@ -23,7 +19,7 @@ const NavigationHeader: React.FC<NavigationHeaderProps> = ({
     backButtonTestID = 'back-button',
     onBackPress,
 }) => {
-    const navigation = useNavigation<AppNavigationProp>();
+    const navigation = useNavigation();
 
     const handleBackPress = () => {
         if (onBackPress) {

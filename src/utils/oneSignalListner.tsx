@@ -1,4 +1,4 @@
-import {appNavigate} from '@navigations/navigation';
+import { navigate } from '../navigation/service/navigationRef';
 import AuthService from '@services/auth';
 import {AppState} from '@store/configuration';
 import {setNotification} from '@store/notification/notification.action';
@@ -33,8 +33,8 @@ export default function OneSignalListener() {
 
     const handleClick = (event: any) => {
       const payload = event?.notification?.rawPayload;
-      const screen = payload?.navigateTo ?? 'ProfessionnelHome';
-      appNavigate(screen);
+      const screen = payload?.navigateTo ?? 'ProfessionalApp';
+      navigate(screen as any);
     };
 
     OneSignal.Notifications.addEventListener(

@@ -30,7 +30,7 @@ import {
 } from '@components/index';
 
 import { colors } from '@theme/index';
-import { AppStackType } from '../../navigation/constant/core';
+import { ClientAuthRoutes, ClientRoutes, ClientAuthStackParamList } from '../../navigation/routes';
 import { useLoginMutation } from '@store/api/endpoints/auth';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -40,15 +40,13 @@ type SignInFormValues = {
   password: string;
 };
 
-type SignInNavigationProp = NativeStackNavigationProp<AppStackType, 'SignIn'>;
-type SignInRouteProp = RouteProp<AppStackType, 'SignIn'>;
-
+type SignInNavigationProp = NativeStackNavigationProp<ClientAuthStackParamList, 'ClientLogin'>;
 export const SignIn = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<SignInNavigationProp>();
-  const route = useRoute<SignInRouteProp>();
+  const route = useRoute();
 
-  const role = route.params?.role ?? 'client';
+  const role = (route.params as any)?.role ?? 'client';
 
   const { handleSubmit, control } = useForm<SignInFormValues>({
     defaultValues: {
@@ -68,7 +66,7 @@ export const SignIn = () => {
 
         navigation.reset({
           index: 0,
-          routes: [{ name: 'Tabs' }],
+          routes: [{ name: ClientRoutes.Home as never }],
         });
       } catch (error: any) {
         console.error('Login error:', error);
@@ -84,7 +82,7 @@ export const SignIn = () => {
 
         navigation.reset({
           index: 0,
-          routes: [{ name: 'AccountPendingScreen' }],
+          routes: [{ name: ClientRoutes.Home as never }],
         });
       }
     },
@@ -92,11 +90,13 @@ export const SignIn = () => {
   );
 
   const navigateToForgetPassword = useCallback(() => {
-    navigation.navigate('ForgetPassword');
-  }, [navigation]);
+    // TODO: Implement forgot password screen
+  }, []);
 
   const navigateToRegister = useCallback(() => {
-    navigation.navigate('RegisterScreen', { role });
+    navigation.navigate(ClientAuthRoutes.Register as never, {
+      role,
+    } as never);
   }, [navigation, role]);
 
   return (
