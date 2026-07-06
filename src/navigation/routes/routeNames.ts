@@ -15,6 +15,9 @@ export const ClientAuthRoutes = {
   Otp: 'ClientOtp',
   GpsPermission: 'ClientGpsPermission',
   NotificationsPermission: 'ClientNotificationsPermission',
+  AccountType: 'ClientAccountType',
+  RegisterSuccess: 'ClientRegisterSuccess',
+
 } as const;
 
 export const ClientRoutes = {

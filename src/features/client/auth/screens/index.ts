@@ -6,3 +6,5 @@ export * from './C07ClientOtp';
 export * from './C08ClientGpsPermission';
 export * from './C09ClientNotificationsPermission';
 export * from './C10ClientFirstHome';
+export * from './C11ClientAccountTypeScreen';
+export * from './C08ClientRegisterSuccess';

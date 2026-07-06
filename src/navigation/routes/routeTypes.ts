@@ -11,6 +11,8 @@ export type ClientAuthStackParamList = {
   ClientOtp: { phone?: string } | undefined;
   ClientGpsPermission: undefined;
   ClientNotificationsPermission: undefined;
+  ClientAccountType: undefined;
+  ClientRegisterSuccess: undefined;
 };
 
 export type ClientStackParamList = {

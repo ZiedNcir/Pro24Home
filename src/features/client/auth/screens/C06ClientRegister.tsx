@@ -1,203 +1,129 @@
 import React, { useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-
 import {
-  AppText,
-  Button,
-  PasswordInput,
-  TextInput,
-  colors,
+  AppText, Button, PasswordInput, TextInput, colors, radius, shadows, sizes, spacing, vSpacing,
 } from '../../../../design-system';
-
+import ScreenContainer from '@components/ScreenContainer';
 import { t } from '../../../../translations/i18n';
-import { useAuth } from '../../../../hooks';
-
-import { AuthScreenLayout, TermsCheckbox } from '../components';
 import { CLIENT_AUTH_ROUTES } from '../constants';
-import {
-  FieldErrors,
-  RegisterField,
-  RegisterFormValues,
-  getApiFieldErrors,
-  getApiMessage,
-  hasErrors,
-  validateRegisterForm,
-} from '../validation';
+import { AuthStepProgress, FormSection } from '../components';
+import Pro24Logo from '../../../../assets/logo/logo-mediumPro24.svg';
 
 type Props = NativeStackScreenProps<any>;
 
-const initialForm: RegisterFormValues = {
-  firstName: '',
-  lastName: '',
-  phone: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-  address: '',
-  postalCode: '',
-  termsAccepted: false,
-};
-
 export const C06ClientRegister: React.FC<Props> = ({ navigation }) => {
-  const { registerClient, registerClientState } = useAuth();
-
-  const [form, setForm] = useState<RegisterFormValues>(initialForm);
-  const [errors, setErrors] = useState<FieldErrors<RegisterField>>({});
-  const [apiError, setApiError] = useState<string | null>(null);
-
-  const update = (key: keyof RegisterFormValues) => (value: string | boolean) => {
-    setForm((current) => ({ ...current, [key]: value }));
-    if (errors[key as RegisterField]) {
-      setErrors((current) => ({ ...current, [key]: undefined }));
-    }
-  };
-
-  const handleRegister = async () => {
-    setApiError(null);
-
-    const validationErrors = validateRegisterForm(form, {
-      required: t('validation.required'),
-      invalidPhone: t('validation.invalidPhone'),
-      invalidEmail: t('validation.invalidEmail'),
-      passwordTooShort: t('validation.passwordTooShort'),
-      passwordsDoNotMatch: t('validation.passwordsDoNotMatch'),
-      termsRequired: t('validation.termsRequired'),
-    });
-
-    setErrors(validationErrors);
-
-    if (hasErrors(validationErrors)) {
-      return;
-    }
-
-    try {
-      await registerClient({
-        first_name: form.firstName.trim(),
-        last_name: form.lastName.trim(),
-        phone_number: form.phone.trim(),
-        email: form.email.trim(),
-        password: form.password,
-        address: form.address.trim(),
-        postal_code: form.postalCode.trim(),
-        lang: 'fr',
-      } as any);
-
-      navigation.navigate(CLIENT_AUTH_ROUTES.otp as never, {
-        phone: form.phone.trim(),
-      } as never);
-    } catch (error) {
-      const apiFieldErrors = getApiFieldErrors(error);
-
-      setErrors((current) => ({
-        ...current,
-        firstName: apiFieldErrors.first_name ?? current.firstName,
-        lastName: apiFieldErrors.last_name ?? current.lastName,
-        phone: apiFieldErrors.phone_number ?? current.phone,
-        email: apiFieldErrors.email ?? current.email,
-        password: apiFieldErrors.password ?? current.password,
-        address: apiFieldErrors.address ?? current.address,
-        postalCode: apiFieldErrors.postal_code ?? current.postalCode,
-      }));
-
-      setApiError(getApiMessage(error, t('validation.apiError')));
-    }
-  };
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', password: '', confirmPassword: '' });
+  const update = (key: keyof typeof form) => (value: string) => setForm((current) => ({ ...current, [key]: value }));
 
   return (
-    <AuthScreenLayout
-      title={t('module1.register.title')}
-      subtitle={t('module1.register.subtitle')}
-    >
-      <TextInput
-        label={t('module1.register.firstNameLabel')}
-        placeholder={t('module1.register.firstNamePlaceholder')}
-        value={form.firstName}
-        error={errors.firstName}
-        onChangeText={update('firstName')}
-      />
+    <ScreenContainer paddingHorizontal={0} paddingVertical={0} withTopSafeArea={false}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.contentContainer}>
+        <View style={styles.logo}>
+          <Pro24Logo width={150} height={64} />
+        </View>
 
-      <TextInput
-        label={t('module1.register.lastNameLabel')}
-        placeholder={t('module1.register.lastNamePlaceholder')}
-        value={form.lastName}
-        error={errors.lastName}
-        onChangeText={update('lastName')}
-      />
+        <View style={styles.header}>
+          <AppText variant="h1" align="center" color={colors.text}>
+            {t('module1.register.title')}
+          </AppText>
+          <AppText variant="bodyLarge" align="center" color={colors.textMuted}>
+            {t('module1.register.subtitle')}
+          </AppText>
+        </View>
 
-      <TextInput
-        label={t('module1.register.phoneLabel')}
-        placeholder={t('module1.register.phonePlaceholder')}
-        value={form.phone}
-        error={errors.phone}
-        onChangeText={update('phone')}
-        keyboardType="phone-pad"
-      />
+        <AuthStepProgress current={1} labels={[t('module1.steps.account'), t('module1.steps.verification'), t('module1.steps.done')]} />
 
-      <TextInput
-        label={t('module1.register.emailLabel')}
-        placeholder={t('module1.register.emailPlaceholder')}
-        value={form.email}
-        error={errors.email}
-        onChangeText={update('email')}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+        <View style={styles.card}>
+          <FormSection icon="user" title={t('module1.register.identity.title')} subtitle={t('module1.register.identity.subtitle')}>
+            <View style={styles.row}>
+              <TextInput label={t('module1.register.firstNameLabel')}
+                placeholder={t('module1.register.firstNamePlaceholder')}
+                value={form.firstName} onChangeText={update('firstName')}
+                containerStyle={styles.flex} />
+              <TextInput label={t('module1.register.lastNameLabel')}
+                placeholder={t('module1.register.lastNamePlaceholder')}
+                value={form.lastName} onChangeText={update('lastName')}
+                containerStyle={styles.flex} />
+            </View>
+          </FormSection>
 
-      <TextInput
-        label={t('module1.register.addressLabel')}
-        placeholder={t('module1.register.addressPlaceholder')}
-        value={form.address}
-        error={errors.address}
-        onChangeText={update('address')}
-      />
+          <View style={styles.divider} />
 
-      <TextInput
-        label={t('module1.register.postalCodeLabel')}
-        placeholder={t('module1.register.postalCodePlaceholder')}
-        value={form.postalCode}
-        error={errors.postalCode}
-        onChangeText={update('postalCode')}
-        keyboardType="number-pad"
-      />
+          <FormSection icon="phone"
+            title={t('module1.register.contact.title')}
+            subtitle={t('module1.register.contact.subtitle')}>
 
-      <PasswordInput
-        label={t('module1.register.passwordLabel')}
-        value={form.password}
-        error={errors.password}
-        onChangeText={update('password')}
-      />
+            <TextInput label={t('module1.register.emailLabel')}
+              placeholder={t('module1.register.emailPlaceholder')}
+              value={form.email} onChangeText={update('email')}
+              keyboardType="email-address" autoCapitalize="none" />
 
-      <PasswordInput
-        label={t('module1.register.confirmPasswordLabel')}
-        value={form.confirmPassword}
-        error={errors.confirmPassword}
-        onChangeText={update('confirmPassword')}
-      />
+            <TextInput label={t('module1.register.phoneLabel')}
+              placeholder={t('module1.register.phonePlaceholder')}
+              value={form.phone}
+              onChangeText={update('phone')}
+              keyboardType="phone-pad" />
+          </FormSection>
 
-      <TermsCheckbox
-        checked={form.termsAccepted}
-        label={t('module1.register.terms')}
-        error={errors.termsAccepted}
-        onPress={() => update('termsAccepted')(!form.termsAccepted)}
-      />
+          <View style={styles.divider} />
 
-      {apiError ? (
-        <AppText variant="caption" color={colors.error} align="center">
-          {apiError}
-        </AppText>
-      ) : null}
+          <FormSection icon="lock" title={t('module1.register.security.title')}
+            subtitle={t('module1.register.security.subtitle')}>
 
-      <Button
-        title={t('module1.register.button')}
-        loading={registerClientState.isLoading}
-        onPress={handleRegister}
-      />
+            <PasswordInput label={t('module1.register.passwordLabel')}
+              placeholder={t('module1.register.passwordPlaceholder')}
+              value={form.password}
+              onChangeText={update('password')} />
 
-      <Button
-        title={t('module1.register.alreadyAccount')}
-        variant="ghost"
-        onPress={() => navigation.navigate(CLIENT_AUTH_ROUTES.login as never)}
-      />
-    </AuthScreenLayout>
+            <PasswordInput label={t('module1.register.confirmPasswordLabel')}
+              placeholder={t('module1.register.confirmPasswordPlaceholder')}
+              value={form.confirmPassword}
+              onChangeText={update('confirmPassword')} />
+          </FormSection>
+        </View>
+
+        <View style={styles.footer}>
+          <Button title={t('module1.register.button')}
+            leftIcon="user"
+            rightIcon="arrowRight"
+            onPress={() => navigation.navigate(CLIENT_AUTH_ROUTES.otp, { phone: form.phone, email: form.email } as never)} />
+
+          <Button title={t('module1.register.alreadyAccount')}
+            variant="ghost"
+            onPress={() => navigation.navigate(CLIENT_AUTH_ROUTES.login as never)} />
+        </View>
+      </ScrollView>
+    </ScreenContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  contentContainer: {
+    paddingHorizontal: sizes.screen.horizontalPadding,
+    paddingTop: vSpacing[6],
+    paddingBottom: vSpacing[6],
+    backgroundColor: colors.background
+  },
+  logo: {
+    alignItems: 'center',
+    marginTop: vSpacing[3]
+  },
+  header: {
+    gap: vSpacing[2],
+    marginTop: vSpacing[3]
+  },
+  card: {
+    borderRadius: radius['2xl'],
+    backgroundColor: colors.white,
+    padding: spacing[5], gap: vSpacing[4],
+    ...shadows.sm
+  },
+  row: {
+    flexDirection: 'row',
+    gap: spacing[3]
+  },
+  flex: { flex: 1 },
+  divider: { height: 1, backgroundColor: colors.stroke },
+  footer: { gap: vSpacing[2], marginTop: vSpacing[4] },
+});

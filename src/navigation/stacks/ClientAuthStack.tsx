@@ -11,14 +11,12 @@ import {
   C06ClientRegister,
   C07ClientOtp,
   C08ClientGpsPermission,
+  C08ClientRegisterSuccess,
   C09ClientNotificationsPermission,
+  C11ClientAccountTypeScreen,
 } from '../../features/client/auth';
 
-import {
-  C02ClientOnboardingOne,
-  C03ClientOnboardingTwo,
-  C04ClientOnboardingThree,
-} from '../../features/client/onboarding';
+
 
 const Stack = createNativeStackNavigator<ClientAuthStackParamList>();
 
@@ -38,18 +36,17 @@ export const ClientAuthStack = () => (
       name={ClientAuthRoutes.Welcome}
       component={C01ClientWelcome}
     />
+
     <Stack.Screen
-      name={ClientAuthRoutes.OnboardingOne}
-      component={C02ClientOnboardingOne}
+      name={ClientAuthRoutes.RegisterSuccess}
+      component={C08ClientRegisterSuccess}
     />
     <Stack.Screen
-      name={ClientAuthRoutes.OnboardingTwo}
-      component={C03ClientOnboardingTwo}
+      name={ClientAuthRoutes.AccountType}
+      component={C11ClientAccountTypeScreen}
     />
-    <Stack.Screen
-      name={ClientAuthRoutes.OnboardingThree}
-      component={C04ClientOnboardingThree}
-    />
+
+
     <Stack.Screen
       name={ClientAuthRoutes.Login}
       component={C05ClientLogin}

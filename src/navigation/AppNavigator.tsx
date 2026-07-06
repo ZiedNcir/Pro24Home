@@ -15,7 +15,7 @@ import {
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
-const GuestScreen = () => <ClientAuthStack />;
+//const GuestScreen = () => <ClientAuthStack />;
 const ClientScreen = () => <ClientStack />;
 const ProfessionalScreen = () => <ProfessionalStack />;
 

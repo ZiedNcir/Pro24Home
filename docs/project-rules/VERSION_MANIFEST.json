@@ -1,0 +1,17 @@
+{
+  "currentVersion": "1.1",
+  "adds": [
+    "AI images are treated mainly as backgrounds/decorations",
+    "Texts, buttons, logos, loaders and UI controls must be rebuilt in code",
+    "Delivery checklist updated"
+  ],
+  "rules": {
+    "prototype_first": true,
+    "official_logo_only": true,
+    "ai_images_as_backgrounds": true,
+    "ui_elements_rebuilt_in_code": true,
+    "no_hardcoded_text": true,
+    "design_system_required": true,
+    "responsive_with_normalized_css": true
+  }
+}

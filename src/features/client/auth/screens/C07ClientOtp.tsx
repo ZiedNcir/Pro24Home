@@ -1,106 +1,62 @@
 import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-
-import {
-  AppText,
-  Button,
-  colors,
-} from '../../../../design-system';
-
+import { AppText, Button, colors, radius, shadows, sizes, spacing, vSpacing } from '../../../../design-system';
+import ScreenContainer from '@components/ScreenContainer';
 import { t } from '../../../../translations/i18n';
-import { useAuth } from '../../../../hooks';
-
-import { AuthScreenLayout, OtpInput } from '../components';
 import { CLIENT_AUTH_ROUTES, OTP_CODE_LENGTH } from '../constants';
-import {
-  FieldErrors,
-  OtpField,
-  getApiMessage,
-  hasErrors,
-  validateOtpForm,
-} from '../validation';
+import { AuthStepProgress, OtpCodeInput } from '../components';
+import Pro24Logo from '../../../../assets/logo/logo-mediumPro24.svg';
 
 type Props = NativeStackScreenProps<any>;
 
 export const C07ClientOtp: React.FC<Props> = ({ navigation, route }) => {
-  const { verifyAccount, verifyAccountState, resendVerification } = useAuth();
-
   const [code, setCode] = useState('');
-  const [errors, setErrors] = useState<FieldErrors<OtpField>>({});
-  const [apiError, setApiError] = useState<string | null>(null);
-
-  const phone = (route.params as any)?.phone;
-
-  const handleVerify = async () => {
-    setApiError(null);
-
-    const validationErrors = validateOtpForm(
-      { code },
-      OTP_CODE_LENGTH,
-      {
-        required: t('validation.required'),
-        invalidOtp: t('validation.invalidOtp'),
-      },
-    );
-
-    setErrors(validationErrors);
-
-    if (hasErrors(validationErrors)) {
-      return;
-    }
-
-    try {
-      await verifyAccount({
-        phone_number: phone,
-        code,
-      } as any);
-
-      navigation.navigate(CLIENT_AUTH_ROUTES.gps as never);
-    } catch (error) {
-      setApiError(getApiMessage(error, t('validation.apiError')));
-    }
-  };
-
-  const handleResend = async () => {
-    try {
-      await resendVerification({ phone_number: phone } as any);
-    } catch (error) {
-      setApiError(getApiMessage(error, t('validation.apiError')));
-    }
-  };
+  const phone = (route.params as any)?.phone ?? '';
 
   return (
-    <AuthScreenLayout
-      title={t('module1.otp.title')}
-      subtitle={t('module1.otp.subtitle')}
-    >
-      <OtpInput
-        value={code}
-        length={OTP_CODE_LENGTH}
-        error={errors.code}
-        onChangeText={(value) => {
-          setCode(value);
-          if (errors.code) setErrors((current) => ({ ...current, code: undefined }));
-        }}
-      />
+    <ScreenContainer paddingHorizontal={0} paddingVertical={0} withTopSafeArea={false}>
+      <View style={styles.container}>
+        <View style={styles.logo}><Pro24Logo width={150} height={64} /></View>
+        <AuthStepProgress current={2} labels={[t('module1.steps.account'), t('module1.steps.verification'), t('module1.steps.done')]} />
 
-      {apiError ? (
-        <AppText variant="caption" color={colors.error} align="center">
-          {apiError}
-        </AppText>
-      ) : null}
+        <View style={styles.header}>
+          <AppText variant="h1" align="center" color={colors.text}>{t('module1.otp.title')}</AppText>
+          <AppText variant="bodyLarge" align="center" color={colors.textMuted}>{t('module1.otp.subtitle')}</AppText>
+          {phone ? <AppText variant="bodyMedium" align="center" color={colors.primary[600]}>{phone}</AppText> : null}
+        </View>
 
-      <Button
-        title={t('module1.otp.button')}
-        loading={verifyAccountState.isLoading}
-        onPress={handleVerify}
-      />
+        <View style={styles.visualCard}>
+          <View style={styles.phoneMock}>
+            <View style={styles.otpBubble}>
+              <AppText variant="h2" color={colors.primary[600]}>***</AppText>
+            </View>
+          </View>
+        </View>
 
-      <Button
-        title={t('module1.otp.resend')}
-        variant="ghost"
-        onPress={handleResend}
-      />
-    </AuthScreenLayout>
+        <AppText variant="title" align="center" color={colors.text}>{t('module1.otp.enterCode')}</AppText>
+        <OtpCodeInput value={code} length={OTP_CODE_LENGTH} onChangeText={setCode} />
+
+        <View style={styles.resendCard}>
+          <View>
+            <AppText variant="bodyMedium" color={colors.text}>{t('module1.otp.noCode')}</AppText>
+            <AppText variant="body" color={colors.textMuted}>{t('module1.otp.noCodeDescription')}</AppText>
+          </View>
+          <Button title={t('module1.otp.resend')} variant="ghost" fullWidth={false} onPress={() => { }} />
+        </View>
+
+        <Button title={t('module1.otp.button')} rightIcon="arrowRight" onPress={() => navigation.navigate(CLIENT_AUTH_ROUTES.registerSuccess)} />
+      </View>
+    </ScreenContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  container: { flex: 1, paddingHorizontal: sizes.screen.horizontalPadding, paddingTop: vSpacing[6], paddingBottom: vSpacing[6], backgroundColor: colors.background },
+  logo: { alignItems: 'center' },
+  header: { gap: vSpacing[2] },
+  visualCard: { alignItems: 'center', justifyContent: 'center', height: vSpacing[16] * 2.3 },
+  phoneMock: { width: spacing[16] * 2, height: vSpacing[16] * 2, borderRadius: radius['2xl'], backgroundColor: colors.primary[50], alignItems: 'center', justifyContent: 'center' },
+  otpBubble: { borderRadius: radius.xl, backgroundColor: colors.white, paddingHorizontal: spacing[8], paddingVertical: vSpacing[4], ...shadows.sm },
+  resendCard: { borderRadius: radius.xl, backgroundColor: colors.white, padding: spacing[4], marginVertical: vSpacing[4], gap: vSpacing[2], ...shadows.sm },
+});
