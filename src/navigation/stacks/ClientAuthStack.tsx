@@ -9,6 +9,7 @@ import {
   C01ClientWelcome,
   C05ClientLogin,
   C06ClientRegister,
+  C06ProfessionalRegister,
   C07ClientOtp,
   C08ClientGpsPermission,
   C08ClientRegisterSuccess,
@@ -54,6 +55,10 @@ export const ClientAuthStack = () => (
     <Stack.Screen
       name={ClientAuthRoutes.Register}
       component={C06ClientRegister}
+    />
+    <Stack.Screen
+      name={ClientAuthRoutes.ProfessionalRegister}
+      component={C06ProfessionalRegister}
     />
     <Stack.Screen
       name={ClientAuthRoutes.Otp}

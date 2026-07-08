@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { colors, spacing } from '../../foundations';
+import type { DefaultTheme } from 'styled-components/native';
+
+import { spacing } from '../../foundations';
 import { IconName } from '../../icons';
+import { useTheme } from '../../../theme/ThemeProvider';
 import { IconButton } from '../Button';
 import { AppText } from '../Text';
 
@@ -21,28 +24,39 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   rightIcon,
   onLeftPress,
   onRightPress,
-}) => (
-  <View style={styles.container}>
-    <View style={styles.side}>
-      {leftIcon ? <IconButton icon={leftIcon} variant="ghost" onPress={onLeftPress} /> : null}
-    </View>
-    <View style={styles.center}>
-      {title ? <AppText variant="title" align="center">{title}</AppText> : null}
-      {subtitle ? <AppText variant="caption" color={colors.textMuted} align="center">{subtitle}</AppText> : null}
-    </View>
-    <View style={styles.side}>
-      {rightIcon ? <IconButton icon={rightIcon} variant="ghost" onPress={onRightPress} /> : null}
-    </View>
-  </View>
-);
+}) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
-const styles = StyleSheet.create({
+  return (
+    <View style={styles.container}>
+      <View style={styles.side}>
+        {leftIcon ? <IconButton icon={leftIcon} variant="ghost" onPress={onLeftPress} /> : null}
+      </View>
+
+      <View style={styles.center}>
+        {title ? <AppText variant="title" align="center">{title}</AppText> : null}
+        {subtitle ? (
+          <AppText variant="caption" color={theme.colors.textSecondary} align="center">
+            {subtitle}
+          </AppText>
+        ) : null}
+      </View>
+
+      <View style={styles.side}>
+        {rightIcon ? <IconButton icon={rightIcon} variant="ghost" onPress={onRightPress} /> : null}
+      </View>
+    </View>
+  );
+};
+
+const createStyles = (theme: DefaultTheme) => StyleSheet.create({
   container: {
     minHeight: 56,
     paddingHorizontal: spacing[4],
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: theme.colors.background,
   },
   side: {
     width: 48,

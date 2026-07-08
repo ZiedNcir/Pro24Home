@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Image, ImageSourcePropType, StyleSheet, View } from 'react-native';
-import { colors, radius } from '../../foundations';
-import { AppText } from '../Text';
+
+import { radius } from '../../foundations';
+import { useTheme } from '../../../theme/ThemeProvider';
+import { AppText } from '../Text/AppText';
 
 export interface AvatarProps {
   source?: ImageSourcePropType;
@@ -9,25 +11,33 @@ export interface AvatarProps {
   size?: number;
 }
 
-export const Avatar: React.FC<AvatarProps> = ({ source, name = '?', size = 48 }) => {
+export const Avatar: React.FC<AvatarProps> = ({
+  source,
+  name = '?',
+  size = 48,
+}) => {
+  const { theme } = useTheme();
   const initial = name.trim().charAt(0).toUpperCase() || '?';
+
+  const styles = useMemo(
+    () => StyleSheet.create({
+      base: {
+        backgroundColor: theme.colors.primaryLighter,
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+      },
+    }),
+    [theme],
+  );
 
   return (
     <View style={[styles.base, { width: size, height: size, borderRadius: radius.full }]}>
       {source ? (
         <Image source={source} style={{ width: size, height: size, borderRadius: radius.full }} />
       ) : (
-        <AppText variant="title" color={colors.primary[700]}>{initial}</AppText>
+        <AppText variant="title" color={theme.colors.primaryDark}>{initial}</AppText>
       )}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  base: {
-    backgroundColor: colors.primary[50],
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-  },
-});

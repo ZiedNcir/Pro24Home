@@ -18,25 +18,29 @@ import { useTheme } from '../../../../theme/ThemeProvider';
 import { getThemeTokens } from '../../../../theme/themeTokens';
 import { t } from '../../../../translations/i18n';
 import { useAuth } from '../../../../hooks';
+import { useGetServicesQuery } from '../../../../store/api';
 import { CLIENT_AUTH_ROUTES } from '../constants';
 import {
   AuthLogoHeader,
   AuthStepProgress,
-  ClientForm,
-  ClientRegisterFormValues,
+  ProfessionalForm,
+  ProfessionalRegisterFormValues,
 } from '../components';
 import { getAuthApiMessage } from '../helpers/authApiError';
 
 type Props = NativeStackScreenProps<any>;
 
-export const C06ClientRegister: React.FC<Props> = ({ navigation }) => {
+export const C06ProfessionalRegister: React.FC<Props> = ({ navigation }) => {
   const { theme } = useTheme();
   const c = getThemeTokens(theme);
   const styles = useMemo(() => createStyles(c), [c]);
-  const { registerClient, registerClientState } = useAuth();
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { registerProfessional, registerProfessionalState } = useAuth();
+  const { data: servicesResponse, isLoading: servicesLoading } = useGetServicesQuery({ lang: 'fr' });
 
-  const form = useForm<ClientRegisterFormValues>({
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [servicesError, setServicesError] = useState<string | undefined>();
+
+  const form = useForm<ProfessionalRegisterFormValues>({
     mode: 'onChange',
     defaultValues: {
       first_name: '',
@@ -47,14 +51,28 @@ export const C06ClientRegister: React.FC<Props> = ({ navigation }) => {
       postal_code: '',
       password: '',
       password_confirmation: '',
+      company_name: '',
+      siret_number: '',
+      services: [],
     },
   });
 
-  const handleSubmit = async (values: ClientRegisterFormValues) => {
+  const services = useMemo(
+    () => servicesResponse?.data ?? [],
+    [servicesResponse],
+  );
+
+  const handleSubmit = async (values: ProfessionalRegisterFormValues) => {
     setErrorMessage(null);
+    setServicesError(undefined);
+
+    if (!values.services.length) {
+      setServicesError(t('module1.professional.errors.servicesRequired'));
+      return;
+    }
 
     try {
-      await registerClient({
+      await registerProfessional({
         first_name: values.first_name.trim(),
         last_name: values.last_name.trim(),
         email: values.email.trim(),
@@ -62,7 +80,11 @@ export const C06ClientRegister: React.FC<Props> = ({ navigation }) => {
         phone_number: values.phone_number.trim(),
         address: values.address.trim(),
         postal_code: values.postal_code.trim(),
-        onesignal_key: '',
+        onesignal_key: 'zerftyyhuuh',
+        company_name: values.company_name.trim(),
+        siret_number: values.siret_number.trim(),
+        services: values.services,
+        source: 'mobile',
         lang: 'fr',
       });
 
@@ -71,7 +93,7 @@ export const C06ClientRegister: React.FC<Props> = ({ navigation }) => {
         email: values.email.trim(),
       } as never);
     } catch (error) {
-      setErrorMessage(getAuthApiMessage(error, t('module1.register.errors.generic')));
+      setErrorMessage(getAuthApiMessage(error, t('module1.professional.errors.generic')));
     }
   };
 
@@ -86,11 +108,11 @@ export const C06ClientRegister: React.FC<Props> = ({ navigation }) => {
 
         <View style={styles.header}>
           <AppText variant="h1" align="center" color={c.text}>
-            {t('module1.register.title')}
+            {t('module1.professional.title')}
           </AppText>
 
           <AppText variant="bodyLarge" align="center" color={c.textMuted}>
-            {t('module1.register.subtitle')}
+            {t('module1.professional.subtitle')}
           </AppText>
         </View>
 
@@ -104,7 +126,17 @@ export const C06ClientRegister: React.FC<Props> = ({ navigation }) => {
         />
 
         <View style={styles.card}>
-          <ClientForm form={form} />
+          {servicesLoading ? (
+            <AppText variant="body" color={c.textMuted} align="center">
+              {t('module1.professional.services.loading')}
+            </AppText>
+          ) : null}
+
+          <ProfessionalForm
+            form={form}
+            services={services}
+            servicesError={servicesError}
+          />
         </View>
 
         {errorMessage ? (
@@ -115,10 +147,10 @@ export const C06ClientRegister: React.FC<Props> = ({ navigation }) => {
 
         <View style={styles.footer}>
           <Button
-            title={t('module1.register.button')}
-            leftIcon="plus"
+            title={t('module1.professional.button')}
+            leftIcon="tools"
             rightIcon="arrowRight"
-            loading={registerClientState.isLoading}
+            loading={registerProfessionalState.isLoading}
             onPress={form.handleSubmit(handleSubmit)}
           />
 

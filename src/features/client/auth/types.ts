@@ -6,8 +6,11 @@ export type ClientAuthStackParamList = {
   ClientOnboardingThree: undefined;
   ClientLogin: undefined;
   ClientRegister: undefined;
-  ClientOtp: { phone?: string };
+  ProfessionalRegister: undefined;
+  ClientOtp: { phone?: string; email?: string };
   ClientGpsPermission: undefined;
   ClientNotificationsPermission: undefined;
   ClientFirstHome: undefined;
+  ClientRegisterSuccess: undefined;
+  ClientAccountType: undefined;
 };

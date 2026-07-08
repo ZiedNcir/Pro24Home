@@ -1,7 +1,16 @@
-import React, { useState } from 'react';
-import { TextInput as RNTextInput, TextInputProps as RNTextInputProps, StyleSheet, View, ViewStyle } from 'react-native';
-import { colors, radius, spacing, typography } from '../../foundations';
-import { AppText } from '../Text';
+import React, { useMemo, useState } from 'react';
+import {
+  TextInput as RNTextInput,
+  TextInputProps as RNTextInputProps,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native';
+import type { DefaultTheme } from 'styled-components/native';
+
+import { radius, spacing, typography } from '../../foundations';
+import { useTheme } from '../../../theme/ThemeProvider';
+import { AppText } from '../Text/AppText';
 
 export interface TextInputProps extends RNTextInputProps {
   label?: string;
@@ -24,17 +33,26 @@ export const TextInput: React.FC<TextInputProps> = ({
   onBlur,
   ...props
 }) => {
+  const { theme } = useTheme();
   const [focused, setFocused] = useState(false);
-  const borderColor = error ? colors.error : focused ? colors.primary[600] : colors.stroke;
+  const styles = useMemo(() => createStyles(theme), [theme]);
+
+  const borderColor = error
+    ? theme.colors.danger
+    : focused
+      ? theme.colors.primary
+      : theme.colors.border;
 
   return (
     <View style={[styles.container, containerStyle]}>
       {label ? <AppText variant="label" style={styles.label}>{label}</AppText> : null}
+
       <View style={[styles.wrapper, { borderColor }]}>
         {leftIcon}
+
         <RNTextInput
           {...props}
-          placeholderTextColor={colors.gray[400]}
+          placeholderTextColor={theme.colors.textDisabled}
           onFocus={(event) => {
             setFocused(true);
             onFocus?.(event);
@@ -45,17 +63,32 @@ export const TextInput: React.FC<TextInputProps> = ({
           }}
           style={[styles.input, style]}
         />
+
         {rightIcon}
       </View>
-      {error ? <AppText variant="caption" color={colors.error} style={styles.helper}>{error}</AppText> : null}
-      {!error && helperText ? <AppText variant="caption" color={colors.textMuted} style={styles.helper}>{helperText}</AppText> : null}
+
+      {error ? (
+        <AppText variant="caption" color={theme.colors.danger} style={styles.helper}>
+          {error}
+        </AppText>
+      ) : null}
+
+      {!error && helperText ? (
+        <AppText variant="caption" color={theme.colors.textSecondary} style={styles.helper}>
+          {helperText}
+        </AppText>
+      ) : null}
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: { width: '100%' },
-  label: { marginBottom: spacing[2] },
+const createStyles = (theme: DefaultTheme) => StyleSheet.create({
+  container: {
+    width: '100%',
+  },
+  label: {
+    marginBottom: spacing[2],
+  },
   wrapper: {
     minHeight: 52,
     borderWidth: 1,
@@ -64,13 +97,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing[2],
-    backgroundColor: colors.white,
+    backgroundColor: theme.colors.surface,
   },
   input: {
     flex: 1,
-    color: colors.text,
+    color: theme.colors.textPrimary,
     paddingVertical: 0,
     ...typography.bodyLarge,
   },
-  helper: { marginTop: spacing[1] },
+  helper: {
+    marginTop: spacing[1],
+  },
 });

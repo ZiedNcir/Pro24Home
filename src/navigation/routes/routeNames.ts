@@ -12,6 +12,7 @@ export const ClientAuthRoutes = {
   OnboardingThree: 'ClientOnboardingThree',
   Login: 'ClientLogin',
   Register: 'ClientRegister',
+  ProfessionalRegister: 'ProfessionalRegister',
   Otp: 'ClientOtp',
   GpsPermission: 'ClientGpsPermission',
   NotificationsPermission: 'ClientNotificationsPermission',

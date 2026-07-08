@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import {
   Animated,
   PanResponder,
@@ -6,9 +6,11 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+import type { DefaultTheme } from 'styled-components/native';
 
-import { colors, radius, shadows, sizes, spacing } from '../../foundations';
+import { radius, shadows, sizes, spacing } from '../../foundations';
 import { Icon } from '../../icons';
+import { useTheme } from '../../../theme/ThemeProvider';
 import { AppText } from '../Text';
 
 export interface SwipeToActionProps {
@@ -22,6 +24,8 @@ export const SwipeToAction: React.FC<SwipeToActionProps> = ({
   onComplete,
   style,
 }) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const translateX = useRef(new Animated.Value(0)).current;
   const maxSlide = 238;
 
@@ -53,7 +57,7 @@ export const SwipeToAction: React.FC<SwipeToActionProps> = ({
 
   return (
     <View style={[styles.track, style]}>
-      <AppText variant="button" color={colors.white} align="center">
+      <AppText variant="button" color={theme.colors.textInverse} align="center">
         {label}
       </AppText>
 
@@ -61,17 +65,17 @@ export const SwipeToAction: React.FC<SwipeToActionProps> = ({
         {...responder.panHandlers}
         style={[styles.thumb, { transform: [{ translateX }] }]}
       >
-        <Icon name="arrowRight" size="md" color={colors.primary[600]} />
+        <Icon name="arrowRight" size="md" color={theme.colors.primary} />
       </Animated.View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: DefaultTheme) => StyleSheet.create({
   track: {
     minHeight: sizes.button.lg,
     borderRadius: radius.full,
-    backgroundColor: colors.primary[600],
+    backgroundColor: theme.colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
@@ -83,7 +87,7 @@ const styles = StyleSheet.create({
     width: sizes.iconButton.lg,
     height: sizes.iconButton.lg,
     borderRadius: radius.full,
-    backgroundColor: colors.white,
+    backgroundColor: theme.colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
   },

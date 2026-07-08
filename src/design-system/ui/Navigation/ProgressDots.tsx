@@ -1,21 +1,29 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { colors, radius, spacing } from '../../foundations';
+import type { DefaultTheme } from 'styled-components/native';
+
+import { radius, spacing } from '../../foundations';
+import { useTheme } from '../../../theme/ThemeProvider';
 
 export interface ProgressDotsProps {
   total: number;
   current: number;
 }
 
-export const ProgressDots: React.FC<ProgressDotsProps> = ({ total, current }) => (
-  <View style={styles.container}>
-    {Array.from({ length: total }, (_, index) => (
-      <View key={index} style={[styles.dot, index === current && styles.activeDot]} />
-    ))}
-  </View>
-);
+export const ProgressDots: React.FC<ProgressDotsProps> = ({ total, current }) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
-const styles = StyleSheet.create({
+  return (
+    <View style={styles.container}>
+      {Array.from({ length: total }, (_, index) => (
+        <View key={index} style={[styles.dot, index === current && styles.activeDot]} />
+      ))}
+    </View>
+  );
+};
+
+const createStyles = (theme: DefaultTheme) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     gap: spacing[2],
@@ -26,10 +34,10 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: radius.full,
-    backgroundColor: colors.gray[200],
+    backgroundColor: theme.colors.borderLight,
   },
   activeDot: {
     width: 22,
-    backgroundColor: colors.primary[600],
+    backgroundColor: theme.colors.primary,
   },
 });

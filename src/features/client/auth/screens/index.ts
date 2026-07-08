@@ -8,3 +8,4 @@ export * from './C09ClientNotificationsPermission';
 export * from './C10ClientFirstHome';
 export * from './C11ClientAccountTypeScreen';
 export * from './C08ClientRegisterSuccess';
+export * from './C06ProfessionalRegister';

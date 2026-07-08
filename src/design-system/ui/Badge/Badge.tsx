@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
-import { colors, radius, spacing } from '../../foundations';
-import { AppText } from '../Text';
+import type { DefaultTheme } from 'styled-components/native';
+
+import { radius, spacing } from '../../foundations';
+import { useTheme } from '../../../theme/ThemeProvider';
+import { AppText } from '../Text/AppText';
 
 export type BadgeVariant = 'default' | 'success' | 'warning' | 'error' | 'primary';
 
@@ -11,26 +14,38 @@ export interface BadgeProps {
   style?: ViewStyle;
 }
 
-export const Badge: React.FC<BadgeProps> = ({ label, variant = 'default', style }) => (
-  <View style={[styles.base, variantStyles[variant], style]}>
-    <AppText variant="caption" color={textColors[variant]}>{label}</AppText>
-  </View>
-);
+const getVariantStyles = (theme: DefaultTheme): Record<BadgeVariant, ViewStyle> => ({
+  default: { backgroundColor: theme.colors.surfaceVariant },
+  success: { backgroundColor: theme.colors.successLight },
+  warning: { backgroundColor: theme.colors.warningLight },
+  error: { backgroundColor: theme.colors.dangerLight },
+  primary: { backgroundColor: theme.colors.primaryLighter },
+});
 
-const variantStyles: Record<BadgeVariant, ViewStyle> = {
-  default: { backgroundColor: colors.gray[100] },
-  success: { backgroundColor: '#DCFCE7' },
-  warning: { backgroundColor: '#FEF3C7' },
-  error: { backgroundColor: '#FEE2E2' },
-  primary: { backgroundColor: colors.primary[50] },
-};
+const getTextColors = (theme: DefaultTheme): Record<BadgeVariant, string> => ({
+  default: theme.colors.textSecondary,
+  success: theme.colors.success,
+  warning: theme.colors.warning,
+  error: theme.colors.danger,
+  primary: theme.colors.primaryDark,
+});
 
-const textColors: Record<BadgeVariant, string> = {
-  default: colors.gray[700],
-  success: colors.success,
-  warning: '#B45309',
-  error: colors.error,
-  primary: colors.primary[700],
+export const Badge: React.FC<BadgeProps> = ({
+  label,
+  variant = 'default',
+  style,
+}) => {
+  const { theme } = useTheme();
+  const variantStyles = useMemo(() => getVariantStyles(theme), [theme]);
+  const textColors = useMemo(() => getTextColors(theme), [theme]);
+
+  return (
+    <View style={[styles.base, variantStyles[variant], style]}>
+      <AppText variant="caption" color={textColors[variant]}>
+        {label}
+      </AppText>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({

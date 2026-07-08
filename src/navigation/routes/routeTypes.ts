@@ -8,7 +8,8 @@ export type ClientAuthStackParamList = {
   ClientOnboardingThree: undefined;
   ClientLogin: undefined;
   ClientRegister: undefined;
-  ClientOtp: { phone?: string } | undefined;
+  ProfessionalRegister: undefined;
+  ClientOtp: { phone?: string; email?: string } | undefined;
   ClientGpsPermission: undefined;
   ClientNotificationsPermission: undefined;
   ClientAccountType: undefined;

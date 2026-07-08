@@ -1,4 +1,3 @@
-// src/components/Field/Field.tsx
 import React, { useEffect, useRef, useState } from 'react';
 import {
     Pressable,
@@ -11,7 +10,7 @@ import {
     Platform,
     UIManager,
 } from 'react-native';
-import styled, { useTheme } from 'styled-components/native';
+import styled from 'styled-components/native';
 import {
     Control,
     FieldValues,
@@ -33,6 +32,7 @@ import type { IconName } from '@components/Icon/SvgIcon';
 
 // Hooks
 import useToggle from '@hooks/useToggle';
+import { useTheme as useAppTheme } from '@theme/ThemeProvider';
 
 // Utils
 import {
@@ -44,16 +44,11 @@ import {
 
 // Validation utils
 import { Regex } from '@utils/constant';
-import { colors } from '@theme/index';
+import { t as translate } from '@translations/i18n';
 
-// Configure LayoutAnimation for Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true);
 }
-
-/* -------------------------------------------------------------------------- */
-/*                                    TYPES                                   */
-/* -------------------------------------------------------------------------- */
 
 export interface FieldProps<T extends FieldValues> extends TextInputProps {
     name: Path<T>;
@@ -72,7 +67,6 @@ export interface FieldProps<T extends FieldValues> extends TextInputProps {
     multiline?: boolean;
     defaultDate?: number;
 
-    // Enhanced validation rules
     rules?: Omit<
         RegisterOptions<T, Path<T>>,
         'valueAsNumber' | 'valueAsDate' | 'setValueAs'
@@ -87,7 +81,6 @@ export interface FieldProps<T extends FieldValues> extends TextInputProps {
         | ((value: string) => true | string);
     };
 
-    // Field type specific rules
     email?: boolean;
     numeric?: boolean;
     url?: boolean;
@@ -98,7 +91,6 @@ export interface FieldProps<T extends FieldValues> extends TextInputProps {
     accessoryRight?: IconName;
     accessoryLeft?: IconName;
 
-    /** V2 */
     disabled?: boolean;
     readOnly?: boolean;
     rightText?: string;
@@ -106,26 +98,18 @@ export interface FieldProps<T extends FieldValues> extends TextInputProps {
     containerStyle?: any;
     inputWrapperStyle?: any;
 
-    // Animation props
     animated?: boolean;
     shakeOnError?: boolean;
     pulseOnFocus?: boolean;
 
-    // Character counter
     showCharacterCount?: boolean;
     maxCharacters?: number;
 
-    // Formatting
     formatOnBlur?: (value: string) => string;
     formatOnChange?: (value: string) => string;
 
-    // Debounce for onChange
     debounceTime?: number;
 }
-
-/* -------------------------------------------------------------------------- */
-/*                                   STYLES                                   */
-/* -------------------------------------------------------------------------- */
 
 const FieldWrapper = styled(View)`
   width: 100%;
@@ -139,8 +123,6 @@ const LabelWrapper = styled(View)`
   margin-bottom: ${({ theme }) => theme.spacing.xs}px;
 `;
 
-// IMPORTANT: Label opacity is animated -> must be an Animated component.
-// We wrap your custom Text with Animated.createAnimatedComponent.
 const AnimatedAppText = Animated.createAnimatedComponent(Text);
 
 const AnimatedLabel = styled(AnimatedAppText) <{ error?: boolean }>`
@@ -151,16 +133,9 @@ const AnimatedLabel = styled(AnimatedAppText) <{ error?: boolean }>`
 const CharacterCount = styled(Text) <{ exceeded?: boolean }>`
   color: ${({ theme, exceeded }) =>
         exceeded ? theme.colors.danger : theme.colors.textSecondary};
-  font-size: ${({ theme }) => fontPixel(theme.typography.sizes.headline.small)}px;
+  font-size: ${({ theme }) => fontPixel(theme.typography.sizes.label.small)}px;
 `;
 
-/**
- * OPTION A:
- * Split into 2 layers so we never mix JS-driven (borderColor) with native-driven transforms.
- *
- * - OuterWrapper: JS-driven animated styles (borderColor, shadows/elevation etc).
- * - InnerTransform: native-driven transforms (shake / pulse).
- */
 const OuterWrapper = styled(Animated.View) <{
     focus?: boolean;
     error?: boolean;
@@ -168,22 +143,20 @@ const OuterWrapper = styled(Animated.View) <{
     disabled?: boolean;
 }>`
   background-color: ${({ theme, disabled }) =>
-        disabled ? theme.colors.primaryDark : theme.colors.white};
+        disabled ? theme.colors.surfaceVariant : theme.colors.surface};
 
   border-width: 1.5px;
   border-style: solid;
 
   border-radius: ${({ theme }) => theme.borderRadius.md}px;
-  height: ${({ multiline }) =>
-        multiline ? `${verticalScale(80)}px` : `${verticalScale(40)}px`};
+  min-height: ${({ multiline }) =>
+        multiline ? `${verticalScale(88)}px` : `${verticalScale(44)}px`};
 
   opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
 
-  /* keep elevation tied to focus (non-animated boolean). */
   ${({ theme, focus }) => (focus ? theme.elevation.xs : '')};
 `;
 
-// Inner content keeps original row layout
 const InnerTransform = styled(Animated.View) <{ multiline?: boolean }>`
   flex: 1;
   flex-direction: row;
@@ -216,7 +189,7 @@ const Input = styled(TextInput) <{ readOnly?: boolean; disabled?: boolean }>`
 const HelperText = styled(Animated.Text) <{ error?: boolean }>`
   padding-top: ${({ theme }) => theme.spacing.xs}px;
   padding-horizontal: ${({ theme }) => theme.spacing.xs}px;
-  font-size: ${({ theme }) => fontPixel(theme.typography.sizes.label.large)}px;
+  font-size: ${({ theme }) => fontPixel(theme.typography.sizes.label.medium)}px;
   font-family: ${({ theme }) => theme.typography.fonts.poppins.regular};
   color: ${({ theme, error }) =>
         error ? theme.colors.danger : theme.colors.textSecondary};
@@ -230,11 +203,12 @@ const DateText = styled(Text)`
 
 const CodeCell = styled(Text)`
   width: ${moderateScale(40)}px;
-  height: ${moderateScale(40)}px;
-  line-height: ${verticalScale(28)}px;
+  height: ${moderateScale(44)}px;
+  line-height: ${verticalScale(30)}px;
   border-width: ${verticalScale(2)}px;
   border-radius: ${({ theme }) => theme.borderRadius.sm}px;
   border-color: ${({ theme }) => theme.colors.border};
+  background-color: ${({ theme }) => theme.colors.surface};
   text-align: center;
   padding: ${verticalScale(4)}px;
   margin: ${verticalScale(4)}px;
@@ -273,7 +247,6 @@ export function Field<T extends FieldValues>({
     regex,
     regexMessage,
     rules: customRules,
-    // NOTE: validate is kept for backwards compatibility, but customRules.validate should be preferred.
     validate,
     code,
     multiline,
@@ -290,7 +263,6 @@ export function Field<T extends FieldValues>({
     shakeOnError = true,
     pulseOnFocus = true,
 
-    // New props
     email = false,
     numeric = false,
     url = false,
@@ -304,24 +276,20 @@ export function Field<T extends FieldValues>({
     debounceTime = 0,
     ...rest
 }: FieldProps<T>) {
-    const theme = useTheme();
-    const { t } = useTranslation();
+    const { theme, themeMode } = useAppTheme();
+    const { t: i18nextT } = useTranslation();
     const inputRef = useRef<TextInput>(null);
     const phoneInput = useRef<PhoneInput>(null);
 
-    // Debounce timer ref
     const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    // Animation values
-    const shakeAnimation = useRef(new Animated.Value(0)).current; // native transform only
-    const pulseAnimation = useRef(new Animated.Value(1)).current; // native transform only
-    const focusAnimation = useRef(new Animated.Value(0)).current; // JS driver (borderColor)
-    const helperOpacity = useRef(new Animated.Value(0)).current; // can be native, but keep consistent
+    const shakeAnimation = useRef(new Animated.Value(0)).current;
+    const pulseAnimation = useRef(new Animated.Value(1)).current;
+    const focusAnimation = useRef(new Animated.Value(0)).current;
+    const helperOpacity = useRef(new Animated.Value(0)).current;
 
-    // Pulse loop instance (so we can stop it reliably)
     const pulseLoopRef = useRef<Animated.CompositeAnimation | null>(null);
 
-    // State
     const [securePassword, toggleSecurePassword] = useToggle(!!password);
     const [focus, setFocus] = useState(false);
     const [open, setOpen] = useState(false);
@@ -330,7 +298,33 @@ export function Field<T extends FieldValues>({
     const [phoneNumber, setPhoneNumber] = useState('');
     const [characterCount, setCharacterCount] = useState(0);
 
-    // Build validation rules
+    const nativeMaxLength = rest.maxLength;
+    const effectiveMaxLength = maxCharacters ?? nativeMaxLength;
+
+    const getMessage = (key: string, fallback?: string) => {
+        const customValue = translate(key);
+
+        if (customValue !== key) {
+            return customValue;
+        }
+
+        const i18nextValue = i18nextT(key);
+        return i18nextValue !== key ? i18nextValue : fallback || key;
+    };
+
+    const translateMessage = (message?: string) => {
+        if (!message) return message;
+
+        const customValue = translate(message);
+
+        if (customValue !== message) {
+            return customValue;
+        }
+
+        const i18nextValue = i18nextT(message);
+        return i18nextValue !== message ? i18nextValue : message;
+    };
+
     const buildRules = (): Omit<
         RegisterOptions<T, Path<T>>,
         'valueAsNumber' | 'valueAsDate' | 'setValueAs'
@@ -338,64 +332,67 @@ export function Field<T extends FieldValues>({
         const rules: any = {};
 
         if (required) {
-            rules.required = t('ui.form.error.required');
+            rules.required = getMessage('ui.form.error.required');
         }
 
         if (email) {
             rules.pattern = {
                 value: Regex.email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: regexMessage || t('ui.form.error.invalidEmail'),
+                message: regexMessage || getMessage('ui.form.error.invalidEmail'),
             };
         }
 
         if (url) {
             rules.pattern = {
                 value: /^https?:\/\/.+/,
-                message: regexMessage || t('ui.form.error.invalidUrl'),
+                message: regexMessage || getMessage('ui.form.error.invalidUrl'),
             };
         }
 
         if (numeric) {
             rules.pattern = {
                 value: /^[0-9]*$/,
-                message: regexMessage || t('ui.form.error.numericOnly'),
+                message: regexMessage || getMessage('ui.form.error.numericOnly'),
             };
         }
 
         if (alphanumeric) {
             rules.pattern = {
                 value: /^[a-zA-Z0-9]*$/,
-                message: regexMessage || t('ui.form.error.alphanumericOnly'),
+                message: regexMessage || getMessage('ui.form.error.alphanumericOnly'),
             };
         }
-
-        // NOTE: setValueAs is excluded by your rules type, so we cannot set it here.
-        // If you need uppercase/lowercase transforms, do it in handleChangeText or formatOnChange.
-        // We'll implement it in handleChangeText below.
 
         if (regex) {
             rules.pattern = {
                 value: regex,
-                message: regexMessage || t('ui.form.error.invalid'),
+                message: regexMessage || getMessage('ui.form.error.invalid'),
+            };
+        }
+
+        if (effectiveMaxLength) {
+            rules.maxLength = {
+                value: effectiveMaxLength,
+                message: getMessage('ui.form.error.maxLength'),
             };
         }
 
         if (password) {
             rules.minLength = {
                 value: 8,
-                message: t('ui.form.error.passwordLength'),
+                message: getMessage('ui.form.error.passwordLength'),
             };
             rules.validate = {
                 ...(typeof rules.validate === 'object' ? rules.validate : {}),
                 hasUppercase: (value: string) =>
-                    /[A-Z]/.test(value) || t('ui.form.error.passwordUppercase'),
+                    /[A-Z]/.test(value) || getMessage('ui.form.error.passwordUppercase'),
                 hasLowercase: (value: string) =>
-                    /[a-z]/.test(value) || t('ui.form.error.passwordLowercase'),
+                    /[a-z]/.test(value) || getMessage('ui.form.error.passwordLowercase'),
                 hasNumber: (value: string) =>
-                    /\d/.test(value) || t('ui.form.error.passwordNumber'),
+                    /\d/.test(value) || getMessage('ui.form.error.passwordNumber'),
                 hasSpecial: (value: string) =>
                     /[!@#$%^&*(),.?":{}|<>]/.test(value) ||
-                    t('ui.form.error.passwordSpecial'),
+                    getMessage('ui.form.error.passwordSpecial'),
             };
         }
 
@@ -410,23 +407,22 @@ export function Field<T extends FieldValues>({
         return rules;
     };
 
+    const fallbackDefaultValue = date
+        ? moment(defaultDate).valueOf()
+        : defaultValue ?? '';
+
     const { field, fieldState } = useController<T>({
         name,
         control,
-        defaultValue: (date ? moment(defaultDate) : defaultValue) as PathValue<
-            T,
-            Path<T>
-        >,
+        defaultValue: fallbackDefaultValue as PathValue<T, Path<T>>,
         rules: buildRules(),
     });
 
-    // Update character count
     useEffect(() => {
         const value = field.value ? String(field.value).length : 0;
         setCharacterCount(value);
     }, [field.value]);
 
-    // Cleanup debounce timer + pulse loop
     useEffect(() => {
         return () => {
             if (debounceTimer.current) clearTimeout(debounceTimer.current);
@@ -446,7 +442,6 @@ export function Field<T extends FieldValues>({
         }
     }, [isPhone, field.value]);
 
-    // Shake animation on error (native driver OK; applied to InnerTransform only)
     useEffect(() => {
         if (fieldState.error && shakeOnError && animated) {
             Animated.sequence([
@@ -469,7 +464,6 @@ export function Field<T extends FieldValues>({
         }
     }, [fieldState.error, shakeOnError, animated, shakeAnimation]);
 
-    // Pulse animation on focus (native driver OK; applied to InnerTransform only)
     useEffect(() => {
         if (focus && pulseOnFocus && animated) {
             pulseLoopRef.current?.stop();
@@ -509,17 +503,15 @@ export function Field<T extends FieldValues>({
         };
     }, [focus, pulseOnFocus, animated, pulseAnimation]);
 
-    // Focus animation (JS driver, because we animate borderColor on OuterWrapper)
     useEffect(() => {
         Animated.timing(focusAnimation, {
             toValue: focus ? 1 : 0,
             duration: theme.animation.normal,
             easing: Easing.out(Easing.cubic),
-            useNativeDriver: false, // JS-driven for colors
+            useNativeDriver: false,
         }).start();
     }, [focus, focusAnimation, theme.animation.normal]);
 
-    // Helper text animation (opacity can be native; HelperText is Animated.Text)
     useEffect(() => {
         const hasText = !!(helperText || fieldState.error?.message);
         Animated.timing(helperOpacity, {
@@ -529,13 +521,11 @@ export function Field<T extends FieldValues>({
         }).start();
     }, [helperText, fieldState.error?.message, theme.animation.normal, helperOpacity]);
 
-    // Interpolations
     const shakeInterpolate = shakeAnimation.interpolate({
         inputRange: [-1, 0, 1],
         outputRange: [-5, 0, 5],
     });
 
-    // Border color lives on OUTER (JS-driven)
     const borderColor = focusAnimation.interpolate({
         inputRange: [0, 1],
         outputRange: [
@@ -548,25 +538,30 @@ export function Field<T extends FieldValues>({
         borderColor,
     };
 
-    // Transforms live on INNER (native-driven)
     const innerAnimatedStyle = {
         transform: [{ translateX: shakeInterpolate }, { scale: pulseAnimation }],
     };
 
-    /* ------------------------------ HANDLERS ------------------------------ */
+    const runLayoutAnimation = () => {
+        if (animated) {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        }
+    };
 
     const handleChangeText = (text: string) => {
         if (disabled || readOnly) return;
 
         let formattedText = text;
 
-        // Apply case transforms here (since setValueAs is excluded from rules typing)
         if (uppercase) formattedText = formattedText.toUpperCase();
         if (lowercase) formattedText = formattedText.toLowerCase();
 
-        // Apply formatOnChange if provided
         if (formatOnChange) {
             formattedText = formatOnChange(formattedText);
+        }
+
+        if (effectiveMaxLength) {
+            formattedText = formattedText.slice(0, effectiveMaxLength);
         }
 
         setCharacterCount(formattedText.length);
@@ -581,9 +576,7 @@ export function Field<T extends FieldValues>({
             field.onChange(formattedText);
         }
 
-        if (animated) {
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        }
+        runLayoutAnimation();
     };
 
     const handleBlur = () => {
@@ -595,20 +588,13 @@ export function Field<T extends FieldValues>({
         }
 
         field.onBlur();
-
-        if (animated) {
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        }
+        runLayoutAnimation();
     };
 
     const handleFocus = () => {
         setFocus(true);
-        if (animated) {
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        }
+        runLayoutAnimation();
     };
-
-    /* ------------------------------ RENDERERS ------------------------------ */
 
     const renderLabel = () => {
         if (!label) return null;
@@ -629,9 +615,9 @@ export function Field<T extends FieldValues>({
                     {required && <Text color="danger"> *</Text>}
                 </AnimatedLabel>
 
-                {showCharacterCount && maxCharacters ? (
-                    <CharacterCount exceeded={characterCount > maxCharacters}>
-                        {characterCount}/{maxCharacters}
+                {showCharacterCount && effectiveMaxLength ? (
+                    <CharacterCount exceeded={characterCount > effectiveMaxLength}>
+                        {characterCount}/{effectiveMaxLength}
                     </CharacterCount>
                 ) : null}
             </LabelWrapper>
@@ -639,7 +625,7 @@ export function Field<T extends FieldValues>({
     };
 
     const renderHelper = () => {
-        const text = fieldState.error?.message || helperText;
+        const text = translateMessage(fieldState.error?.message || helperText);
         if (!text) return null;
 
         return (
@@ -662,12 +648,10 @@ export function Field<T extends FieldValues>({
                 onConfirm={(d: Date) => {
                     field.onChange(d.getTime());
                     setOpen(false);
-                    if (animated) {
-                        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                    }
+                    runLayoutAnimation();
                 }}
                 onCancel={() => setOpen(false)}
-                theme={Platform.OS === 'ios' ? 'light' : undefined}
+                theme={Platform.OS === 'ios' ? themeMode : undefined}
                 androidVariant="nativeAndroid"
             />
         );
@@ -693,7 +677,7 @@ export function Field<T extends FieldValues>({
                             <SvgIcon
                                 name={accessoryLeft}
                                 size={15}
-                                color={disabled ? colors.gray200 : colors.gray700}
+                                color={disabled ? theme.colors.textDisabled : theme.colors.textSecondary}
                                 style={{ marginRight: horizontalScale(8) }}
                             />
                         ) : null}
@@ -719,14 +703,18 @@ export function Field<T extends FieldValues>({
                                 onBlur={handleBlur}
                                 placeholderTextColor={theme.colors.textDisabled}
                                 multiline={multiline}
-                                maxLength={maxCharacters}
+                                maxLength={effectiveMaxLength}
                             />
                         )}
                     </LeftWrapper>
 
                     {fieldState.error ? (
                         <ErrorIcon>
-                            <SvgIcon name="fa-exclamation-circle" size={18} color="danger" />
+                            <SvgIcon
+                                name="fa-exclamation-circle"
+                                size={18}
+                                color={theme.colors.danger}
+                            />
                         </ErrorIcon>
                     ) : null}
 
@@ -735,11 +723,7 @@ export function Field<T extends FieldValues>({
                             onPress={() => {
                                 if (disabled) return;
                                 toggleSecurePassword();
-                                if (animated) {
-                                    LayoutAnimation.configureNext(
-                                        LayoutAnimation.Presets.easeInEaseOut
-                                    );
-                                }
+                                runLayoutAnimation();
                             }}
                             disabled={disabled}
                         >
@@ -748,12 +732,12 @@ export function Field<T extends FieldValues>({
                                 size={24}
                                 color={
                                     disabled
-                                        ? colors.gray200
+                                        ? theme.colors.textDisabled
                                         : fieldState.invalid
                                             ? theme.colors.danger
                                             : focus
                                                 ? theme.colors.primary
-                                                : colors.gray700
+                                                : theme.colors.textSecondary
                                 }
                             />
                         </IconButton>
@@ -761,7 +745,7 @@ export function Field<T extends FieldValues>({
                         <SvgIcon
                             name={accessoryRight}
                             size={10}
-                            color={colors.black}
+                            color={theme.colors.textPrimary}
                             style={{ marginHorizontal: horizontalScale(6) }}
                         />
                     ) : rightText ? (
@@ -825,7 +809,11 @@ export function Field<T extends FieldValues>({
 
                     {fieldState.error ? (
                         <ErrorIcon>
-                            <SvgIcon name="fa-exclamation-circle" size={18} color="danger" />
+                            <SvgIcon
+                                name="fa-exclamation-circle"
+                                size={18}
+                                color={theme.colors.danger}
+                            />
                         </ErrorIcon>
                     ) : null}
 
@@ -842,18 +830,13 @@ export function Field<T extends FieldValues>({
                             phoneInput.current?.setValue(newPhone);
 
                             setShowPhoneCountryPicker(false);
-
-                            if (animated) {
-                                LayoutAnimation.configureNext(
-                                    LayoutAnimation.Presets.easeInEaseOut
-                                );
-                            }
+                            runLayoutAnimation();
                         }}
                         onClose={() => setShowPhoneCountryPicker(false)}
                         withFlagButton={false}
                         withFilter
                         theme={{
-                            backgroundColor: theme.colors.white,
+                            backgroundColor: theme.colors.surface,
                             primaryColor: theme.colors.primary,
                             primaryColorVariant: theme.colors.primaryDark,
                             onBackgroundTextColor: theme.colors.textPrimary,
@@ -871,9 +854,9 @@ export function Field<T extends FieldValues>({
 
         return (
             <RNCField
-                value={field.value}
+                value={`${field.value ?? ''}`}
                 onChangeText={handleChangeText}
-                cellCount={6}
+                cellCount={effectiveMaxLength || 6}
                 renderCell={({ index, symbol, isFocused }: any) => (
                     <CodeCell
                         key={index}
@@ -895,8 +878,6 @@ export function Field<T extends FieldValues>({
         );
     };
 
-    /* ------------------------------- RETURN ------------------------------- */
-
     return (
         <FieldWrapper style={containerStyle}>
             {renderLabel()}
@@ -908,98 +889,98 @@ export function Field<T extends FieldValues>({
     );
 }
 
-// Create animated variants
 export const AnimatedField = React.memo(Field);
 
-// Export validation helper functions
 export const FieldValidators = {
     required: (message?: string) => ({
-        required: message || 'This field is required',
+        required: message || translate('ui.form.error.required'),
     }),
 
     email: (message?: string) => ({
         pattern: {
             value: Regex.email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-            message: message || 'Invalid email format',
+            message: message || translate('ui.form.error.invalidEmail'),
         },
     }),
 
     phone: (message?: string) => ({
         pattern: {
             value: /^[+]?[\d\s-]{10,}$/,
-            message: message || 'Invalid phone number',
+            message: message || translate('ui.form.error.invalidPhone'),
         },
     }),
 
     password: (message?: string) => ({
         minLength: {
             value: 8,
-            message: message || 'Password must be at least 8 characters',
+            message: message || translate('ui.form.error.passwordLength'),
         },
         validate: {
             hasUppercase: (value: string) =>
-                /[A-Z]/.test(value) || 'Must contain uppercase letter',
+                /[A-Z]/.test(value) || translate('ui.form.error.passwordUppercase'),
             hasLowercase: (value: string) =>
-                /[a-z]/.test(value) || 'Must contain lowercase letter',
-            hasNumber: (value: string) => /\d/.test(value) || 'Must contain number',
+                /[a-z]/.test(value) || translate('ui.form.error.passwordLowercase'),
+            hasNumber: (value: string) =>
+                /\d/.test(value) || translate('ui.form.error.passwordNumber'),
             hasSpecial: (value: string) =>
                 /[!@#$%^&*(),.?":{}|<>]/.test(value) ||
-                'Must contain special character',
+                translate('ui.form.error.passwordSpecial'),
         },
     }),
 
     minLength: (length: number, message?: string) => ({
         minLength: {
             value: length,
-            message: message || `Must be at least ${length} characters`,
+            message: message || translate('ui.form.error.minLength'),
         },
     }),
 
     maxLength: (length: number, message?: string) => ({
         maxLength: {
             value: length,
-            message: message || `Cannot exceed ${length} characters`,
+            message: message || translate('ui.form.error.maxLength'),
         },
     }),
 
     min: (value: number, message?: string) => ({
         min: {
             value,
-            message: message || `Must be at least ${value}`,
+            message: message || translate('ui.form.error.min'),
         },
     }),
 
     max: (value: number, message?: string) => ({
         max: {
             value,
-            message: message || `Cannot exceed ${value}`,
+            message: message || translate('ui.form.error.max'),
         },
     }),
 
     numeric: (message?: string) => ({
         pattern: {
             value: /^[0-9]*$/,
-            message: message || 'Numbers only',
+            message: message || translate('ui.form.error.numericOnly'),
         },
     }),
 
     alphanumeric: (message?: string) => ({
         pattern: {
             value: /^[a-zA-Z0-9]*$/,
-            message: message || 'Letters and numbers only',
+            message: message || translate('ui.form.error.alphanumericOnly'),
         },
     }),
 
     url: (message?: string) => ({
         pattern: {
             value: /^https?:\/\/.+/,
-            message: message || 'Invalid URL',
+            message: message || translate('ui.form.error.invalidUrl'),
         },
     }),
 
     match: (fieldName: string, message?: string) => ({
         validate: (value: string, formValues: any) =>
-            value === formValues[fieldName] || (message || 'Fields do not match'),
+            value === formValues[fieldName] ||
+            (message || translate('ui.form.error.fieldsDoNotMatch')),
     }),
 
     customPattern: (pattern: RegExp, message: string) => ({

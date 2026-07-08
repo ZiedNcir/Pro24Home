@@ -42,7 +42,11 @@ export const module1 = {
     forgotPassword: 'Mot de passe oublié ?',
     createAccount: 'Créer un compte',
   },
-  steps: { account: 'Compte', verification: 'Vérification', done: 'Terminé' },
+  steps: {
+    account: 'Compte',
+    verification: 'Vérification',
+    done: 'Terminé',
+  },
   register: {
     title: 'Créer votre compte',
     subtitle: 'Rejoignez Pro24Home et simplifiez tous vos services à la maison.',
@@ -56,13 +60,56 @@ export const module1 = {
     emailPlaceholder: 'Ex : ahmed@email.com',
     phoneLabel: 'Téléphone',
     phonePlaceholder: '06 12 34 56 78',
+    addressLabel: 'Adresse',
+    addressPlaceholder: 'Ex : 12 rue de Paris',
+    postalCodeLabel: 'Code postal',
+    postalCodePlaceholder: 'Ex : 06000',
     passwordLabel: 'Mot de passe',
     passwordPlaceholder: 'Minimum 8 caractères',
     confirmPasswordLabel: 'Confirmer le mot de passe',
     confirmPasswordPlaceholder: 'Confirmez votre mot de passe',
-    identity: { title: '1. Identité', subtitle: 'Vos informations personnelles' },
-    contact: { title: '2. Contact', subtitle: 'Comment pouvons-nous vous contacter ?' },
-    security: { title: '3. Sécurité', subtitle: 'Protégez votre compte' },
+    identity: {
+      title: '1. Identité',
+      subtitle: 'Vos informations personnelles',
+    },
+    contact: {
+      title: '2. Contact',
+      subtitle: 'Comment pouvons-nous vous contacter ?',
+    },
+    security: {
+      title: '3. Sécurité',
+      subtitle: 'Protégez votre compte',
+    },
+    errors: {
+      passwordMismatch: 'Les mots de passe ne correspondent pas.',
+      generic: 'Impossible de créer le compte. Vérifiez les informations saisies.',
+    },
+  },
+  professional: {
+    title: 'Créer votre compte professionnel',
+    subtitle: 'Renseignez vos informations pour recevoir des demandes autour de vous.',
+    button: 'Créer mon compte professionnel',
+    companyNameLabel: 'Nom de l’entreprise',
+    companyNamePlaceholder: 'Ex : Pro Services',
+    siretLabel: 'Numéro SIRET',
+    siretPlaceholder: '14 chiffres',
+    identity: {
+      title: '1. Responsable',
+      subtitle: 'Informations du responsable du compte',
+    },
+    company: {
+      title: '2. Entreprise',
+      subtitle: 'Informations légales et zone d’activité',
+    },
+    services: {
+      title: '3. Services',
+      subtitle: 'Sélectionnez les services que vous proposez',
+      loading: 'Chargement des services...',
+    },
+    errors: {
+      servicesRequired: 'Sélectionnez au moins un service.',
+      generic: 'Impossible de créer le compte professionnel. Vérifiez les informations saisies.',
+    },
   },
   otp: {
     title: 'Vérifiez votre numéro',
@@ -72,6 +119,11 @@ export const module1 = {
     noCodeDescription: 'Vérifiez votre réseau ou demandez un nouveau code.',
     resend: 'Renvoyer le code',
     button: 'Vérifier le code',
+    errors: {
+      invalidCode: 'Le code doit contenir 6 chiffres.',
+      generic: 'Le code de vérification est incorrect ou expiré.',
+      resend: 'Impossible de renvoyer le code pour le moment.',
+    },
   },
   success: {
     title: 'Félicitations !',

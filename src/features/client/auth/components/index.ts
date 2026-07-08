@@ -3,8 +3,10 @@ export * from './OtpInput';
 export * from './PermissionCard';
 export * from './TermsCheckbox';
 export * from './AccountTypeCard';
-export * from './AuthStepProgress';
-export * from './OtpCodeInput';
+export * from './AuthLogoHeader';
 export * from './AuthStepProgress';
 export * from './FormSection';
-
+export * from './OtpCodeInput';
+export * from './ServicePicker';
+export * from './ClientForm';
+export * from './ProfessionalForm';

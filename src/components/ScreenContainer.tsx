@@ -24,7 +24,7 @@ import {
   verticalScale,
 } from '@utils/normalizedCss';
 
-import { colors } from '@theme/index';
+import { useTheme } from '@theme/ThemeProvider';
 
 type Mode = 'light' | 'dark';
 
@@ -46,16 +46,6 @@ interface ScreenContainerProps extends ViewProps {
   contentContainerStyle?: ScrollViewProps['contentContainerStyle'];
 }
 
-const getBackgroundByMode = (mode: Mode) => {
-  return mode === 'dark'
-    ? colors?.black || '#0D0F12'
-    : colors?.background || '#F6F6F7';
-};
-
-const getStatusBarStyleByMode = (mode: Mode) => {
-  return mode === 'dark' ? 'light-content' : 'dark-content';
-};
-
 const ScreenContainer = React.forwardRef<View, ScreenContainerProps>(
   (
     {
@@ -67,7 +57,7 @@ const ScreenContainer = React.forwardRef<View, ScreenContainerProps>(
       backgroundImage,
       useImageBackground = false,
       imageResizeMode = 'cover',
-      mode = 'light',
+      mode,
       centered = false,
       withTopSafeArea = true,
       withBottomSafeArea = false,
@@ -78,9 +68,16 @@ const ScreenContainer = React.forwardRef<View, ScreenContainerProps>(
     },
     ref,
   ) => {
-    const resolvedBackground = backgroundColor || getBackgroundByMode(mode);
+    const { themeMode, theme } = useTheme();
+
+    const resolvedMode = mode || themeMode;
+    const resolvedBackground =
+      backgroundColor ||
+      theme.colors.background ||
+      (resolvedMode === 'dark' ? '#0D0F12' : '#FFFFFF');
+
     const resolvedStatusBarStyle =
-      statusBarStyle || getStatusBarStyleByMode(mode);
+      statusBarStyle || (resolvedMode === 'dark' ? 'light-content' : 'dark-content');
 
     const safeAreaEdges: Edge[] = [];
 

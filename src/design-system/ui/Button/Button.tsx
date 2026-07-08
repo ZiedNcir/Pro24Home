@@ -1,8 +1,18 @@
-import React from 'react';
-import { ActivityIndicator, Pressable, PressableProps, StyleSheet, View, ViewStyle } from 'react-native';
-import { colors, radius, spacing } from '../../foundations';
+import React, { useMemo } from 'react';
+import {
+  ActivityIndicator,
+  Pressable,
+  PressableProps,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native';
+import type { DefaultTheme } from 'styled-components/native';
+
+import { radius, spacing } from '../../foundations';
 import { Icon, IconName } from '../../icons';
-import { AppText } from '../Text';
+import { useTheme } from '../../../theme/ThemeProvider';
+import { AppText } from '../Text/AppText';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
@@ -21,21 +31,25 @@ export interface ButtonProps extends Omit<PressableProps, 'style'> {
 const height = { sm: 40, md: 48, lg: 56 };
 const padding = { sm: spacing[3], md: spacing[4], lg: spacing[5] };
 
-const textColor: Record<ButtonVariant, string> = {
-  primary: colors.white,
-  secondary: colors.primary[700],
-  outline: colors.primary[700],
-  ghost: colors.primary[700],
-  danger: colors.white,
-};
+const getTextColor = (theme: DefaultTheme): Record<ButtonVariant, string> => ({
+  primary: theme.colors.textInverse,
+  secondary: theme.colors.primaryDark,
+  outline: theme.colors.primaryDark,
+  ghost: theme.colors.primaryDark,
+  danger: theme.colors.textInverse,
+});
 
-const variantStyle: Record<ButtonVariant, ViewStyle> = {
-  primary: { backgroundColor: colors.primary[600] },
-  secondary: { backgroundColor: colors.primary[50] },
-  outline: { backgroundColor: colors.white, borderWidth: 1, borderColor: colors.primary[600] },
+const getVariantStyle = (theme: DefaultTheme): Record<ButtonVariant, ViewStyle> => ({
+  primary: { backgroundColor: theme.colors.primary },
+  secondary: { backgroundColor: theme.colors.primaryLighter },
+  outline: {
+    backgroundColor: theme.colors.surface,
+    borderWidth: 1,
+    borderColor: theme.colors.primary,
+  },
   ghost: { backgroundColor: 'transparent' },
-  danger: { backgroundColor: colors.error },
-};
+  danger: { backgroundColor: theme.colors.danger },
+});
 
 export const Button: React.FC<ButtonProps> = ({
   title,
@@ -49,10 +63,17 @@ export const Button: React.FC<ButtonProps> = ({
   style,
   ...props
 }) => {
+  const { theme } = useTheme();
   const isDisabled = disabled || loading;
+
+  const textColor = useMemo(() => getTextColor(theme), [theme]);
+  const variantStyle = useMemo(() => getVariantStyle(theme), [theme]);
+
   const renderIcon = (icon?: IconName | React.ReactNode) => {
     if (!icon) return null;
-    return typeof icon === 'string' ? <Icon name={icon} size="sm" color={textColor[variant]} /> : icon;
+    return typeof icon === 'string'
+      ? <Icon name={icon} size="sm" color={textColor[variant]} />
+      : icon;
   };
 
   return (
@@ -78,7 +99,9 @@ export const Button: React.FC<ButtonProps> = ({
       ) : (
         <View style={styles.content}>
           {renderIcon(leftIcon)}
-          <AppText variant="button" color={textColor[variant]}>{title}</AppText>
+          <AppText variant="button" color={textColor[variant]}>
+            {title}
+          </AppText>
           {renderIcon(rightIcon)}
         </View>
       )}

@@ -8,13 +8,13 @@ import {
 } from 'react-native';
 
 import {
-  colors,
   moderateScale,
   radius,
   spacing,
 } from '../../foundations';
 
-import { AppText } from '../Text';
+import { useTheme } from '../../../theme/ThemeProvider';
+import { AppText } from '../Text/AppText';
 
 export interface AppLoaderProps {
   label?: string;
@@ -28,12 +28,17 @@ export interface AppLoaderProps {
 export const AppLoader: React.FC<AppLoaderProps> = ({
   label,
   size = moderateScale(52),
-  color = colors.primary[600],
-  trackColor = colors.primary[100],
-  labelColor = colors.textMuted,
+  color,
+  trackColor,
+  labelColor,
   style,
 }) => {
+  const { theme } = useTheme();
   const rotate = useRef(new Animated.Value(0)).current;
+
+  const resolvedColor = color || theme.colors.primary;
+  const resolvedTrackColor = trackColor || theme.colors.primaryLighter;
+  const resolvedLabelColor = labelColor || theme.colors.textSecondary;
 
   useEffect(() => {
     const animation = Animated.loop(
@@ -66,15 +71,15 @@ export const AppLoader: React.FC<AppLoaderProps> = ({
             height: size,
             borderRadius: radius.full,
             borderWidth,
-            borderColor: trackColor,
-            borderTopColor: color,
+            borderColor: resolvedTrackColor,
+            borderTopColor: resolvedColor,
             transform: [{ rotate: spin }],
           },
         ]}
       />
 
       {label ? (
-        <AppText variant="bodyLarge" color={labelColor} align="center">
+        <AppText variant="bodyLarge" color={resolvedLabelColor} align="center">
           {label}
         </AppText>
       ) : null}

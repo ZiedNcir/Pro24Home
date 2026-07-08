@@ -4,6 +4,5 @@ export * from './Input';
 export * from './Card';
 export * from './Badge';
 export * from './Avatar';
-export * from './Navigation';
 export * from './Loader';
 export * from './Slider';
