@@ -15,16 +15,16 @@ import {
   Button,
   SlidePagination,
   colors,
-  radius,
   sizes,
   vSpacing,
 } from '../../../../design-system';
 
+import ScreenContainer from '@components/ScreenContainer';
 import { WelcomeIllustrations } from '../../../../assets/illustrations/welcome';
 import { t } from '../../../../translations/i18n';
+import { useAppDispatch } from '../../../../store/hooks';
+import { completeOnboarding } from '../../../../store/slices/authSlice';
 import { CLIENT_AUTH_ROUTES } from '../constants';
-import ScreenContainer from '@components/ScreenContainer';
-
 
 type Props = NativeStackScreenProps<any>;
 
@@ -50,6 +50,7 @@ const slides = [
 ];
 
 export const C01ClientWelcome: React.FC<Props> = ({ navigation }) => {
+  const dispatch = useAppDispatch();
   const { width } = useWindowDimensions();
   const scrollX = useRef(new Animated.Value(0)).current;
   const [current, setCurrent] = useState(0);
@@ -59,6 +60,11 @@ export const C01ClientWelcome: React.FC<Props> = ({ navigation }) => {
       setCurrent(viewableItems[0].index);
     }
   }).current;
+
+  const completeAndNavigate = (routeName: string) => {
+    dispatch(completeOnboarding());
+    navigation.navigate(routeName as never);
+  };
 
   return (
     <ScreenContainer
@@ -70,10 +76,8 @@ export const C01ClientWelcome: React.FC<Props> = ({ navigation }) => {
       backgroundImage={WelcomeIllustrations.Background}
     >
       <View style={styles.container}>
-
         {slides.map((item, index) => (
           <View key={item.key} style={{ display: index === current ? 'flex' : 'none' }}>
-
             <AppText variant="h1" align="center" color={colors.text}>
               {t(item.titleKey)}
             </AppText>
@@ -82,10 +86,9 @@ export const C01ClientWelcome: React.FC<Props> = ({ navigation }) => {
               {t(item.subtitleKey)}
             </AppText>
           </View>
-        ))
-        }
-
+        ))}
       </View>
+
       <FlatList
         data={slides}
         keyExtractor={(item) => item.key}
@@ -100,8 +103,6 @@ export const C01ClientWelcome: React.FC<Props> = ({ navigation }) => {
         )}
         renderItem={({ item }) => (
           <View style={[styles.slide, { width }]}>
-
-
             <Image source={item.image} resizeMode="cover" style={styles.illustration} />
           </View>
         )}
@@ -114,15 +115,14 @@ export const C01ClientWelcome: React.FC<Props> = ({ navigation }) => {
           title={t('module1.welcome.createAccount')}
           variant="primary"
           leftIcon="plus"
-          onPress={() => navigation.navigate(CLIENT_AUTH_ROUTES.accountType as never)}
+          onPress={() => completeAndNavigate(CLIENT_AUTH_ROUTES.accountType)}
         />
+
         <Button
           title={t('module1.welcome.login')}
           variant="outline"
           leftIcon="user"
-          onPress={() =>
-            navigation.navigate(CLIENT_AUTH_ROUTES.login as never)
-          }
+          onPress={() => completeAndNavigate(CLIENT_AUTH_ROUTES.login)}
         />
       </View>
     </ScreenContainer>
@@ -130,17 +130,9 @@ export const C01ClientWelcome: React.FC<Props> = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
   container: {
     paddingHorizontal: vSpacing[10],
-    marginTop: vSpacing[12]
-  },
-  c: {
-    alignItems: 'center',
-    marginTop: vSpacing[2],
+    marginTop: vSpacing[12],
   },
   slide: {
     flex: 1,
@@ -149,14 +141,8 @@ const styles = StyleSheet.create({
     marginTop: vSpacing[10],
   },
   illustration: {
-    width: '90%',
+    width: '100%',
     height: '100%',
-    borderRadius: radius['2xl'],
-    marginBottom: vSpacing[4],
-    borderWidth: 2,
-    borderColor: colors.primary['400'],
-  },
-  text: {
   },
   bottom: {
     gap: vSpacing[2],

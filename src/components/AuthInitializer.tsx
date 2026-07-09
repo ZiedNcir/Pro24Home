@@ -2,7 +2,11 @@
 import React, { useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux';
-import { restoreSession } from '@store/slices/authSlice';
+
+import {
+    markInitialized,
+    restoreSession,
+} from '@store/slices/authSlice';
 import { fetchUserProfile } from '@store/slices/user.slice';
 import { User } from '@store/api/api.types';
 
@@ -12,7 +16,6 @@ const AuthInitializer: React.FC = () => {
     useEffect(() => {
         const initializeAuth = async () => {
             try {
-                // Check if we have stored authentication data
                 const [
                     storedToken,
                     storedRefreshToken,
@@ -39,11 +42,9 @@ const AuthInitializer: React.FC = () => {
                 const sessionExpiresAt = storedSessionExpiresAt[1];
                 const biometricEnabled = storedBiometricEnabled[1] === 'true';
 
-                // If we have a token and user data, restore the session
                 if (token && userString) {
                     const user: User = JSON.parse(userString);
 
-                    // Restore authentication session
                     dispatch(
                         restoreSession({
                             user,
@@ -53,27 +54,31 @@ const AuthInitializer: React.FC = () => {
                             lastLoginAt: lastLoginAt || undefined,
                             sessionExpiresAt: sessionExpiresAt || undefined,
                             biometricEnabled,
-                        })
+                        }),
                     );
 
-                    // Fetch additional user profile data
                     dispatch(fetchUserProfile(user.id));
+                    return;
                 }
+
+                dispatch(markInitialized());
             } catch (error) {
                 console.error('Failed to initialize authentication:', error);
-                // If initialization fails, clear potentially corrupted data
+
                 await AsyncStorage.multiRemove([
                     'auth_token',
                     'refresh_token',
                     'user',
                 ]).catch(console.error);
+
+                dispatch(markInitialized());
             }
         };
 
         initializeAuth();
     }, [dispatch]);
 
-    return null; // This component doesn't render anything
+    return null;
 };
 
 export default AuthInitializer;

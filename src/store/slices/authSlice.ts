@@ -127,6 +127,11 @@ const authSlice = createSlice({
             state.error = null;
         },
 
+        // Mark auth initialization completed when there is no stored session
+        markInitialized: (state) => {
+            state.isInitialized = true;
+        },
+
         // Update user profile
         updateUserProfile: (
             state,
@@ -209,6 +214,7 @@ export const {
     setCredentials,
     logout,
     restoreSession,
+    markInitialized,
     updateUserProfile,
     updateTokens,
     clearTokens,
@@ -233,6 +239,10 @@ export const selectIsProfessional = (state: { auth: AuthState }) =>
     state.auth.userType === 'professional';
 export const selectAuthError = (state: { auth: AuthState }) => state.auth.error;
 export const selectAuthLoading = (state: { auth: AuthState }) => state.auth.isLoading;
+export const selectIsInitialized = (state: { auth: AuthState }) =>
+    state.auth.isInitialized;
+export const selectHasCompletedOnboarding = (state: { auth: AuthState }) =>
+    state.auth.onboardingCompleted;
 export const selectSessionExpiry = (state: { auth: AuthState }) =>
     state.auth.sessionExpiresAt;
 export const selectBiometricEnabled = (state: { auth: AuthState }) =>

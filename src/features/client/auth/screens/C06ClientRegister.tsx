@@ -26,6 +26,8 @@ import {
   ClientRegisterFormValues,
 } from '../components';
 import { getAuthApiMessage } from '../helpers/authApiError';
+import { showAuthErrorToast } from '../helpers';
+import toast from 'react-native-toast-notifications';
 
 type Props = NativeStackScreenProps<any>;
 
@@ -71,7 +73,10 @@ export const C06ClientRegister: React.FC<Props> = ({ navigation }) => {
         email: values.email.trim(),
       } as never);
     } catch (error) {
-      setErrorMessage(getAuthApiMessage(error, t('module1.register.errors.generic')));
+      showAuthErrorToast(
+        toast,
+        getAuthApiMessage(error, t('module1.professional.errors.generic')),
+      );
     }
   };
 

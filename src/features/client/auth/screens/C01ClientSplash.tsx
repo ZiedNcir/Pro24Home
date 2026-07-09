@@ -20,6 +20,11 @@ import {
 
 import { SplashIllustrations } from '../../../../assets/illustrations/splash';
 import { t } from '../../../../translations/i18n';
+import { useAppSelector } from '../../../../store/hooks';
+import {
+  selectHasCompletedOnboarding,
+  selectIsInitialized,
+} from '../../../../store/selectors';
 import { CLIENT_AUTH_ROUTES } from '../constants';
 
 import Pro24Logo from '../../../../assets/logo/logo-mediumPro24.svg';
@@ -30,6 +35,9 @@ export const C01ClientSplash: React.FC<Props> = ({ navigation }) => {
   const opacity = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(0.96)).current;
   const translateY = useRef(new Animated.Value(16)).current;
+
+  const isInitialized = useAppSelector(selectIsInitialized);
+  const hasCompletedOnboarding = useAppSelector(selectHasCompletedOnboarding);
 
   useEffect(() => {
     Animated.parallel([
@@ -50,13 +58,23 @@ export const C01ClientSplash: React.FC<Props> = ({ navigation }) => {
         useNativeDriver: true,
       }),
     ]).start();
+  }, [opacity, scale, translateY]);
+
+  useEffect(() => {
+    if (!isInitialized) {
+      return;
+    }
 
     const timer = setTimeout(() => {
-      return navigation.replace(CLIENT_AUTH_ROUTES.welcome);
-    }, 1600);
+      navigation.replace(
+        hasCompletedOnboarding
+          ? CLIENT_AUTH_ROUTES.login
+          : CLIENT_AUTH_ROUTES.welcome,
+      );
+    }, 1200);
 
     return () => clearTimeout(timer);
-  }, [navigation, opacity, scale, translateY]);
+  }, [hasCompletedOnboarding, isInitialized, navigation]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -155,12 +173,9 @@ const styles = StyleSheet.create({
     marginBottom: vSpacing[4],
   },
   tagline: {
-    maxWidth: 320,
-    gap: vSpacing[1],
+    alignItems: 'center',
   },
   loaderArea: {
-    alignItems: 'center',
-    justifyContent: 'center',
     paddingBottom: vSpacing[4],
   },
 });

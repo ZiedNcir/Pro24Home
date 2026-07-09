@@ -59,7 +59,7 @@ export const AuthLogoHeader: React.FC<AuthLogoHeaderProps> = ({
 const createStyles = (c: ReturnType<typeof getThemeTokens>) => StyleSheet.create({
   container: {
     width: '100%',
-    minHeight: vSpacing[10],
+    minHeight: vSpacing[9],
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

@@ -27,6 +27,8 @@ import {
   ProfessionalRegisterFormValues,
 } from '../components';
 import { getAuthApiMessage } from '../helpers/authApiError';
+import { showAuthErrorToast } from '../helpers';
+import toast from 'react-native-toast-notifications';
 
 type Props = NativeStackScreenProps<any>;
 
@@ -80,7 +82,7 @@ export const C06ProfessionalRegister: React.FC<Props> = ({ navigation }) => {
         phone_number: values.phone_number.trim(),
         address: values.address.trim(),
         postal_code: values.postal_code.trim(),
-        onesignal_key: 'zerftyyhuuh',
+        onesignal_key: '',
         company_name: values.company_name.trim(),
         siret_number: values.siret_number.trim(),
         services: values.services,
@@ -93,10 +95,11 @@ export const C06ProfessionalRegister: React.FC<Props> = ({ navigation }) => {
         email: values.email.trim(),
       } as never);
     } catch (error) {
-      setErrorMessage(getAuthApiMessage(error, t('module1.professional.errors.generic')));
+      showAuthErrorToast(toast,
+        getAuthApiMessage(error, t('module1.register.errors.generic')),
+      );
     }
-  };
-
+  }
   return (
     <ScreenContainer paddingHorizontal={0} paddingVertical={0} withTopSafeArea={false}>
       <ScrollView
