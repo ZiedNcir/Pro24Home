@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import {
@@ -12,11 +12,12 @@ import {
 } from '../../../../design-system';
 
 import { t } from '../../../../translations/i18n';
+import ScreenContainer from '@components/ScreenContainer';
 
 type Props = NativeStackScreenProps<any>;
 
 export const C10ClientFirstHome: React.FC<Props> = () => (
-  <SafeAreaView style={styles.safeArea}>
+  <ScreenContainer style={styles.safeArea}>
     <View style={styles.container}>
       <View style={styles.header}>
         <AppText variant="body" color={colors.textMuted}>
@@ -37,9 +38,9 @@ export const C10ClientFirstHome: React.FC<Props> = () => (
         <CategoryCard title="Climatisation" subtitle="Fuite, entretien" icon="airConditioning" />
       </View>
 
-      <Button title={t('module1.firstHome.primaryAction')} onPress={() => {}} />
+      <Button title={t('module1.firstHome.primaryAction')} onPress={() => { }} />
     </View>
-  </SafeAreaView>
+  </ScreenContainer>
 );
 
 const styles = StyleSheet.create({

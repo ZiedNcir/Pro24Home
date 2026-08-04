@@ -6,15 +6,18 @@ import { t } from '../../translations/i18n';
 import { ClientRoutes } from '../routes';
 import { clientTabs } from './tabs.config';
 
-import { C10ClientFirstHome } from '../../features/client/auth';
 import { PlaceholderScreen } from '../utils/PlaceholderScreen';
+import { C50ClientHistory } from '../../features/client/history/screens/C50ClientHistory';
+import { C20ClientHome } from '../../features/client/home';
 
 const Tab = createBottomTabNavigator();
 
 const getComponent = (routeName: string) => {
   switch (routeName) {
     case ClientRoutes.Home:
-      return C10ClientFirstHome;
+      return C20ClientHome;
+    case ClientRoutes.History:
+      return C50ClientHistory;
     default:
       return PlaceholderScreen;
   }

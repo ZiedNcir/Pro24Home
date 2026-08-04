@@ -20,10 +20,17 @@ export type ClientStackParamList = {
   ClientHome: undefined;
   ClientCategories: undefined;
   ClientCreateRequest: { serviceId?: number } | undefined;
+  ClientCreateRequestDescription: undefined;
+  ClientCreateRequestPhotos: undefined;
+  ClientCreateRequestAddress: undefined;
+  ClientCreateRequestAvailability: undefined;
+  ClientCreateRequestSummary: undefined;
+  ClientCreateRequestConfirmation: { interventionId?: number } | undefined;
   ClientMatching: { interventionId: number };
   ClientQuote: { interventionId: number; devisId?: number };
   ClientTracking: { interventionId: number };
   ClientHistory: undefined;
+  ClientHistoryDetail: { interventionId: number };
   ClientNotifications: undefined;
   ClientProfile: undefined;
 };
