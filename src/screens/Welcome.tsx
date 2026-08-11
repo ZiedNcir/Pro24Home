@@ -50,7 +50,7 @@ const Welcome: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(20)).current;
-  const activeStep = tutorialSteps[currentStep];
+  const activeStep = tutorialSteps[currentStep]!;
 
   useEffect(() => {
     Animated.parallel([
@@ -61,7 +61,7 @@ const Welcome: React.FC = () => {
 
   const handleStart = async () => {
     setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 350));
+    await new Promise(resolve => setTimeout(resolve, 500));
     setLoading(false);
     navigation.navigate('RegisterScreen', { role: 'client' });
   };
