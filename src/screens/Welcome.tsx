@@ -104,7 +104,17 @@ const Welcome: React.FC = () => {
               <ActionLabel>{activeStep.actionLabel}</ActionLabel>
             </PrimaryAction>
 
-            <ProgressRow accessibilityLabel={`Étape ${currentStep + 1} sur 3`}>
+            <ProgressRow
+              accessible
+              accessibilityRole="progressbar"
+              accessibilityLabel={`Étape ${currentStep + 1} sur 3`}
+              accessibilityValue={{
+                min: 1,
+                max: 3,
+                now: currentStep + 1,
+                text: `Étape ${currentStep + 1} sur 3`,
+              }}
+            >
               {tutorialSteps.map((step, index) => (
                 <ProgressDot key={step.title} active={index === currentStep} />
               ))}
