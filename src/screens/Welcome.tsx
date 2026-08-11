@@ -120,14 +120,14 @@ const Welcome: React.FC = () => {
               ))}
             </ProgressRow>
 
-            <Pressable
+            <LoginButton
               onPress={() => navigation.navigate('SignIn', { role: 'client' })}
               accessibilityRole="button"
               accessibilityLabel="Se connecter"
               hitSlop={8}
             >
               <LoginHint>Vous avez déjà un compte ? <LoginLink>Se connecter</LoginLink></LoginHint>
-            </Pressable>
+            </LoginButton>
           </BottomContent>
         </MainContent>
 
@@ -164,6 +164,9 @@ const BrandLogo = styled(LogoMediumPro24Icon)`
 `;
 
 const SkipButton = styled.TouchableOpacity`
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
   padding-vertical: ${verticalScale(8)}px;
   padding-horizontal: ${horizontalScale(6)}px;
 `;
@@ -273,6 +276,12 @@ const LoginHint = styled(Text)`
   font-family: 'Inter-Regular';
   font-size: ${fontPixel(12)}px;
   text-align: center;
+`;
+
+const LoginButton = styled(Pressable)`
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
 `;
 
 const LoginLink = styled(Text)`
