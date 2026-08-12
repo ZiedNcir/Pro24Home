@@ -53,11 +53,18 @@ const Welcome: React.FC = () => {
   const activeStep = tutorialSteps[currentStep]!;
 
   useEffect(() => {
-    Animated.parallel([
+    fadeAnim.setValue(0);
+    slideAnim.setValue(20);
+
+    const transition = Animated.parallel([
       Animated.timing(fadeAnim, { toValue: 1, duration: 650, useNativeDriver: true }),
       Animated.spring(slideAnim, { toValue: 0, friction: 8, useNativeDriver: true }),
-    ]).start();
-  }, [fadeAnim, slideAnim]);
+    ]);
+
+    transition.start();
+
+    return () => transition.stop();
+  }, [currentStep, fadeAnim, slideAnim]);
 
   const handleStart = async () => {
     setLoading(true);
@@ -76,59 +83,88 @@ const Welcome: React.FC = () => {
   };
 
   return (
-    <ScreenContainer mode="light" scrollable paddingHorizontal={0} paddingVertical={0}>
+    <ScreenContainer
+      mode="light"
+      scrollable
+      paddingHorizontal={0}
+      paddingVertical={0}
+      withTopSafeArea={false}
+    >
       <Page>
         <TopBar paddingTop={Math.max(insets.top, verticalScale(16))}>
           <BrandLogo />
           <SkipButton
             onPress={() => navigation.navigate('RegisterScreen', { role: 'client' })}
             accessibilityRole="button"
+            accessibilityLabel="Passer"
           >
             <SkipLabel>Passer</SkipLabel>
           </SkipButton>
         </TopBar>
 
         <MainContent>
-          <Eyebrow>{`ÉTAPE ${currentStep + 1} SUR 3`}</Eyebrow>
-          <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
+          <AnimatedStepContent
+            testID="tutorial-step-content"
+            style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}
+          >
+            <Eyebrow>{`ÉTAPE ${currentStep + 1} SUR 3`}</Eyebrow>
             <HeroFrame>
-              <HeroImage source={activeStep.image} resizeMode="cover" />
+              <HeroImage
+                testID="tutorial-hero-image"
+                source={activeStep.image}
+                resizeMode="cover"
+                accessible
+                accessibilityLabel={`Illustration : ${activeStep.title}`}
+              />
             </HeroFrame>
-          </Animated.View>
 
-          <BottomContent paddingBottom={Math.max(insets.bottom + verticalScale(8), verticalScale(18))}>
-            <Title>{activeStep.title}</Title>
-            <Description>{activeStep.description}</Description>
+            <BottomContent paddingBottom={Math.max(insets.bottom + verticalScale(8), verticalScale(18))}>
+              <Title>{activeStep.title}</Title>
+              <Description>{activeStep.description}</Description>
 
-            <PrimaryAction onPress={handlePrimaryAction} activeOpacity={0.88}>
-              <ActionLabel>{activeStep.actionLabel}</ActionLabel>
-            </PrimaryAction>
+              <PrimaryAction
+                testID="tutorial-primary-action"
+                onPress={handlePrimaryAction}
+                activeOpacity={0.88}
+                accessibilityRole="button"
+                accessibilityLabel={activeStep.actionLabel}
+              >
+                <ActionLabel>{activeStep.actionLabel}</ActionLabel>
+              </PrimaryAction>
 
-            <ProgressRow
-              accessible
-              accessibilityRole="progressbar"
-              accessibilityLabel={`Étape ${currentStep + 1} sur 3`}
-              accessibilityValue={{
-                min: 1,
-                max: 3,
-                now: currentStep + 1,
-                text: `Étape ${currentStep + 1} sur 3`,
-              }}
-            >
-              {tutorialSteps.map((step, index) => (
-                <ProgressDot key={step.title} active={index === currentStep} />
-              ))}
-            </ProgressRow>
+              <ProgressRow
+                testID="tutorial-progress"
+                accessible
+                accessibilityRole="progressbar"
+                accessibilityLabel={`Étape ${currentStep + 1} sur 3`}
+                accessibilityValue={{
+                  min: 1,
+                  max: 3,
+                  now: currentStep + 1,
+                  text: `Étape ${currentStep + 1} sur 3`,
+                }}
+              >
+                {tutorialSteps.map((step, index) => (
+                  <ProgressDot
+                    key={step.title}
+                    testID={`tutorial-progress-dot-${index + 1}`}
+                    active={index === currentStep}
+                    accessible
+                    accessibilityState={{ selected: index === currentStep }}
+                  />
+                ))}
+              </ProgressRow>
 
-            <LoginButton
-              onPress={() => navigation.navigate('SignIn', { role: 'client' })}
-              accessibilityRole="button"
-              accessibilityLabel="Se connecter"
-              hitSlop={8}
-            >
-              <LoginHint>Vous avez déjà un compte ? <LoginLink>Se connecter</LoginLink></LoginHint>
-            </LoginButton>
-          </BottomContent>
+              <LoginButton
+                onPress={() => navigation.navigate('SignIn', { role: 'client' })}
+                accessibilityRole="button"
+                accessibilityLabel="Se connecter"
+                hitSlop={8}
+              >
+                <LoginHint>Vous avez déjà un compte ? <LoginLink>Se connecter</LoginLink></LoginHint>
+              </LoginButton>
+            </BottomContent>
+          </AnimatedStepContent>
         </MainContent>
 
         <Spinner
@@ -182,8 +218,12 @@ const MainContent = styled.View`
   padding-horizontal: ${horizontalScale(20)}px;
 `;
 
+const AnimatedStepContent = styled(Animated.View)`
+  flex: 1;
+`;
+
 const Eyebrow = styled(Text)`
-  color: #7890ac;
+  color: #60738f;
   font-family: 'Inter-Bold';
   font-size: ${fontPixel(10)}px;
   letter-spacing: 1.1px;
@@ -242,9 +282,9 @@ const PrimaryAction = styled.TouchableOpacity`
   min-height: ${verticalScale(56)}px;
   align-items: center;
   justify-content: center;
-  background-color: #f47b20;
+  background-color: #c75100;
   border-radius: ${moderateScale(16)}px;
-  shadow-color: #f47b20;
+  shadow-color: #c75100;
   shadow-offset: 0px 6px;
   shadow-opacity: 0.22;
   shadow-radius: 12px;
@@ -272,7 +312,7 @@ const ProgressDot = styled.View<{ active?: boolean }>`
 `;
 
 const LoginHint = styled(Text)`
-  color: #8291a5;
+  color: #60738f;
   font-family: 'Inter-Regular';
   font-size: ${fontPixel(12)}px;
   text-align: center;
