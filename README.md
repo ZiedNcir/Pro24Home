@@ -1,5 +1,29 @@
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
+## iOS development loop
+
+The iOS-first development command starts Metro and launches Pro24Home in the iOS Simulator:
+
+```sh
+npm install
+bundle exec pod install
+npm run dev:ios
+```
+
+To target a specific simulator by name or UUID:
+
+```sh
+IOS_DEVICE="iPhone 16" npm run dev:ios
+```
+
+After the app is running, save JavaScript or TypeScript changes and Fast Refresh will update the Simulator. Use the Simulator’s reload command when a full reload is needed. To capture the current rendered screen for review, run:
+
+```sh
+npm run capture:ios
+```
+
+The timestamped PNG and a stable `artifacts/ios/latest.png` review image are saved under `artifacts/ios/`. The capture command uses the first booted Simulator by default, or the simulator named by `IOS_DEVICE`. If no Simulator is booted, start one in Xcode or set `IOS_DEVICE` to its name or UUID.
+
 # Getting Started
 
 > **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.

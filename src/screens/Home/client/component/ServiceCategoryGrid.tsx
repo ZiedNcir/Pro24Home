@@ -7,6 +7,8 @@ import Text from '@components/Text';
 import { verticalScale, } from '@utils/normalizedCss';
 import CardService from './CardService';
 import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { AppStackType } from '../../../../navigation/constant/core';
 
 const services = [
     {
@@ -37,6 +39,7 @@ const services = [
 
 const ServiceCategoryGrid = () => {
     const navigation = useNavigation();
+    const appNavigation = navigation as unknown as NativeStackNavigationProp<AppStackType>;
 
 
     return (
@@ -53,7 +56,10 @@ const ServiceCategoryGrid = () => {
                         image={item.image}
                         description={item.description}
                         onClick={() =>
-                            navigation.navigate('Tabs' as never)
+                            appNavigation.navigate('NewIntervention', {
+                                service_id: item.id,
+                                service_name: item.title,
+                            })
                         }
                     />
                 ))}
@@ -77,4 +83,3 @@ const Grid = styled.View`
   flex-wrap: wrap;
   justify-content: space-between;
 `;
-

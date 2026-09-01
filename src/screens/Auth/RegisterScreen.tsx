@@ -5,11 +5,13 @@ import { useTranslation } from 'react-i18next';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Toast } from 'react-native-toast-notifications';
-import { verticalScale } from '@utils/normalizedCss';
+import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
+import { useTheme } from '@theme/ThemeProvider';
 
 // Components
-import { Text, ScreenContainer, NavigationHeader } from '@components/index';
+import { Text, ScreenContainer } from '@components/index';
 
 // Redux
 import { useAppSelector } from '@store/hooks';
@@ -34,6 +36,7 @@ export const RegisterScreen = () => {
     const route = useRoute();
     const navigation = useNavigation<AppNavigationProp>();
     const insets = useSafeAreaInsets();
+    const { theme, themeMode } = useTheme();
 
 
     const params = route.params as RouteParams;
@@ -95,7 +98,7 @@ export const RegisterScreen = () => {
     };
 
     const navigateToSignIn = () => {
-        //navigation.navigate('SignIn', { role: params.role } as never);
+        navigation.navigate('SignIn', { role: params.role });
     };
 
 
@@ -115,46 +118,56 @@ export const RegisterScreen = () => {
 
     return (
         <ScreenContainer
-            mode="light"
+            mode={themeMode}
             scrollable
-            paddingHorizontal={10}
+            paddingHorizontal={0}
             paddingVertical={0}
-            backgroundImage={require('@assets/images/background_ligth.png')}
-            useImageBackground
         >
-            <NavigationHeader />
-
-            <View style={styles.header}>
-                <Text variant="title" style={styles.title}>
-                    {getTitle()}
-                </Text>
-
-                {/* Form based on role */}
-                {params.role === 'client' ? (
-                    <ClientForm
-                        onSuccess={handleUserRegistrationSuccess}
-                        onError={handleUserRegistrationError}
-                    />
-                ) : (
-                    <ProfessionalForm
-                        services={services?.data || []}
-                        servicesLoading={servicesLoading}
-                        onSuccess={handleProfessionalRegistrationSuccess}
-                        onError={handleProfessionalRegistrationError}
-
-                    />
-                )}
-
-                {/* Link to sign in */}
+            <View style={styles.navigationHeader}>
                 <TouchableOpacity
-                    style={[styles.bottomText, { marginBottom: Math.max(insets.bottom - verticalScale(25)) }]}
-                    onPress={navigateToSignIn}
-                    disabled={authLoading}>
-                    <Text variant="medium">{t('terms.client') || 'Déjà inscrit ?'} </Text>
-                    <Text variant="medium" color="warning">
-                        {t('terms.loginAccount') || 'Se connecter'}
-                    </Text>
+                    style={styles.backButton}
+                    onPress={() => navigation.goBack()}
+                    accessibilityRole="button"
+                    accessibilityLabel="Retour"
+                >
+                    <Text style={[styles.backIcon, { color: theme.colors.primary }]}>‹</Text>
                 </TouchableOpacity>
+                <LogoMediumPro24Icon style={styles.logo} />
+            </View>
+
+            <View style={styles.cardContainer}>
+                <View style={[styles.card, { backgroundColor: theme.colors.surface, shadowColor: theme.colors.black }]}>
+                    <Text variant="title" style={[styles.title, { color: theme.colors.textPrimary }]}>
+                        {getTitle()}
+                    </Text>
+
+                    {/* Form based on role */}
+                    {params.role === 'client' ? (
+                        <ClientForm
+                            onSuccess={handleUserRegistrationSuccess}
+                            onError={handleUserRegistrationError}
+                        />
+                    ) : (
+                        <ProfessionalForm
+                            services={services?.data || []}
+                            servicesLoading={servicesLoading}
+                            onSuccess={handleProfessionalRegistrationSuccess}
+                            onError={handleProfessionalRegistrationError}
+
+                        />
+                    )}
+
+                    {/* Link to sign in */}
+                    <TouchableOpacity
+                        style={[styles.bottomText, { marginBottom: Math.max(insets.bottom - verticalScale(25)) }]}
+                        onPress={navigateToSignIn}
+                        disabled={authLoading}>
+                        <Text variant="medium" color={theme.colors.textSecondary}>{t('terms.client') || 'Déjà inscrit ?'} </Text>
+                        <Text variant="medium" color={theme.colors.primary}>
+                            {t('terms.loginAccount') || 'Se connecter'}
+                        </Text>
+                    </TouchableOpacity>
+                </View>
             </View>
 
 
@@ -163,12 +176,54 @@ export const RegisterScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    header: {
+    navigationHeader: {
+        height: verticalScale(78),
+        position: 'relative',
         alignItems: 'center',
-        flex: 1,
+        justifyContent: 'center',
+    },
+    backButton: {
+        position: 'absolute',
+        left: horizontalScale(8),
+        top: verticalScale(17),
+        width: 44,
+        height: 44,
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1,
+    },
+    backIcon: {
+        color: '#123D79',
+        fontFamily: 'Inter-Regular',
+        fontSize: 34,
+        lineHeight: 34,
+    },
+    logo: {
+        width: horizontalScale(150),
+        height: verticalScale(42),
+    },
+    cardContainer: {
+        width: '100%',
+        paddingHorizontal: horizontalScale(18),
+    },
+    card: {
+        width: '100%',
+        borderRadius: 28,
+        paddingHorizontal: horizontalScale(24),
+        paddingTop: verticalScale(28),
+        paddingBottom: verticalScale(30),
+        shadowOffset: { width: 0, height: verticalScale(8) },
+        shadowOpacity: 0.06,
+        shadowRadius: 16,
+        elevation: 4,
+        alignItems: 'center',
+        alignSelf: 'center',
     },
     title: {
         textAlign: 'center',
+        fontSize: 28,
+        lineHeight: 34,
+        marginBottom: verticalScale(12),
     },
     bottomText: {
         flexDirection: 'row',

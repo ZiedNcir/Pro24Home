@@ -29,6 +29,9 @@ const AddressCard: React.FC<Props> = ({
 }) => {
     return (
         <Card selected={!!selected} onPress={onPress} activeOpacity={0.86}>
+            <AddressIcon selected={!!selected}>
+                <SvgIcon name="fa-home" size={16} color={selected ? colors.primary : colors.gray600} />
+            </AddressIcon>
             <Content>
                 <TopLine>
                     <Text variant="bold" color="black" fontSize={13}>
@@ -86,6 +89,16 @@ const Card = styled.TouchableOpacity<{ selected: boolean }>`
 
 const Content = styled.View`
   flex: 1;
+  margin-left: ${horizontalScale(10)}px;
+`;
+
+const AddressIcon = styled.View<{ selected: boolean }>`
+  width: ${horizontalScale(36)}px;
+  height: ${horizontalScale(36)}px;
+  border-radius: ${horizontalScale(18)}px;
+  background-color: ${({ selected }) => (selected ? '#FFE7D8' : '#F7F7F7')};
+  justify-content: center;
+  align-items: center;
 `;
 
 const TopLine = styled.View`

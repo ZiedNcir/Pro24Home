@@ -6,7 +6,7 @@ import styled from 'styled-components/native';
 import type { Service } from '@store/api/api.types';
 import { Text, SvgIcon } from '@components';
 import { verticalScale, horizontalScale } from '@utils/normalizedCss';
-import { colors } from '@theme/index';
+import { useTheme } from '@theme/ThemeProvider';
 
 interface ListeServicesProps {
     services: Service[];
@@ -26,12 +26,12 @@ const ServiceItem = styled(Pressable) <{ selected: boolean }>`
   align-items: center;
   padding: ${verticalScale(10)}px ${horizontalScale(10)}px;
   margin-bottom: ${verticalScale(8)}px;
-  background-color: ${({ selected }) =>
-        selected ? colors.primaryLight : colors.white};
+  background-color: ${({ theme, selected }) =>
+        selected ? theme.colors.primaryLighter : theme.colors.surface};
   border-width: 1px;
-  border-color: ${({ selected }) => (selected ? colors.primary : colors.border)};
+  border-color: ${({ theme, selected }) => (selected ? theme.colors.primary : theme.colors.border)};
   border-radius: 8px;
-  shadow-color: ${colors.black};
+  shadow-color: ${({ theme }) => theme.colors.black};
   shadow-offset: 0px 2px;
   shadow-opacity: ${({ selected }) => (selected ? 0.1 : 0.05)};
   shadow-radius: 3px;
@@ -45,12 +45,12 @@ const ServiceContent = styled(View)`
 `;
 
 const ServiceTitle = styled(Text)`
-  color: ${colors.textPrimary};
+  color: ${({ theme }) => theme.colors.textPrimary};
   font-size: ${({ theme }) => theme.typography.sizes.title.small}px;
 `;
 
 const ServiceDescription = styled(Text)`
-  color: ${colors.textSecondary};
+  color: ${({ theme }) => theme.colors.textSecondary};
   font-size: ${({ theme }) => theme.typography.sizes.headline.medium}px;
   margin-top: 2px;
 `;
@@ -59,7 +59,7 @@ const CheckIcon = styled(View)`
   width: 24px;
   height: 24px;
   border-radius: 12px;
-  background-color: ${colors.primary};
+  background-color: ${({ theme }) => theme.colors.primary};
   justify-content: center;
   align-items: center;
 `;
@@ -79,9 +79,9 @@ const SkeletonRowContainer = styled(View)`
   align-items: center;
   padding: ${verticalScale(12)}px ${horizontalScale(16)}px;
   margin-bottom: ${verticalScale(8)}px;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
   border-width: 1px;
-  border-color: ${colors.border};
+  border-color: ${({ theme }) => theme.colors.border};
   border-radius: 8px;
 `;
 
@@ -89,13 +89,13 @@ const SkeletonCircle = styled(Animated.View)`
   width: 24px;
   height: 24px;
   border-radius: 12px;
-  background-color: ${colors.gray100};
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
 `;
 
 const SkeletonLine = styled(Animated.View)`
   height: 14px;
   border-radius: 8px;
-  background-color: ${colors.gray100};
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
 `;
 
 const ServicesSkeleton = ({ rows = 6 }: { rows?: number }) => {
@@ -150,6 +150,7 @@ const ListeServices = ({
     skeletonRows = 6,
 }: ListeServicesProps) => {
     const { t } = useTranslation();
+    const { theme } = useTheme();
     const screen_width = useWindowDimensions().width;
 
     const toggleService = (serviceId: number) => {
@@ -171,8 +172,8 @@ const ListeServices = ({
     if (!services || services.length === 0) {
         return (
             <EmptyState>
-                <SvgIcon name="fa-folder-open" size={48} color={colors.gray100} />
-                <Text variant="medium" style={styles.emptyText}>
+                <SvgIcon name="fa-folder-open" size={48} color={theme.colors.textDisabled} />
+                <Text variant="medium" color={theme.colors.textSecondary} style={styles.emptyText}>
                     {t('ui.form.services.empty')}
                 </Text>
             </EmptyState>
@@ -189,7 +190,7 @@ const ListeServices = ({
                     <SvgIcon
                         name={item.icon as any}
                         size={24}
-                        color={isSelected ? colors.primary : colors.textSecondary}
+                        color={isSelected ? theme.colors.primary : theme.colors.textSecondary}
                     />
                 ) : null}
 
@@ -204,7 +205,7 @@ const ListeServices = ({
 
                 {isSelected ? (
                     <CheckIcon>
-                        <SvgIcon name="fa-check" size={14} color={colors.white} />
+                        <SvgIcon name="fa-check" size={14} color={theme.colors.textInverse} />
                     </CheckIcon>
                 ) : null}
             </ServiceItem>
@@ -230,7 +231,6 @@ const styles = StyleSheet.create({
     },
     emptyText: {
         marginTop: verticalScale(16),
-        color: colors.textSecondary,
         textAlign: 'center',
     },
 });

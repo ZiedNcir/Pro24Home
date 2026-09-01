@@ -1,71 +1,143 @@
-import React, { useState } from 'react';
-import styled from 'styled-components/native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import { Toast } from 'react-native-toast-notifications';
 
 import ScreenContainer from '@components/ScreenContainer';
-import Text from '@components/Text';
-import { SvgIcon } from '@components/Icon';
-import { Colors } from '@utils/constant';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
-
 import InterventionHeader from '../components/InterventionHeader';
 import StepProgress from '../components/StepProgress';
-import BottomActions from '../components/BottomActions';
-import SelectableCard from '../components/SelectableCard';
-import ServiceSummaryCard from '../components/ServiceSummaryCard';
-import PhotoPickerRow from '../components/PhotoPickerRow';
-import AddressCard from '../components/AddressCard';
-import InfoNotice from '../components/InfoNotice';
+import ServiceStep from '../components/new-intervention/ServiceStep';
+import DetailsStep from '../components/new-intervention/DetailsStep';
+import AddressStep from '../components/new-intervention/AddressStep';
+import SummaryStep from '../components/new-intervention/SummaryStep';
 import { InterventionStep } from './types';
-import { colors } from '@theme/index';
-import { useNavigation } from '@react-navigation/core';
-
-const interventionTypes = [
-    {
-        id: 1,
-        title: 'Dépannage électrique',
-        description: 'Problème de courant, prise, disjoncteur, court-circuit...',
-        icon: 'fa-bolt',
-    },
-    {
-        id: 2,
-        title: 'Installation électrique',
-        description: 'Installation de nouveaux équipements, prises, luminaires...',
-        icon: 'fa-plug',
-    },
-    {
-        id: 3,
-        title: 'Mise aux normes',
-        description: 'Mise en conformité de votre installation électrique',
-        icon: 'fa-building',
-    },
-    {
-        id: 4,
-        title: 'Autre demande',
-        description: 'Autre type d’intervention électrique',
-        icon: 'fa-lightbulb',
-    },
-];
+import { AppStackType } from '../../../navigation/constant/core';
+import { useGetServicesQuery } from '@store/api/endpoints/auth';
+import { useAddAddressMutation, useGetAddressesQuery } from '@store/api/endpoints/client';
+import { selectUser } from '@store/slices/authSlice';
+import { getServicePannes } from '../utils/servicePannes';
+import { canContinueAddressSelection } from '../utils/addressFlow';
+import { mapGooglePlaceToAddress, type SelectedAddressLocation } from '../utils/googlePlaceAddress';
+import { fetchAddressFromCoordinates, fetchGooglePlaceDetails } from '../../../services/googlePlacesService';
+import { buildInterventionPayload } from '../utils/interventionPayload';
 
 export const NewInterventionScreen = () => {
-    const [step, setStep] = useState<InterventionStep>(1);
-    const [selectedType, setSelectedType] = useState(1);
-    const [selectedTiming, setSelectedTiming] = useState('asap');
-    const [selectedAddress, setSelectedAddress] = useState(1);
+    const route = useRoute<RouteProp<AppStackType, 'NewIntervention'>>();
     const navigation = useNavigation();
+    const { data: servicesResponse, isLoading: servicesLoading } = useGetServicesQuery({ lang: 'fr' });
+    const services = useMemo(() => servicesResponse?.data || [], [servicesResponse?.data]);
+    const selectedService = useMemo(() => {
+        const serviceId = route.params?.service_id;
+        const serviceName = route.params?.service_name?.toLowerCase();
+        return services.find(service => service.id === serviceId)
+            || services.find(service => service.name.toLowerCase() === serviceName);
+    }, [route.params?.service_id, route.params?.service_name, services]);
+    const [step, setStep] = useState<InterventionStep>(1);
+    const [selectedProblem, setSelectedProblem] = useState<number | null>(null);
+    const [selectedTiming, setSelectedTiming] = useState('asap');
+    const problemTypes = useMemo(() => getServicePannes(selectedService), [selectedService]);
+    const selectedProblemRecord = useMemo(
+        () => problemTypes.find(problem => problem.id === selectedProblem),
+        [problemTypes, selectedProblem],
+    );
+    const { data: addresses = [], isLoading: addressesLoading } = useGetAddressesQuery(undefined, {
+        refetchOnMountOrArgChange: true,
+    });
+    const [addAddress, { isLoading: isSavingAddress }] = useAddAddressMutation();
+    const [selectedAddress, setSelectedAddress] = useState<number | null>(null);
+    const [isAddingAddress, setIsAddingAddress] = useState(false);
+    const [locationName, setLocationName] = useState('');
+    const [locationDetails, setLocationDetails] = useState('');
+    const [isLookingUpAddress, setIsLookingUpAddress] = useState(false);
+    const [isMapFullscreen, setIsMapFullscreen] = useState(false);
+    const user = useSelector(selectUser);
+    const [selectedLocation, setSelectedLocation] = useState<SelectedAddressLocation | null>(null);
 
+    const selectedAddressRecord = useMemo(
+        () => addresses.find(address => address.id === selectedAddress),
+        [addresses, selectedAddress],
+    );
+    const canContinueAddress = canContinueAddressSelection({
+        selectedAddressId: selectedAddress,
+        isAddingAddress,
+        isLookingUpAddress,
+    });
+    const selectedMapRegion = useMemo(() => {
+        const latitude = selectedLocation?.latitude || selectedAddressRecord?.latitude;
+        const longitude = selectedLocation?.longitude || selectedAddressRecord?.longitude;
+        if (typeof latitude !== 'number' || typeof longitude !== 'number') return null;
+        return { latitude, longitude, latitudeDelta: 0.012, longitudeDelta: 0.012 };
+    }, [selectedAddressRecord, selectedLocation]);
+    const mapRegion = selectedMapRegion || { latitude: 36.8065, longitude: 10.1815, latitudeDelta: 0.12, longitudeDelta: 0.12 };
+
+    useEffect(() => {
+        if (selectedAddress === null && addresses.length > 0) {
+            const defaultAddress = addresses.find(address => address.is_default) || addresses[0];
+            if (defaultAddress) setSelectedAddress(defaultAddress.id);
+        }
+    }, [addresses, selectedAddress]);
 
     const goNext = () => {
-        if (step < 4) {
-            setStep((step + 1) as InterventionStep);
-            return;
-        }
-
-        //('PriceEstimation');
+        if (step === 1 && selectedProblem === null) return;
+        if (step === 3 && !canContinueAddress) return;
+        if (step < 4) setStep((step + 1) as InterventionStep);
     };
 
     const goPrevious = () => {
-        if (step > 1) {
-            setStep((step - 1) as InterventionStep);
+        if (step > 1) setStep((step - 1) as InterventionStep);
+    };
+
+    const closeAddressModal = () => {
+        setIsAddingAddress(false);
+        setIsMapFullscreen(false);
+        setSelectedLocation(null);
+        setLocationName('');
+        setLocationDetails('');
+        setIsLookingUpAddress(false);
+    };
+
+    const selectPlace = async (placeId: string) => {
+        setIsLookingUpAddress(true);
+        try {
+            const details = await fetchGooglePlaceDetails(placeId);
+            setSelectedLocation(mapGooglePlaceToAddress(details));
+        } catch (error: any) {
+            Toast.show(error?.message || 'Impossible de récupérer cette adresse.', { type: 'danger', placement: 'bottom' });
+        } finally {
+            setIsLookingUpAddress(false);
+        }
+    };
+
+    const selectCoordinate = async (latitude: number, longitude: number) => {
+        setIsLookingUpAddress(true);
+        try {
+            const address = await fetchAddressFromCoordinates(latitude, longitude);
+            setSelectedLocation({ address, latitude, longitude });
+        } catch {
+            setSelectedLocation({ address: 'Adresse sélectionnée sur la carte', latitude, longitude });
+        } finally {
+            setIsLookingUpAddress(false);
+        }
+    };
+
+    const saveAddress = async () => {
+        if (!selectedLocation) return;
+        try {
+            const savedAddress = await addAddress({
+                latitude: selectedLocation.latitude,
+                longitude: selectedLocation.longitude,
+                address: selectedLocation.address,
+                location_name: locationName.trim() || 'Mon adresse',
+                details: locationDetails.trim(),
+                phone: user?.phone_number || '',
+                zone_id: 1,
+                type: 'maison',
+            }).unwrap();
+            setSelectedAddress(savedAddress.id);
+            closeAddressModal();
+        } catch (error: any) {
+            Toast.show(error?.data?.message || error?.message || 'Impossible d’enregistrer cette adresse.', { type: 'danger', placement: 'bottom' });
         }
     };
 
@@ -81,234 +153,75 @@ export const NewInterventionScreen = () => {
             <StepProgress currentStep={step} />
 
             {step === 1 ? (
-                <>
-                    <ServiceSummaryCard
-                        title="Électricien"
-                        description="Dépannage et installation électrique"
-                        image={require('@assets/images/electricien.png')}
-                    />
-
-                    <SectionTitle>Quel est le type d’intervention ?</SectionTitle>
-
-                    {interventionTypes.map(item => (
-                        <SelectableCard
-                            key={item.id}
-                            title={item.title}
-                            description={item.description}
-                            icon={item.icon}
-                            selected={selectedType === item.id}
-                            onPress={() => setSelectedType(item.id)}
-                        />
-                    ))}
-
-                    <InfoNotice
-                        icon="fa-shield-alt"
-                        title="Professionnels qualifiés et vérifiés"
-                        description="Nos électriciens sont notés et évalués par nos clients."
-                    />
-
-                    <BottomActions primaryTitle="Continuer" onPrimaryPress={goNext} />
-                </>
+                <ServiceStep
+                    service={selectedService}
+                    problemTypes={problemTypes}
+                    servicesLoading={servicesLoading}
+                    selectedProblem={selectedProblem}
+                    onSelectProblem={setSelectedProblem}
+                    onNext={goNext}
+                />
             ) : null}
-
             {step === 2 ? (
-                <>
-                    <SectionTitle>Décrivez votre problème</SectionTitle>
-                    <InputBox
-                        multiline
-                        placeholder="La prise du salon ne fonctionne plus depuis hier..."
-                        placeholderTextColor="#8A8A8A"
-                    />
-
-                    <SectionTitle>Ajoutez des photos (optionnel)</SectionTitle>
-                    <PhotoPickerRow />
-
-                    <SectionTitle>Quand souhaitez-vous l’intervention ?</SectionTitle>
-
-                    <SelectableCard
-                        title="Dès que possible"
-                        description="Dans les prochaines 24h"
-                        icon="fa-clock"
-                        selected={selectedTiming === 'asap'}
-                        onPress={() => setSelectedTiming('asap')}
-                    />
-
-                    <SelectableCard
-                        title="Choisir une date et heure"
-                        description="Sélectionnez un créneau"
-                        icon="fa-calendar"
-                        selected={selectedTiming === 'schedule'}
-                        onPress={() => setSelectedTiming('schedule')}
-                    />
-
-                    <BottomActions
-                        primaryTitle="Continuer"
-                        onPrimaryPress={goNext}
-                        onSecondaryPress={goPrevious}
-                    />
-                </>
+                <DetailsStep
+                    selectedTiming={selectedTiming}
+                    onSelectTiming={setSelectedTiming}
+                    onNext={goNext}
+                    onPrevious={goPrevious}
+                />
             ) : null}
-
             {step === 3 ? (
-                <>
-                    <SectionTitle>Où doit avoir lieu l’intervention ?</SectionTitle>
-
-                    <SmallLabel>Adresse enregistrée</SmallLabel>
-
-                    <AddressCard
-                        title="123 Rue de la Paix, 75001 Paris"
-                        details="Appartement, étage 2, code 1234B"
-                        selected={selectedAddress === 1}
-                        isDefault
-                        onPress={() => setSelectedAddress(1)}
-                    />
-
-                    <SmallLabel>Autres adresses</SmallLabel>
-
-                    <AddressCard
-                        title="Bureau"
-                        details="45 Avenue des Champs-Élysées, 75008 Paris"
-                        selected={selectedAddress === 2}
-                        onPress={() => setSelectedAddress(2)}
-                    />
-
-                    <AddAddressButton onPress={() => { navigation.navigate("AddAddress" as never) }
-
-
-                    }>
-                        <SvgIcon name="fa-user-plus" size={14} color={colors.primary} />
-                        <Text variant="bold" color="primary" fontSize={13}>
-                            Ajouter une nouvelle adresse
-                        </Text>
-                    </AddAddressButton>
-
-                    <BottomActions
-                        primaryTitle="Continuer"
-                        onPrimaryPress={goNext}
-                        onSecondaryPress={goPrevious}
-                    />
-                </>
+                <AddressStep
+                    addresses={addresses}
+                    addressesLoading={addressesLoading}
+                    selectedAddress={selectedAddress}
+                    selectedMapRegion={selectedMapRegion}
+                    onSelectAddress={setSelectedAddress}
+                    onOpenAddressModal={() => setIsAddingAddress(true)}
+                    onPrevious={goPrevious}
+                    onNext={goNext}
+                    canContinue={canContinueAddress}
+                    addressModal={{
+                        region: mapRegion,
+                        selectedLocation,
+                        isSavingAddress,
+                        isLookingUpAddress,
+                        locationName,
+                        locationDetails,
+                        onClose: closeAddressModal,
+                        onChangeLocationName: setLocationName,
+                        onChangeLocationDetails: setLocationDetails,
+                        onSelectPlace: selectPlace,
+                        onSelectCoordinate: selectCoordinate,
+                        onSave: saveAddress,
+                    }}
+                    isAddingAddress={isAddingAddress}
+                    onCloseAddressModal={closeAddressModal}
+                    isMapFullscreen={isMapFullscreen}
+                    onOpenMapFullscreen={() => setIsMapFullscreen(true)}
+                    onCloseMapFullscreen={() => setIsMapFullscreen(false)}
+                />
             ) : null}
-
             {step === 4 ? (
-                <>
-                    <SectionTitle>Récapitulatif de votre demande</SectionTitle>
-
-                    <SummaryBlock>
-                        <SummaryLine title="Service" value="Électricien" />
-                        <SummaryLine
-                            title="Détails"
-                            value="La prise du salon ne fonctionne plus depuis hier."
-                        />
-                        <SummaryLine
-                            title="Adresse"
-                            value="Maison secondaire, 10 Allée des Acacias"
-                        />
-                        <SummaryLine title="Date souhaitée" value="Dès que possible" />
-                    </SummaryBlock>
-
-                    <EstimationBox>
-                        <Text variant="bold" color="black" fontSize={14}>
-                            Estimation du prix
-                        </Text>
-
-                        <Text
-                            variant="bold"
-                            color="black"
-                            fontSize={18}
-                            style={{ marginTop: verticalScale(6) }}
-                        >
-                            À partir de 50 €
-                        </Text>
-
-                        <Text
-                            variant="regularSmall"
-                            color="gray600"
-                            style={{ marginTop: verticalScale(6) }}
-                        >
-                            Le prix final sera confirmé par le professionnel après diagnostic.
-                        </Text>
-                    </EstimationBox>
-
-                    <BottomActions
-                        primaryTitle="Voir le prix moyen"
-                        onPrimaryPress={() => { }//appNavigate('PriceEstimation')
-
-                        }
-                        onSecondaryPress={goPrevious}
-                    />
-                </>
+                <SummaryStep
+                    serviceName={selectedService?.name || route.params?.service_name || 'Service sélectionné'}
+                    address={selectedAddressRecord?.address || 'Adresse non sélectionnée'}
+                    timing={selectedTiming}
+                    onNext={() => {
+                        if (!selectedService?.id || !selectedAddressRecord?.id || !selectedProblemRecord) return;
+                        (navigation as any).navigate('PriceEstimation', {
+                            intervention: buildInterventionPayload({
+                                serviceId: selectedService.id,
+                                addressId: selectedAddressRecord.id,
+                                problemTitle: selectedProblemRecord.title,
+                                problemDescription: selectedProblemRecord.description,
+                                timing: selectedTiming,
+                            }),
+                        });
+                    }}
+                    onPrevious={goPrevious}
+                />
             ) : null}
         </ScreenContainer>
     );
 };
-
-
-const SectionTitle = styled(Text).attrs({
-    variant: 'bold',
-    color: 'black',
-    fontSize: 15,
-})`
-  margin-bottom: ${verticalScale(12)}px;
-  margin-top: ${verticalScale(12)}px;
-`;
-
-const SmallLabel = styled(Text).attrs({
-    variant: 'bold',
-    color: 'black',
-    fontSize: 12,
-})`
-  margin-bottom: ${verticalScale(8)}px;
-`;
-
-const InputBox = styled.TextInput`
-  height: ${verticalScale(110)}px;
-  border-width: 1px;
-  border-color: #e5e5e5;
-  border-radius: 12px;
-  padding: ${horizontalScale(14)}px;
-  text-align-vertical: top;
-  background-color: ${Colors.white};
-`;
-
-const AddAddressButton = styled.TouchableOpacity`
-  height: ${verticalScale(48)}px;
-  border-radius: 12px;
-  border-width: 1px;
-  border-color: ${colors.primary};
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: ${horizontalScale(8)}px;
-  margin-top: ${verticalScale(10)}px;
-`;
-
-const SummaryBlock = styled.View`
-  background-color: ${colors.white};
-  border-radius: 14px;
-  border-width: 1px;
-  border-color: #eeeeee;
-  padding: ${horizontalScale(14)}px;
-`;
-
-const EstimationBox = styled.View`
-  background-color: #fff1e8;
-  border-radius: 14px;
-  padding: ${horizontalScale(14)}px;
-  margin-top: ${verticalScale(14)}px;
-`;
-
-const SummaryLine = ({ title, value }: { title: string; value: string }) => (
-    <SummaryLineWrapper>
-        <Text variant="bold" color="black" fontSize={12}>
-            {title}
-        </Text>
-        <Text variant="regularSmall" color="gray600" style={{ marginTop: 4 }}>
-            {value}
-        </Text>
-    </SummaryLineWrapper>
-);
-
-const SummaryLineWrapper = styled.View`
-  margin-bottom: ${verticalScale(12)}px;
-`;

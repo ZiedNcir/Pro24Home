@@ -9,6 +9,7 @@ import {
     Rating,
 } from '../api.types';
 import { prepareFormData } from '../../../utils/api.helpers';
+import { normalizeAddressesResponse } from '../response.utils';
 
 export const clientEndpoints = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -55,7 +56,7 @@ export const clientEndpoints = api.injectEndpoints({
         getAddresses: builder.query<Address[], void>({
             query: () => '/api/client/address',
             providesTags: ['Addresses'],
-            transformResponse: (response: any) => response.data || response,
+            transformResponse: normalizeAddressesResponse<Address>,
         }),
 
         // Delete Address
@@ -112,7 +113,7 @@ export const clientEndpoints = api.injectEndpoints({
                 const formData = prepareFormData(
                     {
                         service_id: data.service_id,
-                        address_id: data.address_id,
+                        adresse_id: data.address_id,
                         title: data.title,
                         description: data.description,
                         price: data.price || '',
@@ -129,7 +130,7 @@ export const clientEndpoints = api.injectEndpoints({
                 if (data.image_3) {
                     formData.append('image_3', data.image_3 as any);
                 }
-
+                console.log('formData', formData);
                 return {
                     url: '/api/client/interventions',
                     method: 'POST',

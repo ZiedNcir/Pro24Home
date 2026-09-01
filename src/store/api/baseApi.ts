@@ -6,15 +6,12 @@ import type {
     FetchBaseQueryError,
 } from '@reduxjs/toolkit/query';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Platform } from 'react-native';
 import type { RootState } from '../index';
 import { logout } from '../slices/authSlice';
+import { API_BASE_URL } from '../../config/api';
 
 // Configuration
-const API_BASE_URL = Platform.select({
-
-    default: 'https://dev.pro24home.com/api',
-});
+export { API_BASE_URL } from '../../config/api';
 
 // Custom error type
 interface ApiError {

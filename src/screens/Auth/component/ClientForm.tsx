@@ -6,7 +6,7 @@ import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { View, useWindowDimensions } from 'react-native';
+import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Toast } from 'react-native-toast-notifications';
 import styled from 'styled-components/native';
@@ -16,47 +16,46 @@ import { useRegisterClientMutation } from '@store/api/endpoints/auth';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { selectAuthLoading, setError, setLoading } from '@store/slices/authSlice';
 import type { RegisterClientRequest } from '@store/api/api.types';
-import { colors } from '@theme/index';
 
 interface ClientFormProps {
     onSuccess?: (data: RegisterClientRequest) => void;
     onError?: (error: any) => void;
 }
 const StepIndicator = styled(View)`
-  flexDirection: row;
-  justifyContent: center;
-  alignItems: center;
-  marginBottom: ${verticalScale(5)}px;
-  marginTop: ${verticalScale(5)}px;
-  position: relative;
+  margin-bottom: ${verticalScale(16)}px;
 `;
 
-const StepDot = styled(View)`
-  width: 12px;
-  height: 12px;
-  borderRadius: 6px;
-  backgroundColor: ${colors.gray100};
-  marginHorizontal: 8px;
-  zIndex: 1;
+const ProgressHeader = styled(View)`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: ${verticalScale(8)}px;
 `;
 
-const StepDotActive = styled(StepDot)`
-  backgroundColor: ${colors.primary};
-  transform: scale(1.2);
+const ProgressLabel = styled(Text)`
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font-family: 'Inter-Bold';
+  font-size: 13px;
 `;
 
-const StepDotCompleted = styled(StepDot)`
-  backgroundColor: ${colors.success};
+const ProgressHint = styled(Text)`
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-family: 'Inter-Regular';
+  font-size: 12px;
 `;
 
-const StepLine = styled(View)`
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  right: 5px;
-  height: 2px;
-  backgroundColor: ${colors.gray200};
-  zIndex: 0;
+const ProgressTrack = styled(View)`
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
+`;
+
+const ProgressFill = styled(View)<{ complete: boolean }>`
+  width: ${({ complete }) => (complete ? '100%' : '50%')};
+  height: 100%;
+  border-radius: 3px;
+  background-color: ${({ theme }) => theme.colors.primary};
 `;
 
 const StyledKeyboardAwareScrollView = styled(KeyboardAwareScrollView)`
@@ -65,13 +64,34 @@ const StyledKeyboardAwareScrollView = styled(KeyboardAwareScrollView)`
 `;
 
 const FormContainer = styled(View)`
-  padding-top: ${verticalScale(5)}px;
+  width: 100%;
+  padding: ${verticalScale(18)}px ${horizontalScale(4)}px ${verticalScale(28)}px;
+`;
+
+const FormIntro = styled(View)`
+  margin-bottom: ${verticalScale(20)}px;
+`;
+
+const FormKicker = styled(Text)`
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-family: 'Inter-Bold';
+  font-size: 11px;
+  letter-spacing: 1px;
+  margin-bottom: ${verticalScale(6)}px;
+`;
+
+const FormDescription = styled(Text)`
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-family: 'Inter-Regular';
+  font-size: 13px;
+  line-height: 19px;
 `;
 
 const StepTitle = styled(Text)`
-  text-align: center;
-  margin-bottom: ${verticalScale(5)}px;
-  color: #000;
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font-family: 'Inter-Bold';
+  font-size: 18px;
+  margin-bottom: ${verticalScale(14)}px;
 `;
 
 const fieldStyle = {
@@ -81,9 +101,9 @@ const fieldStyle = {
 
 const ButtonGroup = styled(View)`
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
-  margin-top: ${verticalScale(15)}px;
+  gap: ${horizontalScale(10)}px;
+  margin-top: ${verticalScale(20)}px;
 `;
 
 const PreviousButtonWrapper = styled(View)`
@@ -101,8 +121,6 @@ const SubmitButtonWrapper = styled(View)`
 const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
-    const { width: screenWidth } = useWindowDimensions();
-
     // Use the new RTK Query mutation hook
     const [registerClient, { isLoading, error, isSuccess }] = useRegisterClientMutation();
     const steps = [
@@ -275,17 +293,24 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
 
             <FormContainer>
                 <StepIndicator>
-                    {steps.map((_, index) => {
-                        if (index === step) return <StepDotActive key={index} />;
-                        if (index < step) return <StepDotCompleted key={index} />;
-                        return <StepDot key={index} />;
-                    })}
-                    <StepLine />
+                    <ProgressHeader>
+                        <ProgressLabel testID="client-form-step">Étape {step + 1} sur {steps.length}</ProgressLabel>
+                        <ProgressHint>{step === 0 ? 'Vos informations' : 'Sécurisez votre compte'}</ProgressHint>
+                    </ProgressHeader>
+                    <ProgressTrack testID="client-form-progress">
+                        <ProgressFill complete={step === steps.length - 1} />
+                    </ProgressTrack>
                 </StepIndicator>
 
-                <StepTitle variant="medium">
-                    {step === 0 ? t('ui.form.personalInfo.label') : t('ui.form.security.label')}
-                </StepTitle>
+                <FormIntro>
+                    <FormKicker>CRÉATION DE COMPTE CLIENT</FormKicker>
+                    <StepTitle>
+                        {step === 0 ? t('ui.form.personalInfo.label') : t('ui.form.security.label')}
+                    </StepTitle>
+                    <FormDescription>
+                        {step === 0 ? 'Parlez-nous de vous pour personnaliser votre expérience.' : 'Choisissez vos identifiants pour accéder à PRO24HOME.'}
+                    </FormDescription>
+                </FormIntro>
 
                 {step === 0 && (
                     <>
@@ -310,7 +335,7 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                                 },
                             }}
                             accessoryLeft="fa-user"
-                            containerStyle={[fieldStyle, { width: screenWidth * 0.80 }]}
+                            containerStyle={fieldStyle}
                             animated
                             shakeOnError
                         />
@@ -423,7 +448,7 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                             returnKeyType="next"
                             rules={FieldValidators.required(t('ui.form.email.required'))}
                             accessoryLeft="fa-exclamation-circle"
-                            containerStyle={[fieldStyle, { width: screenWidth * 0.80 }]}
+                            containerStyle={fieldStyle}
                         />
 
                         {/* Password */}
@@ -439,7 +464,7 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                             returnKeyType="next"
                             rules={FieldValidators.required(t('ui.form.password.required'))}
                             accessoryLeft="fa-lock"
-                            containerStyle={[fieldStyle, { width: screenWidth * 0.80 }]}
+                            containerStyle={fieldStyle}
                         />
                     </>
                 )}
@@ -461,6 +486,7 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                         <NextButtonWrapper>
                             <Button
                                 title={t('ui.button.next')}
+                                testID="client-form-primary-action"
                                 onPress={nextStep}
                                 variant="primary"
                                 size="medium"
@@ -473,6 +499,7 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                         <SubmitButtonWrapper>
                             <Button
                                 title={t('ui.button.signUp')}
+                                testID="client-form-primary-action"
                                 onPress={handleSubmit(onSubmit)}
                                 variant="primary"
                                 size="medium"
