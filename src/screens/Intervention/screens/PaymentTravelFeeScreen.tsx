@@ -7,6 +7,7 @@ import styled from 'styled-components/native';
 import ScreenContainer from '@components/ScreenContainer';
 import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
+import InterventionHeader from '../components/InterventionHeader';
 import { horizontalScale, verticalScale, moderateScale } from '@utils/normalizedCss';
 import { colors } from '@theme/index';
 import { useNavigation } from '@react-navigation/core';
@@ -39,15 +40,7 @@ export const PaymentTravelFeeScreen = () => {
             paddingHorizontal={horizontalScale(18)}
             paddingVertical={verticalScale(12)}
         >
-            <TopHeader>
-                <IconButton />
-                <Text variant="bold" color="black" fontSize={18}>
-                    Paiement des frais de déplacement
-                </Text>
-                <IconButton>
-                    <SvgIcon name="fa-times" size={18} color={colors.black} />
-                </IconButton>
-            </TopHeader>
+            <InterventionHeader title="Paiement des frais de déplacement" showHelp={false} />
 
             <HeroIcon>
                 <SvgIcon name="fa-credit-card" size={42} color={colors.primary} />
@@ -115,20 +108,6 @@ export const PaymentTravelFeeScreen = () => {
     );
 };
 
-
-const TopHeader = styled.View`
-  height: ${verticalScale(48)}px;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const IconButton = styled.TouchableOpacity`
-  width: ${horizontalScale(36)}px;
-  height: ${horizontalScale(36)}px;
-  justify-content: center;
-  align-items: center;
-`;
 
 const HeroIcon = styled.View`
   align-self: center;
