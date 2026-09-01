@@ -51,6 +51,7 @@ export interface AddressStepProps extends StepNavigationProps {
     selectedMapRegion: FullscreenMapModalProps['region'] | null;
     isAddingAddress: boolean;
     isMapFullscreen: boolean;
+    canContinue: boolean;
     addressModal: Omit<AddressModalProps, 'visible'>;
     onSelectAddress: (id: number) => void;
     onOpenAddressModal: () => void;
