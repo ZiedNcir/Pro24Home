@@ -1938,7 +1938,7 @@ PODS:
     - React-RCTFBReactNativeSpec
     - ReactCommon/turbomodule/core
     - SocketRocket
-  - react-native-date-picker (5.0.13):
+  - react-native-date-picker (5.0.12):
     - boost
     - DoubleConversion
     - fast_float
@@ -3262,7 +3262,7 @@ SPEC CHECKSUMS:
   React-logger: b8483fa08e0d62e430c76d864309d90576ca2f68
   React-Mapbuffer: 7b72a669e94662359dad4f42b5af005eb24b4e83
   React-microtasksnativemodule: cdc02da075f2857803ed63f24f5f72fc40e094c0
-  react-native-date-picker: 4f4f40f6e65798038bb4b1bff47890c2be69c2e6
+  react-native-date-picker: 9e761de1a6b100b2f61669de1f2c3e5717e2b525
   react-native-maps: 48cbc77581f2ffc121a296f9abe071fe4a7ea4ee
   react-native-onesignal: 1634e96223d6a666b76f38f4a20fec6c87bbb0c4
   react-native-orientation-locker: cc6f357b289a2e0dd2210fea0c52cb8e0727fdaa
@@ -3305,12 +3305,12 @@ SPEC CHECKSUMS:
   RNCPicker: bf95ec4b2483e2ab256047130bc536b437cd916c
   RNGestureHandler: cd4be101cfa17ea6bbd438710caa02e286a84381
   RNLocalize: 23e6689ec46c6cba49eb8cde959e30e49160a35b
-  RNPermissions: e5dd84f29e7a3871451f88efa83dfa6227806b51
+  RNPermissions: 8ba66d84fb793626315ff5f7c73af572cb9517c9
   RNScreens: 714e10b6b554f7dc7ad9f78dcf36dc8e3fc73415
   RNSVG: ba3c3bc3cf413f32d1a7012274fe503c6fc1eadd
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: 5456bb010373068fc92221140921b09d126b116e
 
-PODFILE CHECKSUM: dc18417e0c292af3a00e42467e5cbbcc42807c88
+PODFILE CHECKSUM: 9e84fd7e9b0c5f03cf6aa0e1f28cfc681b380db9
 
 COCOAPODS: 1.16.2
