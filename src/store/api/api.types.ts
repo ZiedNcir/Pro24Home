@@ -251,7 +251,12 @@ export interface Service {
     description?: string;
     icon?: string;
     parent_id?: number;
-    children?: Service[];
+    children?: Array<{
+        id: number;
+        name: string;
+        service_id?: number;
+        price_range?: string;
+    }>;
 }
 
 export interface SubService {

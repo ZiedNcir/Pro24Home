@@ -8,19 +8,19 @@ import HeaderLocation from '../component/HeaderLocation';
 import HeroBanner from '../component/HeroBanner';
 import ServiceCategoryGrid from '../component/ServiceCategoryGrid';
 import FeatureHighlights from '../component/FeatureHighlights';
+import { useTheme } from '@theme/ThemeProvider';
 
 const ClientHome = () => {
+    const { themeMode } = useTheme();
+
     return (
         <ScreenContainer
-            mode="light"
+            mode={themeMode}
             scrollable
-            useImageBackground
-            backgroundImage={require('@assets/images/background_ligth.png')}
-            imageResizeMode="cover"
             paddingHorizontal={horizontalScale(18)}
             paddingVertical={verticalScale(14)}
             contentContainerStyle={{
-                paddingBottom: verticalScale(120),
+                paddingBottom: verticalScale(190),
             }}
         >
             <HeaderLocation />

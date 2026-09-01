@@ -8,8 +8,10 @@ import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import { colors } from '@theme/index';
+import { useNavigation } from '@react-navigation/core';
 
 export const InterventionSuccessScreen = () => {
+    const navigation = useNavigation();
     return (
         <ScreenContainer
             mode="light"
@@ -44,17 +46,13 @@ export const InterventionSuccessScreen = () => {
                 <DetailRow icon="fa-clock" title="Dès que possible" subtitle="dans les 24h" />
             </DetailsCard>
 
-            <SecondaryButton onPress={() => { }//appNavigate('InterventionDetail')
-
-            }>
+            <SecondaryButton onPress={() => {navigation.navigate('InterventionDetail')}}>
                 <Text variant="bold" color="black" fontSize={14}>
                     Voir mes demandes
                 </Text>
             </SecondaryButton>
 
-            <PrimaryButton onPress={() => { }//appNavigate('HomeGate')
-
-            }>
+            <PrimaryButton onPress={() => {navigation.navigate('Tabs', { screen: 'Home' })}}>
                 <Text variant="bold" color="white" fontSize={14}>
                     Retour à l’accueil
                 </Text>

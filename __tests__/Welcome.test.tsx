@@ -140,7 +140,7 @@ describe('Welcome onboarding tutorial', () => {
     expect(setValueSpy.mock.calls.filter(([value]) => value === 20)).toHaveLength(2);
   });
 
-  it('advances through all steps, replays transitions, and delays registration by 500 ms', async () => {
+  it('advances through all steps and opens account type selection at the end', async () => {
     let renderer: ReactTestRenderer.ReactTestRenderer;
 
     await ReactTestRenderer.act(() => {
@@ -187,23 +187,11 @@ describe('Welcome onboarding tutorial', () => {
     expect(setValueSpy.mock.calls.filter(([value]) => value === 0)).toHaveLength(3);
     expect(setValueSpy.mock.calls.filter(([value]) => value === 20)).toHaveLength(3);
 
-    let finalAction: Promise<void>;
-    ReactTestRenderer.act(() => {
-      finalAction = root.findByProps({ testID: 'tutorial-primary-action' }).props.onPress();
+    await ReactTestRenderer.act(() => {
+      root.findByProps({ testID: 'tutorial-primary-action' }).props.onPress();
     });
-
-    ReactTestRenderer.act(() => {
-      jest.advanceTimersByTime(499);
-    });
-    expect(mockNavigate).not.toHaveBeenCalled();
-
-    await ReactTestRenderer.act(async () => {
-      jest.advanceTimersByTime(1);
-      await finalAction!;
-    });
-
     expect(mockNavigate).toHaveBeenCalledTimes(1);
-    expect(mockNavigate).toHaveBeenCalledWith('RegisterScreen', { role: 'client' });
+    expect(mockNavigate).toHaveBeenCalledWith('SignIn', { role: 'client' });
   });
 
   it('routes Passer and Se connecter to their client destinations', async () => {
@@ -218,7 +206,7 @@ describe('Welcome onboarding tutorial', () => {
     ReactTestRenderer.act(() => {
       root.findByProps({ accessibilityLabel: 'Passer' }).props.onPress();
     });
-    expect(mockNavigate).toHaveBeenLastCalledWith('RegisterScreen', { role: 'client' });
+    expect(mockNavigate).toHaveBeenLastCalledWith('SignIn', { role: 'client' });
 
     ReactTestRenderer.act(() => {
       root.findByProps({ accessibilityLabel: 'Se connecter' }).props.onPress();

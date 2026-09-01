@@ -23,13 +23,13 @@ import {
 import {
   Text,
   ScreenContainer,
-  NavigationHeader,
   Field,
   Button,
   Spinner,
 } from '@components/index';
 
-import { colors } from '@theme/index';
+import { useTheme } from '@theme/ThemeProvider';
+import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { AppStackType } from '../../navigation/constant/core';
 import { useLoginMutation } from '@store/api/endpoints/auth';
 
@@ -47,7 +47,7 @@ export const SignIn = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<SignInNavigationProp>();
   const route = useRoute<SignInRouteProp>();
-
+  const { theme, themeMode } = useTheme();
   const role = route.params?.role ?? 'client';
 
   const { handleSubmit, control } = useForm<SignInFormValues>({
@@ -68,7 +68,7 @@ export const SignIn = () => {
 
         navigation.reset({
           index: 0,
-          routes: [{ name: 'Tabs' }],
+          routes: [{ name: role === 'professional' ? 'ProfessionnelHome' : 'Tabs' }],
         });
       } catch (error: any) {
         console.error('Login error:', error);
@@ -88,7 +88,7 @@ export const SignIn = () => {
         });
       }
     },
-    [login, navigation, t]
+    [login, navigation, role, t]
   );
 
   const navigateToForgetPassword = useCallback(() => {
@@ -96,19 +96,27 @@ export const SignIn = () => {
   }, [navigation]);
 
   const navigateToRegister = useCallback(() => {
-    navigation.navigate('RegisterScreen', { role });
-  }, [navigation, role]);
+    navigation.navigate('AccountType');
+  }, [navigation]);
 
   return (
     <ScreenContainer
-      mode="light"
+      mode={themeMode}
       scrollable
-      paddingHorizontal={10}
+      paddingHorizontal={0}
       paddingVertical={0}
-      backgroundImage={require('@assets/images/background_ligth.png')}
-      useImageBackground
     >
-      <NavigationHeader />
+      <View style={styles.primaryHeader}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+          accessibilityRole="button"
+          accessibilityLabel="Retour"
+        >
+          <Text style={[styles.backIcon, { color: theme.colors.primary }]}>‹</Text>
+        </TouchableOpacity>
+        <LogoMediumPro24Icon style={styles.logo} />
+      </View>
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -116,15 +124,15 @@ export const SignIn = () => {
       >
 
         <View style={styles.cardContainer}>
-          <View style={styles.card}>
-            <Text variant="title" style={styles.title}>
+          <View style={[styles.card, { backgroundColor: theme.colors.surface, shadowColor: theme.colors.black }]}>
+            <Text variant="title" style={[styles.title, { color: theme.colors.textPrimary }]}>
               {t('screen.connexion') || 'Connection'}
             </Text>
 
-            <Text variant="regular" color={colors.gray600} style={styles.description}>
+            <Text variant="regular" color={theme.colors.textSecondary} style={styles.description}>
               Accédez à votre espace en
             </Text>
-            <Text variant="regular" color={colors.gray600} style={styles.descriptionLine2}>
+            <Text variant="regular" color={theme.colors.textSecondary} style={styles.descriptionLine2}>
               quelques instants
             </Text>
 
@@ -158,7 +166,7 @@ export const SignIn = () => {
                 onPress={navigateToForgetPassword}
                 disabled={isLoading}
               >
-                <Text variant="medium" color={colors.primary} style={styles.forgetPasswordText}>
+                <Text variant="medium" color={theme.colors.primary} style={styles.forgetPasswordText}>
                   {t('terms.forgetPassword') || 'Forgot your password?'}
                 </Text>
               </TouchableOpacity>
@@ -173,11 +181,11 @@ export const SignIn = () => {
             </View>
 
             <View style={styles.termsRow}>
-              <View style={styles.termsLine} />
-              <Text variant="notification" color={colors.gray500} style={styles.termsText}>
+              <View style={[styles.termsLine, { backgroundColor: theme.colors.border }]} />
+              <Text variant="notification" color={theme.colors.textSecondary} style={styles.termsText}>
                 {t('terms.privacy') || 'Terms & Privacy'}
               </Text>
-              <View style={styles.termsLine} />
+              <View style={[styles.termsLine, { backgroundColor: theme.colors.border }]} />
             </View>
 
             <TouchableOpacity
@@ -185,10 +193,10 @@ export const SignIn = () => {
               onPress={navigateToRegister}
               disabled={isLoading}
             >
-              <Text variant="regular" color={colors.black}>
+              <Text variant="regular" color={theme.colors.textPrimary}>
                 {t('terms.notClient') || 'Not a member?'}{' '}
               </Text>
-              <Text variant="regular" color={colors.primary} style={styles.createAccountText}>
+              <Text variant="regular" color={theme.colors.primary} style={styles.createAccountText}>
                 {t('terms.createAccount') || 'Create account'}
               </Text>
             </TouchableOpacity>
@@ -208,6 +216,31 @@ const styles = StyleSheet.create({
   keyboard: {
     flex: 1,
   },
+  primaryHeader: {
+    height: verticalScale(78),
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backButton: {
+    position: 'absolute',
+    left: horizontalScale(8),
+    top: verticalScale(17),
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1,
+  },
+  backIcon: {
+    fontFamily: 'Inter-Regular',
+    fontSize: 34,
+    lineHeight: 34,
+  },
+  logo: {
+    width: horizontalScale(150),
+    height: verticalScale(42),
+  },
   cardContainer: {
     paddingHorizontal: horizontalScale(18),
   },
@@ -217,8 +250,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizontalScale(24),
     paddingTop: verticalScale(34),
     paddingBottom: verticalScale(30),
-    backgroundColor: colors.white || '#FFFFFF',
-    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: verticalScale(8),
@@ -234,7 +265,6 @@ const styles = StyleSheet.create({
     fontSize: moderateScale(28),
     lineHeight: moderateScale(34),
     marginBottom: verticalScale(12),
-    color: colors.black,
   },
   description: {
     textAlign: 'center',
@@ -275,7 +305,6 @@ const styles = StyleSheet.create({
   termsLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#D9D9D9',
   },
   termsText: {
     marginHorizontal: horizontalScale(14),

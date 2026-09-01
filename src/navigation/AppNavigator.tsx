@@ -8,14 +8,15 @@ import {
 
 import { AppStackType, BottomTabType } from './constant/core';
 import Text from '@components/Text';
-import { Welcome, VerifyAccountScreen, RegisterScreen, SignIn } from '@screens/index';
+import { Welcome, VerifyAccountScreen, RegisterScreen, SignIn, ForgetPassword } from '@screens/index';
+import AccountTypeScreen from '@screens/Auth/AccountTypeScreen';
 import styled from 'styled-components/native';
 import { Platform, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { AccountPendingScreen } from '@screens/Home';
 import { Button } from '@components/index';
-import { colors } from '@theme/index';
+import { useTheme } from '@theme/ThemeProvider';
 import { IconName } from '@components/Icon';
 import ClientHome from '@screens/Home/client/screens/HomeClient';
 import { NotificationsScreen } from '@screens/Notification';
@@ -38,10 +39,10 @@ right: 0;
   justify-content: space-around;
   align-items: center;
 
-  background-color: rgba(255, 255, 255, 0.96);
+  background-color: ${({ theme }) => theme.colors.surface};
   border-radius: ${moderateScale(16)}px;
 
-  shadow-color: #000;
+  shadow-color: ${({ theme }) => theme.colors.black};
   shadow-offset: 0px -4px;
   shadow-opacity: 0.08;
   shadow-radius: ${moderateScale(16)}px;
@@ -61,8 +62,8 @@ const ActiveIndicator = styled.View<{ isSelected: boolean }>`
   width: ${horizontalScale(34)}px;
   height: ${verticalScale(2)}px;
   border-radius: ${moderateScale(4)}px;
-  background-color: ${({ isSelected }) =>
-    isSelected ? colors.primary : 'transparent'};
+  background-color: ${({ theme, isSelected }) =>
+    isSelected ? theme.colors.primary : 'transparent'};
 
 `;
 
@@ -72,6 +73,7 @@ const BottomTabBar: FunctionComponent<BottomTabBarProps> = ({
   state,
 }) => {
   const insets = useSafeAreaInsets();
+  const { theme } = useTheme();
 
   const navigate = (index: number) => {
     const routeName = state.routeNames[index];
@@ -118,7 +120,7 @@ const BottomTabBar: FunctionComponent<BottomTabBarProps> = ({
 
             <Button
               icon={icon}
-              color={isSelected ? colors.primary : colors.gray600}
+              color={isSelected ? theme.colors.primary : theme.colors.textSecondary}
               type="icon"
               variant="ghost"
               iconSize={moderateScale(24)}
@@ -129,7 +131,7 @@ const BottomTabBar: FunctionComponent<BottomTabBarProps> = ({
 
             <Text
               variant="regularSmall"
-              color={isSelected ? colors.primary : colors.gray700}
+              color={isSelected ? theme.colors.primary : theme.colors.textSecondary}
               fontSize={12}
               lineHeight={16}
 
@@ -187,9 +189,11 @@ const AppNavigator: React.FC = () => {
             gestureEnabled: false,
           }}
         />
+        <Stack.Screen name="AccountType" component={AccountTypeScreen} />
         <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
         <Stack.Screen name="VerifyScreen" component={VerifyAccountScreen} />
         <Stack.Screen name="SignIn" component={SignIn} />
+        <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         <Stack.Screen name="AccountPendingScreen" component={AccountPendingScreen} />
 
         <Stack.Screen name="AddAddress" component={AddAddressScreen} />

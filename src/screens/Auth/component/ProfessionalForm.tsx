@@ -5,7 +5,7 @@ import { Colors } from '@utils/constant';
 import { StyleSheet } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { View, useWindowDimensions } from 'react-native';
+import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import styled from 'styled-components/native';
 
@@ -31,9 +31,10 @@ import { Toast } from 'react-native-toast-notifications';
 
 const Container = styled(View)`
   flex: 1;
+  width: 100%;
   align-items: center;
-  paddingTop: ${verticalScale(2)}px;
-  justifyContent: center;
+  padding-top: ${verticalScale(18)}px;
+  padding-bottom: ${verticalScale(28)}px;
 `;
 
 const StepContainer = styled(View)`
@@ -42,53 +43,76 @@ const StepContainer = styled(View)`
 
 const StepIndicator = styled(View)`
   width: 100%;
+  margin-bottom: ${verticalScale(18)}px;
+`;
+
+const ProgressHeader = styled(View)`
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
+  width: 100%;
   margin-bottom: ${verticalScale(8)}px;
+`;
+
+const ProgressLabel = styled(Text)`
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font-family: 'Inter-Bold';
+  font-size: 13px;
+`;
+
+const ProgressHint = styled(Text)`
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-family: 'Inter-Regular';
+  font-size: 12px;
+  margin-left: ${horizontalScale(12)}px;
+  text-align: right;
+`;
+
+const ProgressTrack = styled(View)`
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
+`;
+
+const ProgressFill = styled(View)<{ width: string }>`
+  width: ${({ width }) => width};
+  height: 100%;
+  border-radius: 3px;
+  background-color: ${({ theme }) => theme.colors.primary};
+`;
+
+const FormIntro = styled(View)`
+  margin-bottom: ${verticalScale(20)}px;
+`;
+
+const FormKicker = styled(Text)`
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-family: 'Inter-Bold';
+  font-size: 11px;
+  letter-spacing: 1px;
+  margin-bottom: ${verticalScale(6)}px;
+`;
+
+const FormDescription = styled(Text)`
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-family: 'Inter-Regular';
+  font-size: 13px;
+  line-height: 19px;
   margin-top: ${verticalScale(8)}px;
-  padding-horizontal: ${horizontalScale(12)}px;
-  position: relative;
-`;
-
-const StepLine = styled(View)`
-  position: absolute;
-  top: 5px;
-  left: ${horizontalScale(18)}px;
-  right: ${horizontalScale(18)}px;
-  height: 2px;
-  background-color: ${colors.gray300};
-  z-index: 0;
-`;
-
-const StepDot = styled(View)`
-  width: 12px;
-  height: 12px;
-  border-radius: 6px;
-  background-color: ${colors.gray100};
-  z-index: 1;
-`;
-
-const StepDotActive = styled(StepDot)`
-  background-color: ${colors.primary};
-  transform: scale(1.2);
-`;
-
-const StepDotCompleted = styled(StepDot)`
-  background-color: ${colors.success};
 `;
 
 const StepTitle = styled(Text)`
-  text-align: center;
-  margin-bottom: ${verticalScale(5)}px;
-  color: #000;
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font-family: 'Inter-Bold';
+  font-size: 18px;
 `;
 
 const ButtonGroup = styled(View)`
-  flexDirection: row;
-  justifyContent: space-between;
-  alignItems: center;
-  marginTop: ${verticalScale(5)}px;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  margin-top: ${verticalScale(20)}px;
 `;
 
 const ErrorText = styled(Text)`
@@ -99,18 +123,19 @@ const ErrorText = styled(Text)`
 
 const ScrollContainer = styled(KeyboardAwareScrollView)`
   flexGrow: 1;
-  paddingHorizontal: ${verticalScale(20)}px;
+  width: 100%;
+  padding-horizontal: ${horizontalScale(20)}px;
   paddingVertical: ${verticalScale(5)}px;
 `;
 
 const PreviousButton = styled(Button)`
   flex: 1;
-  marginRight: ${verticalScale(10)}px;
+  margin-right: ${verticalScale(10)}px;
 `;
 
 const NextButton = styled(Button)`
   flex: 1;
-  marginLeft: ${verticalScale(10)}px;
+  margin-left: ${verticalScale(10)}px;
 `;
 
 const SubmitButton = styled(Button)`
@@ -129,8 +154,6 @@ interface ProfessionalFormProps {
 const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: ProfessionalFormProps) => {
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
-    const screen_width = useWindowDimensions().width;
-
     // Use the new RTK Query mutation hook
     const [registerProfessional, { isLoading, error, isSuccess }] = useRegisterProfessionalMutation();
 
@@ -340,19 +363,29 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
 
     const renderStepIndicator = () => (
         <StepIndicator>
-            {steps.map((_, index) => {
-                if (index === step) return <StepDotActive key={index} />;
-                if (index < step) return <StepDotCompleted key={index} />;
-                return <StepDot key={index} />;
-            })}
-            <StepLine />
+            <ProgressHeader>
+                <ProgressLabel testID="professional-form-step">Étape {step + 1} sur {steps.length}</ProgressLabel>
+                <ProgressHint>{['Vos informations', 'Votre activité', 'Votre sécurité', 'Vos services'][step]}</ProgressHint>
+            </ProgressHeader>
+            <ProgressTrack testID="professional-form-progress">
+                <ProgressFill width={`${((step + 1) / steps.length) * 100}%`} />
+            </ProgressTrack>
         </StepIndicator>
     );
 
     const renderStepTitle = () => (
-        <StepTitle variant="medium">
-            {steps[step]?.title ?? ''}
-        </StepTitle>
+        <FormIntro>
+            <FormKicker>CRÉATION DE COMPTE PROFESSIONNEL</FormKicker>
+            <StepTitle>{steps[step]?.title ?? ''}</StepTitle>
+            <FormDescription>
+                {[
+                    'Présentez-vous pour commencer votre inscription.',
+                    'Ajoutez les informations de votre activité professionnelle.',
+                    'Créez vos identifiants pour accéder à votre espace.',
+                    'Choisissez les services que vous proposez.',
+                ][step]}
+            </FormDescription>
+        </FormIntro>
     );
 
     return (
@@ -396,7 +429,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                                     },
                                 }}
                                 accessoryLeft="fa-user"
-                                containerStyle={[styles.field, { width: screen_width * 0.80 }]}
+                                containerStyle={styles.field}
                                 animated
                                 shakeOnError
                             />
@@ -422,7 +455,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                                     },
                                 }}
                                 accessoryLeft="fa-user"
-                                containerStyle={[styles.field, { width: screen_width * 0.80 }]}
+                                containerStyle={styles.field}
                                 animated
                                 shakeOnError
                             />
@@ -444,7 +477,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                                     },
                                 }}
                                 accessoryLeft="fa-map-marker-alt"
-                                containerStyle={[styles.field, { width: screen_width * 0.80 }]}
+                                containerStyle={styles.field}
                                 animated
                                 shakeOnError
                             />
@@ -467,7 +500,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                                     },
                                 }}
                                 accessoryLeft="fa-map-marker-alt"
-                                containerStyle={[styles.field, { width: screen_width * 0.80 }]}
+                                containerStyle={styles.field}
                                 animated
                                 shakeOnError
                             />
@@ -487,7 +520,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                                         message: t('ui.form.phone.invalid'),
                                     },
                                 }}
-                                containerStyle={[styles.field, { width: screen_width * 0.80 }]}
+                                containerStyle={styles.field}
                                 animated
                                 shakeOnError
                             />
@@ -514,7 +547,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                                 },
                             }}
                             accessoryLeft="fa-building"
-                            containerStyle={[styles.field, { width: screen_width * 0.80 }]}
+                            containerStyle={styles.field}
                             animated
                             shakeOnError
                         />
@@ -535,7 +568,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                                 },
                             }}
                             accessoryLeft="fa-id-card"
-                            containerStyle={[styles.field, { width: screen_width * 0.80 }]}
+                            containerStyle={styles.field}
                             animated
                             shakeOnError
                             helperText={t('ui.form.siret.helper')}
@@ -559,7 +592,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                             rules={{
                                 required: t('ui.form.email.required'),
                             }}
-                            containerStyle={[styles.field, { width: screen_width * 0.86 }]}
+                            containerStyle={styles.field}
                             animated
                             shakeOnError
                         />
@@ -576,7 +609,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                             rules={{
                                 required: t('ui.form.password.required'),
                             }}
-                            containerStyle={[styles.field, { width: screen_width * 0.86 }]}
+                            containerStyle={styles.field}
                             animated
                             shakeOnError
                             helperText={t('ui.form.password.helper')}
@@ -614,8 +647,9 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                     )}
 
                     {step < steps.length - 1 ? (
-                        <NextButton
-                            title={t('ui.button.next')}
+                            <NextButton
+                                title={t('ui.button.next')}
+                                testID="professional-form-primary-action"
                             onPress={nextStep}
                             variant="primary"
                             size="medium"
@@ -625,6 +659,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                     ) : (
                         <SubmitButton
                             title={t('ui.button.signUp')}
+                            testID="professional-form-primary-action"
                             onPress={handleSubmit(onSubmit)}
                             variant="primary"
                             size="medium"
@@ -653,12 +688,14 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
 
 const styles = StyleSheet.create({
     field: {
+        width: '100%',
         marginBottom: verticalScale(5),
     },
     scroll: {
         flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        paddingBottom: verticalScale(76),
     },
 });
 

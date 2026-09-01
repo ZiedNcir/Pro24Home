@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { useColorScheme } from 'react-native';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components/native';
 import { DefaultTheme } from 'styled-components/native';
 import lightTheme from './lightTheme';
@@ -24,7 +25,15 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     children,
     initialTheme = 'light',
 }) => {
-    const [themeMode, setThemeMode] = useState<ThemeMode>(initialTheme);
+    const systemColorScheme = useColorScheme();
+    const systemTheme: ThemeMode | undefined = systemColorScheme
+        ? systemColorScheme === 'dark' ? 'dark' : 'light'
+        : undefined;
+    const [themeMode, setThemeMode] = useState<ThemeMode>(systemTheme || initialTheme);
+
+    useEffect(() => {
+        if (systemTheme) setThemeMode(systemTheme);
+    }, [systemTheme]);
 
     const theme = themeMode === 'dark' ? darkTheme : lightTheme;
 

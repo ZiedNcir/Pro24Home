@@ -13,6 +13,7 @@ import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 type RootStackParamList = {
   RegisterScreen: { role: 'client' | 'professional' };
   SignIn: { role: 'client' };
+  AccountType: undefined;
 };
 
 type TutorialStep = {
@@ -67,10 +68,7 @@ const Welcome: React.FC = () => {
   }, [currentStep, fadeAnim, slideAnim]);
 
   const handleStart = async () => {
-    setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 500));
-    setLoading(false);
-    navigation.navigate('RegisterScreen', { role: 'client' });
+    navigation.navigate('SignIn', { role: 'client' });
   };
 
   const handlePrimaryAction = async () => {
@@ -94,7 +92,7 @@ const Welcome: React.FC = () => {
         <TopBar paddingTop={Math.max(insets.top, verticalScale(16))}>
           <BrandLogo />
           <SkipButton
-            onPress={() => navigation.navigate('RegisterScreen', { role: 'client' })}
+            onPress={() => navigation.navigate('SignIn', { role: 'client' })}
             accessibilityRole="button"
             accessibilityLabel="Passer"
           >

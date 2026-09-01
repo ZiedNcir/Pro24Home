@@ -49,7 +49,7 @@ function App(): React.JSX.Element {
   return (
     <Provider store={store}>
       <AuthInitializer />
-      <ThemeProvider initialTheme="light">
+      <ThemeProvider>
         <ToastProvider
           placement="top"
           duration={4000}

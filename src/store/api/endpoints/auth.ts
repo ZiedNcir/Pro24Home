@@ -18,7 +18,7 @@ export const authApiEndpoints = api.injectEndpoints({
         // Login endpoint
         login: builder.mutation<AuthResponse, LoginRequest>({
             query: (credentials) => ({
-                url: '/login',
+                url: '/api/login',
                 method: 'POST',
                 body: credentials,
             }),
@@ -52,7 +52,7 @@ export const authApiEndpoints = api.injectEndpoints({
         // Register client endpoint
         registerClient: builder.mutation<AuthResponse, RegisterClientRequest>({
             query: (userData) => ({
-                url: '/register-client',
+                url: '/api/register-client',
                 method: 'POST',
                 body: userData,
             }),
@@ -85,7 +85,7 @@ export const authApiEndpoints = api.injectEndpoints({
         // Register professional endpoint
         registerProfessional: builder.mutation<AuthResponse, RegisterProfessionalRequest>({
             query: (userData) => ({
-                url: '/register-professional',
+                url: '/api/register-professional',
                 method: 'POST',
                 body: userData,
             }),
@@ -118,7 +118,7 @@ export const authApiEndpoints = api.injectEndpoints({
         // Logout endpoint
         logout: builder.mutation<ApiResponse<void>, void>({
             query: () => ({
-                url: '/logout',
+                url: '/api/logout',
                 method: 'POST',
             }),
             invalidatesTags: ['Auth', 'User'],
@@ -138,7 +138,7 @@ export const authApiEndpoints = api.injectEndpoints({
         // Verify email/phone endpoint
         verifyAccount: builder.mutation<ApiResponse<User>, VerificationRequest>({
             query: (verificationData) => ({
-                url: '/register-verification',
+                url: '/api/register-verification',
                 method: 'POST',
                 body: verificationData,
             }),
@@ -162,18 +162,18 @@ export const authApiEndpoints = api.injectEndpoints({
         // Resend verification code
         resendVerification: builder.mutation<ApiResponse<void>, { email: string }>({
             query: (emailData) => ({
-                url: '/resend-verification',
+                url: '/api/resend-verification',
                 method: 'POST',
                 body: emailData,
             }),
         }),
 
         // Forgot password endpoint
-        forgotPassword: builder.mutation<ApiResponse<void>, { email: string }>({
-            query: (emailData) => ({
-                url: '/forgot-password',
+        forgotPassword: builder.mutation<ApiResponse<void>, { phone_number: string }>({
+            query: (phoneData) => ({
+                url: '/api/forgot-password',
                 method: 'POST',
-                body: emailData,
+                body: phoneData,
             }),
         }),
 
@@ -184,7 +184,7 @@ export const authApiEndpoints = api.injectEndpoints({
             password_confirmation: string
         }>({
             query: (passwordData) => ({
-                url: '/reset-password',
+                url: '/api/reset-password',
                 method: 'POST',
                 body: passwordData,
             }),
@@ -193,7 +193,7 @@ export const authApiEndpoints = api.injectEndpoints({
         // Change password (authenticated user)
         changePassword: builder.mutation<ApiResponse<void>, ChangePasswordRequest>({
             query: (passwordData) => ({
-                url: '/change-password',
+                url: '/api/change-password',
                 method: 'POST',
                 body: passwordData,
             }),
@@ -202,7 +202,7 @@ export const authApiEndpoints = api.injectEndpoints({
 
         // Get current user profile
         getProfile: builder.query<ApiResponse<User>, void>({
-            query: () => '/profile',
+            query: () => '/api/profile',
             providesTags: ['User'],
             async onQueryStarted(_, { dispatch, queryFulfilled }) {
                 try {
@@ -223,7 +223,7 @@ export const authApiEndpoints = api.injectEndpoints({
         // Update user profile
         updateProfile: builder.mutation<ApiResponse<User>, Partial<User>>({
             query: (userData) => ({
-                url: '/profile',
+                url: '/api/profile',
                 method: 'PUT',
                 body: userData,
             }),
@@ -247,7 +247,7 @@ export const authApiEndpoints = api.injectEndpoints({
         // Update notification token (OneSignal)
         updateNotificationToken: builder.mutation<ApiResponse<void>, { onesignal_key: string }>({
             query: (tokenData) => ({
-                url: '/profile/notification-token',
+                url: '/api/profile/notification-token',
                 method: 'PUT',
                 body: tokenData,
             }),
@@ -269,7 +269,7 @@ export const authApiEndpoints = api.injectEndpoints({
             lang?: string;
         }>({
             query: (params) => ({
-                url: '/get-services',
+                url: '/api/get-services',
                 method: 'GET',
                 params: {
                     lang: params.lang || 'fr',
