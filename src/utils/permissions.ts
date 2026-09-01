@@ -46,7 +46,6 @@ export const requestPermissions = async (): Promise<void> => {
             const permissions = [
                 { permission: PERMISSIONS.IOS.CAMERA, name: 'Camera' },
                 { permission: PERMISSIONS.IOS.PHOTO_LIBRARY, name: 'Photo Library' },
-                { permission: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE, name: 'Location' },
             ];
 
             for (const { permission, name } of permissions) {
@@ -56,6 +55,14 @@ export const requestPermissions = async (): Promise<void> => {
                 } catch (error) {
                     console.error(`Error requesting ${name} permission:`, error);
                 }
+            }
+
+            // Android declares background location as well; iOS requires the
+            // foreground permission before requesting the always permission.
+            const locationWhenInUse = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+            console.log(`Location permission: ${locationWhenInUse === RESULTS.GRANTED ? 'GRANTED' : 'DENIED'}`);
+            if (locationWhenInUse === RESULTS.GRANTED) {
+                await request(PERMISSIONS.IOS.LOCATION_ALWAYS);
             }
         }
 

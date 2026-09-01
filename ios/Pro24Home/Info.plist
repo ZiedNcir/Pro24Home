@@ -35,6 +35,10 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Votre position est utilisée pour sélectionner l’adresse de l’intervention et trouver les professionnels proches.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Votre position peut être utilisée en arrière-plan pour maintenir à jour le suivi de votre intervention.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Votre position peut être utilisée pour le suivi de votre intervention.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Nous avons besoin d’accéder à la caméra pour ajouter des photos à votre demande.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
