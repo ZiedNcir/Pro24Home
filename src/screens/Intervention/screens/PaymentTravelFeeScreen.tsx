@@ -1,6 +1,7 @@
 // src/screens/intervention/PaymentTravelFeeScreen.tsx
 
 import React, { useState } from 'react';
+import { ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 
 import ScreenContainer from '@components/ScreenContainer';
@@ -8,9 +9,29 @@ import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
 import { horizontalScale, verticalScale, moderateScale } from '@utils/normalizedCss';
 import { colors } from '@theme/index';
+import { useNavigation } from '@react-navigation/core';
+import { useRoute, type RouteProp } from '@react-navigation/native';
+import { Toast } from 'react-native-toast-notifications';
+import { useAddInterventionMutation } from '@store/api/endpoints/client';
+import { AppStackType } from '../../../navigation/constant/core';
 
 export const PaymentTravelFeeScreen = () => {
     const [selectedCard, setSelectedCard] = useState('main');
+    const navigation = useNavigation();
+    const route = useRoute<RouteProp<AppStackType, 'PaymentTravelFee'>>();
+    const [addIntervention, { isLoading }] = useAddInterventionMutation();
+
+    const handlePayment = async () => {
+        try {
+            await addIntervention(route.params.intervention).unwrap();
+            (navigation as any).navigate('InterventionSuccess');
+        } catch (error: any) {
+            Toast.show(error?.data?.message || error?.message || 'Le paiement n’a pas pu être finalisé.', {
+                type: 'danger',
+                placement: 'bottom',
+            });
+        }
+    };
 
     return (
         <ScreenContainer
@@ -29,7 +50,7 @@ export const PaymentTravelFeeScreen = () => {
             </TopHeader>
 
             <HeroIcon>
-                <SvgIcon name="fa-wallet" size={42} color={colors.primary} />
+                <SvgIcon name="fa-credit-card" size={42} color={colors.primary} />
             </HeroIcon>
 
             <Title>Pour confirmer votre demande</Title>
@@ -87,11 +108,8 @@ export const PaymentTravelFeeScreen = () => {
 
             <Spacer />
 
-            <PayButton onPress={() => { }//appNavigate('InterventionSuccess')
-            }>
-                <Text variant="bold" color="white" fontSize={14}>
-                    Payer 20 €
-                </Text>
+            <PayButton onPress={handlePayment} disabled={isLoading}>
+                {isLoading ? <ActivityIndicator color={colors.white} /> : <Text variant="bold" color="white" fontSize={14}>Payer 20 €</Text>}
             </PayButton>
         </ScreenContainer>
     );
@@ -200,10 +218,11 @@ const Spacer = styled.View`
   flex: 1;
 `;
 
-const PayButton = styled.TouchableOpacity`
+const PayButton = styled.TouchableOpacity<{ disabled?: boolean }>`
   height: ${verticalScale(52)}px;
   border-radius: 12px;
   background-color: ${colors.primary};
   justify-content: center;
   align-items: center;
+  opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
 `;

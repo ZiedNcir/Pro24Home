@@ -20,6 +20,7 @@ import { getServicePannes } from '../utils/servicePannes';
 import { canContinueAddressSelection } from '../utils/addressFlow';
 import { mapGooglePlaceToAddress, type SelectedAddressLocation } from '../utils/googlePlaceAddress';
 import { fetchAddressFromCoordinates, fetchGooglePlaceDetails } from '../../../services/googlePlacesService';
+import { buildInterventionPayload } from '../utils/interventionPayload';
 
 export const NewInterventionScreen = () => {
     const route = useRoute<RouteProp<AppStackType, 'NewIntervention'>>();
@@ -32,10 +33,14 @@ export const NewInterventionScreen = () => {
         return services.find(service => service.id === serviceId)
             || services.find(service => service.name.toLowerCase() === serviceName);
     }, [route.params?.service_id, route.params?.service_name, services]);
-    const problemTypes = useMemo(() => getServicePannes(selectedService), [selectedService]);
     const [step, setStep] = useState<InterventionStep>(1);
     const [selectedProblem, setSelectedProblem] = useState<number | null>(null);
     const [selectedTiming, setSelectedTiming] = useState('asap');
+    const problemTypes = useMemo(() => getServicePannes(selectedService), [selectedService]);
+    const selectedProblemRecord = useMemo(
+        () => problemTypes.find(problem => problem.id === selectedProblem),
+        [problemTypes, selectedProblem],
+    );
     const { data: addresses = [], isLoading: addressesLoading } = useGetAddressesQuery(undefined, {
         refetchOnMountOrArgChange: true,
     });
@@ -74,6 +79,7 @@ export const NewInterventionScreen = () => {
     }, [addresses, selectedAddress]);
 
     const goNext = () => {
+        if (step === 1 && selectedProblem === null) return;
         if (step === 3 && !canContinueAddress) return;
         if (step < 4) setStep((step + 1) as InterventionStep);
     };
@@ -201,7 +207,18 @@ export const NewInterventionScreen = () => {
                     serviceName={selectedService?.name || route.params?.service_name || 'Service sélectionné'}
                     address={selectedAddressRecord?.address || 'Adresse non sélectionnée'}
                     timing={selectedTiming}
-                    onNext={() => (navigation as any).navigate('PriceEstimation', { service_id: selectedService?.id })}
+                    onNext={() => {
+                        if (!selectedService?.id || !selectedAddressRecord?.id || !selectedProblemRecord) return;
+                        (navigation as any).navigate('PriceEstimation', {
+                            intervention: buildInterventionPayload({
+                                serviceId: selectedService.id,
+                                addressId: selectedAddressRecord.id,
+                                problemTitle: selectedProblemRecord.title,
+                                problemDescription: selectedProblemRecord.description,
+                                timing: selectedTiming,
+                            }),
+                        });
+                    }}
                     onPrevious={goPrevious}
                 />
             ) : null}

@@ -10,8 +10,12 @@ import BottomActions from '../components/BottomActions';
 import InfoNotice from '../components/InfoNotice';
 //import { appNavigate } from '@navigations/navigation';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import { AppStackType } from '../../../navigation/constant/core';
 
 export const PriceEstimationScreen = () => {
+    const navigation = useNavigation();
+    const route = useRoute<RouteProp<AppStackType, 'PriceEstimation'>>();
     return (
         <ScreenContainer
             mode="light"
@@ -62,9 +66,8 @@ export const PriceEstimationScreen = () => {
 
             <BottomActions
                 primaryTitle="Compris"
-                onPrimaryPress={() => { }
+                onPrimaryPress={() => (navigation as any).navigate('PaymentTravelFee', { intervention: route.params.intervention })}
                     //appNavigate('PaymentTravelFee')
-                }
             />
         </ScreenContainer>
     );
