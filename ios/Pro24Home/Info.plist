@@ -34,11 +34,13 @@
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Votre position est utilisée pour sélectionner l’adresse de l’intervention et trouver les professionnels proches.</string>
 	<key>NSCameraUsageDescription</key>
-<string>Nous avons besoin d’accéder à la caméra pour ajouter des photos à votre demande.</string>
-<key>NSPhotoLibraryUsageDescription</key>
-<string>Nous avons besoin d’accéder à vos photos pour les joindre à votre demande.</string>
+	<string>Nous avons besoin d’accéder à la caméra pour ajouter des photos à votre demande.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Nous avons besoin d’accéder à vos photos pour les joindre à votre demande.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Nous avons besoin d’enregistrer les images que vous choisissez dans votre demande.</string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
