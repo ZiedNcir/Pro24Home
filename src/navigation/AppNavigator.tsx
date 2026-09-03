@@ -21,7 +21,7 @@ import { IconName } from '@components/Icon';
 import ClientHome from '@screens/Home/client/screens/HomeClient';
 import { NotificationsScreen } from '@screens/Notification';
 import {
-  AddAddressScreen, InterventionSuccessScreen, NewInterventionScreen, PaymentTravelFeeScreen, PriceEstimationScreen
+  AddAddressScreen, InterventionSuccessScreen, NewInterventionScreen, PaymentTravelFeeScreen, PriceEstimationScreen, InterventionListScreen, InterventionDetailScreen
 
 } from '@screens/Intervention/index';
 
@@ -157,7 +157,7 @@ const TabNavigator = () => {
         headerShown: false,
       }}>
       <BottomTabScreen name="Home" component={ClientHome} />
-      <BottomTabScreen name="ListIntervention" component={NewInterventionScreen} />
+      <BottomTabScreen name="ListIntervention" component={InterventionListScreen} />
       <BottomTabScreen name="SettingPage" component={ClientHome} />
     </BottomTabNavigator>
   );
@@ -206,6 +206,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="PriceEstimation" component={PriceEstimationScreen} />
         <Stack.Screen name="PaymentTravelFee" component={PaymentTravelFeeScreen} />
         <Stack.Screen name="InterventionSuccess" component={InterventionSuccessScreen} />
+        <Stack.Screen name="InterventionDetail" component={InterventionDetailScreen} />
 
 
 
