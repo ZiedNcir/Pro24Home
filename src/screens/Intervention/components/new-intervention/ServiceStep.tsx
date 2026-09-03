@@ -65,7 +65,11 @@ const ServiceStep: React.FC<ServiceStepProps> = ({
             description="Nos électriciens sont notés et évalués par nos clients."
         />
 
-        <BottomActions primaryTitle="Continuer" onPrimaryPress={onNext} />
+        <BottomActions
+            primaryTitle="Continuer"
+            onPrimaryPress={onNext}
+            primaryDisabled={servicesLoading || selectedProblem === null}
+        />
 
         <ServiceSelectionModal
             visible={isServiceModalVisible}

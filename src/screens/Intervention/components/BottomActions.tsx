@@ -17,6 +17,7 @@ interface Props {
     secondaryTitle?: string;
     onPrimaryPress: () => void;
     onSecondaryPress?: () => void;
+    primaryDisabled?: boolean;
 }
 
 const BottomActions: React.FC<Props> = ({
@@ -24,6 +25,7 @@ const BottomActions: React.FC<Props> = ({
     secondaryTitle = 'Précédent',
     onPrimaryPress,
     onSecondaryPress,
+    primaryDisabled = false,
 }) => {
     return (
         <Wrapper>
@@ -35,7 +37,12 @@ const BottomActions: React.FC<Props> = ({
                 </SecondaryButton>
             ) : null}
 
-            <PrimaryButton onPress={onPrimaryPress}>
+            <PrimaryButton
+                onPress={onPrimaryPress}
+                disabled={primaryDisabled}
+                activeOpacity={0.8}
+                primaryDisabled={primaryDisabled}
+            >
                 <Text variant="bold" color="white" fontSize={13}>
                     {primaryTitle}
                 </Text>
@@ -64,11 +71,11 @@ const SecondaryButton = styled.TouchableOpacity`
   background-color: ${colors.white};
 `;
 
-const PrimaryButton = styled.TouchableOpacity`
+const PrimaryButton = styled.TouchableOpacity<{ primaryDisabled: boolean }>`
   flex: 2;
   height: ${verticalScale(50)}px;
   border-radius: ${moderateScale(12)}px;
-  background-color: ${colors.primary};
+  background-color: ${({ primaryDisabled }) => (primaryDisabled ? '#D7D7D7' : colors.primary)};
   justify-content: center;
   align-items: center;
   flex-direction: row;
