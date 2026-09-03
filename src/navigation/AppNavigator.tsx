@@ -76,6 +76,10 @@ const BottomTabBar: FunctionComponent<BottomTabBarProps> = ({
   const insets = useSafeAreaInsets();
   const { theme } = useTheme();
 
+  if (state.routes[state.index]?.name === 'SettingPage') {
+    return null;
+  }
+
   const navigate = (index: number) => {
     const routeName = state.routeNames[index];
 
