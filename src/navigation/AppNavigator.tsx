@@ -19,6 +19,7 @@ import { Button } from '@components/index';
 import { useTheme } from '@theme/ThemeProvider';
 import { IconName } from '@components/Icon';
 import ClientHome from '@screens/Home/client/screens/HomeClient';
+import ClientSettingsScreen from '@screens/Home/client/screens/ClientSettingsScreen';
 import { NotificationsScreen } from '@screens/Notification';
 import {
   AddAddressScreen, InterventionSuccessScreen, NewInterventionScreen, PaymentTravelFeeScreen, PriceEstimationScreen, InterventionListScreen, InterventionDetailScreen
@@ -158,7 +159,7 @@ const TabNavigator = () => {
       }}>
       <BottomTabScreen name="Home" component={ClientHome} />
       <BottomTabScreen name="ListIntervention" component={InterventionListScreen} />
-      <BottomTabScreen name="SettingPage" component={ClientHome} />
+      <BottomTabScreen name="SettingPage" component={ClientSettingsScreen} />
     </BottomTabNavigator>
   );
 };
