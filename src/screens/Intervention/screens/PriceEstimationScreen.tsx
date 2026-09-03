@@ -31,34 +31,31 @@ export const PriceEstimationScreen = () => {
     return (
         <ScreenContainer
             mode="light"
+            scrollable
             paddingHorizontal={horizontalScale(18)}
             paddingVertical={verticalScale(12)}
+            contentContainerStyle={{ paddingBottom: verticalScale(18) }}
         >
             <InterventionHeader title="Estimation du prix" showHelp={false} />
 
             <PriceBox>
-                <Text variant="bold" color="black" fontSize={13}>
-                    Prix moyen estimé
-                </Text>
-
-                {isPriceLoading ? (
-                    <ActivityIndicator color="#FF6B00" />
-                ) : (
-                    <Text variant="bold" color="black" fontSize={24}>{priceLabel}</Text>
-                )}
-
-                <Text variant="regularSmall" color="gray600">
-                    Fourchette basée sur des interventions similaires.
-                </Text>
+                <PriceIcon>
+                    <SvgIcon name="fa-euro-sign" size={18} color="#FF6B00" />
+                </PriceIcon>
+                <PriceContent>
+                    <Text variant="bold" color="black" fontSize={13}>
+                        Prix moyen estimé
+                    </Text>
+                    {isPriceLoading ? (
+                        <ActivityIndicator color="#FF6B00" />
+                    ) : (
+                        <Text variant="bold" color="black" fontSize={24}>{priceLabel}</Text>
+                    )}
+                    <Text variant="regularSmall" color="gray600">
+                        Fourchette basée sur des interventions similaires.
+                    </Text>
+                </PriceContent>
             </PriceBox>
-
-            <SectionTitle>Ce qui peut influencer le prix</SectionTitle>
-
-            <InfoNotice
-                icon="fa-exclamation-circle"
-                title="Complexité du problème"
-                description="Plus le problème est complexe, plus le prix peut augmenter."
-            />
 
             <SectionTitle>Besoin d’une confirmation ?</SectionTitle>
 
@@ -81,22 +78,30 @@ export const PriceEstimationScreen = () => {
                 <Radio selected={checkWithProfessional} />
             </ProfessionalOption>
 
-            <InfoNotice
-                icon="fa-tools"
-                title="Matériel nécessaire"
-                description="Les pièces ou équipements peuvent influencer le prix."
-            />
+            <SectionTitle>Ce qui peut influencer le prix</SectionTitle>
 
-            <InfoNotice
-                icon="fa-clock"
-                title="Temps d’intervention"
-                description="La durée peut faire varier le coût."
-            />
+            <FactorsCard>
+                <InfoNotice
+                    icon="fa-exclamation-circle"
+                    title="Complexité du problème"
+                    description="Plus le problème est complexe, plus le prix peut augmenter."
+                />
 
-            <BottomSpacer />
+                <InfoNotice
+                    icon="fa-tools"
+                    title="Matériel nécessaire"
+                    description="Les pièces ou équipements peuvent influencer le prix."
+                />
+
+                <InfoNotice
+                    icon="fa-clock"
+                    title="Temps d’intervention"
+                    description="La durée peut faire varier le coût."
+                />
+            </FactorsCard>
 
             <FooterNote>
-                Le prix final sera confirmé par le professionnel après son diagnostic sur place.
+                Le prix affiché est indicatif. Le montant final sera confirmé par le professionnel après son diagnostic sur place.
             </FooterNote>
 
             <BottomActions
@@ -117,9 +122,25 @@ const PriceBox = styled.View`
   border-width: 1px;
   border-color: #dff5e8;
   border-radius: 16px;
-  padding: ${horizontalScale(18)}px;
+  padding: ${horizontalScale(16)}px;
+  flex-direction: row;
+  align-items: center;
   margin-top: ${verticalScale(26)}px;
   margin-bottom: ${verticalScale(18)}px;
+`;
+
+const PriceIcon = styled.View`
+  width: ${horizontalScale(42)}px;
+  height: ${horizontalScale(42)}px;
+  border-radius: ${horizontalScale(21)}px;
+  background-color: #fff1e8;
+  align-items: center;
+  justify-content: center;
+  margin-right: ${horizontalScale(12)}px;
+`;
+
+const PriceContent = styled.View`
+  flex: 1;
 `;
 
 const SectionTitle = styled(Text).attrs({
@@ -130,10 +151,6 @@ const SectionTitle = styled(Text).attrs({
   margin-bottom: ${verticalScale(12)}px;
 `;
 
-const BottomSpacer = styled.View`
-  flex: 1;
-`;
-
 const FooterNote = styled(Text).attrs({
     variant: 'regularSmall',
     color: 'gray600',
@@ -141,6 +158,12 @@ const FooterNote = styled(Text).attrs({
   background-color: #f7f7f7;
   padding: ${horizontalScale(14)}px;
   border-radius: 12px;
+`;
+
+const FactorsCard = styled.View`
+  border-radius: 14px;
+  background-color: #fffaf7;
+  padding: ${horizontalScale(2)}px ${horizontalScale(12)}px ${horizontalScale(12)}px;
 `;
 
 const ProfessionalOption = styled.TouchableOpacity<{ selected: boolean }>`
