@@ -1,12 +1,42 @@
 import React from 'react';
-import { Modal } from 'react-native';
+import { ImageSourcePropType, Modal } from 'react-native';
 import styled from 'styled-components/native';
 
 import Text from '@components/Text';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { colors } from '@theme/index';
-import SelectableCard from '../SelectableCard';
+import CardService from '../../../Home/client/component/CardService';
 import type { Service } from '../../../../store/api/api.types';
+
+const serviceImages: ImageSourcePropType[] = [
+    require('@assets/images/fenetre.png'),
+    require('@assets/images/electricien.png'),
+    require('@assets/images/chauffagiste.png'),
+    require('@assets/images/serrurier.png'),
+];
+
+const listContentStyle = {
+    flexDirection: 'row' as const,
+    flexWrap: 'wrap' as const,
+    justifyContent: 'space-between' as const,
+};
+
+const getServiceImage = (service: Service): ImageSourcePropType => {
+    const imageByName = service.name.toLowerCase();
+    if (imageByName.includes('fenêtre') || imageByName.includes('fenetre') || imageByName.includes('vitrerie')) {
+        return serviceImages[0]!;
+    }
+    if (imageByName.includes('électric') || imageByName.includes('electric')) {
+        return serviceImages[1]!;
+    }
+    if (imageByName.includes('plomb') || imageByName.includes('chauff')) {
+        return serviceImages[2]!;
+    }
+    if (imageByName.includes('serrur')) {
+        return serviceImages[3]!;
+    }
+    return serviceImages[service.id] || serviceImages[0]!;
+};
 
 interface Props {
     visible: boolean;
@@ -36,15 +66,18 @@ const ServiceSelectionModal: React.FC<Props> = ({
                 <Text variant="regularSmall" color="gray600" style={{ marginBottom: verticalScale(14) }}>
                     Sélectionnez une catégorie de services.
                 </Text>
-                <List showsVerticalScrollIndicator={false}>
+                <List
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={listContentStyle}
+                >
                     {services.map(service => (
-                        <SelectableCard
+                        <CardService
                             key={service.id}
                             title={service.name}
                             description={service.description || 'Choisissez ce service pour votre intervention.'}
-                            icon="fa-tools"
+                            image={getServiceImage(service)}
                             selected={service.id === selectedServiceId}
-                            onPress={() => onSelect(service.id)}
+                            onClick={() => onSelect(service.id)}
                         />
                     ))}
                 </List>

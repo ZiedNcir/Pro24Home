@@ -20,6 +20,7 @@ export interface ICardServiceProps extends TouchableOpacityProps {
     description?: string;
     image: ImageSourcePropType;
     onClick?: () => void;
+    selected?: boolean;
 }
 
 const CardService: React.FC<ICardServiceProps> = ({
@@ -27,10 +28,11 @@ const CardService: React.FC<ICardServiceProps> = ({
     description,
     image,
     onClick,
+    selected = false,
     ...props
 }) => {
     return (
-        <Container activeOpacity={0.86} onPress={onClick} {...props}>
+        <Container selected={selected} activeOpacity={0.86} onPress={onClick} {...props}>
             <ImageBox>
                 <ServiceImage source={image} resizeMode="contain" />
             </ImageBox>
@@ -59,7 +61,7 @@ const CardService: React.FC<ICardServiceProps> = ({
 
 export default CardService;
 
-const Container = styled.TouchableOpacity`
+const Container = styled.TouchableOpacity<{ selected: boolean }>`
   width: 48%;
   min-height: ${verticalScale(178)}px;
   margin-bottom: ${verticalScale(14)}px;
@@ -67,7 +69,8 @@ const Container = styled.TouchableOpacity`
   background-color: ${colors.white};
   border-radius: ${moderateScale(20)}px;
   border-width: 1px;
-  border-color: #eeeeee;
+  border-color: ${({ selected }) => (selected ? colors.primary : '#eeeeee')};
+  background-color: ${({ selected }) => (selected ? '#FFF5EF' : colors.white)};
   shadow-color: #000;
   shadow-offset: 0px ${verticalScale(6)}px;
   shadow-opacity: 0.05;
