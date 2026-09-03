@@ -8,7 +8,7 @@ export type AppStackType = {
     AccountPendingScreen: undefined;
     AddAddress: undefined;
     PriceEstimation: { intervention: CreateInterventionRequest };
-    PaymentTravelFee: { intervention: CreateInterventionRequest };
+    PaymentTravelFee: { intervention: CreateInterventionRequest; checkPriceWithProfessional?: boolean };
     InterventionSuccess: undefined;
     InterventionDetail: { intervention_id: number };
     NewIntervention: { service_id?: number; service_name?: string } | undefined;

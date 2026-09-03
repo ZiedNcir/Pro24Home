@@ -8,6 +8,26 @@ import { prepareFormData } from '../../../utils/api.helpers';
 
 export const paymentEndpoints = api.injectEndpoints({
     endpoints: (builder) => ({
+        // Get the estimated intervention price
+        getInterventionPrice: builder.query<{
+            price?: number;
+            minPrice?: number;
+            maxPrice?: number;
+        }, void>({
+            query: () => '/api/get-intervention-price',
+            providesTags: ['Payments'],
+            transformResponse: (response: any) => {
+                const payload = response?.data ?? response;
+                if (typeof payload === 'number') return { price: payload };
+
+                return {
+                    price: Number(payload?.price) || undefined,
+                    minPrice: Number(payload?.min_price ?? payload?.min) || undefined,
+                    maxPrice: Number(payload?.max_price ?? payload?.max) || undefined,
+                };
+            },
+        }),
+
         // Create Payment Intent
         createPaymentIntent: builder.mutation<PaymentIntent, { intervention_id: number }>({
             query: (data) => ({
@@ -63,6 +83,7 @@ export const paymentEndpoints = api.injectEndpoints({
 });
 
 export const {
+    useGetInterventionPriceQuery,
     useCreatePaymentIntentMutation,
     useCapturePaymentMutation,
     useValidatePaymentMutation,

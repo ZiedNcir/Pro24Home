@@ -62,12 +62,6 @@ export const interventionEndpoints = api.injectEndpoints({
             invalidatesTags: ['Interventions', 'Devis'],
         }),
 
-        // Get Intervention Price
-        getInterventionPrice: builder.query<{ price: number }, void>({
-            query: () => '/api/get-intervention-price',
-            providesTags: ['Interventions'],
-        }),
-
         // Get Devis for Intervention
         getInterventionDevis: builder.query<Devis[], number>({
             query: (interventionId) => ({
@@ -87,6 +81,5 @@ export const {
     useLazyGetInterventionQuery,
     useAcceptDevisMutation,
     useReviseDevisMutation,
-    useGetInterventionPriceQuery,
     useGetInterventionDevisQuery,
 } = interventionEndpoints;

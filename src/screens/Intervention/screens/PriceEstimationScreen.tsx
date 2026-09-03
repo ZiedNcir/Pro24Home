@@ -1,10 +1,12 @@
 // src/screens/intervention/PriceEstimationScreen.tsx
 
-import React from 'react';
+import React, { useState } from 'react';
+import { ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 
 import ScreenContainer from '@components/ScreenContainer';
 import Text from '@components/Text';
+import { SvgIcon } from '@components/Icon';
 import InterventionHeader from '../components/InterventionHeader';
 import BottomActions from '../components/BottomActions';
 import InfoNotice from '../components/InfoNotice';
@@ -12,10 +14,20 @@ import InfoNotice from '../components/InfoNotice';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import { AppStackType } from '../../../navigation/constant/core';
+import { useGetInterventionPriceQuery } from '@store/api/endpoints/payment';
 
 export const PriceEstimationScreen = () => {
     const navigation = useNavigation();
     const route = useRoute<RouteProp<AppStackType, 'PriceEstimation'>>();
+    const [checkWithProfessional, setCheckWithProfessional] = useState(false);
+    const { data: price, isLoading: isPriceLoading } = useGetInterventionPriceQuery();
+
+    const priceLabel = price?.minPrice && price?.maxPrice
+        ? `${price.minPrice} € – ${price.maxPrice} €`
+        : price?.price
+            ? `${price.price} €`
+            : '50 € – 80 €';
+
     return (
         <ScreenContainer
             mode="light"
@@ -29,9 +41,11 @@ export const PriceEstimationScreen = () => {
                     Prix moyen estimé
                 </Text>
 
-                <Text variant="bold" color="black" fontSize={24}>
-                    50 € – 80 €
-                </Text>
+                {isPriceLoading ? (
+                    <ActivityIndicator color="#FF6B00" />
+                ) : (
+                    <Text variant="bold" color="black" fontSize={24}>{priceLabel}</Text>
+                )}
 
                 <Text variant="regularSmall" color="gray600">
                     Fourchette basée sur des interventions similaires.
@@ -45,6 +59,27 @@ export const PriceEstimationScreen = () => {
                 title="Complexité du problème"
                 description="Plus le problème est complexe, plus le prix peut augmenter."
             />
+
+            <SectionTitle>Besoin d’une confirmation ?</SectionTitle>
+
+            <ProfessionalOption
+                selected={checkWithProfessional}
+                onPress={() => setCheckWithProfessional(value => !value)}
+                activeOpacity={0.85}
+            >
+                <OptionIcon>
+                    <SvgIcon name="fa-user-check" size={18} color="#FF6B00" />
+                </OptionIcon>
+                <OptionContent>
+                    <Text variant="bold" color="black" fontSize={13}>
+                        Faire vérifier le prix par un professionnel
+                    </Text>
+                    <Text variant="regularSmall" color="gray600">
+                        Recevez une confirmation avant l’intervention.
+                    </Text>
+                </OptionContent>
+                <Radio selected={checkWithProfessional} />
+            </ProfessionalOption>
 
             <InfoNotice
                 icon="fa-tools"
@@ -66,7 +101,10 @@ export const PriceEstimationScreen = () => {
 
             <BottomActions
                 primaryTitle="Compris"
-                onPrimaryPress={() => (navigation as any).navigate('PaymentTravelFee', { intervention: route.params.intervention })}
+                onPrimaryPress={() => (navigation as any).navigate('PaymentTravelFee', {
+                    intervention: route.params.intervention,
+                    checkPriceWithProfessional: checkWithProfessional,
+                })}
                     //appNavigate('PaymentTravelFee')
             />
         </ScreenContainer>
@@ -103,4 +141,38 @@ const FooterNote = styled(Text).attrs({
   background-color: #f7f7f7;
   padding: ${horizontalScale(14)}px;
   border-radius: 12px;
+`;
+
+const ProfessionalOption = styled.TouchableOpacity<{ selected: boolean }>`
+  min-height: ${verticalScale(70)}px;
+  border-radius: 14px;
+  border-width: 1px;
+  border-color: ${({ selected }) => (selected ? '#FF6B00' : '#E5E5E5')};
+  background-color: ${({ selected }) => (selected ? '#FFF5EF' : '#FFFFFF')};
+  padding: ${horizontalScale(12)}px;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const OptionIcon = styled.View`
+  width: ${horizontalScale(36)}px;
+  height: ${horizontalScale(36)}px;
+  border-radius: 18px;
+  background-color: #fff1e8;
+  align-items: center;
+  justify-content: center;
+`;
+
+const OptionContent = styled.View`
+  flex: 1;
+  margin-left: ${horizontalScale(10)}px;
+`;
+
+const Radio = styled.View<{ selected: boolean }>`
+  width: ${horizontalScale(20)}px;
+  height: ${horizontalScale(20)}px;
+  border-radius: ${horizontalScale(10)}px;
+  border-width: 1px;
+  border-color: ${({ selected }) => (selected ? '#FF6B00' : '#D5D5D5')};
+  background-color: ${({ selected }) => (selected ? '#FF6B00' : 'transparent')};
 `;

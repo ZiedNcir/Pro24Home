@@ -21,6 +21,7 @@ export const PaymentTravelFeeScreen = () => {
     const navigation = useNavigation();
     const route = useRoute<RouteProp<AppStackType, 'PaymentTravelFee'>>();
     const [addIntervention, { isLoading }] = useAddInterventionMutation();
+    const checkPriceWithProfessional = route.params?.checkPriceWithProfessional;
 
     const handlePayment = async () => {
         try {
@@ -51,6 +52,15 @@ export const PaymentTravelFeeScreen = () => {
             <Description>
                 Un frais de déplacement est demandé pour réserver l’intervention. Ce montant sera déduit du prix final si l’intervention est réalisée.
             </Description>
+
+            {checkPriceWithProfessional ? (
+                <ProfessionalNote>
+                    <SvgIcon name="fa-user-check" size={16} color={colors.primary} />
+                    <Text variant="regularSmall" color="gray700">
+                        Un professionnel vérifiera le prix avant l’intervention.
+                    </Text>
+                </ProfessionalNote>
+            ) : null}
 
             <FeeCard>
                 <Text variant="bold" color="black" fontSize={15}>
@@ -149,6 +159,16 @@ const FeeCard = styled.View`
   align-items: center;
   justify-content: space-between;
   background-color: ${colors.white};
+`;
+
+const ProfessionalNote = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: ${horizontalScale(8)}px;
+  margin-top: ${verticalScale(14)}px;
+  padding: ${horizontalScale(12)}px;
+  border-radius: 12px;
+  background-color: #fff1e8;
 `;
 
 const SecureRow = styled.View`
