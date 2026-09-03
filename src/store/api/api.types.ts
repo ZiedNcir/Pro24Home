@@ -340,7 +340,7 @@ export interface Intervention {
     id: number;
     title: string;
     description: string;
-    price?: number;
+    price?: number | null;
     status: InterventionStatus;
     service_id: number;
     sub_service_id: number;

@@ -28,6 +28,20 @@ export const PriceEstimationScreen = () => {
             ? `${price.price} €`
             : '50 € – 80 €';
 
+    const continueToPayment = () => {
+        const intervention = {
+            ...route.params.intervention,
+            price: checkWithProfessional
+                ? null
+                : price?.price ?? price?.minPrice ?? null,
+        };
+
+        (navigation as any).navigate('PaymentTravelFee', {
+            intervention,
+            checkPriceWithProfessional: checkWithProfessional,
+        });
+    };
+
     return (
         <ScreenContainer
             mode="light"
@@ -106,10 +120,7 @@ export const PriceEstimationScreen = () => {
 
             <BottomActions
                 primaryTitle="Compris"
-                onPrimaryPress={() => (navigation as any).navigate('PaymentTravelFee', {
-                    intervention: route.params.intervention,
-                    checkPriceWithProfessional: checkWithProfessional,
-                })}
+                onPrimaryPress={continueToPayment}
                     //appNavigate('PaymentTravelFee')
             />
         </ScreenContainer>

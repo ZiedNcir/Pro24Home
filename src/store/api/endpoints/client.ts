@@ -116,7 +116,7 @@ export const clientEndpoints = api.injectEndpoints({
                         adresse_id: data.address_id,
                         title: data.title,
                         description: data.description,
-                        price: data.price || '',
+                        ...(data.price !== null && data.price !== undefined ? { price: data.price } : {}),
                     },
                     ['image_1', 'image_2', 'image_3']
                 );
