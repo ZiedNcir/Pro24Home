@@ -1,29 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components/native';
 
 import Text from '@components/Text';
 import { verticalScale } from '@utils/normalizedCss';
 import SelectableCard from '../SelectableCard';
 import ServiceSummaryCard from '../ServiceSummaryCard';
+import ServiceSelectionModal from './ServiceSelectionModal';
 import InfoNotice from '../InfoNotice';
 import BottomActions from '../BottomActions';
 import type { ServiceStepProps } from './types';
 
 const ServiceStep: React.FC<ServiceStepProps> = ({
     service,
+    services,
+    selectedServiceId,
     problemTypes,
     servicesLoading,
     selectedProblem,
     onSelectProblem,
-    onEditService,
+    onSelectService,
     onNext,
-}) => (
-    <>
+}) => {
+    const [isServiceModalVisible, setIsServiceModalVisible] = useState(false);
+
+    const handleSelectService = (serviceId: number) => {
+        onSelectService(serviceId);
+        setIsServiceModalVisible(false);
+    };
+
+    return (
+        <>
         <ServiceSummaryCard
             title={service?.name || 'Type de service'}
             description={service?.description || 'Choisissez le service adapté à votre besoin'}
             image={require('@assets/images/electricien.png')}
-            onEditPress={onEditService}
+            onEditPress={() => setIsServiceModalVisible(true)}
         />
 
         <SectionTitle>Type de service</SectionTitle>
@@ -55,8 +66,17 @@ const ServiceStep: React.FC<ServiceStepProps> = ({
         />
 
         <BottomActions primaryTitle="Continuer" onPrimaryPress={onNext} />
-    </>
-);
+
+        <ServiceSelectionModal
+            visible={isServiceModalVisible}
+            services={services}
+            selectedServiceId={selectedServiceId}
+            onClose={() => setIsServiceModalVisible(false)}
+            onSelect={handleSelectService}
+        />
+        </>
+    );
+};
 
 export default ServiceStep;
 

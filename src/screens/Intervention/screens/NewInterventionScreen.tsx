@@ -27,12 +27,12 @@ export const NewInterventionScreen = () => {
     const navigation = useNavigation();
     const { data: servicesResponse, isLoading: servicesLoading } = useGetServicesQuery({ lang: 'fr' });
     const services = useMemo(() => servicesResponse?.data || [], [servicesResponse?.data]);
+    const [selectedServiceId, setSelectedServiceId] = useState<number | undefined>(route.params?.service_id);
     const selectedService = useMemo(() => {
-        const serviceId = route.params?.service_id;
         const serviceName = route.params?.service_name?.toLowerCase();
-        return services.find(service => service.id === serviceId)
+        return services.find(service => service.id === selectedServiceId)
             || services.find(service => service.name.toLowerCase() === serviceName);
-    }, [route.params?.service_id, route.params?.service_name, services]);
+    }, [route.params?.service_name, selectedServiceId, services]);
     const [step, setStep] = useState<InterventionStep>(1);
     const [selectedProblem, setSelectedProblem] = useState<number | null>(null);
     const [selectedTiming, setSelectedTiming] = useState('asap');
@@ -155,11 +155,16 @@ export const NewInterventionScreen = () => {
             {step === 1 ? (
                 <ServiceStep
                     service={selectedService}
+                    services={services}
+                    selectedServiceId={selectedService?.id}
                     problemTypes={problemTypes}
                     servicesLoading={servicesLoading}
                     selectedProblem={selectedProblem}
                     onSelectProblem={setSelectedProblem}
-                    onEditService={() => navigation.goBack()}
+                    onSelectService={(serviceId) => {
+                        setSelectedServiceId(serviceId);
+                        setSelectedProblem(null);
+                    }}
                     onNext={goNext}
                 />
             ) : null}
