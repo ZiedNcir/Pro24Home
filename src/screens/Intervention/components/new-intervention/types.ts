@@ -19,7 +19,16 @@ export interface ServiceStepProps extends StepNavigationProps {
 
 export interface DetailsStepProps extends StepNavigationProps {
     selectedTiming: string;
+    selectedDate: Date | null;
     onSelectTiming: (timing: string) => void;
+    onSelectDate: (date: Date) => void;
+}
+
+export interface ScheduleDateModalProps {
+    visible: boolean;
+    selectedDate: Date | null;
+    onClose: () => void;
+    onConfirm: (date: Date) => void;
 }
 
 export interface FullscreenMapModalProps {
@@ -67,4 +76,5 @@ export interface SummaryStepProps extends StepNavigationProps {
     serviceName: string;
     address: string;
     timing: string;
+    scheduledDate?: Date | null;
 }

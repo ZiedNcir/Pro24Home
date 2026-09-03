@@ -7,14 +7,17 @@ import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import BottomActions from '../BottomActions';
 import type { SummaryStepProps } from './types';
 
-const SummaryStep: React.FC<SummaryStepProps> = ({ serviceName, address, timing, onNext, onPrevious }) => (
+const SummaryStep: React.FC<SummaryStepProps> = ({ serviceName, address, timing, scheduledDate, onNext, onPrevious }) => (
     <>
         <SectionTitle>Récapitulatif de votre demande</SectionTitle>
         <SummaryBlock>
             <SummaryLine title="Service" value={serviceName} />
             <SummaryLine title="Détails" value="La prise du salon ne fonctionne plus depuis hier." />
             <SummaryLine title="Adresse" value={address} />
-            <SummaryLine title="Date souhaitée" value={timing === 'schedule' ? 'Date choisie' : 'Dès que possible'} />
+            <SummaryLine
+                title="Date souhaitée"
+                value={timing === 'schedule' && scheduledDate ? scheduledDate.toLocaleString('fr-FR') : timing === 'schedule' ? 'Date choisie' : 'Dès que possible'}
+            />
         </SummaryBlock>
 
         <EstimationBox>

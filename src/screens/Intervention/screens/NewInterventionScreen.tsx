@@ -36,6 +36,7 @@ export const NewInterventionScreen = () => {
     const [step, setStep] = useState<InterventionStep>(1);
     const [selectedProblem, setSelectedProblem] = useState<number | null>(null);
     const [selectedTiming, setSelectedTiming] = useState('asap');
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const problemTypes = useMemo(() => getServicePannes(selectedService), [selectedService]);
     const selectedProblemRecord = useMemo(
         () => problemTypes.find(problem => problem.id === selectedProblem),
@@ -171,7 +172,9 @@ export const NewInterventionScreen = () => {
             {step === 2 ? (
                 <DetailsStep
                     selectedTiming={selectedTiming}
+                    selectedDate={selectedDate}
                     onSelectTiming={setSelectedTiming}
+                    onSelectDate={setSelectedDate}
                     onNext={goNext}
                     onPrevious={goPrevious}
                 />
@@ -213,6 +216,7 @@ export const NewInterventionScreen = () => {
                     serviceName={selectedService?.name || route.params?.service_name || 'Service sélectionné'}
                     address={selectedAddressRecord?.address || 'Adresse non sélectionnée'}
                     timing={selectedTiming}
+                    scheduledDate={selectedDate}
                     onNext={() => {
                         if (!selectedService?.id || !selectedAddressRecord?.id || !selectedProblemRecord) return;
                         (navigation as any).navigate('PriceEstimation', {

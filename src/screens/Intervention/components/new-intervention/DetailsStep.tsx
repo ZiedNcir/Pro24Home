@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components/native';
 
 import Text from '@components/Text';
@@ -7,10 +7,19 @@ import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import SelectableCard from '../SelectableCard';
 import PhotoPickerRow from '../PhotoPickerRow';
 import BottomActions from '../BottomActions';
+import ScheduleDateModal from './ScheduleDateModal';
 import type { DetailsStepProps } from './types';
 
-const DetailsStep: React.FC<DetailsStepProps> = ({ selectedTiming, onSelectTiming, onNext, onPrevious }) => (
-    <>
+const DetailsStep: React.FC<DetailsStepProps> = ({ selectedTiming, selectedDate, onSelectTiming, onSelectDate, onNext, onPrevious }) => {
+    const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
+
+    const chooseScheduledTiming = () => {
+        onSelectTiming('schedule');
+        setIsDatePickerVisible(true);
+    };
+
+    return (
+        <>
         <SectionTitle>Décrivez votre problème</SectionTitle>
         <InputBox multiline placeholder="La prise du salon ne fonctionne plus depuis hier..." placeholderTextColor="#8A8A8A" />
 
@@ -30,12 +39,25 @@ const DetailsStep: React.FC<DetailsStepProps> = ({ selectedTiming, onSelectTimin
             description="Sélectionnez un créneau"
             icon="fa-calendar"
             selected={selectedTiming === 'schedule'}
-            onPress={() => onSelectTiming('schedule')}
+            onPress={chooseScheduledTiming}
         />
 
-        <BottomActions primaryTitle="Continuer" onPrimaryPress={onNext} onSecondaryPress={onPrevious} />
+        <BottomActions
+            primaryTitle="Continuer"
+            onPrimaryPress={onNext}
+            onSecondaryPress={onPrevious}
+            primaryDisabled={selectedTiming === 'schedule' && !selectedDate}
+        />
+
+        <ScheduleDateModal
+            visible={isDatePickerVisible}
+            selectedDate={selectedDate}
+            onClose={() => setIsDatePickerVisible(false)}
+            onConfirm={onSelectDate}
+        />
     </>
-);
+    );
+};
 
 export default DetailsStep;
 
