@@ -42,7 +42,7 @@ const ClientSettingsScreen = () => {
 
             <SectionLabel>COMPTE</SectionLabel>
             <SectionCard>
-                <SettingsRow icon="fa-user" title="Profil" description={user?.name ? `${user.name} · Informations personnelles` : 'Gérez vos informations personnelles'} onPress={() => undefined} />
+                <SettingsRow icon="fa-user" title="Profil" description={user?.name ? `${user.name} · Informations personnelles` : 'Gérez vos informations personnelles'} onPress={() => (navigation as any).navigate('Profile')} />
                 <SettingsRow icon="fa-map-marker-alt" title="Adresses enregistrées" description="Consultez et gérez vos adresses" onPress={() => undefined} />
             </SectionCard>
 

@@ -20,6 +20,7 @@ import { useTheme } from '@theme/ThemeProvider';
 import { IconName } from '@components/Icon';
 import ClientHome from '@screens/Home/client/screens/HomeClient';
 import ClientSettingsScreen from '@screens/Home/client/screens/ClientSettingsScreen';
+import ProfileScreen from '@screens/Home/client/screens/ProfileScreen';
 import { NotificationsScreen } from '@screens/Notification';
 import {
   AddAddressScreen, InterventionSuccessScreen, NewInterventionScreen, PaymentTravelFeeScreen, PriceEstimationScreen, InterventionListScreen, InterventionDetailScreen
@@ -195,6 +196,7 @@ const AppNavigator: React.FC = () => {
           }}
         />
         <Stack.Screen name="AccountType" component={AccountTypeScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
         <Stack.Screen name="VerifyScreen" component={VerifyAccountScreen} />
         <Stack.Screen name="SignIn" component={SignIn} />

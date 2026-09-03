@@ -1,0 +1,107 @@
+import React, { useState } from 'react';
+import { ActivityIndicator, Image } from 'react-native';
+import styled from 'styled-components/native';
+import { Toast } from 'react-native-toast-notifications';
+
+import ScreenContainer from '@components/ScreenContainer';
+import Text from '@components/Text';
+import { SvgIcon } from '@components/Icon';
+import InterventionHeader from '../../../Intervention/components/InterventionHeader';
+import { useTheme } from '@theme/ThemeProvider';
+import { useAppSelector } from '@store/hooks';
+import { selectUser } from '@store/slices/authSlice';
+import { useUpdateProfileMutation } from '@store/api/endpoints/auth';
+import { colors } from '@theme/index';
+import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
+
+const ProfileScreen = () => {
+    const { themeMode } = useTheme();
+    const user = useAppSelector(selectUser);
+    const [updateProfile, { isLoading }] = useUpdateProfileMutation();
+    const [firstName, setFirstName] = useState(user?.client?.first_name || '');
+    const [lastName, setLastName] = useState(user?.client?.last_name || '');
+    const [email, setEmail] = useState(user?.email || '');
+    const [phone, setPhone] = useState(user?.phone_number || '');
+    const [address, setAddress] = useState(user?.address?.[0]?.address || '');
+
+    const saveProfile = async () => {
+        try {
+            await updateProfile({
+                first_name: firstName.trim(),
+                last_name: lastName.trim(),
+                email: email.trim(),
+                phone_number: phone.trim(),
+                address: address.trim(),
+            } as any).unwrap();
+            Toast.show('Votre profil a été mis à jour.', { type: 'success', placement: 'bottom' });
+        } catch (error: any) {
+            Toast.show(error?.data?.message || 'Impossible de mettre à jour votre profil.', { type: 'danger', placement: 'bottom' });
+        }
+    };
+
+    return (
+        <ScreenContainer mode={themeMode} scrollable paddingHorizontal={horizontalScale(18)} paddingVertical={verticalScale(12)} contentContainerStyle={{ paddingBottom: verticalScale(32) }}>
+            <InterventionHeader title="Profil" showHelp={false} />
+            <ProfileIntro>
+                <AvatarWrap>
+                    <Avatar source={require('@assets/images/worker_avatar.png')} resizeMode="cover" />
+                    <CameraButton accessibilityRole="button" accessibilityLabel="Modifier la photo de profil">
+                        <SvgIcon name="fa-camera" size={15} color={colors.white} />
+                    </CameraButton>
+                </AvatarWrap>
+                <Text variant="title" color="black" style={{ marginTop: verticalScale(12) }}>{user?.name || `${firstName} ${lastName}`.trim() || 'Mon profil'}</Text>
+                <RoleBadge><SvgIcon name="fa-user" size={13} color={colors.primary} /><Text variant="bold" color={colors.primary} fontSize={12}>Client Pro24Home</Text></RoleBadge>
+                <IntroText>Gérez vos informations personnelles et comment nous vous contactons.</IntroText>
+            </ProfileIntro>
+
+            <SectionTitle>Informations personnelles</SectionTitle>
+            <FormCard>
+                <ProfileField icon="fa-user" label="Prénom" value={firstName} onChangeText={setFirstName} />
+                <ProfileField icon="fa-user" label="Nom" value={lastName} onChangeText={setLastName} />
+                <ProfileField icon="fa-envelope-open-text" label="Adresse e-mail" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
+                <ProfileField icon="fa-user-circle" label="Téléphone" value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
+                <ProfileField icon="fa-map-marker-alt" label="Adresse principale" value={address} onChangeText={setAddress} last />
+            </FormCard>
+
+            <SaveButton onPress={saveProfile} disabled={isLoading} activeOpacity={0.85}>
+                {isLoading ? <ActivityIndicator color={colors.white} /> : <><SvgIcon name="fa-check" size={16} color={colors.white} /><Text variant="bold" color={colors.white} fontSize={14}>Enregistrer les modifications</Text></>}
+            </SaveButton>
+        </ScreenContainer>
+    );
+};
+
+interface ProfileFieldProps {
+    icon: 'fa-user' | 'fa-envelope-open-text' | 'fa-user-circle' | 'fa-map-marker-alt';
+    label: string;
+    value: string;
+    onChangeText: (value: string) => void;
+    last?: boolean;
+    keyboardType?: 'default' | 'email-address' | 'phone-pad';
+    autoCapitalize?: 'none' | 'sentences';
+}
+
+const ProfileField = ({ icon, label, value, onChangeText, last, ...inputProps }: ProfileFieldProps) => (
+    <FieldRow last={last}>
+        <FieldIcon><SvgIcon name={icon} size={17} color={colors.primary} /></FieldIcon>
+        <FieldContent>
+            <Text variant="notification" color="gray600">{label}</Text>
+            <FieldInput value={value} onChangeText={onChangeText} placeholder={label} placeholderTextColor="#9E9E9E" {...inputProps} />
+        </FieldContent>
+    </FieldRow>
+);
+
+export default ProfileScreen;
+
+const ProfileIntro = styled.View`align-items: center; padding-vertical: ${verticalScale(18)}px;`;
+const AvatarWrap = styled.View`position: relative;`;
+const Avatar = styled(Image)`width: ${horizontalScale(118)}px; height: ${horizontalScale(118)}px; border-radius: ${horizontalScale(59)}px; border-width: 4px; border-color: ${colors.white};`;
+const CameraButton = styled.TouchableOpacity`position: absolute; right: 0; bottom: 2px; width: ${horizontalScale(34)}px; height: ${horizontalScale(34)}px; border-radius: ${horizontalScale(17)}px; background-color: ${colors.primary}; align-items: center; justify-content: center; border-width: 3px; border-color: ${colors.white};`;
+const RoleBadge = styled.View`flex-direction: row; align-items: center; gap: ${horizontalScale(6)}px; background-color: #fff1e8; border-radius: ${moderateScale(16)}px; padding: ${verticalScale(6)}px ${horizontalScale(12)}px; margin-top: ${verticalScale(8)}px;`;
+const IntroText = styled(Text).attrs({ variant: 'regular', color: 'gray600' })`text-align: center; margin-top: ${verticalScale(12)}px; max-width: ${horizontalScale(300)}px;`;
+const SectionTitle = styled(Text).attrs({ variant: 'bold', color: 'black', fontSize: 15 })`margin-bottom: ${verticalScale(10)}px;`;
+const FormCard = styled.View`border-width: 1px; border-color: #eeeeee; border-radius: ${moderateScale(16)}px; background-color: ${({ theme }) => theme.colors.surface}; padding-horizontal: ${horizontalScale(12)}px;`;
+const FieldRow = styled.View<{ last?: boolean }>`min-height: ${verticalScale(68)}px; flex-direction: row; align-items: center; border-bottom-width: ${({ last }) => (last ? 0 : 1)}px; border-bottom-color: #eeeeee;`;
+const FieldIcon = styled.View`width: ${horizontalScale(36)}px; height: ${horizontalScale(36)}px; border-radius: ${moderateScale(11)}px; background-color: #fff5ef; align-items: center; justify-content: center; margin-right: ${horizontalScale(10)}px;`;
+const FieldContent = styled.View`flex: 1;`;
+const FieldInput = styled.TextInput`height: ${verticalScale(27)}px; padding: 0; color: ${colors.black}; font-family: Inter-Regular; font-size: 14px;`;
+const SaveButton = styled.TouchableOpacity`height: ${verticalScale(52)}px; margin-top: ${verticalScale(18)}px; border-radius: ${moderateScale(13)}px; background-color: ${colors.primary}; flex-direction: row; gap: ${horizontalScale(10)}px; align-items: center; justify-content: center; opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};`;

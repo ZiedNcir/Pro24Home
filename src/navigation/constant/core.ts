@@ -3,6 +3,7 @@ import type { CreateInterventionRequest } from '@store/api/api.types';
 
 export type AppStackType = {
     SignIn: { role?: 'client' | 'professional' };
+    Profile: undefined;
     RegisterScreen: { role?: 'client' | 'professional' };
     VerifyScreen: { email?: string | null; role: IRole | null };
     AccountPendingScreen: undefined;
