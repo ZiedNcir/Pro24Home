@@ -11,6 +11,7 @@ import { logout, selectUser } from '@store/slices/authSlice';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useNavigation } from '@react-navigation/native';
+import InterventionHeader from '../../../Intervention/components/InterventionHeader';
 
 type ModalType = 'payment' | 'faq' | 'terms' | null;
 
@@ -32,17 +33,11 @@ const ClientSettingsScreen = () => {
             paddingVertical={verticalScale(14)}
             contentContainerStyle={{ paddingBottom: verticalScale(180) }}
         >
-            <Header>
-                <BackButton
-                    onPress={() => (navigation as any).navigate('Home')}
-                    accessibilityRole="button"
-                    accessibilityLabel="Retour à l’accueil"
-                >
-                    <SvgIcon name="fa-chevron-left" size={18} color="black" />
-                </BackButton>
-                <Title>Paramètres</Title>
-                <HeaderSpacer />
-            </Header>
+            <InterventionHeader
+                title="Paramètres"
+                showHelp={false}
+                onClose={() => (navigation as any).navigate('Home')}
+            />
             <Subtitle>Gérez votre compte et vos préférences.</Subtitle>
 
             <SectionLabel>COMPTE</SectionLabel>
@@ -133,10 +128,6 @@ const SettingsModal = ({ type, onClose }: { type: ModalType; onClose: () => void
 
 export default ClientSettingsScreen;
 
-const Title = styled(Text).attrs({ variant: 'title', color: 'black' })`margin-top: ${verticalScale(4)}px;`;
-const Header = styled.View`flex-direction: row; align-items: center; justify-content: space-between; min-height: ${verticalScale(48)}px;`;
-const BackButton = styled.TouchableOpacity`width: ${horizontalScale(40)}px; height: ${horizontalScale(40)}px; border-radius: ${horizontalScale(20)}px; background-color: ${({ theme }) => theme.colors.surfaceVariant}; align-items: center; justify-content: center;`;
-const HeaderSpacer = styled.View`width: ${horizontalScale(40)}px;`;
 const Subtitle = styled(Text).attrs({ variant: 'regular', color: 'gray600' })`margin-top: ${verticalScale(4)}px;`;
 const SectionLabel = styled(Text).attrs({ variant: 'bold', color: 'gray700', fontSize: 12 })`margin-top: ${verticalScale(24)}px; margin-bottom: ${verticalScale(8)}px; letter-spacing: 0.5px;`;
 const SectionCard = styled.View`border-width: 1px; border-color: #eeeeee; border-radius: ${moderateScale(16)}px; background-color: ${({ theme }) => theme.colors.surface}; padding-horizontal: ${horizontalScale(12)}px;`;
