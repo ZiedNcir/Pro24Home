@@ -59,6 +59,30 @@ export const SignIn = () => {
 
   const [login, { isLoading }] = useLoginMutation();
 
+  const resetToHome = useCallback(() => {
+    const destination = role === 'professional' ? 'ProfessionnelHome' : 'Tabs';
+    const availableRoutes = navigation.getState().routeNames;
+
+    if (!availableRoutes.includes(destination)) {
+      Toast.show(
+        role === 'professional'
+          ? 'L’espace professionnel n’est pas disponible pour le moment.'
+          : 'Impossible d’ouvrir votre espace.',
+        {
+          type: 'danger',
+          placement: 'bottom',
+          duration: 4000,
+        },
+      );
+      return;
+    }
+
+    navigation.reset({
+      index: 0,
+      routes: [{ name: destination }],
+    });
+  }, [navigation, role]);
+
   const doLogin = useCallback(
     async (data: SignInFormValues) => {
       try {
@@ -66,10 +90,7 @@ export const SignIn = () => {
 
         console.log('Login success:', response);
 
-        navigation.reset({
-          index: 0,
-          routes: [{ name: role === 'professional' ? 'ProfessionnelHome' : 'Tabs' }],
-        });
+        resetToHome();
       } catch (error: any) {
         console.error('Login error:', error);
 
@@ -82,13 +103,9 @@ export const SignIn = () => {
           }
         );
 
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'AccountPendingScreen' }],
-        });
       }
     },
-    [login, navigation, role, t]
+    [login, resetToHome, t]
   );
 
   const navigateToForgetPassword = useCallback(() => {
