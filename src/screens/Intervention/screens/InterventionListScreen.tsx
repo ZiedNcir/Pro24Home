@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ActivityIndicator, FlatList, RefreshControl } from 'react-native';
+import { ActivityIndicator, FlatList, Image, RefreshControl } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -70,7 +70,7 @@ const InterventionListScreen = () => {
     return (
         <ScreenContainer mode="light" paddingHorizontal={horizontalScale(18)} paddingVertical={verticalScale(12)}>
             <ListHeader>
-                <Brand>Pro<Text variant="bold" color="primary">24</Text>Home</Brand>
+                <Image source={require('@assets/images/pro24home-logo.png')} resizeMode="contain" style={{ width: horizontalScale(100), height: verticalScale(32) }} />
                 <NewButton onPress={() => (navigation as any).navigate('NewIntervention')}>
                     <SvgIcon name="fa-user-plus" size={14} color={colors.white} />
                     <Text variant="bold" color="white" fontSize={12}>Nouvelle intervention</Text>
@@ -102,7 +102,6 @@ const InterventionListScreen = () => {
 export default InterventionListScreen;
 
 const ListHeader = styled.View`flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: ${verticalScale(20)}px;`;
-const Brand = styled(Text).attrs({ variant: 'bold', color: 'black', fontSize: 17 })``;
 const NewButton = styled.TouchableOpacity`height: ${verticalScale(42)}px; padding-horizontal: ${horizontalScale(13)}px; border-radius: ${moderateScale(12)}px; background-color: ${colors.primary}; flex-direction: row; align-items: center; justify-content: center; gap: ${horizontalScale(7)}px;`;
 const Title = styled(Text).attrs({ variant: 'bold', color: 'black', fontSize: 23 })`margin-bottom: ${verticalScale(18)}px;`;
 const FilterRow = styled.View`flex-direction: row; background-color: ${colors.white}; border-radius: ${moderateScale(13)}px; border-width: 1px; border-color: #eeeeee; padding: ${horizontalScale(4)}px; margin-bottom: ${verticalScale(16)}px;`;
