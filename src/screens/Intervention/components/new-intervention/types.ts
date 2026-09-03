@@ -12,6 +12,7 @@ export interface ServiceStepProps extends StepNavigationProps {
     servicesLoading: boolean;
     selectedProblem: number | null;
     onSelectProblem: (id: number) => void;
+    onEditService?: () => void;
 }
 
 export interface DetailsStepProps extends StepNavigationProps {

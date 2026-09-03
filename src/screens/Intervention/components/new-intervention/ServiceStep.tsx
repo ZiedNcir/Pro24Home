@@ -15,6 +15,7 @@ const ServiceStep: React.FC<ServiceStepProps> = ({
     servicesLoading,
     selectedProblem,
     onSelectProblem,
+    onEditService,
     onNext,
 }) => (
     <>
@@ -22,6 +23,7 @@ const ServiceStep: React.FC<ServiceStepProps> = ({
             title={service?.name || 'Type de service'}
             description={service?.description || 'Choisissez le service adapté à votre besoin'}
             image={require('@assets/images/electricien.png')}
+            onEditPress={onEditService}
         />
 
         <SectionTitle>Type de service</SectionTitle>

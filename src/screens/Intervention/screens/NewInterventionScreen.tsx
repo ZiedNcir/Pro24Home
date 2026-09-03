@@ -159,6 +159,7 @@ export const NewInterventionScreen = () => {
                     servicesLoading={servicesLoading}
                     selectedProblem={selectedProblem}
                     onSelectProblem={setSelectedProblem}
+                    onEditService={() => navigation.goBack()}
                     onNext={goNext}
                 />
             ) : null}
