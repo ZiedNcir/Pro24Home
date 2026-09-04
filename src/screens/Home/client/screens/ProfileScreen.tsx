@@ -10,14 +10,14 @@ import InterventionHeader from '../../../Intervention/components/InterventionHea
 import { useTheme } from '@theme/ThemeProvider';
 import { useAppSelector } from '@store/hooks';
 import { selectUser } from '@store/slices/authSlice';
-import { useUpdateProfileMutation } from '@store/api/endpoints/auth';
+import { useUpdateClientProfileMutation } from '@store/api/endpoints/client';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 
 const ProfileScreen = () => {
     const { themeMode } = useTheme();
     const user = useAppSelector(selectUser);
-    const [updateProfile, { isLoading }] = useUpdateProfileMutation();
+    const [updateClientProfile, { isLoading }] = useUpdateClientProfileMutation();
     const [firstName, setFirstName] = useState(user?.client?.first_name || '');
     const [lastName, setLastName] = useState(user?.client?.last_name || '');
     const [email, setEmail] = useState(user?.email || '');
@@ -43,22 +43,17 @@ const ProfileScreen = () => {
         const nextErrors: Record<string, string> = {};
         if (!firstName.trim()) nextErrors.firstName = 'Le prénom est obligatoire.';
         if (!lastName.trim()) nextErrors.lastName = 'Le nom est obligatoire.';
-        if (!email.trim()) nextErrors.email = 'L’adresse e-mail est obligatoire.';
-        else if (!/^\S+@\S+\.\S+$/.test(email.trim())) nextErrors.email = 'Saisissez une adresse e-mail valide.';
-        if (!phone.trim()) nextErrors.phone = 'Le téléphone est obligatoire.';
         if (!address.trim()) nextErrors.address = 'L’adresse principale est obligatoire.';
 
         setErrors(nextErrors);
         if (Object.keys(nextErrors).length > 0) return;
 
         try {
-            await updateProfile({
+            await updateClientProfile({
                 first_name: firstName.trim(),
                 last_name: lastName.trim(),
-                email: email.trim(),
-                phone_number: phone.trim(),
                 address: address.trim(),
-            } as any).unwrap();
+            }).unwrap();
             setIsEditing(false);
             Toast.show('Votre profil a été mis à jour.', { type: 'success', placement: 'bottom' });
         } catch (error: any) {
@@ -108,8 +103,8 @@ const ProfileScreen = () => {
 
             <FormCard>
                 <FormGroupTitle>Coordonnées</FormGroupTitle>
-                <ProfileField editable={isEditing} icon="fa-envelope-open-text" label="Adresse e-mail" value={email} error={errors.email} onChangeText={value => { setEmail(value); setErrors(previous => ({ ...previous, email: '' })); }} keyboardType="email-address" autoCapitalize="none" />
-                <ProfileField editable={isEditing} icon="fa-user-circle" label="Téléphone" value={phone} error={errors.phone} onChangeText={value => { setPhone(value); setErrors(previous => ({ ...previous, phone: '' })); }} keyboardType="phone-pad" last />
+                <ProfileField editable={false} icon="fa-envelope-open-text" label="Adresse e-mail" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
+                <ProfileField editable={false} icon="fa-user-circle" label="Téléphone" value={phone} onChangeText={setPhone} keyboardType="phone-pad" last />
             </FormCard>
 
             <FormCard>
