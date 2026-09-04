@@ -25,6 +25,11 @@ const ProfileScreen = () => {
     const [address, setAddress] = useState(user?.address?.[0]?.address || '');
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isEditing, setIsEditing] = useState(false);
+    const [savedValues, setSavedValues] = useState({
+        firstName: user?.client?.first_name || '',
+        lastName: user?.client?.last_name || '',
+        address: user?.address?.[0]?.address || '',
+    });
 
     useEffect(() => {
         setFirstName(user?.client?.first_name || '');
@@ -32,6 +37,11 @@ const ProfileScreen = () => {
         setEmail(user?.email || '');
         setPhone(user?.phone_number || '');
         setAddress(user?.address?.[0]?.address || '');
+        setSavedValues({
+            firstName: user?.client?.first_name || '',
+            lastName: user?.client?.last_name || '',
+            address: user?.address?.[0]?.address || '',
+        });
     }, [user]);
 
     const displayName = useMemo(
@@ -48,12 +58,29 @@ const ProfileScreen = () => {
         setErrors(nextErrors);
         if (Object.keys(nextErrors).length > 0) return;
 
+        const normalizedValues = {
+            firstName: firstName.trim(),
+            lastName: lastName.trim(),
+            address: address.trim(),
+        };
+        const changedFields: {
+            first_name?: string;
+            last_name?: string;
+            address?: string;
+        } = {};
+
+        if (normalizedValues.firstName !== savedValues.firstName.trim()) changedFields.first_name = normalizedValues.firstName;
+        if (normalizedValues.lastName !== savedValues.lastName.trim()) changedFields.last_name = normalizedValues.lastName;
+        if (normalizedValues.address !== savedValues.address.trim()) changedFields.address = normalizedValues.address;
+
+        if (Object.keys(changedFields).length === 0) {
+            setIsEditing(false);
+            return;
+        }
+
         try {
-            await updateClientProfile({
-                first_name: firstName.trim(),
-                last_name: lastName.trim(),
-                address: address.trim(),
-            }).unwrap();
+            await updateClientProfile(changedFields).unwrap();
+            setSavedValues(normalizedValues);
             setIsEditing(false);
             Toast.show('Votre profil a été mis à jour.', { type: 'success', placement: 'bottom' });
         } catch (error: any) {
