@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Image } from 'react-native';
 import styled from 'styled-components/native';
 import { Toast } from 'react-native-toast-notifications';
@@ -23,8 +23,33 @@ const ProfileScreen = () => {
     const [email, setEmail] = useState(user?.email || '');
     const [phone, setPhone] = useState(user?.phone_number || '');
     const [address, setAddress] = useState(user?.address?.[0]?.address || '');
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
+    useEffect(() => {
+        setFirstName(user?.client?.first_name || '');
+        setLastName(user?.client?.last_name || '');
+        setEmail(user?.email || '');
+        setPhone(user?.phone_number || '');
+        setAddress(user?.address?.[0]?.address || '');
+    }, [user]);
+
+    const displayName = useMemo(
+        () => `${firstName} ${lastName}`.trim() || user?.name || 'Mon profil',
+        [firstName, lastName, user?.name],
+    );
 
     const saveProfile = async () => {
+        const nextErrors: Record<string, string> = {};
+        if (!firstName.trim()) nextErrors.firstName = 'Le prénom est obligatoire.';
+        if (!lastName.trim()) nextErrors.lastName = 'Le nom est obligatoire.';
+        if (!email.trim()) nextErrors.email = 'L’adresse e-mail est obligatoire.';
+        else if (!/^\S+@\S+\.\S+$/.test(email.trim())) nextErrors.email = 'Saisissez une adresse e-mail valide.';
+        if (!phone.trim()) nextErrors.phone = 'Le téléphone est obligatoire.';
+        if (!address.trim()) nextErrors.address = 'L’adresse principale est obligatoire.';
+
+        setErrors(nextErrors);
+        if (Object.keys(nextErrors).length > 0) return;
+
         try {
             await updateProfile({
                 first_name: firstName.trim(),
@@ -49,18 +74,27 @@ const ProfileScreen = () => {
                         <SvgIcon name="fa-camera" size={15} color={colors.white} />
                     </CameraButton>
                 </AvatarWrap>
-                <Text variant="title" color="black" style={{ marginTop: verticalScale(12) }}>{user?.name || `${firstName} ${lastName}`.trim() || 'Mon profil'}</Text>
+                <Text variant="title" color="black" style={{ marginTop: verticalScale(12) }}>{displayName}</Text>
                 <RoleBadge><SvgIcon name="fa-user" size={13} color={colors.primary} /><Text variant="bold" color={colors.primary} fontSize={12}>Client Pro24Home</Text></RoleBadge>
                 <IntroText>Gérez vos informations personnelles et comment nous vous contactons.</IntroText>
             </ProfileIntro>
 
             <SectionTitle>Informations personnelles</SectionTitle>
             <FormCard>
-                <ProfileField icon="fa-user" label="Prénom" value={firstName} onChangeText={setFirstName} />
-                <ProfileField icon="fa-user" label="Nom" value={lastName} onChangeText={setLastName} />
-                <ProfileField icon="fa-envelope-open-text" label="Adresse e-mail" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
-                <ProfileField icon="fa-user-circle" label="Téléphone" value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
-                <ProfileField icon="fa-map-marker-alt" label="Adresse principale" value={address} onChangeText={setAddress} last />
+                <FormGroupTitle>Identité</FormGroupTitle>
+                <ProfileField icon="fa-user" label="Prénom" value={firstName} error={errors.firstName} onChangeText={value => { setFirstName(value); setErrors(previous => ({ ...previous, firstName: '' })); }} />
+                <ProfileField icon="fa-user" label="Nom" value={lastName} error={errors.lastName} onChangeText={value => { setLastName(value); setErrors(previous => ({ ...previous, lastName: '' })); }} last />
+            </FormCard>
+
+            <FormCard>
+                <FormGroupTitle>Coordonnées</FormGroupTitle>
+                <ProfileField icon="fa-envelope-open-text" label="Adresse e-mail" value={email} error={errors.email} onChangeText={value => { setEmail(value); setErrors(previous => ({ ...previous, email: '' })); }} keyboardType="email-address" autoCapitalize="none" />
+                <ProfileField icon="fa-user-circle" label="Téléphone" value={phone} error={errors.phone} onChangeText={value => { setPhone(value); setErrors(previous => ({ ...previous, phone: '' })); }} keyboardType="phone-pad" last />
+            </FormCard>
+
+            <FormCard>
+                <FormGroupTitle>Adresse principale</FormGroupTitle>
+                <ProfileField icon="fa-map-marker-alt" label="Adresse" value={address} error={errors.address} onChangeText={value => { setAddress(value); setErrors(previous => ({ ...previous, address: '' })); }} last />
             </FormCard>
 
             <SaveButton onPress={saveProfile} disabled={isLoading} activeOpacity={0.85}>
@@ -75,17 +109,19 @@ interface ProfileFieldProps {
     label: string;
     value: string;
     onChangeText: (value: string) => void;
+    error?: string;
     last?: boolean;
     keyboardType?: 'default' | 'email-address' | 'phone-pad';
     autoCapitalize?: 'none' | 'sentences';
 }
 
-const ProfileField = ({ icon, label, value, onChangeText, last, ...inputProps }: ProfileFieldProps) => (
+const ProfileField = ({ icon, label, value, onChangeText, last, error, ...inputProps }: ProfileFieldProps) => (
     <FieldRow last={last}>
         <FieldIcon><SvgIcon name={icon} size={17} color={colors.primary} /></FieldIcon>
         <FieldContent>
             <Text variant="notification" color="gray600">{label}</Text>
-            <FieldInput value={value} onChangeText={onChangeText} placeholder={label} placeholderTextColor="#9E9E9E" {...inputProps} />
+            <FieldInput hasError={!!error} value={value} onChangeText={onChangeText} placeholder={label} placeholderTextColor="#9E9E9E" {...inputProps} />
+            {error ? <ErrorText>{error}</ErrorText> : null}
         </FieldContent>
     </FieldRow>
 );
@@ -100,8 +136,10 @@ const RoleBadge = styled.View`flex-direction: row; align-items: center; gap: ${h
 const IntroText = styled(Text).attrs({ variant: 'regular', color: 'gray600' })`text-align: center; margin-top: ${verticalScale(12)}px; max-width: ${horizontalScale(300)}px;`;
 const SectionTitle = styled(Text).attrs({ variant: 'bold', color: 'black', fontSize: 15 })`margin-bottom: ${verticalScale(10)}px;`;
 const FormCard = styled.View`border-width: 1px; border-color: #eeeeee; border-radius: ${moderateScale(16)}px; background-color: ${({ theme }) => theme.colors.surface}; padding-horizontal: ${horizontalScale(12)}px;`;
+const FormGroupTitle = styled(Text).attrs({ variant: 'bold', color: 'gray700', fontSize: 12 })`padding-top: ${verticalScale(12)}px; padding-bottom: ${verticalScale(2)}px;`;
 const FieldRow = styled.View<{ last?: boolean }>`min-height: ${verticalScale(68)}px; flex-direction: row; align-items: center; border-bottom-width: ${({ last }) => (last ? 0 : 1)}px; border-bottom-color: #eeeeee;`;
 const FieldIcon = styled.View`width: ${horizontalScale(36)}px; height: ${horizontalScale(36)}px; border-radius: ${moderateScale(11)}px; background-color: #fff5ef; align-items: center; justify-content: center; margin-right: ${horizontalScale(10)}px;`;
 const FieldContent = styled.View`flex: 1;`;
-const FieldInput = styled.TextInput`height: ${verticalScale(27)}px; padding: 0; color: ${colors.black}; font-family: Inter-Regular; font-size: 14px;`;
+const FieldInput = styled.TextInput<{ hasError?: boolean }>`height: ${verticalScale(27)}px; padding: 0; color: ${colors.black}; font-family: Inter-Regular; font-size: 14px; border-bottom-width: ${({ hasError }) => (hasError ? 1 : 0)}px; border-bottom-color: ${colors.danger};`;
+const ErrorText = styled(Text).attrs({ variant: 'notification', color: 'danger' })`margin-top: ${verticalScale(2)}px;`;
 const SaveButton = styled.TouchableOpacity`height: ${verticalScale(52)}px; margin-top: ${verticalScale(18)}px; border-radius: ${moderateScale(13)}px; background-color: ${colors.primary}; flex-direction: row; gap: ${horizontalScale(10)}px; align-items: center; justify-content: center; opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};`;
