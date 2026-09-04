@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Image } from 'react-native';
+import { ActivityIndicator, Animated, Image } from 'react-native';
 import styled from 'styled-components/native';
 import { Toast } from 'react-native-toast-notifications';
 
@@ -25,6 +25,7 @@ const ProfileScreen = () => {
     const [address, setAddress] = useState(user?.address?.[0]?.address || '');
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isEditing, setIsEditing] = useState(false);
+    const editButtonScale = useState(() => new Animated.Value(1))[0];
     const [savedValues, setSavedValues] = useState({
         firstName: user?.client?.first_name || '',
         lastName: user?.client?.last_name || '',
@@ -116,10 +117,18 @@ const ProfileScreen = () => {
             <SectionHeader>
                 <SectionTitle>Informations personnelles</SectionTitle>
                 {!isEditing ? (
-                    <EditButton onPress={() => setIsEditing(true)} accessibilityRole="button" accessibilityLabel="Modifier les informations personnelles">
-                        <SvgIcon name="fa-pen" size={13} color={colors.primary} />
-                        <Text variant="bold" color={colors.primary} fontSize={12}>Modifier</Text>
-                    </EditButton>
+                    <AnimatedEditButton style={{ transform: [{ scale: editButtonScale }] }}>
+                        <EditButton
+                            onPress={() => setIsEditing(true)}
+                            onPressIn={() => Animated.spring(editButtonScale, { toValue: 0.92, useNativeDriver: true }).start()}
+                            onPressOut={() => Animated.spring(editButtonScale, { toValue: 1, useNativeDriver: true }).start()}
+                            accessibilityRole="button"
+                            accessibilityLabel="Modifier les informations personnelles"
+                        >
+                            <SvgIcon name="fa-pen" size={13} color={colors.primary} />
+                            <Text variant="bold" color={colors.primary} fontSize={12}>Modifier</Text>
+                        </EditButton>
+                    </AnimatedEditButton>
                 ) : null}
             </SectionHeader>
             <FormCard>
@@ -186,6 +195,7 @@ const RoleBadge = styled.View`flex-direction: row; align-items: center; gap: ${h
 const IntroText = styled(Text).attrs({ variant: 'regular', color: 'gray600' })`text-align: center; margin-top: ${verticalScale(12)}px; max-width: ${horizontalScale(300)}px;`;
 const SectionTitle = styled(Text).attrs({ variant: 'bold', color: 'black', fontSize: 15 })`margin-bottom: ${verticalScale(10)}px;`;
 const SectionHeader = styled.View`flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: ${verticalScale(10)}px;`;
+const AnimatedEditButton = styled(Animated.View)``;
 const EditButton = styled.TouchableOpacity`flex-direction: row; align-items: center; gap: ${horizontalScale(5)}px; padding: ${verticalScale(7)}px ${horizontalScale(10)}px; border-width: 1px; border-color: ${colors.primary}; border-radius: ${moderateScale(10)}px;`;
 const FormCard = styled.View`border-width: 1px; border-color: #eeeeee; border-radius: ${moderateScale(16)}px; background-color: ${({ theme }) => theme.colors.surface}; padding-horizontal: ${horizontalScale(12)}px;`;
 const FormGroupTitle = styled(Text).attrs({ variant: 'bold', color: 'gray700', fontSize: 12 })`padding-top: ${verticalScale(12)}px; padding-bottom: ${verticalScale(2)}px;`;
