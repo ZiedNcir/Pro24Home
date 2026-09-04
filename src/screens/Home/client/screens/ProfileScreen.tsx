@@ -129,7 +129,7 @@ const ProfileScreen = () => {
                             <Text variant="bold" color={colors.primary} fontSize={12}>Modifier</Text>
                         </EditButton>
                     </AnimatedEditButton>
-                ) : null}
+                ) : <EditingBadge><SvgIcon name="fa-pen" size={11} color={colors.primary} /><Text variant="notification" color={colors.primary}>Modification activée</Text></EditingBadge>}
             </SectionHeader>
             <FormCard>
                 <FormGroupTitle>Identité</FormGroupTitle>
@@ -177,7 +177,7 @@ interface ProfileFieldProps {
 const ProfileField = ({ icon, label, value, onChangeText, last, error, editable = false, ...inputProps }: ProfileFieldProps) => (
     <FieldRow last={last}>
         <FieldIcon><SvgIcon name={icon} size={17} color={colors.primary} /></FieldIcon>
-        <FieldContent>
+        <FieldContent editable={editable}>
             <Text variant="notification" color="gray600">{label}</Text>
             <FieldInput editable={editable} hasError={!!error} value={value} onChangeText={onChangeText} placeholder={label} placeholderTextColor="#9E9E9E" {...inputProps} />
             {error ? <ErrorText>{error}</ErrorText> : null}
@@ -201,9 +201,10 @@ const FormCard = styled.View`border-width: 1px; border-color: #eeeeee; border-ra
 const FormGroupTitle = styled(Text).attrs({ variant: 'bold', color: 'gray700', fontSize: 12 })`padding-top: ${verticalScale(12)}px; padding-bottom: ${verticalScale(2)}px;`;
 const FieldRow = styled.View<{ last?: boolean }>`min-height: ${verticalScale(68)}px; flex-direction: row; align-items: center; border-bottom-width: ${({ last }) => (last ? 0 : 1)}px; border-bottom-color: #eeeeee;`;
 const FieldIcon = styled.View`width: ${horizontalScale(36)}px; height: ${horizontalScale(36)}px; border-radius: ${moderateScale(11)}px; background-color: #fff5ef; align-items: center; justify-content: center; margin-right: ${horizontalScale(10)}px;`;
-const FieldContent = styled.View`flex: 1;`;
+const FieldContent = styled.View<{ editable?: boolean }>`flex: 1; border-width: ${({ editable }) => (editable ? 1 : 0)}px; border-color: ${({ editable }) => (editable ? '#FFB27A' : 'transparent')}; border-radius: ${moderateScale(9)}px; background-color: ${({ editable }) => (editable ? '#FFF8F3' : 'transparent')}; padding: ${({ editable }) => (editable ? `${verticalScale(5)}px ${horizontalScale(8)}px` : '0px')};`;
 const FieldInput = styled.TextInput<{ hasError?: boolean }>`height: ${verticalScale(27)}px; padding: 0; color: ${colors.black}; font-family: Inter-Regular; font-size: 14px; border-bottom-width: ${({ hasError }) => (hasError ? 1 : 0)}px; border-bottom-color: ${colors.danger};`;
 const ErrorText = styled(Text).attrs({ variant: 'notification', color: 'danger' })`margin-top: ${verticalScale(2)}px;`;
+const EditingBadge = styled.View`flex-direction: row; align-items: center; gap: ${horizontalScale(4)}px; padding: ${verticalScale(6)}px ${horizontalScale(8)}px; border-radius: ${moderateScale(9)}px; background-color: #fff1e8;`;
 const Actions = styled.View`flex-direction: row; gap: ${horizontalScale(10)}px; margin-top: ${verticalScale(18)}px;`;
 const CancelButton = styled.TouchableOpacity`flex: 1; height: ${verticalScale(52)}px; border-radius: ${moderateScale(13)}px; border-width: 1px; border-color: #e5e5e5; background-color: ${({ theme }) => theme.colors.surface}; align-items: center; justify-content: center;`;
 const SaveButton = styled.TouchableOpacity`flex: 1.7; height: ${verticalScale(52)}px; border-radius: ${moderateScale(13)}px; background-color: ${colors.primary}; flex-direction: row; gap: ${horizontalScale(8)}px; align-items: center; justify-content: center; opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};`;
