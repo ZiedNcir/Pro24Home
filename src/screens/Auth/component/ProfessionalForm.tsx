@@ -495,7 +495,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                                 rules={{
                                     required: t('ui.form.postCode.required'),
                                     pattern: {
-                                        value: /^\d{4}$/,
+                                        value: /^\d{5}$/,
                                         message: t('ui.form.postCode.invalid'),
                                     },
                                 }}

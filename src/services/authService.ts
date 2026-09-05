@@ -12,6 +12,9 @@ export interface RegistrationError {
   type: 'validation' | 'api' | 'network';
 }
 
+export const isValidPostalCode = (value?: string): boolean =>
+  /^\d{5}$/.test(value?.trim() || '');
+
 /**
  * Validate client registration data
  */
@@ -46,7 +49,7 @@ export const validateClientRegistration = (data: Partial<RegisterClientRequest>)
 
   if (!data.postal_code?.trim()) {
     errors.push({ field: 'postal_code', message: 'Postal code is required', type: 'validation' });
-  } else if (!/^\d{5}$/.test(data.postal_code)) {
+  } else if (!isValidPostalCode(data.postal_code)) {
     errors.push({ field: 'postal_code', message: 'Postal code must be 5 digits', type: 'validation' });
   }
 
