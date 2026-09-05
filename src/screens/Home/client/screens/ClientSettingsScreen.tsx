@@ -37,7 +37,7 @@ const ClientSettingsScreen = () => {
             const rootNavigation = navigation.getParent?.() || navigation;
             (rootNavigation as any).reset({
                 index: 0,
-                routes: [{ name: 'Welcome' }],
+                routes: [{ name: 'SignIn', params: { role: 'client' } }],
             });
         }
     };
