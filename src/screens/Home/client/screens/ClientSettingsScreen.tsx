@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Switch } from 'react-native';
+import { ActivityIndicator, Modal, Switch } from 'react-native';
 import styled from 'styled-components/native';
 
 import ScreenContainer from '@components/ScreenContainer';
@@ -8,6 +8,7 @@ import { SvgIcon, type IconName } from '@components/Icon';
 import { useTheme } from '@theme/ThemeProvider';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { logout, selectUser } from '@store/slices/authSlice';
+import { useLogoutMutation } from '@store/api/endpoints/auth';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useNavigation } from '@react-navigation/native';
@@ -20,10 +21,26 @@ const ClientSettingsScreen = () => {
     const navigation = useNavigation();
     const dispatch = useAppDispatch();
     const user = useAppSelector(selectUser);
+    const [logoutRequest, { isLoading: isLoggingOut }] = useLogoutMutation();
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
     const [activeModal, setActiveModal] = useState<ModalType>(null);
 
     const closeModal = () => setActiveModal(null);
+
+    const handleLogout = async () => {
+        try {
+            await logoutRequest().unwrap();
+        } catch {
+            // The API endpoint also clears the local session on failure.
+            dispatch(logout());
+        } finally {
+            const rootNavigation = navigation.getParent?.() || navigation;
+            (rootNavigation as any).reset({
+                index: 0,
+                routes: [{ name: 'Welcome' }],
+            });
+        }
+    };
 
     return (
         <ScreenContainer
@@ -70,13 +87,13 @@ const ClientSettingsScreen = () => {
                 <SettingsRow icon="fa-file-alt" title="Conditions d’utilisation" description="Consultez les conditions du service" onPress={() => setActiveModal('terms')} />
             </SectionCard>
 
-            <LogoutRow onPress={() => dispatch(logout())}>
+            <LogoutRow onPress={handleLogout} disabled={isLoggingOut} activeOpacity={0.75}>
                 <RowIcon background="#fff0f0"><SvgIcon name="fa-sign-out-alt" size={18} color="#D92D20" /></RowIcon>
                 <RowContent>
                     <Text variant="bold" color="#D92D20" fontSize={14}>Déconnexion</Text>
-                    <Text variant="regularSmall" color="gray600">Se déconnecter de votre compte</Text>
+                    <Text variant="regularSmall" color="gray600">{isLoggingOut ? 'Déconnexion en cours...' : 'Se déconnecter de votre compte'}</Text>
                 </RowContent>
-                <SvgIcon name="fa-chevron-right" size={14} color="#D92D20" />
+                {isLoggingOut ? <ActivityIndicator color="#D92D20" /> : <SvgIcon name="fa-chevron-right" size={14} color="#D92D20" />}
             </LogoutRow>
 
             <Brand>Pro24<Text variant="bold" color={colors.primary}>Home</Text></Brand>
