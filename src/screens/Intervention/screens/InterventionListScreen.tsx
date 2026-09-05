@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, RefreshControl } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
 import ScreenContainer from '@components/ScreenContainer';
 import Text from '@components/Text';
@@ -10,6 +11,7 @@ import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useGetInterventionsQuery } from '@store/api/endpoints/intervention';
 import type { Intervention } from '@store/api/api.types';
+import { selectIsProfessional } from '@store/slices/authSlice';
 import {
     filterInterventions,
     getInterventionStatusColor,
@@ -40,8 +42,9 @@ const formatDate = (value?: string) => {
 
 const InterventionListScreen = () => {
     const navigation = useNavigation();
+    const isProfessional = useSelector(selectIsProfessional);
     const [filter, setFilter] = useState<InterventionFilter>('all');
-    const { data, isLoading, isFetching, refetch } = useGetInterventionsQuery({ type: 'client', page: 1, per_page: 50 });
+    const { data, isLoading, isFetching, refetch } = useGetInterventionsQuery({ type: isProfessional ? 'professional' : 'client', page: 1, per_page: 50 });
     const interventions = useMemo(() => filterInterventions(data?.data || [], filter), [data?.data, filter]);
 
     const renderItem = ({ item }: { item: Intervention }) => (

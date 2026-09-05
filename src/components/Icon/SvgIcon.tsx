@@ -81,7 +81,11 @@ import {
     faSignOutAlt,
     faCheckCircle,
     faCertificate,
-    faAward
+    faAward,
+    faWrench,
+    faBolt,
+    faInbox,
+    faChartLine
 
 
 } from '@fortawesome/free-solid-svg-icons';
@@ -167,7 +171,11 @@ export type IconName =
     | 'fa-sign-out-alt'
     | 'fa-check-circle'
     | 'fa-certificate'
-    | 'fa-award';
+    | 'fa-award'
+    | 'fa-wrench'
+    | 'fa-bolt'
+    | 'fa-inbox'
+    | 'fa-chart-line';
 export interface SvgIconProps {
     name: IconName;
     size?: number;
@@ -256,6 +264,10 @@ const faIconMap: Record<string, IconDefinition> = {
     'fa-check-circle': faCheckCircle,
     'fa-certificate': faCertificate,
     'fa-award': faAward,
+    'fa-wrench': faWrench,
+    'fa-bolt': faBolt,
+    'fa-inbox': faInbox,
+    'fa-chart-line': faChartLine,
 };
 
 const SvgIcon: FC<SvgIconProps> = ({

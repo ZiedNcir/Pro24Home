@@ -33,6 +33,7 @@ import { useTheme } from '@theme/ThemeProvider';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { AppStackType } from '../../navigation/constant/core';
 import { useLoginMutation } from '@store/api/endpoints/auth';
+import { getHomeRouteFromAuthResponse } from '../../navigation/authNavigation';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -67,8 +68,8 @@ export const SignIn = () => {
 
   const [login, { isLoading }] = useLoginMutation();
 
-  const resetToHome = useCallback(() => {
-    const destination = role === 'professional' ? 'ProfessionnelHome' : 'Tabs';
+  const resetToHome = useCallback((response: Parameters<typeof getHomeRouteFromAuthResponse>[0]) => {
+    const destination = getHomeRouteFromAuthResponse(response);
     const availableRoutes = navigation.getState().routeNames;
 
     if (!availableRoutes.includes(destination)) {
@@ -98,7 +99,7 @@ export const SignIn = () => {
 
         console.log('Login success:', response);
 
-        resetToHome();
+        resetToHome(response);
       } catch (error: any) {
         console.error('Login error:', error);
 

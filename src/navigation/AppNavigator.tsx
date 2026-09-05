@@ -23,6 +23,7 @@ import ClientHome from '@screens/Home/client/screens/HomeClient';
 import ClientSettingsScreen from '@screens/Home/client/screens/ClientSettingsScreen';
 import ProfileScreen from '@screens/Home/client/screens/ProfileScreen';
 import HomeProfessional from '@screens/Home/client/screens/HomeProfessional';
+import ProfessionalHomeDashboard from '@screens/Home/client/screens/ProfessionalHomeDashboard';
 import { NotificationsScreen } from '@screens/Notification';
 import {
   AddAddressScreen, InterventionSuccessScreen, NewInterventionScreen, PaymentTravelFeeScreen, PriceEstimationScreen, InterventionListScreen, InterventionDetailScreen
@@ -83,46 +84,49 @@ const BottomTabBar: FunctionComponent<BottomTabBarProps> = ({
     return null;
   }
 
-  const navigate = (index: number) => {
-    const routeName = state.routeNames[index];
-
-    if (routeName) {
-      navigation.navigate(routeName);
-    }
-  };
-
+  const isProfessional = state.routeNames.includes('Documents') && state.routeNames.includes('Profile');
   const bottomTabs: {
-    index: number;
+    route: keyof BottomTabType;
     icon: IconName;
     title: string;
-  }[] = [
+  }[] = isProfessional ? [
       {
-        index: 0,
+        route: 'Home',
         icon: 'fa-home',
-        title: 'Home',
+        title: 'Accueil',
       },
       {
-        index: 1,
+        route: 'ListIntervention',
         icon: 'fa-list',
-        title: 'Intervention',
+        title: 'Interventions',
       },
       {
-        index: 2,
-        icon: 'fa-cog',
-        title: 'Params',
+        route: 'Documents',
+        icon: 'fa-file-alt',
+        title: 'Documents',
       },
+      {
+        route: 'Profile',
+        icon: 'fa-user',
+        title: 'Profil',
+      },
+    ] : [
+      { route: 'Home', icon: 'fa-home', title: 'Home' },
+      { route: 'ListIntervention', icon: 'fa-list', title: 'Intervention' },
+      { route: 'SettingPage', icon: 'fa-cog', title: 'Params' },
     ];
 
   return (
     <BottomTabsWrapper insets={insets}>
-      {bottomTabs.map(({ icon, index, title }) => {
-        const isSelected = index === state.index;
+      {bottomTabs.map(({ icon, route, title }) => {
+        const isSelected = route === state.routeNames[state.index];
+        const navigate = () => navigation.navigate(route);
 
         return (
           <TabItem
-            key={`bottom-tab-${index}`}
+            key={`bottom-tab-${route}`}
             activeOpacity={0.85}
-            onPress={() => navigate(index)}
+            onPress={navigate}
           >
             <ActiveIndicator isSelected={isSelected} />
 
@@ -132,7 +136,7 @@ const BottomTabBar: FunctionComponent<BottomTabBarProps> = ({
               type="icon"
               variant="ghost"
               iconSize={moderateScale(24)}
-              onPress={() => navigate(index)}
+              onPress={navigate}
 
               style={{ marginBottom: -verticalScale(8) }}
             />
@@ -167,6 +171,20 @@ const TabNavigator = () => {
       <BottomTabScreen name="Home" component={ClientHome} />
       <BottomTabScreen name="ListIntervention" component={InterventionListScreen} />
       <BottomTabScreen name="SettingPage" component={ClientSettingsScreen} />
+    </BottomTabNavigator>
+  );
+};
+
+const ProfessionalTabNavigator = () => {
+  return (
+    <BottomTabNavigator
+      initialRouteName="Home"
+      tabBar={props => <BottomTabBar {...props} />}
+      screenOptions={{ headerShown: false }}>
+      <BottomTabScreen name="Home" component={ProfessionalHomeDashboard} />
+      <BottomTabScreen name="ListIntervention" component={InterventionListScreen} />
+      <BottomTabScreen name="Documents" component={HomeProfessional} />
+      <BottomTabScreen name="Profile" component={ProfileScreen} />
     </BottomTabNavigator>
   );
 };
@@ -226,7 +244,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="PaymentTravelFee" component={PaymentTravelFeeScreen} />
         <Stack.Screen name="InterventionSuccess" component={InterventionSuccessScreen} />
         <Stack.Screen name="InterventionDetail" component={InterventionDetailScreen} />
-        <Stack.Screen name="ProfessionnelHome" component={HomeProfessional} />
+        <Stack.Screen name="ProfessionnelHome" component={ProfessionalTabNavigator} />
 
 
 
