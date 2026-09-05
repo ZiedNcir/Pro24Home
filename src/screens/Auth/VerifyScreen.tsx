@@ -146,12 +146,12 @@ export const VerifyAccountScreen = () => {
                 if (params.role === 'client') {
                     navigation.reset({
                         index: 0,
-                        routes: [{ name: 'Welcome' as never }],
+                        routes: [{ name: 'SignIn', params: { role: 'client' } }],
                     });
                 } else {
                     navigation.reset({
                         index: 0,
-                        routes: [{ name: 'Welcome' as never }],
+                        routes: [{ name: 'SignIn', params: { role: 'professional' } }],
                     });
                 }
             }, 2000);

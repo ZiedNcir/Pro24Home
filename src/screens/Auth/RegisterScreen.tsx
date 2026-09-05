@@ -1,5 +1,6 @@
 // screens/auth/RegisterScreen.tsx
 import React, { useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -71,8 +72,9 @@ export const RegisterScreen = () => {
         }
     }, [servicesError, t, params.role]);
 
-    const handleUserRegistrationSuccess = (data: any) => {
+    const handleUserRegistrationSuccess = async (data: any) => {
         console.log('Client registration successful');
+        await AsyncStorage.setItem('account_created', 'true');
         navigation.navigate('VerifyScreen', {
             email: data.email,
             role: 'client'
@@ -84,8 +86,9 @@ export const RegisterScreen = () => {
         // Error is handled in the FormUser component
     };
 
-    const handleProfessionalRegistrationSuccess = (data: any) => {
+    const handleProfessionalRegistrationSuccess = async (data: any) => {
         console.log('Professional registration successful');
+        await AsyncStorage.setItem('account_created', 'true');
         navigation.navigate('VerifyScreen', {
             email: data.email,
             role: 'professional'

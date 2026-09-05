@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   StyleSheet,
   View,
@@ -49,6 +50,13 @@ export const SignIn = () => {
   const route = useRoute<SignInRouteProp>();
   const { theme, themeMode } = useTheme();
   const role = route.params?.role ?? 'client';
+  const [hasCreatedAccount, setHasCreatedAccount] = useState(false);
+
+  useEffect(() => {
+    AsyncStorage.getItem('account_created').then(value => {
+      setHasCreatedAccount(value === 'true');
+    });
+  }, []);
 
   const { handleSubmit, control } = useForm<SignInFormValues>({
     defaultValues: {
@@ -124,14 +132,16 @@ export const SignIn = () => {
       paddingVertical={0}
     >
       <View style={styles.primaryHeader}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-          accessibilityRole="button"
-          accessibilityLabel="Retour"
-        >
-          <Text style={[styles.backIcon, { color: theme.colors.primary }]}>‹</Text>
-        </TouchableOpacity>
+        {!hasCreatedAccount ? (
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+            accessibilityRole="button"
+            accessibilityLabel="Retour"
+          >
+            <Text style={[styles.backIcon, { color: theme.colors.primary }]}>‹</Text>
+          </TouchableOpacity>
+        ) : null}
         <LogoMediumPro24Icon style={styles.logo} />
       </View>
 

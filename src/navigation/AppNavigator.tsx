@@ -1,4 +1,5 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
@@ -177,10 +178,20 @@ const Stack = createNativeStackNavigator<AppStackType>();
 
 // Main App Navigator Component
 const AppNavigator: React.FC = () => {
+  const [initialRoute, setInitialRoute] = useState<'Welcome' | 'SignIn' | null>(null);
+
+  useEffect(() => {
+    AsyncStorage.getItem('account_created').then(value => {
+      setInitialRoute(value === 'true' ? 'SignIn' : 'Welcome');
+    });
+  }, []);
+
+  if (!initialRoute) return null;
+
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Welcome"
+        initialRouteName={initialRoute}
         screenOptions={{
           headerShown: false,
           animation: 'slide_from_right',
