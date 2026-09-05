@@ -22,6 +22,7 @@ import { IconName } from '@components/Icon';
 import ClientHome from '@screens/Home/client/screens/HomeClient';
 import ClientSettingsScreen from '@screens/Home/client/screens/ClientSettingsScreen';
 import ProfileScreen from '@screens/Home/client/screens/ProfileScreen';
+import HomeProfessional from '@screens/Home/client/screens/HomeProfessional';
 import { NotificationsScreen } from '@screens/Notification';
 import {
   AddAddressScreen, InterventionSuccessScreen, NewInterventionScreen, PaymentTravelFeeScreen, PriceEstimationScreen, InterventionListScreen, InterventionDetailScreen
@@ -225,6 +226,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="PaymentTravelFee" component={PaymentTravelFeeScreen} />
         <Stack.Screen name="InterventionSuccess" component={InterventionSuccessScreen} />
         <Stack.Screen name="InterventionDetail" component={InterventionDetailScreen} />
+        <Stack.Screen name="ProfessionnelHome" component={HomeProfessional} />
 
 
 
