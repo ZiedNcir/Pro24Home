@@ -33,7 +33,7 @@ const ProfessionalHomeDashboard = () => {
     const navigation = useNavigation<any>();
     const user = useSelector(selectUser);
     const [toggleOnlineStatus] = useToggleOnlineStatusMutation();
-    const { data, isLoading, refetch } = useGetInterventionsQuery({ type: 'professional', page: 1, per_page: 3 });
+    const { data, isLoading, refetch } = useGetInterventionsQuery({ type: 'professional' });
     const { data: unreadData } = useGetUnreadNotificationCountQuery();
     const [localOnline, setLocalOnline] = useState<boolean | null>(null);
     const isOnline = localOnline ?? user?.professional?.online_status ?? false;

@@ -47,7 +47,7 @@ const InterventionListScreen = () => {
     const isProfessional = useSelector(selectIsProfessional);
     const copy = getInterventionListCopy(isProfessional);
     const [filter, setFilter] = useState<InterventionFilter>('all');
-    const { data, isLoading, isFetching, refetch } = useGetInterventionsQuery({ type: isProfessional ? 'professional' : 'client', page: 1, per_page: 50 });
+    const { data, isLoading, isFetching, refetch } = useGetInterventionsQuery({ type: isProfessional ? 'professional' : 'client' });
     const interventions = useMemo(() => filterInterventions(data?.data || [], filter), [data?.data, filter]);
 
     const renderItem = ({ item }: { item: Intervention }) => (

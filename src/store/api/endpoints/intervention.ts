@@ -3,15 +3,14 @@ import { api } from '../baseApi';
 import {
     Intervention,
     Devis,
-    PaginatedResponse,
+    ApiResponse,
 } from '../api.types';
+import { normalizeInterventionsResponse } from '../utils/interventionsResponse';
 
 export const interventionEndpoints = api.injectEndpoints({
     endpoints: (builder) => ({
         // Get All Interventions (Both client and pro)
-        getInterventions: builder.query<PaginatedResponse<Intervention>, {
-            page?: number;
-            per_page?: number;
+        getInterventions: builder.query<ApiResponse<Intervention[]>, {
             status?: string;
             type?: 'client' | 'professional';
         }>({
@@ -21,20 +20,7 @@ export const interventionEndpoints = api.injectEndpoints({
                 params,
             }),
             providesTags: ['Interventions'],
-            serializeQueryArgs: ({ endpointName }) => endpointName,
-            merge: (currentCache, newItems) => {
-                if (newItems.meta.current_page === 1) {
-                    return newItems;
-                }
-
-                return {
-                    ...newItems,
-                    data: [...(currentCache?.data || []), ...newItems.data],
-                };
-            },
-            forceRefetch({ currentArg, previousArg }) {
-                return currentArg?.page !== previousArg?.page;
-            },
+            transformResponse: normalizeInterventionsResponse,
         }),
 
         // Get Single Intervention
