@@ -7,7 +7,7 @@ import { SvgIcon } from '@components/Icon';
 import type { Intervention } from '@store/api/api.types';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
-import { formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress } from '../../utils/interventionPresentation';
+import { formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName } from '../../utils/interventionPresentation';
 
 type InterventionDetailData = Omit<Intervention, 'address' | 'price'> & {
     address?: Intervention['address'];
@@ -45,6 +45,7 @@ export const ClientInterventionDetails = ({ intervention }: DetailProps) => {
 
 export const ProfessionalInterventionDetails = ({ intervention, professionalLatitude, professionalLongitude, isAccepting = false, isRefusing = false, onAccept, onRefuse }: DetailProps) => {
     const address = getInterventionAddress(intervention);
+    const clientName = getInterventionClientName(intervention.client);
     const price = formatInterventionPrice(intervention.price);
     const requestedDate = intervention.scheduled_date || intervention.requested_date;
 
@@ -53,6 +54,10 @@ export const ProfessionalInterventionDetails = ({ intervention, professionalLati
             <SectionLabel>Détails de la demande</SectionLabel>
             <Text variant="regularSmall" color="gray600">{intervention.description || 'Aucune description renseignée.'}</Text>
         </Section>
+        {clientName ? <Section>
+            <SectionLabel>Client</SectionLabel>
+            <InfoRow><SvgIcon name="fa-user" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{clientName}</Text></InfoRow>
+        </Section> : null}
         <Section>
             <InfoRow><SvgIcon name="fa-map-marked-alt" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDistanceBetweenCoordinates(professionalLatitude, professionalLongitude, Number(address?.latitude), Number(address?.longitude))}</Text></InfoRow>
             {requestedDate ? <InfoRow><SvgIcon name="fa-user-clock" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDate(requestedDate)}</Text></InfoRow> : null}

@@ -1,5 +1,5 @@
 import { InterventionStatus } from '../src/store/api/api.types';
-import { filterInterventions, formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionDetailCopy, getInterventionListCopy, getProfessionalEmptyStateCopy, getInterventionStatusLabel } from '../src/screens/Intervention/utils/interventionPresentation';
+import { filterInterventions, formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName, getInterventionDetailCopy, getInterventionListCopy, getProfessionalEmptyStateCopy, getInterventionStatusLabel } from '../src/screens/Intervention/utils/interventionPresentation';
 
 describe('interventionPresentation', () => {
     it('maps API statuses to French labels', () => {
@@ -50,5 +50,11 @@ describe('interventionPresentation', () => {
 
         expect(getInterventionAddress(intervention)?.address).toBe('De eljem');
         expect(formatInterventionPrice(intervention.price)).toBe('20,00 €');
+    });
+
+    it('resolves the professional-facing client name from supported API shapes', () => {
+        expect(getInterventionClientName({ name: 'Zied Ncir' })).toBe('Zied Ncir');
+        expect(getInterventionClientName({ client: { first_name: 'Zied', last_name: 'Ncir' } })).toBe('Zied Ncir');
+        expect(getInterventionClientName(null)).toBeNull();
     });
 });

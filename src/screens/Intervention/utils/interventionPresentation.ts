@@ -10,6 +10,16 @@ type InterventionWithApiAliases = {
     adress?: InterventionAddressLike;
 };
 
+type InterventionClientLike = {
+    name?: string;
+    first_name?: string;
+    last_name?: string;
+    client?: {
+        first_name?: string;
+        last_name?: string;
+    };
+};
+
 export type InterventionFilter = 'all' | 'active' | 'completed';
 
 export const getInterventionListCopy = (isProfessional: boolean) => isProfessional
@@ -38,6 +48,16 @@ export const formatInterventionPrice = (price?: number | string | null) => {
     if (!Number.isFinite(numericPrice)) return null;
 
     return `${numericPrice.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
+};
+
+export const getInterventionClientName = (client?: InterventionClientLike | null) => {
+    const directName = client?.name?.trim();
+    if (directName) return directName;
+
+    const nestedName = [client?.client?.first_name, client?.client?.last_name].filter(Boolean).join(' ').trim();
+    if (nestedName) return nestedName;
+
+    return [client?.first_name, client?.last_name].filter(Boolean).join(' ').trim() || null;
 };
 
 export const formatDistanceBetweenCoordinates = (
