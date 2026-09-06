@@ -85,7 +85,8 @@ import {
     faWrench,
     faBolt,
     faInbox,
-    faChartLine
+    faChartLine,
+    faSyncAlt,
 
 
 } from '@fortawesome/free-solid-svg-icons';
@@ -175,7 +176,8 @@ export type IconName =
     | 'fa-wrench'
     | 'fa-bolt'
     | 'fa-inbox'
-    | 'fa-chart-line';
+    | 'fa-chart-line'
+    | 'fa-sync-alt';
 export interface SvgIconProps {
     name: IconName;
     size?: number;
@@ -268,6 +270,7 @@ const faIconMap: Record<string, IconDefinition> = {
     'fa-bolt': faBolt,
     'fa-inbox': faInbox,
     'fa-chart-line': faChartLine,
+    'fa-sync-alt': faSyncAlt,
 };
 
 const SvgIcon: FC<SvgIconProps> = ({

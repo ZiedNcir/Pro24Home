@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ActivityIndicator, FlatList, RefreshControl } from 'react-native';
+import { ActivityIndicator, FlatList, Image, RefreshControl, View } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
@@ -16,6 +16,7 @@ import { selectIsProfessional } from '@store/slices/authSlice';
 import {
     filterInterventions,
     getInterventionListCopy,
+    getProfessionalEmptyStateCopy,
     getInterventionStatusColor,
     getInterventionStatusLabel,
     type InterventionFilter,
@@ -42,10 +43,30 @@ const formatDate = (value?: string) => {
     return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
 };
 
+const ProfessionalEmpty = ({ onRefresh, copy }: { onRefresh: () => unknown; copy: ReturnType<typeof getProfessionalEmptyStateCopy> }) => (
+    <ProfessionalEmptyState>
+        <EmptyIllustration source={require('@assets/images/professional-empty-interventions.png')} resizeMode="contain" accessibilityLabel="Professionnel prêt à recevoir des demandes" />
+        <EmptyTitle>{copy.heading}</EmptyTitle>
+        <EmptyDescription>{copy.description}</EmptyDescription>
+        <RefreshButton onPress={onRefresh} accessibilityRole="button" accessibilityLabel="Actualiser les demandes">
+            <SvgIcon name="fa-sync-alt" size={18} color={colors.primary} />
+            <Text variant="bold" color={colors.primary}>Actualiser</Text>
+        </RefreshButton>
+        <ReassuranceCard>
+            <ReassuranceIcon><SvgIcon name="fa-shield-alt" size={22} color={colors.primary} /></ReassuranceIcon>
+            <View style={styles.reassuranceCopy}>
+                <Text variant="bold" color={colors.gray900}>{copy.reassuranceTitle}</Text>
+                <Text variant="regularSmall" color={colors.gray700} style={styles.reassuranceDescription}>{copy.reassuranceDescription}</Text>
+            </View>
+        </ReassuranceCard>
+    </ProfessionalEmptyState>
+);
+
 const InterventionListScreen = () => {
     const navigation = useNavigation();
     const isProfessional = useSelector(selectIsProfessional);
     const copy = getInterventionListCopy(isProfessional);
+    const emptyStateCopy = getProfessionalEmptyStateCopy();
     const [filter, setFilter] = useState<InterventionFilter>('all');
     const { data, isLoading, isFetching, refetch } = useGetInterventionsQuery({ type: isProfessional ? 'professional' : 'client' });
     const interventions = useMemo(() => filterInterventions(data?.data || [], filter), [data?.data, filter]);
@@ -83,13 +104,13 @@ const InterventionListScreen = () => {
                 </NewButton>}
             </ListHeader>
             <Title>{copy.title}</Title>
-            <FilterRow>
+            {!(isProfessional && !isLoading && interventions.length === 0) && <FilterRow>
                 {FILTERS.map(item => (
                     <FilterButton key={item.key} active={filter === item.key} onPress={() => setFilter(item.key)}>
                         <FilterText active={filter === item.key}>{item.label}</FilterText>
                     </FilterButton>
                 ))}
-            </FilterRow>
+            </FilterRow>}
             {isLoading ? <Loading><ActivityIndicator color={colors.primary} /></Loading> : (
                 <FlatList
                     data={interventions}
@@ -98,7 +119,7 @@ const InterventionListScreen = () => {
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: verticalScale(110), gap: verticalScale(12) }}
                     refreshControl={<RefreshControl refreshing={isFetching && !isLoading} onRefresh={refetch} tintColor={colors.primary} />}
-                    ListEmptyComponent={<Empty><Text variant="regularSmall" color="gray600">{copy.empty}</Text>{!isProfessional && <NewButton onPress={() => (navigation as any).navigate('NewIntervention')}><Text variant="bold" color="white" fontSize={12}>Créer une intervention</Text></NewButton>}</Empty>}
+                    ListEmptyComponent={isProfessional ? <ProfessionalEmpty onRefresh={refetch} copy={emptyStateCopy} /> : <Empty><Text variant="regularSmall" color="gray600">{copy.empty}</Text><NewButton onPress={() => (navigation as any).navigate('NewIntervention')}><Text variant="bold" color="white" fontSize={12}>Créer une intervention</Text></NewButton></Empty>}
                 />
             )}
         </ScreenContainer>
@@ -124,3 +145,15 @@ const StatusBadge = styled.View<{ background: string }>`padding: ${verticalScale
 const StatusText = styled(Text).attrs({ variant: 'bold', color: 'success', fontSize: 10 })``;
 const Loading = styled.View`flex: 1; align-items: center; justify-content: center;`;
 const Empty = styled.View`align-items: center; padding-top: ${verticalScale(44)}px; gap: ${verticalScale(16)}px;`;
+const ProfessionalEmptyState = styled.View`align-items: center; padding: ${verticalScale(8)}px 0 ${verticalScale(28)}px;`;
+const EmptyIllustration = styled(Image)`width: 100%; height: ${verticalScale(190)}px; margin-bottom: ${verticalScale(10)}px;`;
+const EmptyTitle = styled(Text).attrs({ variant: 'bold', color: 'black', fontSize: 23 })`text-align: center;`;
+const EmptyDescription = styled(Text).attrs({ variant: 'regular', color: 'gray700', fontSize: 15 })`text-align: center; line-height: 22px; margin: ${verticalScale(10)}px ${horizontalScale(18)}px ${verticalScale(18)}px;`;
+const RefreshButton = styled.TouchableOpacity`height: ${verticalScale(48)}px; padding: 0 ${horizontalScale(22)}px; border-radius: ${moderateScale(13)}px; border-width: 1px; border-color: ${colors.primary}; flex-direction: row; align-items: center; justify-content: center; gap: ${horizontalScale(9)}px;`;
+const ReassuranceCard = styled.View`width: 100%; margin-top: ${verticalScale(24)}px; padding: ${moderateScale(14)}px; border-radius: ${moderateScale(16)}px; background-color: #fff7f1; flex-direction: row; align-items: flex-start; gap: ${horizontalScale(12)}px;`;
+const ReassuranceIcon = styled.View`width: ${moderateScale(42)}px; height: ${moderateScale(42)}px; border-radius: ${moderateScale(22)}px; background-color: #ffe9d9; align-items: center; justify-content: center;`;
+
+const styles = StyleSheet.create({
+    reassuranceCopy: { flex: 1 },
+    reassuranceDescription: { marginTop: verticalScale(4), lineHeight: 19 },
+});

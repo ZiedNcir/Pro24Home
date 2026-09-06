@@ -10,6 +10,13 @@ export const getInterventionDetailCopy = (isProfessional: boolean) => isProfessi
     ? { title: 'Demande d’intervention', section: 'Détails de la demande' }
     : { title: 'Détail de l’intervention', section: 'Votre demande' };
 
+export const getProfessionalEmptyStateCopy = () => ({
+    heading: 'Aucune demande pour le moment',
+    description: 'Les nouvelles demandes apparaîtront ici dès qu’un client fera appel à vous.',
+    reassuranceTitle: 'Restez disponible pour recevoir des demandes',
+    reassuranceDescription: 'Activez vos disponibilités et vos zones d’intervention pour ne manquer aucune opportunité.',
+});
+
 const labels: Record<InterventionStatus, string> = {
     [InterventionStatus.PENDING]: 'En attente',
     [InterventionStatus.ACCEPTED]: 'Acceptée',
