@@ -1,5 +1,5 @@
 import { InterventionStatus } from '../src/store/api/api.types';
-import { filterInterventions, formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName, getInterventionDetailCopy, getInterventionListCopy, getProfessionalEmptyStateCopy, getInterventionStatusLabel } from '../src/screens/Intervention/utils/interventionPresentation';
+import { filterInterventions, formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName, getInterventionDetailCopy, getInterventionImageUrls, getInterventionListCopy, getProfessionalEmptyStateCopy, getInterventionStatusLabel } from '../src/screens/Intervention/utils/interventionPresentation';
 
 describe('interventionPresentation', () => {
     it('maps API statuses to French labels', () => {
@@ -56,5 +56,14 @@ describe('interventionPresentation', () => {
         expect(getInterventionClientName({ name: 'Zied Ncir' })).toBe('Zied Ncir');
         expect(getInterventionClientName({ client: { first_name: 'Zied', last_name: 'Ncir' } })).toBe('Zied Ncir');
         expect(getInterventionClientName(null)).toBeNull();
+    });
+
+    it('collects legacy and relation image URLs without duplicates or empty values', () => {
+        expect(getInterventionImageUrls({
+            images: [{ url: 'photo-1.jpg' }, null, 'photo-2.jpg'],
+            image_1: 'photo-1.jpg',
+            image_2: 'photo-3.jpg',
+            image_3: null,
+        })).toEqual(['photo-1.jpg', 'photo-2.jpg', 'photo-3.jpg']);
     });
 });

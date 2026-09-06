@@ -8,6 +8,10 @@ type InterventionAddressLike = Partial<NonNullable<Intervention['address']>> & {
 type InterventionWithApiAliases = {
     address?: InterventionAddressLike;
     adress?: InterventionAddressLike;
+    images?: Array<{ url?: string | null } | string | null>;
+    image_1?: string | null;
+    image_2?: string | null;
+    image_3?: string | null;
 };
 
 type InterventionClientLike = {
@@ -58,6 +62,17 @@ export const getInterventionClientName = (client?: InterventionClientLike | null
     if (nestedName) return nestedName;
 
     return [client?.first_name, client?.last_name].filter(Boolean).join(' ').trim() || null;
+};
+
+export const getInterventionImageUrls = (intervention: InterventionWithApiAliases) => {
+    const relationImages = (intervention.images || []).map(image => (
+        typeof image === 'string' ? image : image?.url
+    ));
+    const legacyImages = [intervention.image_1, intervention.image_2, intervention.image_3];
+
+    return [...relationImages, ...legacyImages].filter((url, index, urls): url is string => (
+        typeof url === 'string' && url.trim().length > 0 && urls.indexOf(url) === index
+    ));
 };
 
 export const formatDistanceBetweenCoordinates = (

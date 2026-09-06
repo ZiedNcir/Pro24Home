@@ -4,10 +4,12 @@ import styled from 'styled-components/native';
 
 import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
+import AppImage from '@components/Image/AppImage';
 import type { Intervention } from '@store/api/api.types';
+import { API_BASE_URL } from '@config/api';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
-import { formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName } from '../../utils/interventionPresentation';
+import { formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName, getInterventionImageUrls } from '../../utils/interventionPresentation';
 
 type InterventionDetailData = Omit<Intervention, 'address' | 'price'> & {
     address?: Intervention['address'];
@@ -46,6 +48,7 @@ export const ClientInterventionDetails = ({ intervention }: DetailProps) => {
 export const ProfessionalInterventionDetails = ({ intervention, professionalLatitude, professionalLongitude, isAccepting = false, isRefusing = false, onAccept, onRefuse }: DetailProps) => {
     const address = getInterventionAddress(intervention);
     const clientName = getInterventionClientName(intervention.client);
+    const imageUrls = getInterventionImageUrls(intervention);
     const price = formatInterventionPrice(intervention.price);
     const requestedDate = intervention.scheduled_date || intervention.requested_date;
 
@@ -58,6 +61,19 @@ export const ProfessionalInterventionDetails = ({ intervention, professionalLati
             <SectionLabel>Client</SectionLabel>
             <InfoRow><SvgIcon name="fa-user" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{clientName}</Text></InfoRow>
         </Section> : null}
+        <Section>
+            <SectionLabel>Photos de l’intervention</SectionLabel>
+            <ImageGrid>
+                {[0, 1, 2].map(index => {
+                    const imageUrl = imageUrls[index];
+                    const uri = imageUrl && (imageUrl.startsWith('http://') || imageUrl.startsWith('https://') ? imageUrl : `${API_BASE_URL}/${imageUrl.replace(/^\//, '')}`);
+
+                    return <ImageTile key={index}>
+                        {uri ? <TileImage uri={uri} borderRadius={moderateScale(10)} showLoader={false} renderError={() => <ImageFallback><SvgIcon name="fa-image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Photo indisponible</Text></ImageFallback>} /> : <ImageFallback><SvgIcon name="fa-image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Aucune photo</Text></ImageFallback>}
+                    </ImageTile>;
+                })}
+            </ImageGrid>
+        </Section>
         <Section>
             <InfoRow><SvgIcon name="fa-map-marked-alt" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDistanceBetweenCoordinates(professionalLatitude, professionalLongitude, Number(address?.latitude), Number(address?.longitude))}</Text></InfoRow>
             {requestedDate ? <InfoRow><SvgIcon name="fa-user-clock" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDate(requestedDate)}</Text></InfoRow> : null}
@@ -79,3 +95,7 @@ const InfoRow = styled.View`flex-direction: row; align-items: center; gap: ${hor
 const Actions = styled.View`margin-top: ${verticalScale(20)}px; gap: ${verticalScale(10)}px;`;
 const ActionButton = styled.TouchableOpacity`height: ${verticalScale(52)}px; border-radius: ${moderateScale(14)}px; background-color: ${colors.primary}; align-items: center; justify-content: center;`;
 const RefuseButton = styled.TouchableOpacity`height: ${verticalScale(52)}px; border-radius: ${moderateScale(14)}px; border-width: 1px; border-color: ${colors.danger}; align-items: center; justify-content: center;`;
+const ImageGrid = styled.View`flex-direction: row; gap: ${horizontalScale(8)}px;`;
+const ImageTile = styled.View`flex: 1; height: ${verticalScale(92)}px; overflow: hidden; border-radius: ${moderateScale(10)}px; background-color: #f5f5f5;`;
+const ImageFallback = styled.View`flex: 1; align-items: center; justify-content: center; gap: ${verticalScale(4)}px; padding: ${horizontalScale(4)}px;`;
+const TileImage = styled(AppImage)`width: 100%; height: 100%;`;
