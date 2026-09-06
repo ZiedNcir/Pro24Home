@@ -6,6 +6,11 @@ describe('authentication home routing', () => {
         expect(getHomeRouteFromAuthResponse({ user: { type: 'professional' } })).toBe('ProfessionnelHome');
         expect(getHomeRouteFromAuthResponse({ user: { type: 'client' } })).toBe('Tabs');
     });
+
+    it('routes unverified accounts to the account pending screen', () => {
+        expect(getHomeRouteFromAuthResponse({ user: { type: 'professional' }, is_verified: 0 })).toBe('AccountPendingScreen');
+        expect(getHomeRouteFromAuthResponse({ user: { type: 'client' }, is_verified: 1 })).toBe('Tabs');
+    });
 });
 
 describe('postal code validation', () => {
