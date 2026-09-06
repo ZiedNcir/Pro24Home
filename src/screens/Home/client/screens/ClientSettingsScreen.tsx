@@ -13,10 +13,11 @@ import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useNavigation } from '@react-navigation/native';
 import InterventionHeader from '../../../Intervention/components/InterventionHeader';
+import { PROFESSIONAL_SETTINGS_DOCUMENT } from '../../../../navigation/professionalNavigation';
 
 type ModalType = 'payment' | 'faq' | 'terms' | null;
 
-const ClientSettingsScreen = () => {
+const ClientSettingsScreen = ({ professional = false }: { professional?: boolean }) => {
     const { theme, themeMode, toggleTheme } = useTheme();
     const navigation = useNavigation();
     const dispatch = useAppDispatch();
@@ -37,7 +38,7 @@ const ClientSettingsScreen = () => {
             const rootNavigation = navigation.getParent?.() || navigation;
             (rootNavigation as any).reset({
                 index: 0,
-                routes: [{ name: 'SignIn', params: { role: 'client' } }],
+                routes: [{ name: 'SignIn', params: { role: professional ? 'professional' : 'client' } }],
             });
         }
     };
@@ -60,7 +61,7 @@ const ClientSettingsScreen = () => {
             <SectionLabel>COMPTE</SectionLabel>
             <SectionCard>
                 <SettingsRow icon="fa-user" title="Profil" description={user?.name ? `${user.name} · Informations personnelles` : 'Gérez vos informations personnelles'} onPress={() => (navigation as any).navigate('Profile')} />
-                <SettingsRow icon="fa-map-marker-alt" title="Adresses enregistrées" description="Consultez et gérez vos adresses" onPress={() => undefined} />
+                {professional ? <SettingsRow {...PROFESSIONAL_SETTINGS_DOCUMENT} onPress={() => (navigation.getParent?.() as any)?.navigate(PROFESSIONAL_SETTINGS_DOCUMENT.route)} /> : <SettingsRow icon="fa-map-marker-alt" title="Adresses enregistrées" description="Consultez et gérez vos adresses" onPress={() => undefined} />}
             </SectionCard>
 
             <SectionLabel>PRÉFÉRENCES</SectionLabel>
@@ -143,6 +144,8 @@ const SettingsModal = ({ type, onClose }: { type: ModalType; onClose: () => void
         </Modal>
     );
 };
+
+export const ProfessionalSettingsScreen = () => <ClientSettingsScreen professional />;
 
 export default ClientSettingsScreen;
 

@@ -20,7 +20,7 @@ import { Button } from '@components/index';
 import { useTheme } from '@theme/ThemeProvider';
 import { IconName } from '@components/Icon';
 import ClientHome from '@screens/Home/client/screens/HomeClient';
-import ClientSettingsScreen from '@screens/Home/client/screens/ClientSettingsScreen';
+import ClientSettingsScreen, { ProfessionalSettingsScreen } from '@screens/Home/client/screens/ClientSettingsScreen';
 import ContactSupportScreen from '@screens/Home/client/screens/ContactSupportScreen';
 import ProfileScreen from '@screens/Home/client/screens/ProfileScreen';
 import HomeProfessional from '@screens/Home/client/screens/HomeProfessional';
@@ -30,6 +30,7 @@ import {
   AddAddressScreen, InterventionSuccessScreen, NewInterventionScreen, PaymentTravelFeeScreen, PriceEstimationScreen, InterventionListScreen, InterventionDetailScreen
 
 } from '@screens/Intervention/index';
+import { PROFESSIONAL_BOTTOM_TABS } from './professionalNavigation';
 
 const { Navigator: BottomTabNavigator, Screen: BottomTabScreen } =
   createBottomTabNavigator<BottomTabType>();
@@ -85,33 +86,12 @@ const BottomTabBar: FunctionComponent<BottomTabBarProps> = ({
     return null;
   }
 
-  const isProfessional = state.routeNames.includes('Documents') && state.routeNames.includes('Profile');
+  const isProfessional = state.routeNames.includes('Profile');
   const bottomTabs: {
     route: keyof BottomTabType;
     icon: IconName;
     title: string;
-  }[] = isProfessional ? [
-      {
-        route: 'Home',
-        icon: 'fa-home',
-        title: 'Accueil',
-      },
-      {
-        route: 'ListIntervention',
-        icon: 'fa-list',
-        title: 'Interventions',
-      },
-      {
-        route: 'Documents',
-        icon: 'fa-file-alt',
-        title: 'Documents',
-      },
-      {
-        route: 'Profile',
-        icon: 'fa-user',
-        title: 'Profil',
-      },
-    ] : [
+  }[] = isProfessional ? PROFESSIONAL_BOTTOM_TABS : [
       { route: 'Home', icon: 'fa-home', title: 'Home' },
       { route: 'ListIntervention', icon: 'fa-list', title: 'Intervention' },
       { route: 'SettingPage', icon: 'fa-cog', title: 'Params' },
@@ -184,8 +164,7 @@ const ProfessionalTabNavigator = () => {
       screenOptions={{ headerShown: false }}>
       <BottomTabScreen name="Home" component={ProfessionalHomeDashboard} />
       <BottomTabScreen name="ListIntervention" component={InterventionListScreen} />
-      <BottomTabScreen name="Documents" component={HomeProfessional} />
-      <BottomTabScreen name="Profile" component={ProfileScreen} />
+      <BottomTabScreen name="SettingPage" component={ProfessionalSettingsScreen} />
     </BottomTabNavigator>
   );
 };
@@ -234,6 +213,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         <Stack.Screen name="AccountPendingScreen" component={AccountPendingScreen} />
         <Stack.Screen name="ContactSupport" component={ContactSupportScreen} />
+        <Stack.Screen name="Documents" component={HomeProfessional} />
 
         <Stack.Screen name="AddAddress" component={AddAddressScreen} />
 
