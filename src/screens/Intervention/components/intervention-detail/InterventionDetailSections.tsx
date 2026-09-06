@@ -17,8 +17,8 @@ type InterventionDetailData = Omit<Intervention, 'address' | 'price'> & {
 
 interface DetailProps {
     intervention: InterventionDetailData;
-    professionalLatitude?: number;
-    professionalLongitude?: number;
+    professionalLatitude?: number | string;
+    professionalLongitude?: number | string;
     isAccepting?: boolean;
     isRefusing?: boolean;
     onAccept?: () => Promise<void>;

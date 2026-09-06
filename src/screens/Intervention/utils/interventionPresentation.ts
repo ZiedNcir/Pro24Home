@@ -1,6 +1,6 @@
 import { InterventionStatus, type Intervention } from '@store/api/api.types';
 
-type InterventionAddressLike = NonNullable<Intervention['address']> & {
+type InterventionAddressLike = Partial<NonNullable<Intervention['address']>> & {
     latitude?: number | string;
     longitude?: number | string;
 };
@@ -41,20 +41,22 @@ export const formatInterventionPrice = (price?: number | string | null) => {
 };
 
 export const formatDistanceBetweenCoordinates = (
-    fromLatitude?: number,
-    fromLongitude?: number,
-    toLatitude?: number,
-    toLongitude?: number,
+    fromLatitude?: number | string,
+    fromLongitude?: number | string,
+    toLatitude?: number | string,
+    toLongitude?: number | string,
 ) => {
-    if ([fromLatitude, fromLongitude, toLatitude, toLongitude].some(value => typeof value !== 'number' || !Number.isFinite(value))) {
+    const coordinates = [fromLatitude, fromLongitude, toLatitude, toLongitude].map(value => Number(value));
+    if (coordinates.some(value => !Number.isFinite(value))) {
         return 'Distance indisponible';
     }
 
     const toRadians = (value: number) => (value * Math.PI) / 180;
-    const latitudeDelta = toRadians(toLatitude! - fromLatitude!);
-    const longitudeDelta = toRadians(toLongitude! - fromLongitude!);
-    const latitudeA = toRadians(fromLatitude!);
-    const latitudeB = toRadians(toLatitude!);
+    const [safeFromLatitude, safeFromLongitude, safeToLatitude, safeToLongitude] = coordinates;
+    const latitudeDelta = toRadians(safeToLatitude - safeFromLatitude);
+    const longitudeDelta = toRadians(safeToLongitude - safeFromLongitude);
+    const latitudeA = toRadians(safeFromLatitude);
+    const latitudeB = toRadians(safeToLatitude);
     const a = Math.sin(latitudeDelta / 2) ** 2 + Math.cos(latitudeA) * Math.cos(latitudeB) * Math.sin(longitudeDelta / 2) ** 2;
     const kilometers = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 

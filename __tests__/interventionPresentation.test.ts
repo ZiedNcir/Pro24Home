@@ -41,6 +41,7 @@ describe('interventionPresentation', () => {
 
     it('formats the distance between professional and intervention coordinates', () => {
         expect(formatDistanceBetweenCoordinates(48.8566, 2.3522, 48.8666, 2.3522)).toBe('1,1 km');
+        expect(formatDistanceBetweenCoordinates('48.8566', '2.3522', '48.8666', '2.3522')).toBe('1,1 km');
         expect(formatDistanceBetweenCoordinates(undefined, 2.35, 48.86, 2.35)).toBe('Distance indisponible');
     });
 
