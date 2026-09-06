@@ -1,5 +1,15 @@
 import { InterventionStatus, type Intervention } from '@store/api/api.types';
 
+type InterventionAddressLike = NonNullable<Intervention['address']> & {
+    latitude?: number | string;
+    longitude?: number | string;
+};
+
+type InterventionWithApiAliases = {
+    address?: InterventionAddressLike;
+    adress?: InterventionAddressLike;
+};
+
 export type InterventionFilter = 'all' | 'active' | 'completed';
 
 export const getInterventionListCopy = (isProfessional: boolean) => isProfessional
@@ -17,13 +27,26 @@ export const getProfessionalEmptyStateCopy = () => ({
     reassuranceDescription: 'Activez vos disponibilités et vos zones d’intervention pour ne manquer aucune opportunité.',
 });
 
+export const getInterventionAddress = (intervention: InterventionWithApiAliases) => (
+    intervention.address || intervention.adress
+);
+
+export const formatInterventionPrice = (price?: number | string | null) => {
+    if (price === null || price === undefined || price === '') return null;
+
+    const numericPrice = Number(price);
+    if (!Number.isFinite(numericPrice)) return null;
+
+    return `${numericPrice.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
+};
+
 export const formatDistanceBetweenCoordinates = (
     fromLatitude?: number,
     fromLongitude?: number,
     toLatitude?: number,
     toLongitude?: number,
 ) => {
-    if ([fromLatitude, fromLongitude, toLatitude, toLongitude].some(value => typeof value !== 'number')) {
+    if ([fromLatitude, fromLongitude, toLatitude, toLongitude].some(value => typeof value !== 'number' || !Number.isFinite(value))) {
         return 'Distance indisponible';
     }
 

@@ -1,5 +1,5 @@
 import { InterventionStatus } from '../src/store/api/api.types';
-import { filterInterventions, formatDistanceBetweenCoordinates, getInterventionDetailCopy, getInterventionListCopy, getProfessionalEmptyStateCopy, getInterventionStatusLabel } from '../src/screens/Intervention/utils/interventionPresentation';
+import { filterInterventions, formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionDetailCopy, getInterventionListCopy, getProfessionalEmptyStateCopy, getInterventionStatusLabel } from '../src/screens/Intervention/utils/interventionPresentation';
 
 describe('interventionPresentation', () => {
     it('maps API statuses to French labels', () => {
@@ -42,5 +42,12 @@ describe('interventionPresentation', () => {
     it('formats the distance between professional and intervention coordinates', () => {
         expect(formatDistanceBetweenCoordinates(48.8566, 2.3522, 48.8666, 2.3522)).toBe('1,1 km');
         expect(formatDistanceBetweenCoordinates(undefined, 2.35, 48.86, 2.35)).toBe('Distance indisponible');
+    });
+
+    it('reads raw API address and price aliases safely', () => {
+        const intervention = { adress: { address: 'De eljem', latitude: '35.30', longitude: '10.71' }, price: '20.00' } as any;
+
+        expect(getInterventionAddress(intervention)?.address).toBe('De eljem');
+        expect(formatInterventionPrice(intervention.price)).toBe('20,00 €');
     });
 });
