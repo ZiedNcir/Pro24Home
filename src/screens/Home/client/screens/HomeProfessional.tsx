@@ -11,6 +11,7 @@ import styled from 'styled-components/native';
 import ScreenContainer from '@components/ScreenContainer';
 import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
+import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { useGetProfileQuery } from '@store/api/endpoints/auth';
 import { useUploadDocumentMutation } from '@store/api/endpoints/pro';
 import { selectUser } from '@store/slices/authSlice';
@@ -101,7 +102,7 @@ const HomeProfessional = () => {
                 <BackButton accessibilityRole="button" accessibilityLabel="Retour" onPress={() => navigation.canGoBack() && navigation.goBack()}>
                     <SvgIcon name="fa-chevron-left" size={22} color={colors.gray900} />
                 </BackButton>
-                <SvgIcon name="logo-medium-pro24" size={moderateScale(104)} />
+                <LogoMediumPro24Icon width={moderateScale(104)} height={moderateScale(34)} />
                 <HelpButton accessibilityRole="button" accessibilityLabel="Aide" onPress={() => Alert.alert('Vérification du profil', 'Ajoutez vos documents pour que notre équipe puisse valider votre compte professionnel.')}>
                     <SvgIcon name="fa-question" size={16} color={colors.white} />
                 </HelpButton>

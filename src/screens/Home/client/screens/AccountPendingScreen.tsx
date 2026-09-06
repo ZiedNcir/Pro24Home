@@ -6,6 +6,7 @@ import styled from 'styled-components/native';
 import ScreenContainer from '@components/ScreenContainer';
 import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
+import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { ACCOUNT_PENDING_STEPS } from '../utils/accountPending';
@@ -24,7 +25,7 @@ export const AccountPendingScreen = () => {
     return (
         <ScreenContainer scrollable paddingHorizontal={horizontalScale(18)} paddingVertical={verticalScale(14)} backgroundColor={colors.white} contentContainerStyle={styles.content}>
             <Header>
-                <SvgIcon name="logo-medium-pro24" size={moderateScale(126)} />
+                <LogoMediumPro24Icon width={moderateScale(126)} height={moderateScale(40)} />
                 <HelpButton accessibilityRole="button" accessibilityLabel="Aide" onPress={handleSupport}>
                     <SvgIcon name="fa-question" size={18} color={colors.gray900} />
                 </HelpButton>

@@ -7,6 +7,7 @@ import styled from 'styled-components/native';
 import ScreenContainer from '@components/ScreenContainer';
 import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
+import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import type { IconName } from '@components/Icon';
 import { useGetInterventionsQuery } from '@store/api/endpoints/intervention';
 import { useGetUnreadNotificationCountQuery } from '@store/api/endpoints/notification';
@@ -55,7 +56,7 @@ const ProfessionalHomeDashboard = () => {
     return (
         <ScreenContainer scrollable paddingHorizontal={horizontalScale(18)} paddingVertical={verticalScale(14)} backgroundColor={colors.white} contentContainerStyle={styles.content}>
             <Header>
-                <SvgIcon name="logo-medium-pro24" size={moderateScale(112)} />
+                <LogoMediumPro24Icon width={moderateScale(112)} height={moderateScale(36)} />
                 <HeaderActions>
                     <NotificationButton accessibilityRole="button" accessibilityLabel="Notifications" onPress={() => navigation.navigate('Notifications')}>
                         <SvgIcon name="fa-bell" size={21} color={colors.gray900} />
