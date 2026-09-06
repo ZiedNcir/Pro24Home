@@ -6,7 +6,7 @@ import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
 import AppImage from '@components/Image/AppImage';
 import type { Intervention } from '@store/api/api.types';
-import { API_BASE_URL } from '../../../config/api';
+import { API_BASE_URL } from '../../../../config/api';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName, getInterventionImageUrls } from '../../utils/interventionPresentation';
