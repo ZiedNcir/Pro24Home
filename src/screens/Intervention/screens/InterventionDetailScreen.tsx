@@ -12,13 +12,14 @@ import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useGetInterventionQuery } from '@store/api/endpoints/intervention';
 import { useAcceptInterventionMutation, useReviseInterventionMutation } from '@store/api/endpoints/pro';
-import { selectIsProfessional } from '@store/slices/authSlice';
+import { selectIsProfessional, selectUser } from '@store/slices/authSlice';
 import { AppStackType } from '../../../navigation/constant/core';
-import { getInterventionDetailCopy, getInterventionStatusColor, getInterventionStatusLabel } from '../utils/interventionPresentation';
+import { formatDistanceBetweenCoordinates, getInterventionDetailCopy, getInterventionStatusColor, getInterventionStatusLabel } from '../utils/interventionPresentation';
 
 const InterventionDetailScreen = () => {
     const route = useRoute<RouteProp<AppStackType, 'InterventionDetail'>>();
     const isProfessional = useSelector(selectIsProfessional);
+    const user = useSelector(selectUser);
     const { data: intervention, isLoading, isError } = useGetInterventionQuery(route.params.intervention_id);
     const [acceptIntervention, { isLoading: isAccepting }] = useAcceptInterventionMutation();
     const [reviseIntervention, { isLoading: isRefusing }] = useReviseInterventionMutation();
@@ -54,9 +55,10 @@ const InterventionDetailScreen = () => {
                 <Text variant="regularSmall" color="gray600">{intervention.description || 'Aucune description renseignée.'}</Text>
             </Section>
             <Section>
-                <InfoRow><SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{intervention.address?.address || 'Adresse non renseignée'}</Text></InfoRow>
+                {!isProfessional ? <InfoRow><SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{intervention.address?.address || 'Adresse non renseignée'}</Text></InfoRow> : null}
                 <InfoRow><SvgIcon name="fa-user-clock" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{intervention.scheduled_date ? new Date(intervention.scheduled_date).toLocaleString('fr-FR') : 'Date à confirmer'}</Text></InfoRow>
             </Section>
+            {isProfessional ? <Section><SectionLabel>Informations de la demande</SectionLabel><InfoRow><SvgIcon name="fa-map-marked-alt" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDistanceBetweenCoordinates(user?.professional?.latitude, user?.professional?.longitude, intervention.address?.latitude, intervention.address?.longitude)}</Text></InfoRow><InfoRow><SvgIcon name="fa-user-clock" size={16} color={colors.primary} /><Text variant="regularSmall" color={colors.gray600}>{intervention.scheduled_date || intervention.requested_date ? new Date(intervention.scheduled_date || intervention.requested_date).toLocaleString('fr-FR') : 'Date à confirmer'}</Text></InfoRow>{intervention.service ? <InfoRow><SvgIcon name="fa-wrench" size={16} color={colors.primary} /><Text variant="regularSmall" color={colors.gray600}>{intervention.service.name}{intervention.sub_service?.name ? ` · ${intervention.sub_service.name}` : ''}</Text></InfoRow> : null}{intervention.price !== null && intervention.price !== undefined ? <InfoRow><SvgIcon name="fa-euro-sign" size={16} color={colors.primary} /><Text variant="regularSmall" color={colors.gray600}>{intervention.price.toFixed(2)} €</Text></InfoRow> : null}</Section> : null}
             {!isProfessional && intervention.professional ? <Section><SectionLabel>Professionnel assigné</SectionLabel><Text variant="regularSmall" color="gray600">{intervention.professional.first_name} {intervention.professional.last_name}</Text></Section> : null}
             {isProfessional && intervention.status === 'pending' ? <Actions><ActionButton disabled={isAccepting || isRefusing} onPress={handleAccept}><Text variant="bold" color={colors.white}>{isAccepting ? 'Acceptation...' : 'Accepter la demande'}</Text></ActionButton><RefuseButton disabled={isAccepting || isRefusing} onPress={handleRefuse}><Text variant="bold" color={colors.danger}>{isRefusing ? 'Refus...' : 'Refuser la demande'}</Text></RefuseButton></Actions> : null}
         </ScreenContainer>

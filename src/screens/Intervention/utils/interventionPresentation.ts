@@ -17,6 +17,29 @@ export const getProfessionalEmptyStateCopy = () => ({
     reassuranceDescription: 'Activez vos disponibilités et vos zones d’intervention pour ne manquer aucune opportunité.',
 });
 
+export const formatDistanceBetweenCoordinates = (
+    fromLatitude?: number,
+    fromLongitude?: number,
+    toLatitude?: number,
+    toLongitude?: number,
+) => {
+    if ([fromLatitude, fromLongitude, toLatitude, toLongitude].some(value => typeof value !== 'number')) {
+        return 'Distance indisponible';
+    }
+
+    const toRadians = (value: number) => (value * Math.PI) / 180;
+    const latitudeDelta = toRadians(toLatitude! - fromLatitude!);
+    const longitudeDelta = toRadians(toLongitude! - fromLongitude!);
+    const latitudeA = toRadians(fromLatitude!);
+    const latitudeB = toRadians(toLatitude!);
+    const a = Math.sin(latitudeDelta / 2) ** 2 + Math.cos(latitudeA) * Math.cos(latitudeB) * Math.sin(longitudeDelta / 2) ** 2;
+    const kilometers = 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return kilometers < 1
+        ? `${Math.round(kilometers * 1000)} m`
+        : `${(Math.round(kilometers * 10) / 10).toLocaleString('fr-FR')} km`;
+};
+
 const labels: Record<InterventionStatus, string> = {
     [InterventionStatus.PENDING]: 'En attente',
     [InterventionStatus.ACCEPTED]: 'Acceptée',

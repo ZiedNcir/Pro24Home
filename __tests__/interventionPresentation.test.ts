@@ -1,5 +1,5 @@
 import { InterventionStatus } from '../src/store/api/api.types';
-import { filterInterventions, getInterventionDetailCopy, getInterventionListCopy, getProfessionalEmptyStateCopy, getInterventionStatusLabel } from '../src/screens/Intervention/utils/interventionPresentation';
+import { filterInterventions, formatDistanceBetweenCoordinates, getInterventionDetailCopy, getInterventionListCopy, getProfessionalEmptyStateCopy, getInterventionStatusLabel } from '../src/screens/Intervention/utils/interventionPresentation';
 
 describe('interventionPresentation', () => {
     it('maps API statuses to French labels', () => {
@@ -37,5 +37,10 @@ describe('interventionPresentation', () => {
             reassuranceTitle: 'Restez disponible pour recevoir des demandes',
             reassuranceDescription: 'Activez vos disponibilités et vos zones d’intervention pour ne manquer aucune opportunité.',
         });
+    });
+
+    it('formats the distance between professional and intervention coordinates', () => {
+        expect(formatDistanceBetweenCoordinates(48.8566, 2.3522, 48.8666, 2.3522)).toBe('1,1 km');
+        expect(formatDistanceBetweenCoordinates(undefined, 2.35, 48.86, 2.35)).toBe('Distance indisponible');
     });
 });
