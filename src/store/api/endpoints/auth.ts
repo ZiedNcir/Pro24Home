@@ -11,6 +11,7 @@ import {
     Service,
 } from '../api.types';
 import { api } from '../baseApi';
+import { normalizeServicesResponse } from '../utils/servicesResponse';
 import { fetchUserProfile } from '../../slices/user.slice';
 
 export const authApiEndpoints = api.injectEndpoints({
@@ -280,38 +281,7 @@ export const authApiEndpoints = api.injectEndpoints({
 
 
             // Transforme la réponse de l'API
-            transformResponse: (response: any): ApiResponse<Service[]> => {
-                // Vérifier si c'est déjà un ApiResponse
-                if (response && typeof response === 'object' && 'success' in response) {
-                    return response as ApiResponse<Service[]>;
-                }
-
-                // Essayer d'extraire les données de différentes structures
-                let services: Service[] = [];
-                let message = '';
-                let success = false;
-
-                // Structure 1: { services: [...] }
-                if (response?.services && Array.isArray(response.services)) {
-                    services = response.services;
-                    success = true;
-                }
-
-
-                else {
-                    message = 'Invalid response format';
-                    success = false;
-                }
-
-                // 🔥 RETOURNER TOUJOURS UN OBJET ApiResponse COMPLET 🔥
-                return {
-                    success,
-                    data: services,
-                    message: success ? 'Services fetched successfully' : message,
-                    // Inclure les métadonnées si disponibles
-                    meta: response?.meta || undefined,
-                };
-            },
+            transformResponse: normalizeServicesResponse,
 
             // Gérer les erreurs de transformation
             transformErrorResponse: (response: any): ApiResponse<Service[]> => {
