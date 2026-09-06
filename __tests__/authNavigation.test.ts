@@ -1,4 +1,4 @@
-import { getHomeRouteFromAuthResponse } from '../src/navigation/authNavigation';
+import { getHomeRouteFromAuthResponse, isInactiveAuthResponse } from '../src/navigation/authNavigation';
 import { isValidPostalCode } from '../src/services/authService';
 
 describe('authentication home routing', () => {
@@ -14,6 +14,16 @@ describe('authentication home routing', () => {
 
     it('reads the account status from the data envelope returned by login', () => {
         expect(getHomeRouteFromAuthResponse({ data: { is_active: 0, is_verified: 1, exist: 1, message: "Votre compte n'est pas actif." }, user: { type: 'professional' } })).toBe('AccountPendingScreen');
+    });
+
+    it('uses the selected role when the API response has no user object', () => {
+        expect(getHomeRouteFromAuthResponse({ data: { is_active: 1 } }, 'professional')).toBe('ProfessionnelHome');
+        expect(getHomeRouteFromAuthResponse({ data: { is_active: 1 } }, 'client')).toBe('Tabs');
+    });
+
+    it('detects an inactive account when login returns it as an API error', () => {
+        expect(isInactiveAuthResponse({ data: { is_active: 0, message: "Votre compte n'est pas actif." } })).toBe(true);
+        expect(isInactiveAuthResponse({ data: { data: { is_active: 0 } } })).toBe(true);
     });
 });
 

@@ -33,7 +33,7 @@ import { useTheme } from '@theme/ThemeProvider';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { AppStackType } from '../../navigation/constant/core';
 import { useLoginMutation } from '@store/api/endpoints/auth';
-import { getHomeRouteFromAuthResponse } from '../../navigation/authNavigation';
+import { getHomeRouteFromAuthResponse, isInactiveAuthResponse } from '../../navigation/authNavigation';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -68,13 +68,13 @@ export const SignIn = () => {
 
   const [login, { isLoading }] = useLoginMutation();
 
-  const resetToHome = useCallback((response: Parameters<typeof getHomeRouteFromAuthResponse>[0]) => {
-    const destination = getHomeRouteFromAuthResponse(response);
+  const resetToHome = useCallback((response: Parameters<typeof getHomeRouteFromAuthResponse>[0], fallbackRole = role) => {
+    const destination = getHomeRouteFromAuthResponse(response, fallbackRole);
     const availableRoutes = navigation.getState().routeNames;
 
     if (!availableRoutes.includes(destination)) {
       Toast.show(
-        role === 'professional'
+        fallbackRole === 'professional'
           ? 'L’espace professionnel n’est pas disponible pour le moment.'
           : 'Impossible d’ouvrir votre espace.',
         {
@@ -103,6 +103,11 @@ export const SignIn = () => {
       } catch (error: any) {
         console.error('Login error:', error);
 
+        if (isInactiveAuthResponse(error)) {
+          resetToHome(error, role);
+          return;
+        }
+
         Toast.show(
           error?.data?.message || t('auth.loginFailed') || 'Connexion échouée',
           {
@@ -114,7 +119,7 @@ export const SignIn = () => {
 
       }
     },
-    [login, resetToHome, t]
+    [login, resetToHome, role, t]
   );
 
   const navigateToForgetPassword = useCallback(() => {
