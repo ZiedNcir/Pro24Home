@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Alert, Modal, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Alert, Modal, Pressable, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useForm } from 'react-hook-form';
 import styled from 'styled-components/native';
 
 import ScreenContainer from '@components/ScreenContainer';
 import Text from '@components/Text';
+import Field from '@components/Field';
 import { SvgIcon } from '@components/Icon';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import InterventionHeader from '../../../Intervention/components/InterventionHeader';
@@ -12,21 +14,23 @@ import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { isSupportFormValid, SUPPORT_TOPICS } from '../utils/contactSupport';
 
+type SupportFormValues = { message: string };
+
 const ContactSupportScreen = () => {
     const navigation = useNavigation<any>();
+    const { control, handleSubmit } = useForm<SupportFormValues>({ defaultValues: { message: '' } });
     const [topic, setTopic] = useState(SUPPORT_TOPICS[0]);
-    const [message, setMessage] = useState('');
     const [attachment, setAttachment] = useState(false);
     const [topicModalVisible, setTopicModalVisible] = useState(false);
     const [submitted, setSubmitted] = useState(false);
 
-    const submitRequest = () => {
-        if (!isSupportFormValid(topic.key, message)) {
+    const submitRequest = handleSubmit(({ message: submittedMessage }) => {
+        if (!isSupportFormValid(topic.key, submittedMessage)) {
             Alert.alert('Message incomplet', 'Sélectionnez un sujet et décrivez votre demande.');
             return;
         }
         setSubmitted(true);
-    };
+    });
 
     if (submitted) {
         return (
@@ -58,9 +62,18 @@ const ContactSupportScreen = () => {
                 <SvgIcon name="fa-chevron-down" size={15} color={colors.gray700} />
             </TopicButton>
 
-            <Label>Décrivez votre demande <Required>*</Required></Label>
-            <MessageBox multiline value={message} onChangeText={setMessage} maxLength={1000} placeholder="Décrivez votre demande en détail. Incluez les informations utiles…" placeholderTextColor={colors.gray500} textAlignVertical="top" />
-            <CharacterCount>{message.length}/1000</CharacterCount>
+            <Field<SupportFormValues>
+                name="message"
+                control={control}
+                label="Décrivez votre demande"
+                required
+                multiline
+                maxCharacters={1000}
+                showCharacterCount
+                placeholder="Décrivez votre demande en détail. Incluez les informations utiles…"
+                rules={{ minLength: { value: 1, message: 'Décrivez votre demande.' } }}
+                containerStyle={styles.field}
+            />
 
             <Label>Pièces jointes <Optional>(facultatif)</Optional></Label>
             <AttachmentButton onPress={() => setAttachment(value => !value)} accessibilityRole="button">
@@ -85,8 +98,6 @@ const Required = styled.Text`color: ${colors.primary};`;
 const Optional = styled.Text`font-family: Inter-Regular; font-weight: 400; color: ${colors.gray600};`;
 const TopicButton = styled(Pressable)`min-height: ${verticalScale(56)}px; border-width: 1px; border-color: ${colors.gray300}; border-radius: ${moderateScale(12)}px; padding: ${verticalScale(8)}px ${horizontalScale(12)}px; flex-direction: row; align-items: center; gap: ${horizontalScale(12)}px;`;
 const TopicIcon = styled.View`width: ${moderateScale(38)}px; height: ${moderateScale(38)}px; border-radius: ${moderateScale(20)}px; background-color: ${colors.primary}; justify-content: center; align-items: center;`;
-const MessageBox = styled(TextInput)`min-height: ${verticalScale(150)}px; border-width: 1px; border-color: ${colors.gray300}; border-radius: ${moderateScale(12)}px; padding: ${verticalScale(14)}px ${horizontalScale(14)}px; color: ${colors.gray900}; font-family: Inter-Regular; font-size: 15px; line-height: 22px;`;
-const CharacterCount = styled(Text).attrs({ variant: 'regularSmall', color: 'gray600' })`text-align: right; margin-top: ${verticalScale(4)}px;`;
 const AttachmentButton = styled(Pressable)`min-height: ${verticalScale(68)}px; border-width: 1px; border-style: dashed; border-color: ${colors.gray300}; border-radius: ${moderateScale(12)}px; padding: ${verticalScale(10)}px ${horizontalScale(12)}px; flex-direction: row; align-items: center; gap: ${horizontalScale(10)}px;`;
 const AttachmentIcon = styled.View`width: ${moderateScale(38)}px; height: ${moderateScale(38)}px; border-radius: ${moderateScale(19)}px; background-color: #fff5ef; justify-content: center; align-items: center;`;
 const SubmitButton = styled(Pressable)`height: ${verticalScale(56)}px; margin-top: ${verticalScale(22)}px; border-radius: ${moderateScale(14)}px; background-color: ${colors.primary}; justify-content: center; align-items: center;`;
@@ -106,6 +117,7 @@ const styles = StyleSheet.create({
     subtitle: { marginTop: verticalScale(8), lineHeight: 22 },
     flex: { flex: 1 },
     noteText: { marginTop: verticalScale(4) },
+    field: { marginTop: verticalScale(18) },
 });
 
 export default ContactSupportScreen;
