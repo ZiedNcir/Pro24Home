@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Image, Pressable, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components/native';
 
@@ -19,7 +19,7 @@ export const AccountPendingScreen = () => {
     };
 
     const handleSupport = () => {
-        Alert.alert('Contacter le support', 'Notre équipe est disponible pour vous accompagner dans la vérification de votre compte.');
+        navigation.navigate('ContactSupport');
     };
 
     return (

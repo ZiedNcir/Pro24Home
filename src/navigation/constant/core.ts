@@ -7,6 +7,7 @@ export type AppStackType = {
     RegisterScreen: { role?: 'client' | 'professional' };
     VerifyScreen: { email?: string | null; role: IRole | null };
     AccountPendingScreen: undefined;
+    ContactSupport: undefined;
     AddAddress: undefined;
     PriceEstimation: { intervention: CreateInterventionRequest };
     PaymentTravelFee: { intervention: CreateInterventionRequest; checkPriceWithProfessional?: boolean };

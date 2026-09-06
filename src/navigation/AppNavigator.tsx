@@ -21,6 +21,7 @@ import { useTheme } from '@theme/ThemeProvider';
 import { IconName } from '@components/Icon';
 import ClientHome from '@screens/Home/client/screens/HomeClient';
 import ClientSettingsScreen from '@screens/Home/client/screens/ClientSettingsScreen';
+import ContactSupportScreen from '@screens/Home/client/screens/ContactSupportScreen';
 import ProfileScreen from '@screens/Home/client/screens/ProfileScreen';
 import HomeProfessional from '@screens/Home/client/screens/HomeProfessional';
 import ProfessionalHomeDashboard from '@screens/Home/client/screens/ProfessionalHomeDashboard';
@@ -232,6 +233,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="SignIn" component={SignIn} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
         <Stack.Screen name="AccountPendingScreen" component={AccountPendingScreen} />
+        <Stack.Screen name="ContactSupport" component={ContactSupportScreen} />
 
         <Stack.Screen name="AddAddress" component={AddAddressScreen} />
 

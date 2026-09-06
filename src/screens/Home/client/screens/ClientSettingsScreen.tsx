@@ -85,6 +85,7 @@ const ClientSettingsScreen = () => {
             <SectionCard>
                 <SettingsRow icon="fa-question-circle" title="FAQ" description="Trouvez rapidement une réponse" onPress={() => setActiveModal('faq')} />
                 <SettingsRow icon="fa-file-alt" title="Conditions d’utilisation" description="Consultez les conditions du service" onPress={() => setActiveModal('terms')} />
+                <SettingsRow icon="fa-headset" title="Contacter le support" description="Obtenez de l’aide pour votre compte" onPress={() => (navigation as any).navigate('ContactSupport')} />
             </SectionCard>
 
             <LogoutRow onPress={handleLogout} disabled={isLoggingOut} activeOpacity={0.75}>
