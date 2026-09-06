@@ -13,6 +13,7 @@ export type AppStackType = {
     PaymentTravelFee: { intervention: CreateInterventionRequest; checkPriceWithProfessional?: boolean };
     InterventionSuccess: undefined;
     InterventionDetail: { intervention_id: number };
+    ProfessionalInterventionTracking: { intervention_id: number };
     NewIntervention: { service_id?: number; service_name?: string } | undefined;
 
     ForgetPassword: undefined;

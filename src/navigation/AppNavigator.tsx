@@ -31,6 +31,7 @@ import {
 
 } from '@screens/Intervention/index';
 import { PROFESSIONAL_BOTTOM_TABS } from './professionalNavigation';
+import ProfessionalInterventionTrackingScreen from '@screens/Intervention/screens/ProfessionalInterventionTrackingScreen';
 
 const { Navigator: BottomTabNavigator, Screen: BottomTabScreen } =
   createBottomTabNavigator<BottomTabType>();
@@ -226,6 +227,7 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="PaymentTravelFee" component={PaymentTravelFeeScreen} />
         <Stack.Screen name="InterventionSuccess" component={InterventionSuccessScreen} />
         <Stack.Screen name="InterventionDetail" component={InterventionDetailScreen} />
+        <Stack.Screen name="ProfessionalInterventionTracking" component={ProfessionalInterventionTrackingScreen} />
         <Stack.Screen name="ProfessionnelHome" component={ProfessionalTabNavigator} />
 
 

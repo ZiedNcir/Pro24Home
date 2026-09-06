@@ -1,7 +1,7 @@
 import React from 'react';
 import { ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
-import { useRoute, type RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 
 import ScreenContainer from '@components/ScreenContainer';
@@ -19,6 +19,7 @@ import { getInterventionDetailCopy, getInterventionStatusColor, getInterventionS
 
 const InterventionDetailScreen = () => {
     const route = useRoute<RouteProp<AppStackType, 'InterventionDetail'>>();
+    const navigation = useNavigation();
     const isProfessional = useSelector(selectIsProfessional);
     const user = useSelector(selectUser);
     const { data: intervention, isLoading, isError } = useGetInterventionQuery(route.params.intervention_id);
@@ -33,6 +34,9 @@ const InterventionDetailScreen = () => {
     const handleAccept = async () => {
         try {
             await acceptIntervention(detailIntervention.id).unwrap();
+            if (isProfessional) {
+                (navigation as any).navigate('ProfessionalInterventionTracking', { intervention_id: detailIntervention.id });
+            }
         } catch {
             // The request error is handled by the API layer.
         }
