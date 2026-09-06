@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, RefreshControl } from 'react-native';
+import { ActivityIndicator, FlatList, RefreshControl } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import ScreenContainer from '@components/ScreenContainer';
 import Text from '@components/Text';
 import { SvgIcon, type IconName } from '@components/Icon';
+import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useGetInterventionsQuery } from '@store/api/endpoints/intervention';
@@ -14,6 +15,7 @@ import type { Intervention } from '@store/api/api.types';
 import { selectIsProfessional } from '@store/slices/authSlice';
 import {
     filterInterventions,
+    getInterventionListCopy,
     getInterventionStatusColor,
     getInterventionStatusLabel,
     type InterventionFilter,
@@ -43,6 +45,7 @@ const formatDate = (value?: string) => {
 const InterventionListScreen = () => {
     const navigation = useNavigation();
     const isProfessional = useSelector(selectIsProfessional);
+    const copy = getInterventionListCopy(isProfessional);
     const [filter, setFilter] = useState<InterventionFilter>('all');
     const { data, isLoading, isFetching, refetch } = useGetInterventionsQuery({ type: isProfessional ? 'professional' : 'client', page: 1, per_page: 50 });
     const interventions = useMemo(() => filterInterventions(data?.data || [], filter), [data?.data, filter]);
@@ -73,13 +76,13 @@ const InterventionListScreen = () => {
     return (
         <ScreenContainer mode="light" paddingHorizontal={horizontalScale(18)} paddingVertical={verticalScale(12)}>
             <ListHeader>
-                <Image source={require('@assets/images/pro24home-logo.png')} resizeMode="contain" style={{ width: horizontalScale(100), height: verticalScale(32) }} />
-                <NewButton onPress={() => (navigation as any).navigate('NewIntervention')}>
+                <LogoMediumPro24Icon width={horizontalScale(112)} height={verticalScale(36)} />
+                {!isProfessional && <NewButton onPress={() => (navigation as any).navigate('NewIntervention')}>
                     <SvgIcon name="fa-user-plus" size={14} color={colors.white} />
                     <Text variant="bold" color="white" fontSize={12}>Nouvelle intervention</Text>
-                </NewButton>
+                </NewButton>}
             </ListHeader>
-            <Title>Mes interventions</Title>
+            <Title>{copy.title}</Title>
             <FilterRow>
                 {FILTERS.map(item => (
                     <FilterButton key={item.key} active={filter === item.key} onPress={() => setFilter(item.key)}>
@@ -95,7 +98,7 @@ const InterventionListScreen = () => {
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: verticalScale(110), gap: verticalScale(12) }}
                     refreshControl={<RefreshControl refreshing={isFetching && !isLoading} onRefresh={refetch} tintColor={colors.primary} />}
-                    ListEmptyComponent={<Empty><Text variant="regularSmall" color="gray600">Vous n’avez pas encore d’intervention.</Text><NewButton onPress={() => (navigation as any).navigate('NewIntervention')}><Text variant="bold" color="white" fontSize={12}>Créer une intervention</Text></NewButton></Empty>}
+                    ListEmptyComponent={<Empty><Text variant="regularSmall" color="gray600">{copy.empty}</Text>{!isProfessional && <NewButton onPress={() => (navigation as any).navigate('NewIntervention')}><Text variant="bold" color="white" fontSize={12}>Créer une intervention</Text></NewButton>}</Empty>}
                 />
             )}
         </ScreenContainer>

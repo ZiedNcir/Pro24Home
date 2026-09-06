@@ -2,6 +2,14 @@ import { InterventionStatus, type Intervention } from '@store/api/api.types';
 
 export type InterventionFilter = 'all' | 'active' | 'completed';
 
+export const getInterventionListCopy = (isProfessional: boolean) => isProfessional
+    ? { title: 'Demandes d’intervention', empty: 'Aucune demande d’intervention pour le moment.' }
+    : { title: 'Mes interventions', empty: 'Vous n’avez pas encore d’intervention.' };
+
+export const getInterventionDetailCopy = (isProfessional: boolean) => isProfessional
+    ? { title: 'Demande d’intervention', section: 'Détails de la demande' }
+    : { title: 'Détail de l’intervention', section: 'Votre demande' };
+
 const labels: Record<InterventionStatus, string> = {
     [InterventionStatus.PENDING]: 'En attente',
     [InterventionStatus.ACCEPTED]: 'Acceptée',
