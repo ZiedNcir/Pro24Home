@@ -17,7 +17,7 @@ import { useGetServicesQuery } from '@store/api/endpoints/auth';
 import { useAddAddressMutation, useGetAddressesQuery } from '@store/api/endpoints/client';
 import { selectUser } from '@store/slices/authSlice';
 import { getServicePannes } from '../utils/servicePannes';
-import { canContinueAddressSelection } from '../utils/addressFlow';
+import { canContinueAddressSelection, formatAddressForSummary } from '../utils/addressFlow';
 import { mapGooglePlaceToAddress, type SelectedAddressLocation } from '../utils/googlePlaceAddress';
 import { fetchAddressFromCoordinates, fetchGooglePlaceDetails } from '../../../services/googlePlacesService';
 import { buildInterventionPayload } from '../utils/interventionPayload';
@@ -214,7 +214,7 @@ export const NewInterventionScreen = () => {
             {step === 4 ? (
                 <SummaryStep
                     serviceName={selectedService?.name || route.params?.service_name || 'Service sélectionné'}
-                    address={selectedAddressRecord?.address || 'Adresse non sélectionnée'}
+                    address={formatAddressForSummary(selectedAddressRecord, selectedLocation?.address || 'Adresse non sélectionnée')}
                     timing={selectedTiming}
                     scheduledDate={selectedDate}
                     onNext={() => {
