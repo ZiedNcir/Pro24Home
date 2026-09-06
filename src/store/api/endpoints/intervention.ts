@@ -6,6 +6,7 @@ import {
     ApiResponse,
 } from '../api.types';
 import { normalizeInterventionsResponse } from '../utils/interventionsResponse';
+import { normalizeInterventionResponse } from '../utils/interventionResponse';
 
 export const interventionEndpoints = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -27,7 +28,7 @@ export const interventionEndpoints = api.injectEndpoints({
         getIntervention: builder.query<Intervention, number>({
             query: (id) => `/api/get-intervention/${id}`,
             providesTags: (result, error, id) => [{ type: 'Interventions', id }],
-            transformResponse: (response: any) => response.data || response,
+            transformResponse: normalizeInterventionResponse,
         }),
 
         // Accept Devis (Client)
