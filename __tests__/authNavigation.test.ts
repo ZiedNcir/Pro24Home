@@ -11,6 +11,10 @@ describe('authentication home routing', () => {
         expect(getHomeRouteFromAuthResponse({ user: { type: 'professional' }, is_active: 0 })).toBe('AccountPendingScreen');
         expect(getHomeRouteFromAuthResponse({ user: { type: 'client' }, is_active: 1 })).toBe('Tabs');
     });
+
+    it('reads the account status from the data envelope returned by login', () => {
+        expect(getHomeRouteFromAuthResponse({ data: { is_active: 0, is_verified: 1, exist: 1, message: "Votre compte n'est pas actif." }, user: { type: 'professional' } })).toBe('AccountPendingScreen');
+    });
 });
 
 describe('postal code validation', () => {
