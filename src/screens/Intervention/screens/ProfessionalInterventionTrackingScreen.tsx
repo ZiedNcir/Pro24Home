@@ -32,6 +32,7 @@ const ProfessionalInterventionTrackingScreen = () => {
     const [professionalPosition, setProfessionalPosition] = useState<Coordinates | null>(null);
     const [eta, setEta] = useState<number | null>(null);
     const [locationError, setLocationError] = useState(false);
+    const [routeError, setRouteError] = useState(false);
     const { data: intervention, isLoading, isError } = useGetInterventionQuery(route.params.intervention_id);
     const [updateStatus] = useUpdateStatusMutation();
     const [updateInterventionStatus, { isLoading: isUpdatingStatus }] = useUpdateInterventionStatusMutation();
@@ -117,11 +118,18 @@ const ProfessionalInterventionTrackingScreen = () => {
         }
     };
 
+    const handleUserLocationChange = (event: { nativeEvent: { coordinate?: Coordinates } }) => {
+        const coordinate = event.nativeEvent.coordinate;
+        if (!coordinate || !Number.isFinite(coordinate.latitude) || !Number.isFinite(coordinate.longitude)) return;
+        setProfessionalPosition(coordinate);
+    };
+
     return <ScreenContainer mode="light" paddingHorizontal={0} paddingVertical={0}>
         <MapWrapper>
-            <TrackingMap ref={mapRef} initialRegion={region} showsUserLocation={Boolean(professionalPosition)} showsMyLocationButton showsCompass toolbarEnabled>
-                {destination ? <Marker coordinate={destination} pinColor={colors.primary} title="Adresse du client" /> : null}
-                {professionalPosition && destination ? <MapViewDirections origin={professionalPosition} destination={destination} apikey={GOOGLE_PLACES_API_KEY} strokeWidth={5} strokeColor={colors.primary} onReady={result => setEta(Math.round(result.duration))} /> : null}
+            <TrackingMap ref={mapRef} initialRegion={region} showsUserLocation onUserLocationChange={handleUserLocationChange} showsMyLocationButton showsCompass toolbarEnabled>
+                {professionalPosition ? <Marker coordinate={professionalPosition} pinColor="#1E88E5" title="Ma position" /> : null}
+                {destination ? <Marker coordinate={destination} pinColor={colors.primary} title="Destination client" description={address?.address} /> : null}
+                {professionalPosition && destination ? <MapViewDirections origin={professionalPosition} destination={destination} apikey={GOOGLE_PLACES_API_KEY} mode="DRIVING" precision="high" strokeWidth={6} strokeColor={colors.primary} resetOnChange onReady={result => { setEta(Math.round(result.duration)); setRouteError(false); }} onError={() => setRouteError(true)} /> : null}
             </TrackingMap>
             <TopBar>
                 <BackButton accessibilityRole="button" accessibilityLabel="Retour" onPress={() => navigation.goBack()}><SvgIcon name="arrow-left" size={18} color={colors.black} /></BackButton>
@@ -132,6 +140,7 @@ const ProfessionalInterventionTrackingScreen = () => {
                 <Row><Avatar><SvgIcon name="fa-user" size={16} color={colors.primary} /></Avatar><ClientInfo><Text variant="bold" color="black">{clientName || 'Client'}</Text>{clientPhone ? <Text variant="regularSmall" color="gray600">{clientPhone}</Text> : null}</ClientInfo></Row>
                 <DestinationText><SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{address?.location_name || address?.address || 'Adresse du client'}</Text></DestinationText>
                 {locationError ? <WarningText>Activez la localisation pour suivre votre trajet en temps réel.</WarningText> : null}
+                {routeError ? <WarningText>Itinéraire momentanément indisponible. Vérifiez votre connexion.</WarningText> : null}
                 {eta !== null ? <EtaText>Arrivée estimée : {eta} min</EtaText> : null}
                 <ArrivedButton disabled={isUpdatingStatus} onPress={handleArrived}><Text variant="bold" color={colors.white}>{isUpdatingStatus ? 'Mise à jour...' : 'Je suis arrivé'}</Text></ArrivedButton>
             </InfoCard>
