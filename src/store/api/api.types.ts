@@ -328,11 +328,13 @@ export interface Address {
 
 // Intervention Types
 export enum InterventionStatus {
+    NEGOTIATION = 'negotiation',
     PENDING = 'pending',
     ACCEPTED = 'accepted',
     IN_PROGRESS = 'in progress',
     COMPLETED = 'completed',
     REJECTED = 'rejected',
+    CANCELLED = 'cancelled',
     CANCELED = 'canceled'
 }
 

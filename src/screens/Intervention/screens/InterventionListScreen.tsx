@@ -82,7 +82,7 @@ const InterventionListScreen = () => {
             </ServiceIcon>
             <CardContent>
                 <CardTitle numberOfLines={1}>{item.title || item.service?.name || 'Intervention'}</CardTitle>
-                <CardAddress numberOfLines={1}>{item.address?.address || 'Adresse sélectionnée'}</CardAddress>
+                <CardAddress numberOfLines={1}>{item.address?.address || (item as Intervention & { adress?: { address?: string } }).adress?.address || 'Adresse sélectionnée'}</CardAddress>
                 <CardDate>{formatDate(item.scheduled_date || item.requested_date)}</CardDate>
             </CardContent>
             <CardAside>

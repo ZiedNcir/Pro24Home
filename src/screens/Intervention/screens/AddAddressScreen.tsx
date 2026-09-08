@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import styled from 'styled-components/native';
-import { Switch } from 'react-native';
+import { Platform, Switch } from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
 import ScreenContainer from '@components/ScreenContainer';
 import Text from '@components/Text';
@@ -14,10 +15,25 @@ import {
 } from '@utils/normalizedCss';
 
 import InterventionHeader from '../components/InterventionHeader';
+import FullscreenMapModal from '../components/new-intervention/FullscreenMapModal';
+import type { SelectedAddressLocation } from '../utils/googlePlaceAddress';
 import { colors } from '@theme/index';
 
 export const AddAddressScreen = () => {
     const [frequent, setFrequent] = useState(true);
+    const [isMapFullscreen, setIsMapFullscreen] = useState(false);
+    const [selectedLocation, setSelectedLocation] = useState<SelectedAddressLocation>({
+        address: 'Adresse sélectionnée sur la carte',
+        latitude: 36.8065,
+        longitude: 10.1815,
+    });
+
+    const mapRegion = {
+        latitude: selectedLocation.latitude,
+        longitude: selectedLocation.longitude,
+        latitudeDelta: 0.012,
+        longitudeDelta: 0.012,
+    };
 
     return (
         <ScreenContainer
@@ -49,7 +65,10 @@ export const AddAddressScreen = () => {
                 />
 
                 <MapPreview>
-                    <SvgIcon name="fa-map-marker-alt" size={36} color={colors.primary} />
+                    <AddressMap initialRegion={mapRegion} region={mapRegion} scrollEnabled={false} zoomEnabled={false}>
+                        <Marker coordinate={selectedLocation} pinColor={colors.primary} />
+                    </AddressMap>
+                    <MapHint accessibilityRole="button" accessibilityLabel="Ouvrir la carte en plein écran" onPress={() => setIsMapFullscreen(true)}><SvgIcon name="fa-map-marked-alt" size={14} color={colors.primary} /><Text variant="bold" color="black" fontSize={11}>Ouvrir la carte</Text></MapHint>
                 </MapPreview>
 
                 <SwitchRow>
@@ -57,9 +76,9 @@ export const AddAddressScreen = () => {
                         <Text variant="bold" color="black" fontSize={13}>
                             Enregistrer comme adresse fréquente
                         </Text>
-                        <Text variant="regularSmall" color="gray600" style={{ marginTop: 3 }}>
+                        <SwitchDescription>
                             Facilitez vos prochaines demandes.
-                        </Text>
+                        </SwitchDescription>
                     </View>
 
                     <Switch
@@ -78,6 +97,14 @@ export const AddAddressScreen = () => {
                     Enregistrer
                 </Text>
             </SaveButton>
+            <FullscreenMapModal
+                visible={isMapFullscreen}
+                region={mapRegion}
+                selectedLocation={selectedLocation}
+                isLookingUpAddress={false}
+                onClose={() => setIsMapFullscreen(false)}
+                onSelectCoordinate={(latitude, longitude) => setSelectedLocation({ address: 'Adresse sélectionnée sur la carte', latitude, longitude })}
+            />
         </ScreenContainer>
     );
 };
@@ -127,10 +154,26 @@ const InputInner = styled.TextInput`
 const MapPreview = styled.View`
   height: ${verticalScale(140)}px;
   border-radius: ${moderateScale(14)}px;
-  background-color: #e9e5df;
+  border-width: 2px;
+  border-color: ${colors.danger};
+  overflow: hidden;
   margin-top: ${verticalScale(18)}px;
-  justify-content: center;
+`;
+
+const AddressMap = styled(MapView).attrs({ provider: Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined })`
+  flex: 1;
+`;
+
+const MapHint = styled.TouchableOpacity`
+  position: absolute;
+  left: ${horizontalScale(12)}px;
+  bottom: ${verticalScale(10)}px;
+  flex-direction: row;
   align-items: center;
+  gap: ${horizontalScale(6)}px;
+  padding: ${verticalScale(8)}px ${horizontalScale(10)}px;
+  border-radius: ${moderateScale(10)}px;
+  background-color: ${colors.white};
 `;
 
 const SwitchRow = styled.View`
@@ -138,6 +181,10 @@ const SwitchRow = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+`;
+
+const SwitchDescription = styled(Text).attrs({ variant: 'regularSmall', color: 'gray600' })`
+  margin-top: 3px;
 `;
 
 const Spacer = styled.View`

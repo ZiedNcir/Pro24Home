@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import { Toast } from 'react-native-toast-notifications';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 import ScreenContainer from '@components/ScreenContainer';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
@@ -21,6 +22,7 @@ import { canContinueAddressSelection, formatAddressForSummary } from '../utils/a
 import { mapGooglePlaceToAddress, type SelectedAddressLocation } from '../utils/googlePlaceAddress';
 import { fetchAddressFromCoordinates, fetchGooglePlaceDetails } from '../../../services/googlePlacesService';
 import { buildInterventionPayload } from '../utils/interventionPayload';
+import type { InterventionPhoto } from '../components/new-intervention/types';
 
 export const NewInterventionScreen = () => {
     const route = useRoute<RouteProp<AppStackType, 'NewIntervention'>>();
@@ -37,6 +39,8 @@ export const NewInterventionScreen = () => {
     const [selectedProblem, setSelectedProblem] = useState<number | null>(null);
     const [selectedTiming, setSelectedTiming] = useState('asap');
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const [description, setDescription] = useState('');
+    const [photos, setPhotos] = useState<InterventionPhoto[]>([]);
     const problemTypes = useMemo(() => getServicePannes(selectedService), [selectedService]);
     const selectedProblemRecord = useMemo(
         () => problemTypes.find(problem => problem.id === selectedProblem),
@@ -52,6 +56,7 @@ export const NewInterventionScreen = () => {
     const [locationDetails, setLocationDetails] = useState('');
     const [isLookingUpAddress, setIsLookingUpAddress] = useState(false);
     const [isMapFullscreen, setIsMapFullscreen] = useState(false);
+    const [shouldReopenAddressModal, setShouldReopenAddressModal] = useState(false);
     const user = useSelector(selectUser);
     const [selectedLocation, setSelectedLocation] = useState<SelectedAddressLocation | null>(null);
 
@@ -89,8 +94,27 @@ export const NewInterventionScreen = () => {
         if (step > 1) setStep((step - 1) as InterventionStep);
     };
 
+    const addPhoto = async (source: 'camera' | 'gallery') => {
+        const picker = source === 'camera' ? launchCamera : launchImageLibrary;
+        const result = await picker({ mediaType: 'photo', selectionLimit: 1, quality: 0.8, ...(source === 'camera' ? { cameraType: 'back', saveToPhotos: false } : {}) });
+        if (result.didCancel) return;
+        if (result.errorCode) {
+            Toast.show(result.errorMessage || 'Impossible d’ajouter cette photo.', { type: 'danger', placement: 'bottom' });
+            return;
+        }
+        const asset = result.assets?.[0];
+        const uri = asset?.uri;
+        if (!uri) return;
+        setPhotos(current => [...current, {
+            uri,
+            type: asset.type || 'image/jpeg',
+            name: asset.fileName || `intervention-photo-${Date.now()}.jpg`,
+        }].slice(0, 3));
+    };
+
     const closeAddressModal = () => {
         setIsAddingAddress(false);
+        setShouldReopenAddressModal(false);
         setIsMapFullscreen(false);
         setSelectedLocation(null);
         setLocationName('');
@@ -142,6 +166,14 @@ export const NewInterventionScreen = () => {
         }
     };
 
+    const closeMapFullscreen = () => {
+        setIsMapFullscreen(false);
+        if (shouldReopenAddressModal) {
+            setShouldReopenAddressModal(false);
+            setIsAddingAddress(true);
+        }
+    };
+
     return (
         <ScreenContainer
             mode="light"
@@ -171,8 +203,13 @@ export const NewInterventionScreen = () => {
             ) : null}
             {step === 2 ? (
                 <DetailsStep
+                    description={description}
+                    photos={photos}
                     selectedTiming={selectedTiming}
                     selectedDate={selectedDate}
+                    onChangeDescription={setDescription}
+                    onAddPhoto={(source) => addPhoto(source).catch(() => undefined)}
+                    onRemovePhoto={(index) => setPhotos(current => current.filter((_, photoIndex) => photoIndex !== index))}
                     onSelectTiming={setSelectedTiming}
                     onSelectDate={setSelectedDate}
                     onNext={goNext}
@@ -202,18 +239,25 @@ export const NewInterventionScreen = () => {
                         onChangeLocationDetails: setLocationDetails,
                         onSelectPlace: selectPlace,
                         onSelectCoordinate: selectCoordinate,
+                        onOpenMapFullscreen: () => {
+                            setShouldReopenAddressModal(true);
+                            setIsAddingAddress(false);
+                            setIsMapFullscreen(true);
+                        },
                         onSave: saveAddress,
                     }}
                     isAddingAddress={isAddingAddress}
                     onCloseAddressModal={closeAddressModal}
                     isMapFullscreen={isMapFullscreen}
                     onOpenMapFullscreen={() => setIsMapFullscreen(true)}
-                    onCloseMapFullscreen={() => setIsMapFullscreen(false)}
+                    onCloseMapFullscreen={closeMapFullscreen}
                 />
             ) : null}
             {step === 4 ? (
                 <SummaryStep
                     serviceName={selectedService?.name || route.params?.service_name || 'Service sélectionné'}
+                    description={description}
+                    photos={photos}
                     address={formatAddressForSummary(selectedAddressRecord, selectedLocation?.address || 'Adresse non sélectionnée')}
                     timing={selectedTiming}
                     scheduledDate={selectedDate}
@@ -225,7 +269,9 @@ export const NewInterventionScreen = () => {
                                 addressId: selectedAddressRecord.id,
                                 problemTitle: selectedProblemRecord.title,
                                 problemDescription: selectedProblemRecord.description,
+                                description,
                                 timing: selectedTiming,
+                                photos,
                             }),
                         });
                     }}

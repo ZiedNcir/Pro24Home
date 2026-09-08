@@ -120,7 +120,7 @@ export const authApiEndpoints = api.injectEndpoints({
         logout: builder.mutation<ApiResponse<void>, void>({
             query: () => ({
                 url: '/api/logout',
-                method: 'POST',
+                method: 'GET',
             }),
             invalidatesTags: ['Auth', 'User'],
             async onQueryStarted(_, { dispatch, queryFulfilled }) {

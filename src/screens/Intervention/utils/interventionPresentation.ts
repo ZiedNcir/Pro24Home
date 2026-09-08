@@ -87,7 +87,7 @@ export const formatDistanceBetweenCoordinates = (
     }
 
     const toRadians = (value: number) => (value * Math.PI) / 180;
-    const [safeFromLatitude, safeFromLongitude, safeToLatitude, safeToLongitude] = coordinates;
+    const [safeFromLatitude, safeFromLongitude, safeToLatitude, safeToLongitude] = coordinates as [number, number, number, number];
     const latitudeDelta = toRadians(safeToLatitude - safeFromLatitude);
     const longitudeDelta = toRadians(safeToLongitude - safeFromLongitude);
     const latitudeA = toRadians(safeFromLatitude);
@@ -101,24 +101,36 @@ export const formatDistanceBetweenCoordinates = (
 };
 
 const labels: Record<InterventionStatus, string> = {
+    [InterventionStatus.NEGOTIATION]: 'Négociation',
     [InterventionStatus.PENDING]: 'En attente',
     [InterventionStatus.ACCEPTED]: 'Acceptée',
     [InterventionStatus.IN_PROGRESS]: 'En cours',
     [InterventionStatus.COMPLETED]: 'Terminée',
     [InterventionStatus.REJECTED]: 'Refusée',
+    [InterventionStatus.CANCELLED]: 'Annulée',
     [InterventionStatus.CANCELED]: 'Annulée',
 };
 
-export const getInterventionStatusLabel = (status: InterventionStatus): string => labels[status] || 'Inconnue';
+const normalizeStatus = (status?: string) => status?.trim().toLowerCase().replace(/[\s-]+/g, '_');
+
+export const getInterventionStatusLabel = (status: InterventionStatus | string): string => {
+    const normalizedStatus = normalizeStatus(status);
+    if (normalizedStatus === 'in_progress') return 'En cours';
+    return labels[status as InterventionStatus] || 'Inconnue';
+};
 
 export const filterInterventions = (interventions: Intervention[], filter: InterventionFilter): Intervention[] => {
-    if (filter === 'completed') return interventions.filter(item => item.status === InterventionStatus.COMPLETED);
-    if (filter === 'active') return interventions.filter(item => item.status !== InterventionStatus.COMPLETED && item.status !== InterventionStatus.CANCELED);
+    const finishedStatuses = ['completed', 'canceled', 'cancelled', 'rejected'];
+    const activeStatuses = ['negotiation', 'pending', 'accepted', 'in_progress'];
+    if (filter === 'completed') return interventions.filter(item => finishedStatuses.includes(normalizeStatus(item.status) || ''));
+    if (filter === 'active') return interventions.filter(item => activeStatuses.includes(normalizeStatus(item.status) || ''));
     return interventions;
 };
 
-export const getInterventionStatusColor = (status: InterventionStatus): string => {
-    if (status === InterventionStatus.COMPLETED) return '#DDF5E5';
-    if (status === InterventionStatus.CANCELED || status === InterventionStatus.REJECTED) return '#FDE6E3';
+export const getInterventionStatusColor = (status: InterventionStatus | string): string => {
+    const normalizedStatus = normalizeStatus(status);
+    if (normalizedStatus === 'completed') return '#DDF5E5';
+    if (['canceled', 'cancelled', 'rejected'].includes(normalizedStatus || '')) return '#FDE6E3';
+    if (normalizedStatus === 'negotiation') return '#FFF0D6';
     return '#DDF5E5';
 };

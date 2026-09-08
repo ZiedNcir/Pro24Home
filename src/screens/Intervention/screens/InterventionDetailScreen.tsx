@@ -1,5 +1,4 @@
 import React from 'react';
-import { ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
@@ -8,7 +7,7 @@ import ScreenContainer from '@components/ScreenContainer';
 import Text from '@components/Text';
 import InterventionHeader from '../components/InterventionHeader';
 import { ClientInterventionDetails, confirmRefusal, ProfessionalInterventionDetails } from '../components/intervention-detail/InterventionDetailSections';
-import { colors } from '@theme/index';
+import InterventionDetailSkeleton from '../components/intervention-detail/InterventionDetailSkeleton';
 import { moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useGetInterventionQuery } from '@store/api/endpoints/intervention';
 import { useAcceptInterventionMutation, useReviseInterventionMutation } from '@store/api/endpoints/pro';
@@ -26,7 +25,7 @@ const InterventionDetailScreen = () => {
     const [acceptIntervention, { isLoading: isAccepting }] = useAcceptInterventionMutation();
     const [reviseIntervention, { isLoading: isRefusing }] = useReviseInterventionMutation();
 
-    if (isLoading) return <ScreenContainer mode="light" centered><ActivityIndicator color={colors.primary} /></ScreenContainer>;
+    if (isLoading) return <InterventionDetailSkeleton />;
     if (isError || !intervention) return <ScreenContainer mode="light" centered><Text variant="regularSmall" color="gray600">Impossible de charger cette intervention.</Text></ScreenContainer>;
 
     const detailIntervention = normalizeInterventionResponse(intervention);

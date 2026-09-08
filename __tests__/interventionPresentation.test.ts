@@ -19,6 +19,26 @@ describe('interventionPresentation', () => {
         expect(filterInterventions(interventions, 'completed')).toHaveLength(1);
     });
 
+    it('supports API status variants for in-progress and completed interventions', () => {
+        const interventions = [
+            { status: 'in_progress' },
+            { status: 'in progress' },
+            { status: 'completed' },
+        ] as any;
+
+        expect(filterInterventions(interventions, 'active')).toHaveLength(2);
+        expect(filterInterventions(interventions, 'completed')).toHaveLength(1);
+        expect(getInterventionStatusLabel('in_progress' as any)).toBe('En cours');
+    });
+
+    it('supports negotiation and both cancelled status spellings', () => {
+        expect(getInterventionStatusLabel('negotiation' as any)).toBe('Négociation');
+        expect(getInterventionStatusLabel('cancelled' as any)).toBe('Annulée');
+        expect(getInterventionStatusLabel('canceled' as any)).toBe('Annulée');
+        expect(filterInterventions([{ status: 'negotiation' }, { status: 'cancelled' }, { status: 'rejected' }, { status: 'completed' }] as any, 'active')).toHaveLength(1);
+        expect(filterInterventions([{ status: 'negotiation' }, { status: 'cancelled' }, { status: 'rejected' }, { status: 'completed' }] as any, 'completed')).toHaveLength(3);
+    });
+
     it('uses received-intervention copy for professionals', () => {
         expect(getInterventionListCopy(true)).toEqual({
             title: 'Demandes d’intervention',

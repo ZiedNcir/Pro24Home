@@ -20,8 +20,19 @@ export interface ServiceStepProps extends StepNavigationProps {
 export interface DetailsStepProps extends StepNavigationProps {
     selectedTiming: string;
     selectedDate: Date | null;
+    description: string;
+    photos: InterventionPhoto[];
     onSelectTiming: (timing: string) => void;
     onSelectDate: (date: Date) => void;
+    onChangeDescription: (description: string) => void;
+    onAddPhoto: (source: 'camera' | 'gallery') => void;
+    onRemovePhoto: (index: number) => void;
+}
+
+export interface InterventionPhoto {
+    uri: string;
+    type: string;
+    name: string;
 }
 
 export interface ScheduleDateModalProps {
@@ -38,6 +49,7 @@ export interface FullscreenMapModalProps {
     isLookingUpAddress: boolean;
     onClose: () => void;
     onSelectCoordinate: (latitude: number, longitude: number) => void;
+    onSearchAddress?: () => void;
 }
 
 export interface AddressModalProps {
@@ -53,6 +65,7 @@ export interface AddressModalProps {
     onChangeLocationDetails: (value: string) => void;
     onSelectPlace: (placeId: string) => void;
     onSelectCoordinate: (latitude: number, longitude: number) => void;
+    onOpenMapFullscreen: () => void;
     onSave: () => void;
 }
 
@@ -74,6 +87,8 @@ export interface AddressStepProps extends StepNavigationProps {
 
 export interface SummaryStepProps extends StepNavigationProps {
     serviceName: string;
+    description: string;
+    photos: InterventionPhoto[];
     address: string;
     timing: string;
     scheduledDate?: Date | null;

@@ -33,6 +33,8 @@ import {
     faBuilding,
     faCamera,
     faCheck,
+    faPlus,
+    faMinus,
     faChevronRight,
     faEnvelopeOpenText,
     faIdCard,
@@ -124,6 +126,8 @@ export type IconName =
     | 'fa-building'
     | 'fa-camera'
     | 'fa-check'
+    | 'fa-plus'
+    | 'fa-minus'
     | 'fa-chevron-right'
     | 'fa-envelope-open-text'
     | 'fa-id-card'
@@ -217,6 +221,8 @@ const faIconMap: Record<string, IconDefinition> = {
     'fa-building': faBuilding,
     'fa-camera': faCamera,
     'fa-check': faCheck,
+    'fa-plus': faPlus,
+    'fa-minus': faMinus,
     'fa-chevron-right': faChevronRight,
     'fa-envelope-open-text': faEnvelopeOpenText,
     'fa-id-card': faIdCard,

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, PermissionsAndroid, Platform } from 'react-native';
-import MapView, { Marker, type Region } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE, type Region } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 import styled from 'styled-components/native';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
@@ -156,7 +156,7 @@ const geolocationCleanup = (watchId: number) => {
 export default ProfessionalInterventionTrackingScreen;
 
 const MapWrapper = styled.View`flex: 1;`;
-const TrackingMap = styled(MapView)`flex: 1;`;
+const TrackingMap = styled(MapView).attrs({ provider: Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined })`flex: 1;`;
 const TopBar = styled.View`position: absolute; top: ${verticalScale(18)}px; left: ${horizontalScale(18)}px; right: ${horizontalScale(18)}px; flex-direction: row; align-items: center; justify-content: space-between;`;
 const BackButton = styled.TouchableOpacity`width: ${horizontalScale(42)}px; height: ${horizontalScale(42)}px; border-radius: ${horizontalScale(21)}px; background-color: ${colors.white}; align-items: center; justify-content: center; elevation: 4;`;
 const TopTitle = styled(Text).attrs({ variant: 'bold', color: 'black', fontSize: 15 })`background-color: ${colors.white}; padding: ${verticalScale(10)}px ${horizontalScale(16)}px; border-radius: ${moderateScale(18)}px;`;

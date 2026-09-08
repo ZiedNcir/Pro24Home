@@ -1,5 +1,6 @@
 import React from 'react';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import styled from 'styled-components/native';
 
 import Text from '@components/Text';
@@ -31,6 +32,9 @@ const formatDate = (date?: string) => date ? new Date(date).toLocaleString('fr-F
 
 export const ClientInterventionDetails = ({ intervention }: DetailProps) => {
     const address = getInterventionAddress(intervention);
+    const latitude = Number(address?.latitude);
+    const longitude = Number(address?.longitude);
+    const hasCoordinates = Number.isFinite(latitude) && Number.isFinite(longitude);
 
     return <>
         <Section>
@@ -41,6 +45,21 @@ export const ClientInterventionDetails = ({ intervention }: DetailProps) => {
             <InfoRow><SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{address?.address || 'Adresse non renseignée'}</Text></InfoRow>
             <InfoRow><SvgIcon name="fa-user-clock" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDate(intervention.scheduled_date || intervention.requested_date)}</Text></InfoRow>
         </Section>
+        {hasCoordinates ? <Section>
+            <SectionLabel>Lieu de l’intervention</SectionLabel>
+            <ClientMap
+                initialRegion={{ latitude, longitude, latitudeDelta: 0.012, longitudeDelta: 0.012 }}
+                provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
+                scrollEnabled={false}
+                zoomEnabled={false}
+                rotateEnabled={false}
+                pitchEnabled={false}
+                showsCompass={false}
+                accessibilityLabel="Carte du lieu de l’intervention"
+            >
+                <Marker coordinate={{ latitude, longitude }} pinColor={colors.primary} />
+            </ClientMap>
+        </Section> : null}
         {intervention.professional ? <Section><SectionLabel>Professionnel assigné</SectionLabel><Text variant="regularSmall" color="gray600">{intervention.professional.first_name} {intervention.professional.last_name}</Text></Section> : null}
     </>;
 };
@@ -69,7 +88,7 @@ export const ProfessionalInterventionDetails = ({ intervention, professionalLati
                     const uri = imageUrl && (imageUrl.startsWith('http://') || imageUrl.startsWith('https://') ? imageUrl : `${API_BASE_URL}/${imageUrl.replace(/^\//, '')}`);
 
                     return <ImageTile key={index}>
-                        {uri ? <TileImage uri={uri} borderRadius={moderateScale(10)} showLoader={false} renderError={() => <ImageFallback><SvgIcon name="fa-image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Photo indisponible</Text></ImageFallback>} /> : <ImageFallback><SvgIcon name="fa-image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Aucune photo</Text></ImageFallback>}
+                        {uri ? <TileImage uri={uri} borderRadius={moderateScale(10)} showLoader={false} renderError={() => <ImageFallback><SvgIcon name="image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Photo indisponible</Text></ImageFallback>} /> : <ImageFallback><SvgIcon name="image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Aucune photo</Text></ImageFallback>}
                     </ImageTile>;
                 })}
             </ImageGrid>
@@ -99,3 +118,4 @@ const ImageGrid = styled.View`flex-direction: row; gap: ${horizontalScale(8)}px;
 const ImageTile = styled.View`flex: 1; height: ${verticalScale(92)}px; overflow: hidden; border-radius: ${moderateScale(10)}px; background-color: #f5f5f5;`;
 const ImageFallback = styled.View`flex: 1; align-items: center; justify-content: center; gap: ${verticalScale(4)}px; padding: ${horizontalScale(4)}px;`;
 const TileImage = styled(AppImage)`width: 100%; height: 100%;`;
+const ClientMap = styled(MapView)`height: ${verticalScale(190)}px; border-radius: ${moderateScale(12)}px; overflow: hidden;`;

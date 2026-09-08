@@ -117,20 +117,12 @@ export const clientEndpoints = api.injectEndpoints({
                         title: data.title,
                         description: data.description,
                         ...(data.price !== null && data.price !== undefined ? { price: data.price } : {}),
+                        image_1: data.image_1,
+                        image_2: data.image_2,
+                        image_3: data.image_3,
                     },
                     ['image_1', 'image_2', 'image_3']
                 );
-
-                if (data.image_1) {
-                    formData.append('image_1', data.image_1 as any);
-                }
-                if (data.image_2) {
-                    formData.append('image_2', data.image_2 as any);
-                }
-                if (data.image_3) {
-                    formData.append('image_3', data.image_3 as any);
-                }
-                console.log('formData', formData);
                 return {
                     url: '/api/client/interventions',
                     method: 'POST',

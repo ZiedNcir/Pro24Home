@@ -9,26 +9,44 @@ import {
 
 import { AppStackType, BottomTabType } from './constant/core';
 import Text from '@components/Text';
-import { Welcome, VerifyAccountScreen, RegisterScreen, SignIn, ForgetPassword } from '@screens/index';
+import {
+  Welcome,
+  VerifyAccountScreen,
+  RegisterScreen,
+  SignIn,
+  ForgetPassword,
+} from '@screens/index';
 import AccountTypeScreen from '@screens/Auth/AccountTypeScreen';
 import styled from 'styled-components/native';
 import { Platform, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
+import {
+  horizontalScale,
+  moderateScale,
+  verticalScale,
+} from '@utils/normalizedCss';
 import { AccountPendingScreen } from '@screens/Home';
 import { Button } from '@components/index';
 import { useTheme } from '@theme/ThemeProvider';
 import { IconName } from '@components/Icon';
 import ClientHome from '@screens/Home/client/screens/HomeClient';
-import ClientSettingsScreen, { ProfessionalSettingsScreen } from '@screens/Home/client/screens/ClientSettingsScreen';
+import ClientSettingsScreen, {
+  ProfessionalSettingsScreen,
+} from '@screens/Home/client/screens/ClientSettingsScreen';
 import ContactSupportScreen from '@screens/Home/client/screens/ContactSupportScreen';
 import ProfileScreen from '@screens/Home/client/screens/ProfileScreen';
 import HomeProfessional from '@screens/Home/client/screens/HomeProfessional';
 import ProfessionalHomeDashboard from '@screens/Home/client/screens/ProfessionalHomeDashboard';
 import { NotificationsScreen } from '@screens/Notification';
 import {
-  AddAddressScreen, InterventionSuccessScreen, NewInterventionScreen, PaymentTravelFeeScreen, PriceEstimationScreen, InterventionListScreen, InterventionDetailScreen
-
+  AddAddressScreen,
+  SavedAddressesScreen,
+  InterventionSuccessScreen,
+  NewInterventionScreen,
+  PaymentTravelFeeScreen,
+  PriceEstimationScreen,
+  InterventionListScreen,
+  InterventionDetailScreen,
 } from '@screens/Intervention/index';
 import { PROFESSIONAL_BOTTOM_TABS } from './professionalNavigation';
 import ProfessionalInterventionTrackingScreen from '@screens/Intervention/screens/ProfessionalInterventionTrackingScreen';
@@ -36,13 +54,11 @@ import ProfessionalInterventionTrackingScreen from '@screens/Intervention/screen
 const { Navigator: BottomTabNavigator, Screen: BottomTabScreen } =
   createBottomTabNavigator<BottomTabType>();
 
-
-
-const BottomTabsWrapper = styled(View) <{ insets: EdgeInsets }>`
-position: absolute;
-bottom: ${({ insets }) => Platform.OS === 'ios' ? 0 : insets.bottom}px;
-left: 0;
-right: 0;
+const BottomTabsWrapper = styled(View)<{ insets: EdgeInsets }>`
+  position: absolute;
+  bottom: ${({ insets }) => (Platform.OS === 'ios' ? 0 : insets.bottom)}px;
+  left: 0;
+  right: 0;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
@@ -57,7 +73,6 @@ right: 0;
   elevation: 12;
   height: ${verticalScale(60)}px;
   margin: ${horizontalScale(19)}px;
-
 `;
 
 const TabItem = styled.TouchableOpacity`
@@ -72,9 +87,7 @@ const ActiveIndicator = styled.View<{ isSelected: boolean }>`
   border-radius: ${moderateScale(4)}px;
   background-color: ${({ theme, isSelected }) =>
     isSelected ? theme.colors.primary : 'transparent'};
-
 `;
-
 
 const BottomTabBar: FunctionComponent<BottomTabBarProps> = ({
   navigation,
@@ -92,11 +105,13 @@ const BottomTabBar: FunctionComponent<BottomTabBarProps> = ({
     route: keyof BottomTabType;
     icon: IconName;
     title: string;
-  }[] = isProfessional ? PROFESSIONAL_BOTTOM_TABS : [
-      { route: 'Home', icon: 'fa-home', title: 'Home' },
-      { route: 'ListIntervention', icon: 'fa-list', title: 'Intervention' },
-      { route: 'SettingPage', icon: 'fa-cog', title: 'Params' },
-    ];
+  }[] = isProfessional
+    ? PROFESSIONAL_BOTTOM_TABS
+    : [
+        { route: 'Home', icon: 'fa-home', title: 'Home' },
+        { route: 'ListIntervention', icon: 'fa-list', title: 'Intervention' },
+        { route: 'SettingPage', icon: 'fa-cog', title: 'Params' },
+      ];
 
   return (
     <BottomTabsWrapper insets={insets}>
@@ -114,21 +129,23 @@ const BottomTabBar: FunctionComponent<BottomTabBarProps> = ({
 
             <Button
               icon={icon}
-              color={isSelected ? theme.colors.primary : theme.colors.textSecondary}
+              color={
+                isSelected ? theme.colors.primary : theme.colors.textSecondary
+              }
               type="icon"
               variant="ghost"
               iconSize={moderateScale(24)}
               onPress={navigate}
-
               style={{ marginBottom: -verticalScale(8) }}
             />
 
             <Text
               variant="regularSmall"
-              color={isSelected ? theme.colors.primary : theme.colors.textSecondary}
+              color={
+                isSelected ? theme.colors.primary : theme.colors.textSecondary
+              }
               fontSize={12}
               lineHeight={16}
-
             >
               {title}
             </Text>
@@ -139,9 +156,6 @@ const BottomTabBar: FunctionComponent<BottomTabBarProps> = ({
   );
 };
 
-
-
-
 const TabNavigator = () => {
   return (
     <BottomTabNavigator
@@ -149,9 +163,13 @@ const TabNavigator = () => {
       tabBar={props => <BottomTabBar {...props} />}
       screenOptions={{
         headerShown: false,
-      }}>
+      }}
+    >
       <BottomTabScreen name="Home" component={ClientHome} />
-      <BottomTabScreen name="ListIntervention" component={InterventionListScreen} />
+      <BottomTabScreen
+        name="ListIntervention"
+        component={InterventionListScreen}
+      />
       <BottomTabScreen name="SettingPage" component={ClientSettingsScreen} />
     </BottomTabNavigator>
   );
@@ -162,10 +180,17 @@ const ProfessionalTabNavigator = () => {
     <BottomTabNavigator
       initialRouteName="Home"
       tabBar={props => <BottomTabBar {...props} />}
-      screenOptions={{ headerShown: false }}>
+      screenOptions={{ headerShown: false }}
+    >
       <BottomTabScreen name="Home" component={ProfessionalHomeDashboard} />
-      <BottomTabScreen name="ListIntervention" component={InterventionListScreen} />
-      <BottomTabScreen name="SettingPage" component={ProfessionalSettingsScreen} />
+      <BottomTabScreen
+        name="ListIntervention"
+        component={InterventionListScreen}
+      />
+      <BottomTabScreen
+        name="SettingPage"
+        component={ProfessionalSettingsScreen}
+      />
     </BottomTabNavigator>
   );
 };
@@ -173,12 +198,11 @@ const ProfessionalTabNavigator = () => {
 // Create navigators
 const Stack = createNativeStackNavigator<AppStackType>();
 
-
-
-
 // Main App Navigator Component
 const AppNavigator: React.FC = () => {
-  const [initialRoute, setInitialRoute] = useState<'Welcome' | 'SignIn' | null>(null);
+  const [initialRoute, setInitialRoute] = useState<'Welcome' | 'SignIn' | null>(
+    null,
+  );
 
   useEffect(() => {
     AsyncStorage.getItem('account_created').then(value => {
@@ -195,7 +219,6 @@ const AppNavigator: React.FC = () => {
         screenOptions={{
           headerShown: false,
           animation: 'slide_from_right',
-
         }}
       >
         {/* Auth Stack */}
@@ -212,27 +235,47 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="VerifyScreen" component={VerifyAccountScreen} />
         <Stack.Screen name="SignIn" component={SignIn} />
         <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
-        <Stack.Screen name="AccountPendingScreen" component={AccountPendingScreen} />
+        <Stack.Screen
+          name="AccountPendingScreen"
+          component={AccountPendingScreen}
+        />
         <Stack.Screen name="ContactSupport" component={ContactSupportScreen} />
         <Stack.Screen name="Documents" component={HomeProfessional} />
 
         <Stack.Screen name="AddAddress" component={AddAddressScreen} />
-
+        <Stack.Screen name="SavedAddresses" component={SavedAddressesScreen} />
 
         {/* Main Tabs */}
         <Stack.Screen name="Tabs" component={TabNavigator} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} />
-        <Stack.Screen name="NewIntervention" component={NewInterventionScreen} />
-        <Stack.Screen name="PriceEstimation" component={PriceEstimationScreen} />
-        <Stack.Screen name="PaymentTravelFee" component={PaymentTravelFeeScreen} />
-        <Stack.Screen name="InterventionSuccess" component={InterventionSuccessScreen} />
-        <Stack.Screen name="InterventionDetail" component={InterventionDetailScreen} />
-        <Stack.Screen name="ProfessionalInterventionTracking" component={ProfessionalInterventionTrackingScreen} />
-        <Stack.Screen name="ProfessionnelHome" component={ProfessionalTabNavigator} />
-
-
-
-
+        <Stack.Screen
+          name="NewIntervention"
+          component={NewInterventionScreen}
+        />
+        <Stack.Screen
+          name="PriceEstimation"
+          component={PriceEstimationScreen}
+        />
+        <Stack.Screen
+          name="PaymentTravelFee"
+          component={PaymentTravelFeeScreen}
+        />
+        <Stack.Screen
+          name="InterventionSuccess"
+          component={InterventionSuccessScreen}
+        />
+        <Stack.Screen
+          name="InterventionDetail"
+          component={InterventionDetailScreen}
+        />
+        <Stack.Screen
+          name="ProfessionalInterventionTracking"
+          component={ProfessionalInterventionTrackingScreen}
+        />
+        <Stack.Screen
+          name="ProfessionnelHome"
+          component={ProfessionalTabNavigator}
+        />
 
         {/* Profile Screens
 
@@ -262,8 +305,7 @@ const AppNavigator: React.FC = () => {
                 {/* Professional Screens 
                 <Stack.Screen name="ProfitionalPosition" component={ProfitionalPosition} />
                 <Stack.Screen name="ProfessionnelHome" component={ProfessionenlhomePage} />
-                */
-        }
+                */}
       </Stack.Navigator>
     </NavigationContainer>
   );
