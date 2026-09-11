@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { ActivityIndicator, Alert, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/native';
@@ -11,11 +12,12 @@ import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import type { IconName } from '@components/Icon';
 import { useGetInterventionsQuery } from '@store/api/endpoints/intervention';
 import { useGetUnreadNotificationCountQuery } from '@store/api/endpoints/notification';
-import { useToggleOnlineStatusMutation } from '@store/api/endpoints/pro';
+import { useUpdateStatusMutation } from '@store/api/endpoints/pro';
 import { selectUser } from '@store/slices/authSlice';
 import type { Intervention } from '@store/api/api.types';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
+import { buildProfessionalStatusPayload, type Coordinates } from '../utils/professionalStatus';
 
 const formatDate = (value?: string) => {
     if (!value) return 'Date à confirmer';
@@ -32,21 +34,25 @@ const serviceIcon = (item: Intervention): IconName => {
 const ProfessionalHomeDashboard = () => {
     const navigation = useNavigation<any>();
     const user = useSelector(selectUser);
-    const [toggleOnlineStatus] = useToggleOnlineStatusMutation();
+    const [updateStatus] = useUpdateStatusMutation();
     const { data, isLoading, refetch } = useGetInterventionsQuery({ type: 'professional' });
     const { data: unreadData } = useGetUnreadNotificationCountQuery();
     const [localOnline, setLocalOnline] = useState<boolean | null>(null);
+    const [currentPosition, setCurrentPosition] = useState<Coordinates | null>(null);
     const isOnline = localOnline ?? user?.professional?.online_status ?? false;
     const interventions = useMemo(() => data?.data ?? [], [data?.data]);
     const name = user?.professional?.first_name || user?.name?.split(' ')[0] || 'Professionnel';
 
     const toggleStatus = async () => {
         const next = !isOnline;
-        setLocalOnline(next);
         try {
-            await toggleOnlineStatus({ online: next }).unwrap();
+            if (!currentPosition) {
+                Alert.alert('Position indisponible', 'Attendez que votre position soit détectée, puis réessayez.');
+                return;
+            }
+            await updateStatus(buildProfessionalStatusPayload(next, currentPosition)).unwrap();
+            setLocalOnline(next);
         } catch {
-            setLocalOnline(isOnline);
             Alert.alert('Statut indisponible', 'Votre statut n’a pas pu être mis à jour.');
         }
     };
@@ -88,6 +94,17 @@ const ProfessionalHomeDashboard = () => {
 
             {user?.documents?.some(document => document.status !== 'approved') !== false && <ProfilePrompt onPress={() => navigation.navigate('Documents')} accessibilityRole="button"><SvgIcon name="fa-shield-alt" size={25} color={colors.primary} /><View style={styles.promptCopy}><Text variant="bold" color={colors.gray900}>Complétez votre profil</Text><Text variant="regularSmall" color={colors.gray700}>Finalisez vos documents pour recevoir plus de demandes.</Text></View><SvgIcon name="fa-chevron-right" size={16} color={colors.primary} /></ProfilePrompt>}
             <Pressable onPress={refetch} accessibilityRole="button"><Text variant="regularSmall" color={colors.primary} style={styles.refresh}>Actualiser les demandes</Text></Pressable>
+            <LocationMap
+                initialRegion={{ latitude: 36.8065, longitude: 10.1815, latitudeDelta: 0.1, longitudeDelta: 0.1 }}
+                provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
+                showsUserLocation
+                onUserLocationChange={event => {
+                    const coordinate = event.nativeEvent.coordinate;
+                    if (coordinate && Number.isFinite(coordinate.latitude) && Number.isFinite(coordinate.longitude)) {
+                        setCurrentPosition({ latitude: coordinate.latitude, longitude: coordinate.longitude });
+                    }
+                }}
+            />
         </ScreenContainer>
     );
 };
@@ -99,8 +116,9 @@ const NotificationDot = styled.View`position: absolute; right: 0; top: 0; min-wi
 const Avatar = styled.View`width: ${moderateScale(38)}px; height: ${moderateScale(38)}px; border-radius: ${moderateScale(20)}px; background-color: #fff0e7; align-items: center; justify-content: center;`;
 const StatusCard = styled.View<{ online: boolean }>`border-width: 1px; border-color: ${({ online }) => online ? '#b7e6c0' : colors.gray200}; background-color: ${({ online }) => online ? '#f3fff5' : colors.gray50}; border-radius: ${moderateScale(17)}px; padding: ${moderateScale(15)}px; flex-direction: row; align-items: center; margin-bottom: ${verticalScale(24)}px;`;
 const StatusIcon = styled.View<{ online: boolean }>`width: ${moderateScale(44)}px; height: ${moderateScale(44)}px; border-radius: ${moderateScale(23)}px; background-color: ${({ online }) => online ? colors.success : colors.gray500}; align-items: center; justify-content: center; margin-right: ${horizontalScale(12)}px;`;
-const StatusSwitch = styled(Pressable)<{ online: boolean }>`width: ${moderateScale(48)}px; height: ${moderateScale(28)}px; border-radius: ${moderateScale(16)}px; background-color: ${({ online }) => online ? colors.success : colors.gray300}; padding: ${moderateScale(3)}px; justify-content: center;`;
+const StatusSwitch = styled(Pressable) <{ online: boolean }>`width: ${moderateScale(48)}px; height: ${moderateScale(28)}px; border-radius: ${moderateScale(16)}px; background-color: ${({ online }) => online ? colors.success : colors.gray300}; padding: ${moderateScale(3)}px; justify-content: center;`;
 const SwitchThumb = styled.View<{ online: boolean }>`width: ${moderateScale(22)}px; height: ${moderateScale(22)}px; border-radius: ${moderateScale(12)}px; background-color: ${colors.white}; align-self: ${({ online }) => online ? 'flex-end' : 'flex-start'};`;
+const LocationMap = styled(MapView)`position: absolute; width: 2px; height: 2px; opacity: 0.01;`;
 const SectionHeading = styled.View`flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: ${verticalScale(10)}px;`;
 const CountBadge = styled.View`min-width: ${moderateScale(28)}px; height: ${moderateScale(28)}px; border-radius: ${moderateScale(16)}px; background-color: #fff0e7; align-items: center; justify-content: center;`;
 const RequestCard = styled(Pressable)`border-width: 1px; border-color: ${colors.gray200}; border-radius: ${moderateScale(16)}px; padding: ${moderateScale(14)}px; margin-bottom: ${verticalScale(10)}px;`;
@@ -109,7 +127,7 @@ const ServiceIcon = styled.View`width: ${moderateScale(46)}px; height: ${moderat
 const RequestDetails = styled.View`border-top-width: 1px; border-top-color: ${colors.gray200}; margin-top: ${verticalScale(12)}px; padding-top: ${verticalScale(10)}px; gap: ${verticalScale(7)}px;`;
 const StatsCard = styled.View`border-width: 1px; border-color: ${colors.gray200}; border-radius: ${moderateScale(16)}px; padding: ${moderateScale(15)}px 0; flex-direction: row; align-items: center; margin-bottom: ${verticalScale(18)}px;`;
 const Stat = styled.View`flex: 1; align-items: center;`;
-const StatNumber = styled(Text)<{ color: string }>`font-size: ${moderateScale(22)}px; line-height: ${moderateScale(29)}px; color: ${({ color }) => color}; margin-bottom: ${verticalScale(2)}px;`;
+const StatNumber = styled(Text) <{ color: string }>`font-size: ${moderateScale(22)}px; line-height: ${moderateScale(29)}px; color: ${({ color }) => color}; margin-bottom: ${verticalScale(2)}px;`;
 const Divider = styled.View`height: ${verticalScale(38)}px; width: 1px; background-color: ${colors.gray200};`;
 const ProfilePrompt = styled(Pressable)`background-color: #fff6f0; border-radius: ${moderateScale(16)}px; padding: ${moderateScale(14)}px; flex-direction: row; align-items: center; gap: ${horizontalScale(10)}px;`;
 const EmptyCard = styled.View`border-width: 1px; border-color: ${colors.gray200}; border-radius: ${moderateScale(16)}px; padding: ${moderateScale(24)}px; align-items: center; gap: ${verticalScale(10)}px; margin-bottom: ${verticalScale(18)}px;`;

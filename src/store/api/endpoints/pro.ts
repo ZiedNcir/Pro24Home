@@ -44,7 +44,7 @@ export const professionalEndpoints = api.injectEndpoints({
                 responseHandler: (response) => response.blob(),
                 cache: 'no-cache',
             }),
-            providesTags: (result, error, name) => [{ type: 'Documents', id: name }],
+            providesTags: (_result, _error, name) => [{ type: 'Documents', id: name }],
         }),
 
         // Update Vehicles
@@ -101,45 +101,20 @@ export const professionalEndpoints = api.injectEndpoints({
 
         // Update Status (Online/Offline)
         updateStatus: builder.mutation<{ message: string }, {
-            online: 0 | 1;
+            onligne: 0 | 1;
             latitude: number;
             longitude: number;
         }>({
             query: (data) => ({
                 url: '/api/professional/update-status',
                 method: 'POST',
-                body: prepareFormData({
-                    onligne: data.online,
-                    latitude: data.latitude,
-                    longitude: data.longitude,
-                }),
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             }),
             invalidatesTags: ['User'],
         }),
-
-        // Toggle Online Status with State Update
-        toggleOnlineStatus: builder.mutation<ApiResponse<Professional>, { online: boolean }>({
-            query: (statusData) => ({
-                url: '/professional/toggle-online',
-                method: 'POST',
-                body: statusData,
-            }),
-            invalidatesTags: ['User'],
-            async onQueryStarted(_, { dispatch, queryFulfilled }) {
-                try {
-                    const { data } = await queryFulfilled;
-                    if (data.data) {
-                        dispatch({
-                            type: 'auth/updateUserProfile',
-                            payload: { online_status: (data.data as Professional).online_status },
-                        });
-                    }
-                } catch (error) {
-                    console.error('Failed to toggle online status:', error);
-                }
-            },
-        }),
-
 
         // Accept Intervention
         acceptIntervention: builder.mutation<{ message: string }, number>({
@@ -196,6 +171,5 @@ export const {
     useAcceptInterventionMutation,
     useReviseInterventionMutation,
     useAddDevisMutation,
-    useToggleOnlineStatusMutation,
     useUpdateInterventionStatusMutation,
 } = professionalEndpoints;

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, PermissionsAndroid, Platform } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE, type Region } from 'react-native-maps';
+import Geolocation from '@react-native-community/geolocation';
 import MapViewDirections from 'react-native-maps-directions';
 import styled from 'styled-components/native';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
@@ -17,10 +18,6 @@ import { AppStackType } from '../../../navigation/constant/core';
 import { getInterventionAddress, getInterventionClientName } from '../utils/interventionPresentation';
 
 type Coordinates = { latitude: number; longitude: number };
-type GeolocationLike = {
-    watchPosition: (success: (position: { coords: Coordinates }) => void, error?: (error: unknown) => void, options?: Record<string, unknown>) => number;
-    clearWatch: (watchId: number) => void;
-};
 
 const DEFAULT_REGION: Region = { latitude: 36.8065, longitude: 10.1815, latitudeDelta: 0.12, longitudeDelta: 0.12 };
 
@@ -64,13 +61,7 @@ const ProfessionalInterventionTrackingScreen = () => {
                 }
             }
 
-            const geolocation = (globalThis as { navigator?: { geolocation?: GeolocationLike } }).navigator?.geolocation;
-            if (!geolocation) {
-                if (mounted) setLocationError(true);
-                return;
-            }
-
-            watchId = geolocation.watchPosition(position => {
+            watchId = Geolocation.watchPosition(position => {
                 if (!mounted) return;
                 const positionCoordinates = { latitude: Number(position.coords.latitude), longitude: Number(position.coords.longitude) };
                 setProfessionalPosition(positionCoordinates);
@@ -78,7 +69,7 @@ const ProfessionalInterventionTrackingScreen = () => {
                 const now = Date.now();
                 if (now - lastStatusUpdate.current >= 5000) {
                     lastStatusUpdate.current = now;
-                    updateStatus({ online: 1, ...positionCoordinates });
+                    updateStatus({ onligne: 1, ...positionCoordinates });
                 }
             }, () => {
                 if (mounted) setLocationError(true);
@@ -149,8 +140,7 @@ const ProfessionalInterventionTrackingScreen = () => {
 };
 
 const geolocationCleanup = (watchId: number) => {
-    const geolocation = (globalThis as { navigator?: { geolocation?: GeolocationLike } }).navigator?.geolocation;
-    geolocation?.clearWatch(watchId);
+    Geolocation.clearWatch(watchId);
 };
 
 export default ProfessionalInterventionTrackingScreen;
