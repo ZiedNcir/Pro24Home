@@ -1,7 +1,14 @@
 import { InterventionStatus } from '../src/store/api/api.types';
-import { filterInterventions, formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName, getInterventionDetailCopy, getInterventionImageUrls, getInterventionListCopy, getProfessionalEmptyStateCopy, getInterventionStatusLabel } from '../src/screens/Intervention/utils/interventionPresentation';
+import { filterInterventions, formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName, getInterventionDetailCopy, getInterventionImageUrls, getInterventionListCopy, getProfessionalEmptyStateCopy, getInterventionStatusLabel, shouldShowTrackingButton } from '../src/screens/Intervention/utils/interventionPresentation';
 
 describe('interventionPresentation', () => {
+    it('shows tracking for accepted and in-progress professional interventions', () => {
+        expect(shouldShowTrackingButton('accepted', true)).toBe(true);
+        expect(shouldShowTrackingButton('in_progress', true)).toBe(true);
+        expect(shouldShowTrackingButton('in progress', true)).toBe(true);
+        expect(shouldShowTrackingButton('pending', true)).toBe(false);
+        expect(shouldShowTrackingButton('accepted', false)).toBe(false);
+    });
     it('maps API statuses to French labels', () => {
         expect(getInterventionStatusLabel(InterventionStatus.IN_PROGRESS)).toBe('En cours');
         expect(getInterventionStatusLabel(InterventionStatus.COMPLETED)).toBe('Terminée');

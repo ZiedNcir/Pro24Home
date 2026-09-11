@@ -5,6 +5,13 @@ type InterventionAddressLike = Partial<NonNullable<Intervention['address']>> & {
     longitude?: number | string;
 };
 
+const normalizeStatus = (status?: string) => status?.trim().toLowerCase().replace(/[\s-]+/g, '_');
+
+export const shouldShowTrackingButton = (status?: string, isProfessional = false) => {
+    const normalizedStatus = normalizeStatus(status);
+    return isProfessional && ['accepted', 'in_progress'].includes(normalizedStatus || '');
+};
+
 type InterventionWithApiAliases = {
     address?: InterventionAddressLike;
     adress?: InterventionAddressLike;
@@ -110,8 +117,6 @@ const labels: Record<InterventionStatus, string> = {
     [InterventionStatus.CANCELLED]: 'Annulée',
     [InterventionStatus.CANCELED]: 'Annulée',
 };
-
-const normalizeStatus = (status?: string) => status?.trim().toLowerCase().replace(/[\s-]+/g, '_');
 
 export const getInterventionStatusLabel = (status: InterventionStatus | string): string => {
     const normalizedStatus = normalizeStatus(status);

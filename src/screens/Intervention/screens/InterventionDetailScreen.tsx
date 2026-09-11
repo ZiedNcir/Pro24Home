@@ -18,7 +18,7 @@ import { getInterventionDetailCopy, getInterventionStatusColor, getInterventionS
 
 const InterventionDetailScreen = () => {
     const route = useRoute<RouteProp<AppStackType, 'InterventionDetail'>>();
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
     const isProfessional = useSelector(selectIsProfessional);
     const user = useSelector(selectUser);
     const { data: intervention, isLoading, isError } = useGetInterventionQuery(route.params.intervention_id);
@@ -34,20 +34,21 @@ const InterventionDetailScreen = () => {
         try {
             await acceptIntervention(detailIntervention.id).unwrap();
             if (isProfessional) {
-                (navigation as any).navigate('ProfessionalInterventionTracking', { intervention_id: detailIntervention.id });
+                (navigation as any).replace('ProfessionalInterventionTracking', { intervention_id: detailIntervention.id });
             }
         } catch {
             // The request error is handled by the API layer.
         }
     };
     const handleRefuse = () => confirmRefusal(() => { reviseIntervention(detailIntervention.id); });
+    const handleOpenTracking = () => navigation.navigate('ProfessionalInterventionTracking', { intervention_id: detailIntervention.id });
 
     return (
         <ScreenContainer mode="light" scrollable paddingHorizontal={18} paddingVertical={12} contentContainerStyle={{ paddingBottom: verticalScale(30) }}>
             <InterventionHeader title={copy.title} showHelp={false} />
             <StatusBadge background={getInterventionStatusColor(detailIntervention.status)}><Text variant="bold" color="success" fontSize={12}>{getInterventionStatusLabel(detailIntervention.status)}</Text></StatusBadge>
             <Title>{detailIntervention.title}</Title>
-            {isProfessional ? <ProfessionalInterventionDetails intervention={detailIntervention} professionalLatitude={user?.professional?.latitude} professionalLongitude={user?.professional?.longitude} isAccepting={isAccepting} isRefusing={isRefusing} onAccept={handleAccept} onRefuse={handleRefuse} /> : <ClientInterventionDetails intervention={detailIntervention} />}
+            {isProfessional ? <ProfessionalInterventionDetails intervention={detailIntervention} professionalLatitude={user?.professional?.latitude} professionalLongitude={user?.professional?.longitude} isAccepting={isAccepting} isRefusing={isRefusing} onAccept={handleAccept} onRefuse={handleRefuse} onOpenTracking={handleOpenTracking} /> : <ClientInterventionDetails intervention={detailIntervention} />}
         </ScreenContainer>
     );
 };

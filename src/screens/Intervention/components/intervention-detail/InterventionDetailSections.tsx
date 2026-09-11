@@ -10,7 +10,7 @@ import type { Intervention } from '@store/api/api.types';
 import { API_BASE_URL } from '../../../../config/api';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
-import { formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName, getInterventionImageUrls } from '../../utils/interventionPresentation';
+import { formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName, getInterventionImageUrls, shouldShowTrackingButton } from '../../utils/interventionPresentation';
 
 type InterventionDetailData = Omit<Intervention, 'address' | 'price'> & {
     address?: Intervention['address'];
@@ -26,6 +26,7 @@ interface DetailProps {
     isRefusing?: boolean;
     onAccept?: () => Promise<void>;
     onRefuse?: () => void;
+    onOpenTracking?: () => void;
 }
 
 const formatDate = (date?: string) => date ? new Date(date).toLocaleString('fr-FR') : 'Date à confirmer';
@@ -64,7 +65,7 @@ export const ClientInterventionDetails = ({ intervention }: DetailProps) => {
     </>;
 };
 
-export const ProfessionalInterventionDetails = ({ intervention, professionalLatitude, professionalLongitude, isAccepting = false, isRefusing = false, onAccept, onRefuse }: DetailProps) => {
+export const ProfessionalInterventionDetails = ({ intervention, professionalLatitude, professionalLongitude, isAccepting = false, isRefusing = false, onAccept, onRefuse, onOpenTracking }: DetailProps) => {
     const address = getInterventionAddress(intervention);
     const clientName = getInterventionClientName(intervention.client);
     const imageUrls = getInterventionImageUrls(intervention);
@@ -100,6 +101,7 @@ export const ProfessionalInterventionDetails = ({ intervention, professionalLati
             {price ? <InfoRow><SvgIcon name="fa-euro-sign" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{price}</Text></InfoRow> : null}
         </Section>
         {intervention.status === 'pending' ? <Actions><ActionButton disabled={isAccepting || isRefusing} onPress={onAccept}><Text variant="bold" color={colors.white}>{isAccepting ? 'Acceptation...' : 'Accepter la demande'}</Text></ActionButton><RefuseButton disabled={isAccepting || isRefusing} onPress={onRefuse}><Text variant="bold" color={colors.danger}>{isRefusing ? 'Refus...' : 'Refuser la demande'}</Text></RefuseButton></Actions> : null}
+        {shouldShowTrackingButton(intervention.status, true) ? <TrackingButton onPress={onOpenTracking} accessibilityRole="button" accessibilityLabel="Ouvrir le trajet"><SvgIcon name="fa-map-marked-alt" size={17} color={colors.white} /><Text variant="bold" color={colors.white}>Ouvrir le trajet</Text></TrackingButton> : null}
     </>;
 };
 
@@ -113,6 +115,7 @@ const SectionLabel = styled(Text).attrs({ variant: 'bold', color: 'black', fontS
 const InfoRow = styled.View`flex-direction: row; align-items: center; gap: ${horizontalScale(10)}px; margin-bottom: ${verticalScale(12)}px;`;
 const Actions = styled.View`margin-top: ${verticalScale(20)}px; gap: ${verticalScale(10)}px;`;
 const ActionButton = styled.TouchableOpacity`height: ${verticalScale(52)}px; border-radius: ${moderateScale(14)}px; background-color: ${colors.primary}; align-items: center; justify-content: center;`;
+const TrackingButton = styled.TouchableOpacity`height: ${verticalScale(52)}px; margin-top: ${verticalScale(12)}px; border-radius: ${moderateScale(14)}px; background-color: ${colors.primary}; flex-direction: row; gap: ${horizontalScale(8)}px; align-items: center; justify-content: center;`;
 const RefuseButton = styled.TouchableOpacity`height: ${verticalScale(52)}px; border-radius: ${moderateScale(14)}px; border-width: 1px; border-color: ${colors.danger}; align-items: center; justify-content: center;`;
 const ImageGrid = styled.View`flex-direction: row; gap: ${horizontalScale(8)}px;`;
 const ImageTile = styled.View`flex: 1; height: ${verticalScale(92)}px; overflow: hidden; border-radius: ${moderateScale(10)}px; background-color: #f5f5f5;`;
