@@ -1,4 +1,4 @@
-import { formatRouteDistance, getRouteFitCoordinates } from '../src/screens/Intervention/utils/routePresentation';
+import { formatRouteDistance, getNavigationBannerCopy, getRouteFitCoordinates, getTrackingPanelMode } from '../src/screens/Intervention/utils/routePresentation';
 
 describe('formatRouteDistance', () => {
     it('formats short and long routes for the tracking card', () => {
@@ -14,5 +14,19 @@ describe('getRouteFitCoordinates', () => {
 
         expect(getRouteFitCoordinates(professional, client)).toEqual([professional, client]);
         expect(getRouteFitCoordinates(null, client)).toBeNull();
+    });
+});
+
+describe('getNavigationBannerCopy', () => {
+    it('communicates when in-app navigation is active', () => {
+        expect(getNavigationBannerCopy(false)).toEqual({ title: 'Prêt à partir ?', subtitle: 'Itinéraire vers le client' });
+        expect(getNavigationBannerCopy(true)).toEqual({ title: 'Navigation active', subtitle: 'Suivez l’itinéraire dans Pro24Home' });
+    });
+});
+
+describe('getTrackingPanelMode', () => {
+    it('uses a compact panel after the trip starts', () => {
+        expect(getTrackingPanelMode(false)).toBe('expanded');
+        expect(getTrackingPanelMode(true)).toBe('compact');
     });
 });

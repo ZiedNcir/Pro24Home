@@ -8,3 +8,9 @@ export const getRouteFitCoordinates = <T extends { latitude: number; longitude: 
     professional: T | null | undefined,
     client: T | null | undefined,
 ) => professional && client ? [professional, client] : null;
+
+export const getNavigationBannerCopy = (isTripStarted: boolean) => isTripStarted
+    ? { title: 'Navigation active', subtitle: 'Suivez l’itinéraire dans Pro24Home' }
+    : { title: 'Prêt à partir ?', subtitle: 'Itinéraire vers le client' };
+
+export const getTrackingPanelMode = (isTripStarted: boolean): 'expanded' | 'compact' => isTripStarted ? 'compact' : 'expanded';
