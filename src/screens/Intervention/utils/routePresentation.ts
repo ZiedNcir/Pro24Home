@@ -14,3 +14,9 @@ export const getNavigationBannerCopy = (isTripStarted: boolean) => isTripStarted
     : { title: 'Prêt à partir ?', subtitle: 'Itinéraire vers le client' };
 
 export const getTrackingPanelMode = (isTripStarted: boolean): 'expanded' | 'compact' => isTripStarted ? 'compact' : 'expanded';
+
+export const getProfessionalStatusActions = () => [
+    { status: 'in progress' as const, label: 'Intervention en cours' },
+    { status: 'rejected' as const, label: 'Refuser l’intervention' },
+    { status: 'completed' as const, label: 'Terminer l’intervention' },
+];

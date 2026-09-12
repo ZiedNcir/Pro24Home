@@ -1,5 +1,5 @@
 import { InterventionStatus } from '../src/store/api/api.types';
-import { filterInterventions, formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName, getInterventionDetailCopy, getInterventionImageUrls, getInterventionListCopy, getProfessionalEmptyStateCopy, getInterventionStatusLabel, shouldShowTrackingButton } from '../src/screens/Intervention/utils/interventionPresentation';
+import { filterInterventions, formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName, getInterventionDetailCopy, getInterventionImageUrls, getInterventionListCopy, getProfessionalEmptyStateCopy, getInterventionStatusLabel, shouldShowRatingPrompt, shouldShowTrackingButton } from '../src/screens/Intervention/utils/interventionPresentation';
 
 describe('interventionPresentation', () => {
     it('shows tracking for accepted and in-progress professional interventions', () => {
@@ -8,6 +8,14 @@ describe('interventionPresentation', () => {
         expect(shouldShowTrackingButton('in progress', true)).toBe(true);
         expect(shouldShowTrackingButton('pending', true)).toBe(false);
         expect(shouldShowTrackingButton('accepted', false)).toBe(false);
+    });
+
+    it('shows the rating prompt only for an unrated completed client intervention', () => {
+        expect(shouldShowRatingPrompt('completed', undefined, false)).toBe(true);
+        expect(shouldShowRatingPrompt('completed', null, false)).toBe(true);
+        expect(shouldShowRatingPrompt('completed', { rating: 5 }, false)).toBe(false);
+        expect(shouldShowRatingPrompt('completed', undefined, true)).toBe(false);
+        expect(shouldShowRatingPrompt('accepted', undefined, false)).toBe(false);
     });
     it('maps API statuses to French labels', () => {
         expect(getInterventionStatusLabel(InterventionStatus.IN_PROGRESS)).toBe('En cours');

@@ -12,6 +12,10 @@ export const shouldShowTrackingButton = (status?: string, isProfessional = false
     return isProfessional && ['accepted', 'in_progress'].includes(normalizedStatus || '');
 };
 
+export const shouldShowRatingPrompt = (status?: string, rating?: { rating?: number } | null, isProfessional = false) => (
+    !isProfessional && normalizeStatus(status) === 'completed' && !rating
+);
+
 type InterventionWithApiAliases = {
     address?: InterventionAddressLike;
     adress?: InterventionAddressLike;

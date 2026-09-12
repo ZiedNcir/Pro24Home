@@ -1,4 +1,4 @@
-import { formatRouteDistance, getNavigationBannerCopy, getRouteFitCoordinates, getTrackingPanelMode } from '../src/screens/Intervention/utils/routePresentation';
+import { formatRouteDistance, getNavigationBannerCopy, getProfessionalStatusActions, getRouteFitCoordinates, getTrackingPanelMode } from '../src/screens/Intervention/utils/routePresentation';
 
 describe('formatRouteDistance', () => {
     it('formats short and long routes for the tracking card', () => {
@@ -28,5 +28,15 @@ describe('getTrackingPanelMode', () => {
     it('uses a compact panel after the trip starts', () => {
         expect(getTrackingPanelMode(false)).toBe('expanded');
         expect(getTrackingPanelMode(true)).toBe('compact');
+    });
+});
+
+describe('getProfessionalStatusActions', () => {
+    it('exposes the statuses available after arrival', () => {
+        expect(getProfessionalStatusActions()).toEqual([
+            { status: 'in progress', label: 'Intervention en cours' },
+            { status: 'rejected', label: 'Refuser l’intervention' },
+            { status: 'completed', label: 'Terminer l’intervention' },
+        ]);
     });
 });

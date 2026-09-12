@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, PermissionsAndroid, Platform } from 'react-native';
+import { ActivityIndicator, Alert, Modal, PermissionsAndroid, Platform, Pressable } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE, type Region } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import MapViewDirections from 'react-native-maps-directions';
@@ -16,7 +16,7 @@ import { useGetInterventionQuery } from '@store/api/endpoints/intervention';
 import { useUpdateStatusMutation, useUpdateInterventionStatusMutation } from '@store/api/endpoints/pro';
 import { AppStackType } from '../../../navigation/constant/core';
 import { getInterventionAddress, getInterventionClientName } from '../utils/interventionPresentation';
-import { formatRouteDistance, getNavigationBannerCopy, getRouteFitCoordinates, getTrackingPanelMode } from '../utils/routePresentation';
+import { formatRouteDistance, getNavigationBannerCopy, getProfessionalStatusActions, getRouteFitCoordinates, getTrackingPanelMode } from '../utils/routePresentation';
 
 type Coordinates = { latitude: number; longitude: number };
 
@@ -36,6 +36,7 @@ const ProfessionalInterventionTrackingScreen = () => {
     const [routeError, setRouteError] = useState(false);
     const [isFollowingRoute, setIsFollowingRoute] = useState(true);
     const [mapType, setMapType] = useState<'standard' | 'satellite' | 'hybrid' | 'terrain'>('standard');
+    const [isArrivalActionsVisible, setIsArrivalActionsVisible] = useState(false);
     const { data: intervention, isLoading, isError } = useGetInterventionQuery(route.params.intervention_id);
     const [updateStatus] = useUpdateStatusMutation();
     const [updateInterventionStatus, { isLoading: isUpdatingStatus }] = useUpdateInterventionStatusMutation();
@@ -122,6 +123,16 @@ const ProfessionalInterventionTrackingScreen = () => {
         }
     };
 
+    const handleStatusSelection = async (status: 'in progress' | 'rejected' | 'completed') => {
+        try {
+            await updateInterventionStatus({ interventionId: intervention.id, status }).unwrap();
+            setIsArrivalActionsVisible(false);
+            if (status === 'rejected' || status === 'completed') navigation.goBack();
+        } catch {
+            Alert.alert('Mise à jour impossible', 'Le statut de l’intervention n’a pas pu être mis à jour.');
+        }
+    };
+
     const handleUserLocationChange = (event: { nativeEvent: { coordinate?: Coordinates } }) => {
         const coordinate = event.nativeEvent.coordinate;
         if (!coordinate || !Number.isFinite(coordinate.latitude) || !Number.isFinite(coordinate.longitude)) return;
@@ -186,7 +197,7 @@ const ProfessionalInterventionTrackingScreen = () => {
                         <StatsDivider />
                         <CompactStat><SvgIcon name="fa-clock" size={15} color={colors.primary} /><CompactStatCopy><CompactValue>{eta !== null ? `${eta} min` : '—'}</CompactValue><CompactLabel>ETA</CompactLabel></CompactStatCopy></CompactStat>
                     </CompactStats>
-                    <ArrivedButton disabled={isUpdatingStatus} onPress={handleTripAction}><Text variant="bold" color={colors.white}>{isUpdatingStatus ? 'Mise à jour...' : 'Je suis arrivé'}</Text></ArrivedButton>
+                    <ArrivedButton disabled={isUpdatingStatus} onPress={() => setIsArrivalActionsVisible(true)}><Text variant="bold" color={colors.white}>{isUpdatingStatus ? 'Mise à jour...' : 'Je suis arrivé'}</Text></ArrivedButton>
                 </CompactPanel> : <>
                     <CardEyebrow>INTERVENTION CHEZ</CardEyebrow>
                     <Row><Avatar><SvgIcon name="fa-user" size={17} color={colors.primary} /></Avatar><ClientInfo><Text variant="bold" color="black" fontSize={17}>{clientName || 'Client'}</Text>{clientPhone ? <Text variant="regularSmall" color="gray600">{clientPhone}</Text> : null}</ClientInfo></Row>
@@ -202,6 +213,25 @@ const ProfessionalInterventionTrackingScreen = () => {
                     <ArrivedButton disabled={isUpdatingStatus} onPress={handleTripAction}><Text variant="bold" color={colors.white}>{isUpdatingStatus ? 'Mise à jour...' : 'Démarrer le trajet'}</Text></ArrivedButton>
                 </>}
             </InfoCard>
+            <Modal visible={isArrivalActionsVisible} transparent animationType="slide" onRequestClose={() => setIsArrivalActionsVisible(false)}>
+                <StatusModalBackdrop>
+                    <StatusModalCard>
+                        <StatusModalHandle />
+                        <Text variant="bold" color="black" fontSize={18}>Mettre à jour l’intervention</Text>
+                        <StatusModalDescription>Choisissez l’état actuel de l’intervention.</StatusModalDescription>
+                        <StatusActionList>
+                            {getProfessionalStatusActions().map(action => (
+                                <StatusAction key={action.status} disabled={isUpdatingStatus} onPress={() => handleStatusSelection(action.status)}>
+                                    <StatusActionIcon><SvgIcon name={action.status === 'completed' ? 'fa-check-circle' : action.status === 'rejected' ? 'fa-times-circle' : 'fa-wrench'} size={17} color={action.status === 'rejected' ? colors.danger : colors.primary} /></StatusActionIcon>
+                                    <Text variant="bold" color="black" fontSize={14}>{action.label}</Text>
+                                    <SvgIcon name="fa-chevron-right" size={14} color={colors.gray500} />
+                                </StatusAction>
+                            ))}
+                        </StatusActionList>
+                        <CancelAction onPress={() => setIsArrivalActionsVisible(false)}><Text variant="bold" color="gray600">Annuler</Text></CancelAction>
+                    </StatusModalCard>
+                </StatusModalBackdrop>
+            </Modal>
         </MapWrapper>
     </ScreenContainer>;
 };
@@ -244,6 +274,14 @@ const StatsDivider = styled.View`height: ${verticalScale(34)}px; width: 1px; bac
 const ProgressTrack = styled.View`height: ${verticalScale(5)}px; border-radius: ${verticalScale(3)}px; background-color: ${colors.gray200}; margin-top: ${verticalScale(16)}px; overflow: hidden;`;
 const ProgressFill = styled.View`height: 100%; width: 35%; border-radius: ${verticalScale(3)}px; background-color: ${colors.primary};`;
 const ArrivedButton = styled.TouchableOpacity`height: ${verticalScale(48)}px; margin-top: ${verticalScale(14)}px; border-radius: ${moderateScale(12)}px; background-color: ${colors.primary}; align-items: center; justify-content: center;`;
+const StatusModalBackdrop = styled.View`flex: 1; justify-content: flex-end; background-color: ${colors.backdrop};`;
+const StatusModalCard = styled.View`background-color: ${colors.white}; border-top-left-radius: ${moderateScale(24)}px; border-top-right-radius: ${moderateScale(24)}px; padding: ${verticalScale(14)}px ${horizontalScale(18)}px ${verticalScale(24)}px;`;
+const StatusModalHandle = styled.View`width: ${horizontalScale(42)}px; height: ${verticalScale(4)}px; border-radius: ${verticalScale(2)}px; background-color: ${colors.gray300}; align-self: center; margin-bottom: ${verticalScale(18)}px;`;
+const StatusModalDescription = styled(Text).attrs({ variant: 'regularSmall', color: 'gray600' })`margin-top: ${verticalScale(6)}px; margin-bottom: ${verticalScale(16)}px;`;
+const StatusActionList = styled.View`border-top-width: 1px; border-top-color: ${colors.gray200};`;
+const StatusAction = styled(Pressable)`min-height: ${verticalScale(58)}px; flex-direction: row; align-items: center; border-bottom-width: 1px; border-bottom-color: ${colors.gray200}; gap: ${horizontalScale(12)}px;`;
+const StatusActionIcon = styled.View`width: ${horizontalScale(36)}px; height: ${horizontalScale(36)}px; border-radius: ${horizontalScale(18)}px; background-color: ${colors.primaryLighter}; align-items: center; justify-content: center;`;
+const CancelAction = styled(Pressable)`height: ${verticalScale(48)}px; align-items: center; justify-content: center; margin-top: ${verticalScale(8)}px;`;
 
 const PRO24_MAP_STYLE = [
     { elementType: 'geometry', stylers: [{ color: '#f5f2ef' }] },

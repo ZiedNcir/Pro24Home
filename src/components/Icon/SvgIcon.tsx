@@ -89,6 +89,7 @@ import {
     faInbox,
     faChartLine,
     faSyncAlt,
+    faStar,
 
 
 } from '@fortawesome/free-solid-svg-icons';
@@ -181,7 +182,8 @@ export type IconName =
     | 'fa-bolt'
     | 'fa-inbox'
     | 'fa-chart-line'
-    | 'fa-sync-alt';
+    | 'fa-sync-alt'
+    | 'fa-star';
 export interface SvgIconProps {
     name: IconName;
     size?: number;
@@ -277,6 +279,7 @@ const faIconMap: Record<string, IconDefinition> = {
     'fa-inbox': faInbox,
     'fa-chart-line': faChartLine,
     'fa-sync-alt': faSyncAlt,
+    'fa-star': faStar,
 };
 
 const SvgIcon: FC<SvgIconProps> = ({
