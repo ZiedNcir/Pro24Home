@@ -12,7 +12,9 @@ export {
 } from './selection/Checkbox';
 export * from './selection/Toggle';
 export * from './layout/Screen';
+export { default as ScreenContainer } from './layout/ScreenContainer';
 export * from './navigation/BackHeader';
+export { default as NavigationHeader } from './navigation/NavigationHeader';
 export * from './overlay/LoadingOverlay';
 export * from './overlay/Dialog';
 export * from './overlay/BottomSheet';

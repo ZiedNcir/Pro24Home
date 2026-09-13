@@ -1,1 +1,1 @@
-export { default as Screen } from '@components/ScreenContainer';
+export { default as Screen } from './ScreenContainer';
