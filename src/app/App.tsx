@@ -6,7 +6,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
 import AuthInitializer from '../components/AuthInitializer';
-import AppNavigator from '../navigation/AppNavigator';
+import RootNavigator from './navigation/RootNavigator';
 import { requestPermissions } from '../utils/permissions';
 import '../utils/i18n';
 import { AppProviders } from './providers/AppProviders';
@@ -26,7 +26,7 @@ const App = (): React.JSX.Element => {
   return (
     <AppProviders>
       <AuthInitializer />
-      <AppNavigator />
+      <RootNavigator />
     </AppProviders>
   );
 };
