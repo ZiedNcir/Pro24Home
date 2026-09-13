@@ -1,6 +1,6 @@
 // screens/auth/RegisterScreen.tsx
 import React, { useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { markAccountCreated } from '@core/session/account-onboarding';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -74,7 +74,7 @@ export const RegisterScreen = () => {
 
     const handleUserRegistrationSuccess = async (data: any) => {
         console.log('Client registration successful');
-        await AsyncStorage.setItem('account_created', 'true');
+        await markAccountCreated();
         navigation.navigate('VerifyScreen', {
             email: data.email,
             role: 'client'
@@ -88,7 +88,7 @@ export const RegisterScreen = () => {
 
     const handleProfessionalRegistrationSuccess = async (data: any) => {
         console.log('Professional registration successful');
-        await AsyncStorage.setItem('account_created', 'true');
+        await markAccountCreated();
         navigation.navigate('VerifyScreen', {
             email: data.email,
             role: 'professional'

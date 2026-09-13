@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { hasCreatedAccount as readCreatedAccount } from '@core/session/account-onboarding';
 import {
   StyleSheet,
   View,
@@ -54,8 +54,8 @@ export const SignIn = () => {
   const [hasCreatedAccount, setHasCreatedAccount] = useState(false);
 
   useEffect(() => {
-    AsyncStorage.getItem('account_created').then(value => {
-      setHasCreatedAccount(value === 'true');
+    readCreatedAccount().then(value => {
+      setHasCreatedAccount(value);
     });
   }, []);
 
