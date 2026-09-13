@@ -1,5 +1,5 @@
 import { InterventionStatus } from '../src/store/api/api.types';
-import { filterInterventions, formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName, getInterventionDetailCopy, getInterventionImageUrls, getInterventionListCopy, getProfessionalEmptyStateCopy, getInterventionStatusLabel, shouldShowRatingPrompt, shouldShowTrackingButton } from '../src/screens/Intervention/utils/interventionPresentation';
+import { filterInterventions, formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName, getInterventionDetailCopy, getInterventionEmptyCopy, getInterventionImageUrls, getInterventionListCopy, getInterventionPrice, getProfessionalEmptyStateCopy, getInterventionStatusLabel, getInterventionDevis, isValidInterventionPriceInput, shouldShowClientDevisActions, shouldShowPriceProposal, shouldShowRatingPrompt, shouldShowTrackingButton } from '../src/screens/Intervention/utils/interventionPresentation';
 
 describe('interventionPresentation', () => {
     it('shows tracking for accepted and in-progress professional interventions', () => {
@@ -85,6 +85,33 @@ describe('interventionPresentation', () => {
 
         expect(getInterventionAddress(intervention)?.address).toBe('De eljem');
         expect(formatInterventionPrice(intervention.price)).toBe('20,00 €');
+    });
+
+    it('falls back to the available devis price when intervention price is null', () => {
+        expect(getInterventionPrice({ price: null, devis: [{ price: '75.00', status: 'pending' }] } as any)).toBe('75,00 €');
+        expect(getInterventionPrice({ price: null, devis: [] } as any)).toBeNull();
+    });
+
+    it('accepts only positive intervention prices', () => {
+        expect(isValidInterventionPriceInput('75,50')).toBe(true);
+        expect(isValidInterventionPriceInput('0')).toBe(false);
+        expect(isValidInterventionPriceInput('abc')).toBe(false);
+    });
+
+    it('allows a professional to propose a price for pending or negotiating requests', () => {
+        expect(shouldShowPriceProposal(null, 'pending')).toBe(true);
+        expect(shouldShowPriceProposal(null, 'negotiation')).toBe(true);
+        expect(shouldShowPriceProposal(20, 'pending')).toBe(false);
+    });
+
+    it('selects the priced devis for a client negotiation', () => {
+        expect(getInterventionDevis({
+            devis: [{ id: 7, price: null }, { id: 8, price: '75.00' }],
+        } as any)).toMatchObject({ id: 8, price: '75.00' });
+    });
+
+    it('uses the intervention id as the devis id for client negotiation actions', () => {
+        expect(shouldShowClientDevisActions(75, 'negotiation', 86)).toBe(true);
     });
 
     it('resolves the professional-facing client name from supported API shapes', () => {

@@ -139,7 +139,10 @@ export const professionalEndpoints = api.injectEndpoints({
             query: ({ interventionId, price }) => ({
                 url: `/api/professional/interventions/add-devis/${interventionId}`,
                 method: 'POST',
-                body: prepareFormData({ price }),
+                body: JSON.stringify({ price }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             }),
             invalidatesTags: ['Interventions', 'Devis'],
         }),

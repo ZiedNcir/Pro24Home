@@ -23,6 +23,7 @@ type InterventionWithApiAliases = {
     image_1?: string | null;
     image_2?: string | null;
     image_3?: string | null;
+    devis?: Array<{ id?: number; price?: number | string | null }>;
 };
 
 type InterventionClientLike = {
@@ -64,6 +65,31 @@ export const formatInterventionPrice = (price?: number | string | null) => {
 
     return `${numericPrice.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
 };
+
+export const getInterventionPrice = (intervention: InterventionWithApiAliases & { price?: number | string | null }) => {
+    const directPrice = formatInterventionPrice(intervention.price);
+    if (directPrice) return directPrice;
+
+    const devisPrice = intervention.devis?.find(devis => devis.price !== null && devis.price !== undefined && devis.price !== '')?.price;
+    return formatInterventionPrice(devisPrice);
+};
+
+export const getInterventionDevis = (intervention: InterventionWithApiAliases) => (
+    intervention.devis?.find(devis => devis.id !== undefined && formatInterventionPrice(devis.price)) || null
+);
+
+export const shouldShowClientDevisActions = (price: number | string | null | undefined, status?: string, devisId?: number) => (
+    Boolean(formatInterventionPrice(price)) && normalizeStatus(status) === 'negotiation' && devisId !== undefined
+);
+
+export const isValidInterventionPriceInput = (value: string) => {
+    const price = Number(value.trim().replace(',', '.'));
+    return Number.isFinite(price) && price > 0;
+};
+
+export const shouldShowPriceProposal = (price: number | string | null | undefined, status?: string) => (
+    !formatInterventionPrice(price) && ['pending', 'negotiation'].includes(normalizeStatus(status) || '')
+);
 
 export const getInterventionClientName = (client?: InterventionClientLike | null) => {
     const directName = client?.name?.trim();
