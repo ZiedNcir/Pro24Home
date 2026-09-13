@@ -136,13 +136,13 @@ export const unwrapData = <T>(response: unknown): T =>
 
 Move exact array, boolean, number and React Native file handling from `src/utils/api.helpers.ts` to `createFormData`.
 
-- [ ] **Step 4: Verify helpers and current normalizers**
+- [x] **Step 4: Verify helpers and current normalizers**
 
 Run: `npm test -- --runInBand __tests__/coreApiError.test.ts __tests__/coreApiResponse.test.ts __tests__/addressResponse.test.ts __tests__/servicesResponse.test.ts __tests__/interventionResponse.test.ts`
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/core/api __tests__/coreApiError.test.ts __tests__/coreApiResponse.test.ts
