@@ -12,7 +12,7 @@ import ScreenContainer from '@components/ScreenContainer';
 import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
-import { useGetProfileQuery } from '@store/api/endpoints/auth';
+import { useGetProfileQuery } from '@entities/user/api/user.api';
 import { useUploadDocumentMutation } from '@store/api/endpoints/pro';
 import { selectUser } from '@store/slices/authSlice';
 import type { Document, DocumentType } from '@store/api/api.types';

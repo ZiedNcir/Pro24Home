@@ -14,7 +14,7 @@ import AddressStep from '../components/new-intervention/AddressStep';
 import SummaryStep from '../components/new-intervention/SummaryStep';
 import { InterventionStep } from './types';
 import { AppStackType } from '../../../navigation/constant/core';
-import { useGetServicesQuery } from '@store/api/endpoints/auth';
+import { useGetServicesQuery } from '@entities/service/api/service.api';
 import { useAddAddressMutation, useGetAddressesQuery } from '@store/api/endpoints/client';
 import { selectUser } from '@store/slices/authSlice';
 import { getServicePannes } from '../utils/servicePannes';

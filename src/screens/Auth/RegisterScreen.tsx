@@ -21,7 +21,7 @@ import { selectAuthLoading, selectIsAuthenticated } from '@store/slices/authSlic
 // Screens & Forms
 import ProfessionalForm from './component/ProfessionalForm';
 import ClientForm from './component/ClientForm';
-import { useGetServicesQuery } from '@store/api/endpoints/auth';
+import { useGetServicesQuery } from '@entities/service/api/service.api';
 
 // Types
 import { AppStackType } from '../../navigation/constant/core';
