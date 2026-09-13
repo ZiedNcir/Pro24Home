@@ -6,6 +6,7 @@ import authReducer from './slices/authSlice';
 import userReducer from './slices/user.slice';
 import uiReducer from './slices/ui.slice';
 import interventionsReducer from './slices/intervention.slice';
+import { sessionPersistenceMiddleware } from '../app/store/session-persistence';
 
 export const store = configureStore({
     reducer: {
@@ -30,7 +31,7 @@ export const store = configureStore({
                 // Ignore these paths in the state
                 ignoredPaths: ['items.dates'],
             },
-        }).concat(api.middleware),
+        }).prepend(sessionPersistenceMiddleware.middleware).concat(api.middleware),
 });
 
 // Optional, but required for refetchOnFocus/refetchOnReconnect behaviors

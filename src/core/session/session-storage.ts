@@ -49,11 +49,28 @@ export const writeSession = async (session: StoredSession): Promise<void> => {
     ['biometric_enabled', String(session.biometricEnabled)],
   ];
 
+  const absentKeys: string[] = [];
+
   if (session.refreshToken) entries.push(['refresh_token', session.refreshToken]);
+  else absentKeys.push('refresh_token');
+
   if (session.lastLoginAt) entries.push(['last_login_at', session.lastLoginAt]);
+  else absentKeys.push('last_login_at');
+
   if (session.sessionExpiresAt) entries.push(['session_expires_at', session.sessionExpiresAt]);
+  else absentKeys.push('session_expires_at');
 
   await AsyncStorage.multiSet(entries);
+  if (absentKeys.length) await AsyncStorage.multiRemove(absentKeys);
 };
 
 export const clearSession = (): Promise<void> => AsyncStorage.multiRemove([...sessionKeys]);
+
+export const writeSessionPreferences = ({
+  onboardingCompleted,
+  biometricEnabled,
+}: Pick<StoredSession, 'onboardingCompleted' | 'biometricEnabled'>): Promise<void> =>
+  AsyncStorage.multiSet([
+    ['onboarding_completed', String(onboardingCompleted)],
+    ['biometric_enabled', String(biometricEnabled)],
+  ]);
