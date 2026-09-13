@@ -50,6 +50,24 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
+      "@app/*": [
+        "./src/app/*"
+      ],
+      "@core/*": [
+        "./src/core/*"
+      ],
+      "@entities/*": [
+        "./src/entities/*"
+      ],
+      "@features/*": [
+        "./src/features/*"
+      ],
+      "@roles/*": [
+        "./src/roles/*"
+      ],
+      "@shared/*": [
+        "./src/shared/*"
+      ],
       "@components/*": [
         "./src/components/*"
       ],
