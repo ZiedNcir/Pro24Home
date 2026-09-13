@@ -30,7 +30,7 @@ jest.mock('@components/index', () => {
   };
 });
 
-jest.mock('@services/index', () => ({
+jest.mock('@features/auth/services/registration', () => ({
   validateClientRegistration: () => [],
   mapApiError: () => [],
   prepareRegistrationPayload: (data: unknown) => data,

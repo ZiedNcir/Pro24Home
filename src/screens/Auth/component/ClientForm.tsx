@@ -1,5 +1,5 @@
 import { Button, Field, FieldValidators } from '@components/index';
-import { validateClientRegistration, mapApiError, prepareRegistrationPayload } from '@services/index';
+import { validateClientRegistration, mapApiError, prepareRegistrationPayload } from '@features/auth/services/registration';
 import { Spinner } from '@components/Modal/AppSpinner';
 import Text from '@components/Text';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
