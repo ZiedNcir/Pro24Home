@@ -61,8 +61,9 @@ jest.mock('react-native-keyboard-aware-scroll-view', () => ({
 describe('ClientForm visual flow', () => {
   it('shows the first step with a clear progress state and continue action', async () => {
     let renderer!: ReactTestRenderer.ReactTestRenderer;
-    await act(() => {
+    await act(async () => {
       renderer = ReactTestRenderer.create(<ThemeProvider><ClientForm /></ThemeProvider>);
+      await Promise.resolve();
     });
 
     expect(renderer.root.findByProps({ testID: 'client-form-step' }).props.children.join('')).toContain('1');
