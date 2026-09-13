@@ -13,7 +13,7 @@ import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { useGetProfileQuery } from '@entities/user/api/user.api';
-import { useUploadDocumentMutation } from '@store/api/endpoints/pro';
+import { useUploadDocumentMutation } from '@roles/professional/documents/api/documents.api';
 import { selectUser } from '@store/slices/authSlice';
 import type { Document, DocumentType } from '@store/api/api.types';
 import { colors } from '@theme/index';
