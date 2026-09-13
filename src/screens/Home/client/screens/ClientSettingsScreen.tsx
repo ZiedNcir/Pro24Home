@@ -8,7 +8,7 @@ import { SvgIcon, type IconName } from '@components/Icon';
 import { useTheme } from '@theme/ThemeProvider';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { logout, selectUser } from '@store/slices/authSlice';
-import { useLogoutMutation } from '@store/api/endpoints/auth';
+import { useLogoutMutation } from '@features/auth/api/auth.api';
 import { colors } from '@theme/index';
 import {
   horizontalScale,

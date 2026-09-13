@@ -15,7 +15,7 @@ import styled from 'styled-components/native';
 import React, { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import type { RegisterProfessionalRequest, Service } from '@store/api/api.types';
-import { useRegisterProfessionalMutation } from '@store/api/endpoints/auth';
+import { useRegisterProfessionalMutation } from '@features/auth/api/auth.api';
 import { selectAuthLoading, setError, setLoading } from '@store/slices/authSlice';
 
 // Components

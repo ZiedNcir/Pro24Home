@@ -12,7 +12,6 @@ import {
 } from '../api.types';
 import { api } from '../baseApi';
 import { normalizeServicesResponse } from '../utils/servicesResponse';
-import { fetchUserProfile } from '../../slices/user.slice';
 
 export const authApiEndpoints = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -39,10 +38,6 @@ export const authApiEndpoints = api.injectEndpoints({
                         },
                     });
 
-                    // Fetch additional user profile data
-                    if (data.user?.id) {
-                        dispatch(fetchUserProfile(data.user.id));
-                    }
                 } catch (error) {
                     // Handle error in the component or use setError
                     console.error('Login failed:', error);
@@ -72,8 +67,6 @@ export const authApiEndpoints = api.injectEndpoints({
                             },
                         });
 
-                        // Fetch additional user profile data
-                        dispatch(fetchUserProfile(data.user.id));
                     } else {
                         console.warn('Registration response missing user data:', data);
                     }
@@ -105,8 +98,6 @@ export const authApiEndpoints = api.injectEndpoints({
                             },
                         });
 
-                        // Fetch additional user profile data
-                        dispatch(fetchUserProfile(data.user.id));
                     } else {
                         console.warn('Professional registration response missing user data:', data);
                     }

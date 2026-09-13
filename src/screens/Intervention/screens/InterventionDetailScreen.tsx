@@ -14,8 +14,8 @@ import InterventionDetailSkeleton from '../components/intervention-detail/Interv
 import ClientRatingModal from '../components/intervention-detail/ClientRatingModal';
 import { moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useGetInterventionQuery } from '@entities/intervention/api/intervention.api';
-import { useAddRatingMutation } from '@store/api/endpoints/client';
-import { useAcceptInterventionMutation, useReviseInterventionMutation } from '@store/api/endpoints/pro';
+import { useAddRatingMutation } from '@entities/intervention/api/intervention.api';
+import { useAcceptInterventionMutation, useReviseInterventionMutation } from '@roles/professional/availability/api/availability.api';
 import { selectIsProfessional, selectUser } from '@store/slices/authSlice';
 import { normalizeInterventionResponse } from '@store/api/utils/interventionResponse';
 import { AppStackType } from '../../../navigation/constant/core';

@@ -12,7 +12,7 @@ import { Toast } from 'react-native-toast-notifications';
 import styled from 'styled-components/native';
 
 // Import from new Redux architecture
-import { useRegisterClientMutation } from '@store/api/endpoints/auth';
+import { useRegisterClientMutation } from '@features/auth/api/auth.api';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { selectAuthLoading, setError, setLoading } from '@store/slices/authSlice';
 import type { RegisterClientRequest } from '@store/api/api.types';

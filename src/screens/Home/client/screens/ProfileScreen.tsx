@@ -10,7 +10,7 @@ import InterventionHeader from '../../../Intervention/components/InterventionHea
 import { useTheme } from '@theme/ThemeProvider';
 import { useAppSelector } from '@store/hooks';
 import { selectUser } from '@store/slices/authSlice';
-import { useUpdateClientProfileMutation } from '@store/api/endpoints/client';
+import { useUpdateClientProfileMutation } from '@entities/user/api/user.api';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 

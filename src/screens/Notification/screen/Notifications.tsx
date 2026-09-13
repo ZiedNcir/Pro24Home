@@ -8,7 +8,7 @@ import NotificationSection from '../components/NotificationSection';
 import NotificationEmptyState from '../components/NotificationEmptyState';
 
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
-import { useGetNotificationsQuery, useReadNotificationMutation } from '@store/api/endpoints/notification';
+import { useGetNotificationsQuery, useReadNotificationMutation } from '@entities/notification/api/notification.api';
 import { transformNotificationToItem, groupNotificationsByTime } from '@utils/notificationHelpers';
 
 export const NotificationsScreen = () => {

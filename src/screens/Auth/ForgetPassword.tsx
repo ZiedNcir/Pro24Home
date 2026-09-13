@@ -10,7 +10,7 @@ import { Button, Field, ScreenContainer, Text, Spinner } from '@components/index
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useTheme } from '@theme/ThemeProvider';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
-import { useForgotPasswordMutation } from '@store/api/endpoints/auth';
+import { useForgotPasswordMutation } from '@features/auth/api/auth.api';
 import { AppStackType } from '../../navigation/constant/core';
 
 type NavigationProp = NativeStackNavigationProp<AppStackType, 'ForgetPassword'>;

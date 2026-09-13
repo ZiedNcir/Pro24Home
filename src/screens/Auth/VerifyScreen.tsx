@@ -13,7 +13,7 @@ import styled from 'styled-components/native';
 
 import { ScreenContainer, NavigationHeader, Spinner } from '@components/index';
 import { AppStackType } from '../../navigation/constant/core';
-import { useVerifyAccountMutation, useResendVerificationMutation } from '@store/api/endpoints/auth';
+import { useVerifyAccountMutation, useResendVerificationMutation } from '@features/auth/api/auth.api';
 import { useAppDispatch } from '@store/hooks';
 import { setCredentials } from '@store/slices/authSlice';
 

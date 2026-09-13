@@ -14,7 +14,7 @@ import InfoNotice from '../components/InfoNotice';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import { AppStackType } from '../../../navigation/constant/core';
-import { useGetInterventionPriceQuery } from '@store/api/endpoints/payment';
+import { useGetInterventionPriceQuery } from '@entities/payment/api/payment.api';
 
 export const PriceEstimationScreen = () => {
     const navigation = useNavigation();

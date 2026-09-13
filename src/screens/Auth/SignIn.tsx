@@ -32,7 +32,7 @@ import {
 import { useTheme } from '@theme/ThemeProvider';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { AppStackType } from '../../navigation/constant/core';
-import { useLoginMutation } from '@store/api/endpoints/auth';
+import { useLoginMutation } from '@features/auth/api/auth.api';
 import { getHomeRouteFromAuthResponse, isInactiveAuthResponse } from '../../navigation/authNavigation';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
