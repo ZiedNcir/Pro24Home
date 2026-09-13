@@ -40,7 +40,7 @@ src/
 
 **Interfaces:** `AppProviders({ children }: { children: React.ReactNode }): React.JSX.Element`; aliases `@app`, `@core`, `@entities`, `@features`, `@roles`, `@shared`; anciens aliases maintenus.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 import renderer from 'react-test-renderer';
@@ -51,13 +51,13 @@ it('mounts application providers and navigator', () => {
 });
 ```
 
-- [ ] **Step 2: Verify the failure**
+- [x] **Step 2: Verify the failure**
 
 Run: `npm test -- --runInBand __tests__/App.test.tsx`
 
 Expected: FAIL because Jest parses `react-native-splash-screen` as an ES module.
 
-- [ ] **Step 3: Implement the boundary**
+- [x] **Step 3: Implement the boundary**
 
 ```tsx
 export const AppProviders = ({ children }: { children: React.ReactNode }) => (
@@ -73,13 +73,13 @@ export const AppProviders = ({ children }: { children: React.ReactNode }) => (
 
 Move current provider nesting into `AppProviders`; root `App.tsx` re-exports `src/app/App`. Add Jest mocks for `react-native-splash-screen.hide`, `react-native-onesignal.Debug.setLogLevel` and `react-native-onesignal.initialize` in `jest.setup.js`; load via `setupFilesAfterEnv`.
 
-- [ ] **Step 4: Add aliases and verify**
+- [x] **Step 4: Add aliases and verify**
 
 Add the six aliases to TypeScript and Babel. Run: `npm test -- --runInBand __tests__/App.test.tsx`
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add App.tsx src/app babel.config.js tsconfig.json jest.config.js jest.setup.js __tests__/App.test.tsx
@@ -95,7 +95,7 @@ git commit -m "refactor: add application bootstrap boundary"
 
 **Interfaces:** `toApiError(error: unknown): ApiError`; `unwrapData<T>(response: unknown): T`; `unwrapArray<T>(response: unknown): T[]`; `createFormData(data, fileFields?): FormData`.
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 ```ts
 expect(
@@ -112,13 +112,13 @@ expect(unwrapData<{ id: number }>({ data: { id: 2 } })).toEqual({ id: 2 });
 expect(unwrapArray<number>({ data: [1, 2] })).toEqual([1, 2]);
 ```
 
-- [ ] **Step 2: Verify failure**
+- [x] **Step 2: Verify failure**
 
 Run: `npm test -- --runInBand __tests__/coreApiError.test.ts __tests__/coreApiResponse.test.ts`
 
 Expected: FAIL because core API modules do not exist.
 
-- [ ] **Step 3: Implement focused helpers**
+- [x] **Step 3: Implement focused helpers**
 
 ```ts
 export type ApiError = {
