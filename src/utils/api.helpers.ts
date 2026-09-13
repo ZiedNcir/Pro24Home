@@ -1,60 +1,13 @@
 // src/utils/api.helpers.ts
-import { Platform } from 'react-native';
+import { createFormData } from '@core/api/form-data';
 
 /**
  * Prepares FormData for multipart/form-data requests
  */
-export const prepareFormData = <T extends Record<string, any>>(
+export const prepareFormData = <T extends Record<string, unknown>>(
     data: T,
-    fileFields: string[] = []
-): FormData => {
-    const formData = new FormData();
-
-    Object.entries(data).forEach(([key, value]) => {
-        if (value === null || value === undefined) {
-            return;
-        }
-
-        // Handle arrays (like services[])
-        if (Array.isArray(value)) {
-            value.forEach((item) => {
-                if (item !== null && item !== undefined) {
-                    formData.append(`${key}[]`, String(item));
-                }
-            });
-        }
-        // Handle files
-        else if (fileFields.includes(key) && value) {
-            // For React Native, file object should have uri, type, name
-            if (value.uri) {
-                const file = {
-                    uri: Platform.OS === 'ios' ? value.uri.replace('file://', '') : value.uri,
-                    type: value.type || 'image/jpeg',
-                    name: value.name || `photo_${Date.now()}.jpg`,
-                };
-                formData.append(key, file as any);
-            }
-        }
-        // Handle boolean values
-        else if (typeof value === 'boolean') {
-            formData.append(key, value ? '1' : '0');
-        }
-        // Handle numbers
-        else if (typeof value === 'number') {
-            formData.append(key, String(value));
-        }
-        // Handle objects (stringify)
-        else if (typeof value === 'object') {
-            formData.append(key, JSON.stringify(value));
-        }
-        // Handle strings
-        else {
-            formData.append(key, String(value));
-        }
-    });
-
-    return formData;
-};
+    fileFields: string[] = [],
+): FormData => createFormData(data, fileFields);
 
 /**
  * Creates query params from object
