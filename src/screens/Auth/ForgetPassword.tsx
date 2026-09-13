@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Toast } from 'react-native-toast-notifications';
+import { Toast } from '@core/notifications/toast';
 
 import { Button, Field, ScreenContainer, Text, Spinner } from '@components/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';

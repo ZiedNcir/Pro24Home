@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Toast } from 'react-native-toast-notifications';
+import { Toast } from '@core/notifications/toast';
 import styled from 'styled-components/native';
 
 // Import from new Redux architecture

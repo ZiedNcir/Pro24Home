@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Modal, Platform } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { Toast } from 'react-native-toast-notifications';
+import { Toast } from '@core/notifications/toast';
 import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components/native';
 

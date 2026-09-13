@@ -25,7 +25,7 @@ import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 
 import { colors } from '@theme/index';
 import ServicesSkeleton from './ServicesSkeleton';
-import { Toast } from 'react-native-toast-notifications';
+import { Toast } from '@core/notifications/toast';
 
 
 

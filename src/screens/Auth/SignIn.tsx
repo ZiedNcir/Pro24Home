@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Toast } from 'react-native-toast-notifications';
+import { Toast } from '@core/notifications/toast';
 
 import { Regex } from '@utils/constant';
 import {

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Animated, Image } from 'react-native';
 import styled from 'styled-components/native';
-import { Toast } from 'react-native-toast-notifications';
+import { Toast } from '@core/notifications/toast';
 
 import ScreenContainer from '@components/ScreenContainer';
 import Text from '@components/Text';

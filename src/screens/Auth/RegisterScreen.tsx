@@ -5,7 +5,7 @@ import { TouchableOpacity, View, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Toast } from 'react-native-toast-notifications';
+import { Toast } from '@core/notifications/toast';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';

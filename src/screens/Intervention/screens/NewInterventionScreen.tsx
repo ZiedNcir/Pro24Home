@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
-import { Toast } from 'react-native-toast-notifications';
+import { Toast } from '@core/notifications/toast';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 import ScreenContainer from '@components/ScreenContainer';

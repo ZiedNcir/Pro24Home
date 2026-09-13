@@ -3,7 +3,7 @@ import { ActivityIndicator, Alert, Pressable, StyleSheet, View } from 'react-nat
 import DocumentPicker, { types } from 'react-native-document-picker';
 import { launchCamera } from 'react-native-image-picker';
 import { useSelector } from 'react-redux';
-import { Toast } from 'react-native-toast-notifications';
+import { Toast } from '@core/notifications/toast';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import styled from 'styled-components/native';

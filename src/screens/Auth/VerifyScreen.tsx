@@ -8,7 +8,7 @@ import { horizontalScale, moderateScale, verticalScale } from '@utils/normalized
 import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { Toast } from 'react-native-toast-notifications';
+import { Toast } from '@core/notifications/toast';
 import styled from 'styled-components/native';
 
 import { ScreenContainer, NavigationHeader, Spinner } from '@components/index';
