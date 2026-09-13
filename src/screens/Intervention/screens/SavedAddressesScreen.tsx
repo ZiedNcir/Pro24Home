@@ -15,13 +15,11 @@ import {
   useAddAddressMutation,
   useDeleteAddressMutation,
   useGetAddressesQuery,
-} from '@store/api/endpoints/client';
+} from '@entities/address/api/address.api';
 import { useAppSelector } from '@store/hooks';
 import { selectUser } from '@store/slices/authSlice';
-import {
-  fetchAddressFromCoordinates,
-  fetchGooglePlaceDetails,
-} from '../../../services/googlePlacesService';
+import { fetchGooglePlaceDetails } from '@core/maps/google-places-client';
+import { fetchAddressFromCoordinates } from '@core/maps/google-geocoding-client';
 import {
   mapGooglePlaceToAddress,
   type SelectedAddressLocation,

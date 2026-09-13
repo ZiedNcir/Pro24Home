@@ -15,12 +15,13 @@ import SummaryStep from '../components/new-intervention/SummaryStep';
 import { InterventionStep } from './types';
 import { AppStackType } from '../../../navigation/constant/core';
 import { useGetServicesQuery } from '@entities/service/api/service.api';
-import { useAddAddressMutation, useGetAddressesQuery } from '@store/api/endpoints/client';
+import { useAddAddressMutation, useGetAddressesQuery } from '@entities/address/api/address.api';
 import { selectUser } from '@store/slices/authSlice';
 import { getServicePannes } from '../utils/servicePannes';
 import { canContinueAddressSelection, formatAddressForSummary } from '../utils/addressFlow';
 import { mapGooglePlaceToAddress, type SelectedAddressLocation } from '../utils/googlePlaceAddress';
-import { fetchAddressFromCoordinates, fetchGooglePlaceDetails } from '../../../services/googlePlacesService';
+import { reverseGeocode as fetchAddressFromCoordinates } from '@core/maps/google-geocoding-client';
+import { lookupPlace as fetchGooglePlaceDetails } from '@core/maps/google-places-client';
 import { buildInterventionPayload } from '../utils/interventionPayload';
 import type { InterventionPhoto } from '../components/new-intervention/types';
 

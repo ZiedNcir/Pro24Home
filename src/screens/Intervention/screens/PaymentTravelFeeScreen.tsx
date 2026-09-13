@@ -13,7 +13,7 @@ import { colors } from '@theme/index';
 import { useNavigation } from '@react-navigation/core';
 import { useRoute, type RouteProp } from '@react-navigation/native';
 import { Toast } from 'react-native-toast-notifications';
-import { useAddInterventionMutation } from '@store/api/endpoints/client';
+import { useAddInterventionMutation } from '@entities/intervention/api/intervention.api';
 import { AppStackType } from '../../../navigation/constant/core';
 
 export const PaymentTravelFeeScreen = () => {

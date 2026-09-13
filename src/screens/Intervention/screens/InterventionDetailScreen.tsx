@@ -13,7 +13,7 @@ import { ClientInterventionDetails, confirmRefusal, ProfessionalInterventionDeta
 import InterventionDetailSkeleton from '../components/intervention-detail/InterventionDetailSkeleton';
 import ClientRatingModal from '../components/intervention-detail/ClientRatingModal';
 import { moderateScale, verticalScale } from '@utils/normalizedCss';
-import { useGetInterventionQuery } from '@store/api/endpoints/intervention';
+import { useGetInterventionQuery } from '@entities/intervention/api/intervention.api';
 import { useAddRatingMutation } from '@store/api/endpoints/client';
 import { useAcceptInterventionMutation, useReviseInterventionMutation } from '@store/api/endpoints/pro';
 import { selectIsProfessional, selectUser } from '@store/slices/authSlice';

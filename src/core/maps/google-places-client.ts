@@ -1,1 +1,4 @@
-export { fetchGooglePlaceDetails as lookupPlace } from '../../services/googlePlacesService';
+export {
+  fetchGooglePlaceDetails,
+  fetchGooglePlaceDetails as lookupPlace,
+} from '../../services/googlePlacesService';

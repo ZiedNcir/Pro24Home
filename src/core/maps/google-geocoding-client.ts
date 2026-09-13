@@ -1,1 +1,4 @@
-export { fetchAddressFromCoordinates as reverseGeocode } from '../../services/googlePlacesService';
+export {
+  fetchAddressFromCoordinates,
+  fetchAddressFromCoordinates as reverseGeocode,
+} from '../../services/googlePlacesService';

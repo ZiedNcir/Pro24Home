@@ -10,7 +10,7 @@ import { SvgIcon, type IconName } from '@components/Icon';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
-import { useGetInterventionsQuery } from '@store/api/endpoints/intervention';
+import { useGetInterventionsQuery } from '@entities/intervention/api/intervention.api';
 import type { Intervention } from '@store/api/api.types';
 import { selectIsProfessional } from '@store/slices/authSlice';
 import {
