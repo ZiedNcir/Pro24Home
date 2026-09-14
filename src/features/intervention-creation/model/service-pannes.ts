@@ -1,4 +1,4 @@
-import { Service } from '@store/api/api.types';
+import { Service } from '@entities/service/model';
 
 export type PanneChoice = {
     id: number;

@@ -1,5 +1,5 @@
 import { IRole } from '@utils/constant';
-import type { CreateInterventionRequest } from '@store/api/api.types';
+import type { CreateInterventionRequest } from '@entities/intervention/model';
 
 export type AppStackType = {
   SignIn: { role?: 'client' | 'professional' };

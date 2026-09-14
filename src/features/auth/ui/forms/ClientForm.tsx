@@ -16,7 +16,7 @@ import styled from 'styled-components/native';
 import { useRegisterClientMutation } from '@features/auth/api/auth.api';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { selectAuthLoading, setError, setLoading } from '@store/slices/authSlice';
-import type { RegisterClientRequest } from '@store/api/api.types';
+import type { RegisterClientRequest } from '@entities/user/model';
 
 interface ClientFormProps {
     onSuccess?: (data: RegisterClientRequest) => void;

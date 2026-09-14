@@ -30,7 +30,7 @@ import {
   moderateScale,
   verticalScale,
 } from '@utils/normalizedCss';
-import type { Address } from '@store/api/api.types';
+import type { Address } from '@entities/address/model';
 
 const toCoordinate = (value: number | string | undefined, fallback: number) => {
   const coordinate = Number(value);

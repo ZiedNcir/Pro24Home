@@ -1,4 +1,4 @@
-import type { Document, DocumentType } from '@store/api/api.types';
+import type { Document, DocumentType } from '@entities/user/model';
 
 export const PROFESSIONAL_DOCUMENTS: Array<{
     name: DocumentType;

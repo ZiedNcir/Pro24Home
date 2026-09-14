@@ -11,7 +11,7 @@ import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useGetInterventionsQuery } from '@entities/intervention/api/intervention.api';
-import type { Intervention } from '@store/api/api.types';
+import type { Intervention } from '@entities/intervention/model';
 import { selectIsProfessional } from '@store/slices/authSlice';
 import {
     filterInterventions,

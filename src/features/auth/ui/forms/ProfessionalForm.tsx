@@ -16,7 +16,8 @@ import styled from 'styled-components/native';
 // Import from new Redux architecture
 import React, { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import type { RegisterProfessionalRequest, Service } from '@store/api/api.types';
+import type { RegisterProfessionalRequest } from '@entities/user/model';
+import type { Service } from '@entities/service/model';
 import { useRegisterProfessionalMutation } from '@features/auth/api/auth.api';
 import { selectAuthLoading, setError, setLoading } from '@store/slices/authSlice';
 

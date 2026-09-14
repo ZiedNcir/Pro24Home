@@ -20,4 +20,4 @@ export const formatAddressForSummary = (address?: Pick<Address, 'location_name' 
         .filter((value, index, values): value is string => Boolean(value) && values.indexOf(value) === index)
         .join(' · ') || fallback;
 };
-import type { Address } from '@store/api/api.types';
+import type { Address } from '@entities/address/model';

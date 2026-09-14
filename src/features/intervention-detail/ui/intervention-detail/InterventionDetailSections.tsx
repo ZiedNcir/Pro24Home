@@ -6,7 +6,7 @@ import styled from 'styled-components/native';
 import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
 import AppImage from '@components/Image/AppImage';
-import type { Intervention } from '@store/api/api.types';
+import type { Intervention } from '@entities/intervention/model';
 import { useAddDevisMutation, useAcceptDevisMutation, useReviseDevisMutation } from '@entities/quote/api/quote.api';
 import { API_BASE_URL } from '../../../../config/api';
 import { colors } from '@theme/index';

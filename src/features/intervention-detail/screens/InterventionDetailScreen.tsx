@@ -20,7 +20,7 @@ import {
     useReviseInterventionMutation,
 } from '@entities/intervention/api/intervention-actions.api';
 import { selectIsProfessional, selectUser } from '@store/slices/authSlice';
-import { normalizeInterventionResponse } from '@store/api/utils/interventionResponse';
+import { normalizeInterventionResponse } from '@entities/intervention/model';
 import { AppStackType } from '../../../navigation/constant/core';
 import { getInterventionDetailCopy, getInterventionStatusColor, getInterventionStatusLabel, shouldShowRatingPrompt } from '@entities/intervention/model/intervention-presentation';
 

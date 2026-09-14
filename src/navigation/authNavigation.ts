@@ -1,5 +1,5 @@
-import { UserType } from '@store/api/api.types';
-import type { AuthResponse } from '@store/api/api.types';
+import { UserType } from '@entities/user/model';
+import type { AuthResponse } from '@entities/user/model';
 
 export type HomeRoute = 'Tabs' | 'ProfessionnelHome' | 'AccountPendingScreen';
 export type AuthResponseLike = Partial<AuthResponse> & { data?: Partial<AuthResponse> };

@@ -14,7 +14,7 @@ import { useGetInterventionsQuery } from '@entities/intervention/api/interventio
 import { useGetUnreadNotificationCountQuery } from '@entities/notification/api/notification.api';
 import { useUpdateStatusMutation } from '@roles/professional/availability/api/availability.api';
 import { selectUser } from '@store/slices/authSlice';
-import type { Intervention } from '@store/api/api.types';
+import type { Intervention } from '@entities/intervention/model';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { buildProfessionalStatusPayload, type Coordinates } from '@roles/professional/dashboard/model/professional-status';

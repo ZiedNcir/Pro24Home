@@ -1,4 +1,4 @@
-import type { CreateInterventionRequest } from '@store/api/api.types';
+import type { CreateInterventionRequest } from '@entities/intervention/model';
 import type { InterventionPhoto } from '../ui/new-intervention/types';
 
 export interface InterventionPayloadInput {

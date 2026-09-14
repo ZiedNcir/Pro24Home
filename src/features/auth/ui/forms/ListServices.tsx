@@ -3,7 +3,7 @@ import React from 'react';
 import { View, FlatList, StyleSheet, Pressable, Animated, useWindowDimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
-import type { Service } from '@store/api/api.types';
+import type { Service } from '@entities/service/model';
 import Text from '@components/Text';
 import SvgIcon from '@components/Icon/SvgIcon';
 import { verticalScale, horizontalScale } from '@utils/normalizedCss';

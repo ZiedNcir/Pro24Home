@@ -15,7 +15,7 @@ import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { useGetProfileQuery } from '@entities/user/api/user.api';
 import { useUploadDocumentMutation } from '@roles/professional/documents/api/documents.api';
 import { selectUser } from '@store/slices/authSlice';
-import type { Document, DocumentType } from '@store/api/api.types';
+import type { Document, DocumentType } from '@entities/user/model';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import type { AppStackType } from '../../../../navigation/constant/core';
