@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
-import InterventionHeader from '@screens/Intervention/components/InterventionHeader';
+import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import { colors } from '@theme/index';
 import { moderateScale, verticalScale } from '@utils/normalizedCss';
 

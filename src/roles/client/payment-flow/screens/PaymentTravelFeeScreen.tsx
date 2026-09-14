@@ -7,7 +7,7 @@ import styled from 'styled-components/native';
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
-import InterventionHeader from '@screens/Intervention/components/InterventionHeader';
+import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import { horizontalScale, verticalScale, moderateScale } from '@utils/normalizedCss';
 import { colors } from '@theme/index';
 import { useNavigation } from '@react-navigation/core';

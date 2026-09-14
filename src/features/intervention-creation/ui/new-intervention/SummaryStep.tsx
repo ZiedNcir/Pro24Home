@@ -5,7 +5,7 @@ import styled from 'styled-components/native';
 import Text from '@components/Text';
 import { colors } from '@theme/index';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
-import BottomActions from '@screens/Intervention/components/BottomActions';
+import BottomActions from '@shared/ui/action/BottomActions';
 import type { SummaryStepProps } from './types';
 
 const SummaryStep: React.FC<SummaryStepProps> = ({

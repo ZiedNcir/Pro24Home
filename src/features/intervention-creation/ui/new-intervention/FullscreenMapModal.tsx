@@ -13,7 +13,7 @@ import {
   verticalScale,
 } from '@utils/normalizedCss';
 import type { FullscreenMapModalProps } from './types';
-import InterventionHeader from '@screens/Intervention/components/InterventionHeader';
+import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 
 const FullscreenMapModal: React.FC<FullscreenMapModalProps> = ({
   visible,

@@ -6,7 +6,7 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
-import InterventionHeader from '@screens/Intervention/components/InterventionHeader';
+import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import StepProgress from '../ui/StepProgress';
 import ServiceStep from '../ui/new-intervention/ServiceStep';
 import DetailsStep from '../ui/new-intervention/DetailsStep';

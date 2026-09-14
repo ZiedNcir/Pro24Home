@@ -6,7 +6,7 @@ import { Toast } from '@core/notifications/toast';
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
-import InterventionHeader from '@screens/Intervention/components/InterventionHeader';
+import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import { useTheme } from '@theme/ThemeProvider';
 import { useAppSelector } from '@store/hooks';
 import { selectUser } from '@store/slices/authSlice';

@@ -3,11 +3,11 @@ import styled from 'styled-components/native';
 
 import Text from '@components/Text';
 import { verticalScale } from '@utils/normalizedCss';
-import SelectableCard from '@screens/Intervention/components/SelectableCard';
-import ServiceSummaryCard from '@screens/Intervention/components/ServiceSummaryCard';
+import SelectableCard from '@shared/ui/selection/SelectableCard';
+import ServiceSummaryCard from '@entities/service/ui/ServiceSummaryCard';
 import ServiceSelectionModal from './ServiceSelectionModal';
-import InfoNotice from '@screens/Intervention/components/InfoNotice';
-import BottomActions from '@screens/Intervention/components/BottomActions';
+import InfoNotice from '@shared/ui/action/InfoNotice';
+import BottomActions from '@shared/ui/action/BottomActions';
 import type { ServiceStepProps } from './types';
 
 const ServiceStep: React.FC<ServiceStepProps> = ({

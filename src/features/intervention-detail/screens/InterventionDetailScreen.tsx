@@ -8,7 +8,7 @@ import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
 import { colors } from '@theme/index';
-import InterventionHeader from '@screens/Intervention/components/InterventionHeader';
+import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import { ClientInterventionDetails, confirmRefusal, ProfessionalInterventionDetails } from '../ui/intervention-detail/InterventionDetailSections';
 import InterventionDetailSkeleton from '../ui/intervention-detail/InterventionDetailSkeleton';
 import ClientRatingModal from '../ui/intervention-detail/ClientRatingModal';

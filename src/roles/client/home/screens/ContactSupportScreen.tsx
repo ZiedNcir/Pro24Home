@@ -9,7 +9,7 @@ import Text from '@components/Text';
 import Field from '@shared/ui/form/HookFormField';
 import { SvgIcon } from '@components/Icon';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
-import InterventionHeader from '@screens/Intervention/components/InterventionHeader';
+import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { isSupportFormValid, SUPPORT_TOPICS } from '@screens/Home/client/utils/contactSupport';

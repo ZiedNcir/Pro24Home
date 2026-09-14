@@ -16,7 +16,7 @@ import {
   verticalScale,
 } from '@utils/normalizedCss';
 import { useNavigation } from '@react-navigation/native';
-import InterventionHeader from '@screens/Intervention/components/InterventionHeader';
+import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import { PROFESSIONAL_SETTINGS_DOCUMENT } from '../../../../navigation/professionalNavigation';
 
 type ModalType = 'payment' | 'faq' | 'terms' | null;

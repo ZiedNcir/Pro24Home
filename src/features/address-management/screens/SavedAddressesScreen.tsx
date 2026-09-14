@@ -8,7 +8,7 @@ import styled from 'styled-components/native';
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
-import InterventionHeader from '@screens/Intervention/components/InterventionHeader';
+import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import AddressModal from '@features/intervention-creation/ui/new-intervention/AddressModal';
 import FullscreenMapModal from '@features/intervention-creation/ui/new-intervention/FullscreenMapModal';
 import {

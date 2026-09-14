@@ -14,7 +14,7 @@ import {
     moderateScale,
 } from '@utils/normalizedCss';
 
-import InterventionHeader from '@screens/Intervention/components/InterventionHeader';
+import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import FullscreenMapModal from '@features/intervention-creation/ui/new-intervention/FullscreenMapModal';
 import type { SelectedAddressLocation } from '@features/intervention-creation/model/google-place-address';
 import { colors } from '@theme/index';

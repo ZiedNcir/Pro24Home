@@ -11,8 +11,8 @@ import {
   moderateScale,
   verticalScale,
 } from '@utils/normalizedCss';
-import AddressCard from '@screens/Intervention/components/AddressCard';
-import BottomActions from '@screens/Intervention/components/BottomActions';
+import AddressCard from '@entities/address/ui/AddressCard';
+import BottomActions from '@shared/ui/action/BottomActions';
 import AddressModal from './AddressModal';
 import FullscreenMapModal from './FullscreenMapModal';
 import type { AddressStepProps } from './types';
