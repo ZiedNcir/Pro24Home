@@ -34,7 +34,7 @@ import ClientSettingsScreen, {
   ProfessionalSettingsScreen,
 } from '@roles/client/home/screens/SettingsScreen';
 import ContactSupportScreen from '@roles/client/home/screens/ContactSupportScreen';
-import ProfileScreen from '@features/profile/screens/ProfileScreen';
+import ProfileScreen from '@roles/client/profile/screens/ProfileScreen';
 import HomeProfessional from '@roles/professional/documents/screens/DocumentsScreen';
 import ProfessionalHomeDashboard from '@roles/professional/dashboard/screens/DashboardScreen';
 import { NotificationsScreen } from '@features/notification-center/screens/NotificationsScreen';
