@@ -18,15 +18,22 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
-jest.mock('@components/index', () => {
+jest.mock('@shared/ui/button/Button', () => {
   const ReactModule = jest.requireActual<typeof React>('react');
-  const { View: NativeView, Text: NativeText, Pressable } = jest.requireActual<typeof import('react-native')>('react-native');
+  const { Text: NativeText, Pressable } = jest.requireActual<typeof import('react-native')>('react-native');
   return {
+    __esModule: true,
     Button: ({ title, ...props }: { title: string }) => ReactModule.createElement(Pressable, props, ReactModule.createElement(NativeText, null, title)),
-    Field: () => ReactModule.createElement(NativeView),
+  };
+});
+
+jest.mock('@shared/ui/form/HookFormField', () => {
+  const ReactModule = jest.requireActual<typeof React>('react');
+  const { View: NativeView } = jest.requireActual<typeof import('react-native')>('react-native');
+  return {
+    __esModule: true,
+    default: () => ReactModule.createElement(NativeView),
     FieldValidators: { required: () => ({}) },
-    Text: (props: React.ComponentProps<typeof NativeText>) => ReactModule.createElement(NativeText, props),
-    Spinner: () => ReactModule.createElement(NativeView),
   };
 });
 

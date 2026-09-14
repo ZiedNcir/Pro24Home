@@ -1,5 +1,9 @@
 /* global jest */
 
+if (typeof window !== 'undefined' && typeof window.dispatchEvent !== 'function') {
+  window.dispatchEvent = jest.fn();
+}
+
 jest.mock('react-native-splash-screen', () => ({
   hide: jest.fn(),
 }));
