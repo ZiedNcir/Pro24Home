@@ -4,7 +4,7 @@ import { useNavigation, useRoute, type RouteProp } from '@react-navigation/nativ
 import { Toast } from '@core/notifications/toast';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
-import ScreenContainer from '@components/ScreenContainer';
+import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import InterventionHeader from '@screens/Intervention/components/InterventionHeader';
 import StepProgress from '@screens/Intervention/components/StepProgress';

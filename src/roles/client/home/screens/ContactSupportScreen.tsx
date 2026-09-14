@@ -4,9 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components/native';
 
-import ScreenContainer from '@components/ScreenContainer';
+import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@components/Text';
-import Field from '@components/Field';
+import Field from '@shared/ui/form/HookFormField';
 import { SvgIcon } from '@components/Icon';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import InterventionHeader from '@screens/Intervention/components/InterventionHeader';

@@ -3,7 +3,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
 
-import ScreenContainer from '@components/ScreenContainer';
+import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 
 import { Colors } from '@utils/constant';
 import { useAuth } from '@hooks/useAuth';

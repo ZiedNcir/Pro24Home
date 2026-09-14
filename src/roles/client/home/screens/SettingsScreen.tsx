@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ActivityIndicator, Modal, Switch } from 'react-native';
 import styled from 'styled-components/native';
 
-import ScreenContainer from '@components/ScreenContainer';
+import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@components/Text';
 import { SvgIcon, type IconName } from '@components/Icon';
 import { useTheme } from '@theme/ThemeProvider';

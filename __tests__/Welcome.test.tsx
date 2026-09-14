@@ -13,12 +13,13 @@ jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 44, right: 0, bottom: 34, left: 0 }),
 }));
 
-jest.mock('@components/index', () => {
+jest.mock('@shared/ui/layout/ScreenContainer', () => {
   const ReactModule = jest.requireActual<typeof React>('react');
   const { View: NativeView } = jest.requireActual<typeof import('react-native')>('react-native');
 
   return {
-    ScreenContainer: ({ children, ...props }: React.ComponentProps<typeof View>) =>
+    __esModule: true,
+    default: ({ children, ...props }: React.ComponentProps<typeof View>) =>
       ReactModule.createElement(NativeView, { ...props, testID: 'screen-container' }, children),
   };
 });

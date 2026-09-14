@@ -1,4 +1,5 @@
-import { Button, Field, FieldValidators } from '@components/index';
+import { Button } from '@shared/ui/button/Button';
+import Field, { FieldValidators } from '@shared/ui/form/HookFormField';
 import { validateClientRegistration, mapApiError, prepareRegistrationPayload } from '@features/auth/services/registration';
 import { Spinner } from '@components/Modal/AppSpinner';
 import Text from '@components/Text';

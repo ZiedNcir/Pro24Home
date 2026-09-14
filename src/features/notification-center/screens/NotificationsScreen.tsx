@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import styled from 'styled-components/native';
 
-import ScreenContainer from '@components/ScreenContainer';
+import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import NotificationHeader from '../components/NotificationHeader';
 import NotificationFilters, { FilterItem } from '../components/NotificationFilters';
 import NotificationSection from '../components/NotificationSection';

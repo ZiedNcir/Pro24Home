@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
 
-import ScreenContainer from '@components/ScreenContainer';
+import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import InterventionHeader from '../InterventionHeader';
 import { colors } from '@theme/index';
 import { moderateScale, verticalScale } from '@utils/normalizedCss';

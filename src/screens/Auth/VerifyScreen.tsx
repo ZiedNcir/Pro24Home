@@ -1,4 +1,6 @@
-import { Button, Field, Text } from '@components/index';
+import { Text } from '@components/index';
+import { Button } from '@shared/ui/button/Button';
+import Field from '@shared/ui/form/HookFormField';
 import AppImage from '@components/Image/AppImage';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -11,7 +13,9 @@ import { useForm } from 'react-hook-form';
 import { Toast } from '@core/notifications/toast';
 import styled from 'styled-components/native';
 
-import { ScreenContainer, NavigationHeader, Spinner } from '@components/index';
+import { Spinner } from '@components/index';
+import ScreenContainer from '@shared/ui/layout/ScreenContainer';
+import NavigationHeader from '@shared/ui/navigation/NavigationHeader';
 import { AppStackType } from '../../navigation/constant/core';
 import { useVerifyAccountMutation, useResendVerificationMutation } from '@features/auth/api/auth.api';
 

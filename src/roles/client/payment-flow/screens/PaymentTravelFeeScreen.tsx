@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 
-import ScreenContainer from '@components/ScreenContainer';
+import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
 import InterventionHeader from '@screens/Intervention/components/InterventionHeader';

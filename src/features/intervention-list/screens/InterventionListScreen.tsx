@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 
-import ScreenContainer from '@components/ScreenContainer';
+import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@components/Text';
 import { SvgIcon, type IconName } from '@components/Icon';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';

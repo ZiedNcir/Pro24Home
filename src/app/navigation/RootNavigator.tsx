@@ -26,7 +26,7 @@ import {
   verticalScale,
 } from '@utils/normalizedCss';
 import AccountPendingScreen from '@roles/client/home/screens/AccountPendingScreen';
-import { Button } from '@components/index';
+import { Button } from '@shared/ui/button/Button';
 import { useTheme } from '@theme/ThemeProvider';
 import { IconName } from '@components/Icon';
 import ClientHome from '@roles/client/home/screens/HomeScreen';

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
 
-import ScreenContainer from '@components/ScreenContainer';
+import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import HeaderLocation from '@screens/Home/client/component/HeaderLocation';

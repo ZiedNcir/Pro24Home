@@ -7,7 +7,7 @@ import { colors } from '@theme/index';
 import { fontPixel, horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import Text from '@components/Text';
 import { Spinner } from '@components/Modal/AppSpinner';
-import { ScreenContainer } from '@components/index';
+import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 
 type RootStackParamList = {

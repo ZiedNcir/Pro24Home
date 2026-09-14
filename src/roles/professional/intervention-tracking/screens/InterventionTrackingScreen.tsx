@@ -6,7 +6,7 @@ import MapViewDirections from 'react-native-maps-directions';
 import styled from 'styled-components/native';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 
-import ScreenContainer from '@components/ScreenContainer';
+import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
 import { GOOGLE_DIRECTIONS_API_KEY } from '../../../../config/googlePlaces';

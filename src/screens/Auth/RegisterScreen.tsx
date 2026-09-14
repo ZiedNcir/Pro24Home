@@ -12,7 +12,8 @@ import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { useTheme } from '@theme/ThemeProvider';
 
 // Components
-import { Text, ScreenContainer } from '@components/index';
+import { Text } from '@components/index';
+import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 
 // Redux
 import { useAppSelector } from '@store/hooks';
