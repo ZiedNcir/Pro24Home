@@ -88,7 +88,7 @@ src/
     assets/
 ```
 
-Chaque entité expose ses types, ses normaliseurs, ses sélecteurs et les endpoints de lecture liés à cette donnée. Chaque fonctionnalité expose uniquement son API publique via `index.ts`. Les dossiers `roles/client` et `roles/professional` ne contiennent que les actions et écrans qui diffèrent réellement selon le rôle.
+Chaque entité expose ses types, ses normaliseurs, ses sélecteurs et les endpoints de lecture liés à cette donnée. Chaque fonctionnalité expose uniquement son API publique via `index.ts`. Les dossiers `roles/client` et `roles/professional` ne contiennent que les actions et écrans qui diffèrent réellement selon le rôle. Les dépendances suivent la direction `app → roles/features → entities/core/shared` : une feature ne dépend jamais d’un module de rôle, tandis qu’un module de rôle peut consommer une feature seulement lorsque cette dernière est neutre vis-à-vis du rôle.
 
 ## Modèle de rôles
 

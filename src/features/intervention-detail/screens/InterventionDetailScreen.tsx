@@ -15,7 +15,10 @@ import ClientRatingModal from '@screens/Intervention/components/intervention-det
 import { moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useGetInterventionQuery } from '@entities/intervention/api/intervention.api';
 import { useAddRatingMutation } from '@entities/intervention/api/intervention.api';
-import { useAcceptInterventionMutation, useReviseInterventionMutation } from '@roles/professional/availability/api/availability.api';
+import {
+    useAcceptInterventionMutation,
+    useReviseInterventionMutation,
+} from '@entities/intervention/api/intervention-actions.api';
 import { selectIsProfessional, selectUser } from '@store/slices/authSlice';
 import { normalizeInterventionResponse } from '@store/api/utils/interventionResponse';
 import { AppStackType } from '../../../navigation/constant/core';
