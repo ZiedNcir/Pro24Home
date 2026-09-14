@@ -5,7 +5,7 @@
 import React from 'react';
 import ReactTestRenderer from 'react-test-renderer';
 
-jest.mock('../src/navigation/AppNavigator', () => () => null);
+jest.mock('../src/app/navigation/RootNavigator', () => () => null);
 jest.mock('../src/utils/permissions', () => ({ requestPermissions: jest.fn() }));
 jest.mock('../src/utils/i18n', () => ({}));
 jest.mock('react-native-toast-notifications', () => ({

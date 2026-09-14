@@ -1,1 +1,1 @@
-export { default } from '../../../../screens/Home/client/screens/ClientSettingsScreen';
+export { default, ProfessionalSettingsScreen } from '../../../../screens/Home/client/screens/ClientSettingsScreen';
