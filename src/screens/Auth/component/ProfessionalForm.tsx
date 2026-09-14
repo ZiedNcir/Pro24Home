@@ -214,22 +214,20 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
             }
 
             dispatch(setError(errorMessage));
-            errorMessage && typeof errorMessage === 'object' && (() => {
+            if (errorMessage && typeof errorMessage === 'object') {
                 const field = Object.keys(errorMessage)[0];
                 if (field) {
                     const msgArr = errorMessage[field];
-                    let msg = Array.isArray(msgArr) ? msgArr[0] : msgArr;
+                    const msg = Array.isArray(msgArr) ? msgArr[0] : msgArr;
 
                     console.log(`Error in field ${field}: ${msg}`);
-                    return Toast.show(`${field}: ${String(msg)}`, {
+                    Toast.show(`${field}: ${String(msg)}`, {
                         type: 'danger',
                         placement: 'bottom',
                         duration: 4000,
-
-                    });;
-
+                    });
                 }
-            })();
+            }
 
 
 

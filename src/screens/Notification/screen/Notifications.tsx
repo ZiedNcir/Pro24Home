@@ -55,7 +55,7 @@ export const NotificationsScreen = () => {
         const promos = notificationsResponse.data.filter(n => n.type === 'system').length;
 
         return [
-            { key: 'all', label: 'Toutes', icon: 'fa-envelope', count: all },
+            { key: 'all', label: 'Toutes', icon: 'fa-bell', count: all },
             { key: 'unread', label: 'Non lues', icon: 'fa-envelope-open-text', count: unread },
             { key: 'requests', label: 'Demandes', icon: 'fa-file-alt', count: requests },
             { key: 'promos', label: 'Promotions', icon: 'fa-tag', count: promos },

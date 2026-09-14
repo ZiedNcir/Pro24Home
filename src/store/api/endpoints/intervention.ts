@@ -27,7 +27,7 @@ export const interventionEndpoints = api.injectEndpoints({
         // Get Single Intervention
         getIntervention: builder.query<Intervention, number>({
             query: (id) => `/api/get-intervention/${id}`,
-            providesTags: (result, error, id) => [{ type: 'Interventions', id }],
+            providesTags: (_result, _error, id) => [{ type: 'Interventions', id }],
             transformResponse: normalizeInterventionResponse,
         }),
 

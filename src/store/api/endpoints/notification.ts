@@ -28,24 +28,6 @@ export const notificationEndpoints = api.injectEndpoints({
                 method: 'GET',
             }),
             invalidatesTags: ['Notifications'],
-            onQueryStarted: async (id, { dispatch, queryFulfilled }) => {
-                // Optimistic update
-                const patchResult = dispatch(
-                    api.util.updateQueryData('getNotifications', {}, (draft) => {
-                        const notification = draft.data.find(n => n.id === id);
-                        if (notification) {
-                            notification.read = true;
-                            notification.read_at = new Date().toISOString();
-                        }
-                    })
-                );
-
-                try {
-                    await queryFulfilled;
-                } catch {
-                    patchResult.undo();
-                }
-            },
         }),
 
         // Mark All as Read

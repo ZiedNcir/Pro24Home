@@ -24,7 +24,7 @@ i18n
   .use(initReactI18next)
   .use(intervalPlural)
   .init({
-    lng: getLocales()[0].languageCode || defaultLanguage,
+    lng: getLocales()[0]?.languageCode || defaultLanguage,
     fallbackLng: defaultLanguage,
     resources,
   });

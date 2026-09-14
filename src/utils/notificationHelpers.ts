@@ -27,16 +27,16 @@ export const formatTimeAgo = (dateString: string): string => {
 export const getNotificationIcon = (type: Notification['type']): NotificationItem['icon'] => {
     switch (type) {
         case 'intervention':
-            return 'fa-tools';
+            return 'fa-file-alt';
         case 'devis':
-            return 'fa-file-invoice-dollar';
+            return 'fa-file-invoice';
         case 'reclamation':
-            return 'fa-exclamation-triangle';
+            return 'fa-exclamation-circle';
         case 'payment':
             return 'fa-credit-card';
         case 'system':
         default:
-            return 'fa-info-circle';
+            return 'fa-info';
     }
 };
 
@@ -77,6 +77,7 @@ export const groupNotificationsByTime = (notifications: Notification[], transfor
     notifications.forEach((notification, index) => {
         const notificationDate = new Date(notification.created_at);
         const transformedItem = transformedNotifications[index];
+        if (!transformedItem) return;
 
         if (notificationDate >= todayStart) {
             today.push(transformedItem);

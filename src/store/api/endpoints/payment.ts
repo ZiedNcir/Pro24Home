@@ -76,7 +76,7 @@ export const paymentEndpoints = api.injectEndpoints({
         // Get Payment Details
         getPaymentDetails: builder.query<Payment, number>({
             query: (id) => `/api/payments/${id}`,
-            providesTags: (result, error, id) => [{ type: 'Payments', id }],
+            providesTags: (_result, _error, id) => [{ type: 'Payments', id }],
             transformResponse: (response: any) => response.data || response,
         }),
     }),
