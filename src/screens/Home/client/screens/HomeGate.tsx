@@ -7,7 +7,7 @@ import ScreenContainer from '@components/ScreenContainer';
 
 import { Colors } from '@utils/constant';
 import { useAuth } from '@hooks/useAuth';
-import ClientHome from './HomeClient';
+import ClientHome from '@roles/client/home/screens/HomeScreen';
 
 export const HomeGate: React.FC = () => {
 
