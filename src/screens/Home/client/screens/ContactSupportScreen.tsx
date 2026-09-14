@@ -19,7 +19,7 @@ type SupportFormValues = { message: string };
 const ContactSupportScreen = () => {
     const navigation = useNavigation<any>();
     const { control, handleSubmit } = useForm<SupportFormValues>({ defaultValues: { message: '' } });
-    const [topic, setTopic] = useState(SUPPORT_TOPICS[0]);
+    const [topic, setTopic] = useState(SUPPORT_TOPICS[0]!);
     const [attachment, setAttachment] = useState(false);
     const [topicModalVisible, setTopicModalVisible] = useState(false);
     const [submitted, setSubmitted] = useState(false);

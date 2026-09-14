@@ -11,7 +11,7 @@ import { colors } from '@theme/index';
 import { useNavigation } from '@react-navigation/core';
 
 export const InterventionSuccessScreen = () => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
     return (
         <ScreenContainer
             mode="light"

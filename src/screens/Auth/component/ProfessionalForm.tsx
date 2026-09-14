@@ -330,7 +330,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                 password: '***HIDDEN***'
             });
 
-            const result = await registerProfessional(registrationData).unwrap();
+            const result = await registerProfessional(registrationData as RegisterProfessionalRequest).unwrap();
 
             console.log('Professional registration successful:', result);
 

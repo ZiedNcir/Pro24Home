@@ -14,8 +14,6 @@ import styled from 'styled-components/native';
 import { ScreenContainer, NavigationHeader, Spinner } from '@components/index';
 import { AppStackType } from '../../navigation/constant/core';
 import { useVerifyAccountMutation, useResendVerificationMutation } from '@features/auth/api/auth.api';
-import { useAppDispatch } from '@store/hooks';
-import { setCredentials } from '@store/slices/authSlice';
 
 type AppNavigationProp = NativeStackNavigationProp<AppStackType>;
 
@@ -75,7 +73,6 @@ export const VerifyAccountScreen = () => {
     const route = useRoute();
     const navigation = useNavigation<AppNavigationProp>();
     const params = route.params as RouteParams;
-    const dispatch = useAppDispatch();
 
     const { Overlay } = useKeyboardOverlay();
     const { handleSubmit, control, getValues } = useForm({
@@ -94,13 +91,15 @@ export const VerifyAccountScreen = () => {
 
     // Timer effect - countdown from 5 minutes after unsuccessful resend
     useEffect(() => {
-        let interval: NodeJS.Timeout;
+        let interval: ReturnType<typeof setInterval> | undefined;
         if (timer > 0) {
             interval = setInterval(() => {
                 setTimer(prev => prev - 1);
             }, 1000);
         }
-        return () => clearInterval(interval);
+        return () => {
+            if (interval) clearInterval(interval);
+        };
     }, [timer]);
 
     const doVerification = async () => {
@@ -132,14 +131,6 @@ export const VerifyAccountScreen = () => {
                 duration: 3000,
             });
 
-            // If result contains user data, update auth state
-            if (result.data) {
-                dispatch(setCredentials({
-                    user: result.data,
-                    token: result.data.access_token || '',
-                    refreshToken: result.data.refreshToken,
-                }));
-            }
 
             // Navigate based on user role
             setTimeout(() => {
