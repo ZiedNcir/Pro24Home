@@ -25,29 +25,31 @@ import {
   moderateScale,
   verticalScale,
 } from '@utils/normalizedCss';
-import AccountPendingScreen from '@roles/client/home/screens/AccountPendingScreen';
+import {
+  AccountPendingScreen,
+  ClientHome,
+  ClientSettingsScreen,
+  ContactSupportScreen,
+  ProfessionalSettingsScreen,
+} from '@roles/client/home';
 import { Button } from '@shared/ui/button/Button';
 import { useTheme } from '@theme/ThemeProvider';
 import { IconName } from '@components/Icon';
-import ClientHome from '@roles/client/home/screens/HomeScreen';
-import ClientSettingsScreen, {
-  ProfessionalSettingsScreen,
-} from '@roles/client/home/screens/SettingsScreen';
-import ContactSupportScreen from '@roles/client/home/screens/ContactSupportScreen';
-import ProfileScreen from '@roles/client/profile/screens/ProfileScreen';
-import HomeProfessional from '@roles/professional/documents/screens/DocumentsScreen';
-import ProfessionalHomeDashboard from '@roles/professional/dashboard/screens/DashboardScreen';
-import { NotificationsScreen } from '@features/notification-center/screens/NotificationsScreen';
-import { AddAddressScreen } from '@features/address-management/screens/AddAddressScreen';
-import SavedAddressesScreen from '@features/address-management/screens/SavedAddressesScreen';
-import { NewInterventionScreen } from '@features/intervention-creation/screens/NewInterventionScreen';
-import InterventionDetailScreen from '@features/intervention-detail/screens/InterventionDetailScreen';
-import InterventionListScreen from '@features/intervention-list/screens/InterventionListScreen';
-import { InterventionSuccessScreen } from '@roles/client/payment-flow/screens/InterventionSuccessScreen';
-import { PaymentTravelFeeScreen } from '@roles/client/payment-flow/screens/PaymentTravelFeeScreen';
-import { PriceEstimationScreen } from '@roles/client/payment-flow/screens/PriceEstimationScreen';
+import { ProfileScreen } from '@roles/client/profile';
+import { DocumentsScreen as HomeProfessional } from '@roles/professional/documents';
+import { ProfessionalHomeDashboard } from '@roles/professional/dashboard';
+import { NotificationsScreen } from '@features/notification-center';
+import { AddAddressScreen, SavedAddressesScreen } from '@features/address-management';
+import { NewInterventionScreen } from '@features/intervention-creation';
+import { InterventionDetailScreen } from '@features/intervention-detail';
+import { InterventionListScreen } from '@features/intervention-list';
+import {
+  InterventionSuccessScreen,
+  PaymentTravelFeeScreen,
+  PriceEstimationScreen,
+} from '@roles/client/payment-flow';
 import { PROFESSIONAL_BOTTOM_TABS } from '../../navigation/professionalNavigation';
-import ProfessionalInterventionTrackingScreen from '@roles/professional/intervention-tracking/screens/InterventionTrackingScreen';
+import { ProfessionalInterventionTrackingScreen } from '@roles/professional/intervention-tracking';
 
 const { Navigator: BottomTabNavigator, Screen: BottomTabScreen } =
   createBottomTabNavigator<BottomTabType>();
