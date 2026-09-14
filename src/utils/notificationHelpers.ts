@@ -1,6 +1,6 @@
 // src/utils/notificationHelpers.ts
 import { Notification } from '@store/api/api.types';
-import { NotificationItem } from '@screens/Notification/components/NotificationCard';
+import { NotificationItem } from '@features/notification-center/components/NotificationCard';
 
 export const formatTimeAgo = (dateString: string): string => {
     const now = new Date();
