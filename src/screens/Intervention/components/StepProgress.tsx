@@ -7,7 +7,7 @@ import {
     horizontalScale,
     verticalScale,
 } from '@utils/normalizedCss';
-import { InterventionStep } from '../screens/types';
+import { InterventionStep } from '@features/intervention-creation/screens/types';
 import { colors } from '@theme/index';
 
 const labels = ['Type de service', 'Détails', 'Adresse', 'Récapitulatif'];
