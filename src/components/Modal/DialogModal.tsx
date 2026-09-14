@@ -100,6 +100,7 @@ const DialogModal: React.FC<DialogModalProps> = ({
 
             return () => clearTimeout(timer);
         }
+        return undefined;
     }, [visible, autoHideDuration, onRequestClose]);
 
     // Get type-based configurations

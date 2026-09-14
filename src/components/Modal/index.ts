@@ -1,4 +1,4 @@
 // Barrel export for Modal submodule
 export { Spinner } from './AppSpinner';
-export { CustomModal } from './CustomModal';
-export { DialogModal } from './DialogModal';
+export { default as CustomModal } from './CustomModal';
+export { default as DialogModal } from './DialogModal';

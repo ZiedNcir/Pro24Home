@@ -43,7 +43,7 @@ const resolveColor = (c?: AppColor): string => {
 
     // Si c est une clé de Colors -> on mappe
     if (Object.prototype.hasOwnProperty.call(Colors, c)) {
-        return Colors[c as keyof typeof Colors];
+        return Colors[c as keyof typeof Colors] as string;
     }
 
     // Sinon, on considère que c est déjà une couleur RN valide ('#...', 'rgba(...)', etc.)

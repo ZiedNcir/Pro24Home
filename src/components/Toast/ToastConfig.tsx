@@ -1,7 +1,8 @@
 // src/components/Toast/ToastConfig.tsx
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, SvgIcon } from '@components';
+import Text from '@components/Text';
+import SvgIcon from '@components/Icon/SvgIcon';
 import type { IconName } from '@components/Icon/SvgIcon';
 import { useTheme } from '@theme/ThemeProvider';
 

@@ -28,7 +28,8 @@ export const getHomeRouteFromAuthResponse = (
         ? { ...response, ...response.data }
         : response;
 
-    if (payload.is_active === 0 || payload.is_active === '0') return 'AccountPendingScreen';
+    const accountStatus = payload.is_active as unknown;
+    if (accountStatus === 0 || accountStatus === '0') return 'AccountPendingScreen';
     const userType = payload.user?.type ?? fallbackRole;
     return userType === UserType.PROFESSIONAL ? 'ProfessionnelHome' : 'Tabs';
 };
