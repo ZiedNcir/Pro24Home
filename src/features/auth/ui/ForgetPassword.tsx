@@ -14,7 +14,7 @@ import { horizontalScale, moderateScale, verticalScale } from '@utils/normalized
 import { useTheme } from '@theme/ThemeProvider';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { useForgotPasswordMutation } from '@features/auth/api/auth.api';
-import { AppStackType } from '../../navigation/constant/core';
+import { AppStackType } from '../../../navigation/constant/core';
 
 type NavigationProp = NativeStackNavigationProp<AppStackType, 'ForgetPassword'>;
 

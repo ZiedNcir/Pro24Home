@@ -4,10 +4,10 @@ import styled from 'styled-components/native';
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
-import HeaderLocation from '@screens/Home/client/component/HeaderLocation';
-import HeroBanner from '@screens/Home/client/component/HeroBanner';
-import ServiceCategoryGrid from '@screens/Home/client/component/ServiceCategoryGrid';
-import FeatureHighlights from '@screens/Home/client/component/FeatureHighlights';
+import HeaderLocation from '@roles/client/home/ui/HeaderLocation';
+import HeroBanner from '@roles/client/home/ui/HeroBanner';
+import ServiceCategoryGrid from '@roles/client/home/ui/ServiceCategoryGrid';
+import FeatureHighlights from '@roles/client/home/ui/FeatureHighlights';
 import { useTheme } from '@theme/ThemeProvider';
 
 const ClientHome = () => {

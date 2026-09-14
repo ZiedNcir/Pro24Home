@@ -1,7 +1,7 @@
 import React from 'react';
 import { Animated, Image, View } from 'react-native';
 import ReactTestRenderer, { ReactTestInstance } from 'react-test-renderer';
-import Welcome from '../src/screens/Welcome';
+import Welcome from '../src/features/auth/ui/WelcomeScreen';
 
 const mockNavigate = jest.fn();
 

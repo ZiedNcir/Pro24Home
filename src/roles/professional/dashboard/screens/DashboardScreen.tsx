@@ -17,7 +17,7 @@ import { selectUser } from '@store/slices/authSlice';
 import type { Intervention } from '@store/api/api.types';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
-import { buildProfessionalStatusPayload, type Coordinates } from '@screens/Home/client/utils/professionalStatus';
+import { buildProfessionalStatusPayload, type Coordinates } from '@roles/professional/dashboard/model/professional-status';
 
 const formatDate = (value?: string) => {
     if (!value) return 'Date à confirmer';

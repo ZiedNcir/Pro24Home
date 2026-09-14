@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactTestRenderer, { act } from 'react-test-renderer';
-import ClientForm from '../src/screens/Auth/component/ClientForm';
+import ClientForm from '../src/features/auth/ui/forms/ClientForm';
 import { ThemeProvider } from '../src/theme/ThemeProvider';
 
 jest.mock('@react-native-async-storage/async-storage', () => ({

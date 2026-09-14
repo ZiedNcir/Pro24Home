@@ -12,7 +12,7 @@ import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
-import { isSupportFormValid, SUPPORT_TOPICS } from '@screens/Home/client/utils/contactSupport';
+import { isSupportFormValid, SUPPORT_TOPICS } from '@roles/client/home/model/contactSupport';
 
 type SupportFormValues = { message: string };
 

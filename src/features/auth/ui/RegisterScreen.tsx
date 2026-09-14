@@ -20,12 +20,12 @@ import { useAppSelector } from '@store/hooks';
 import { selectAuthLoading, selectIsAuthenticated } from '@store/slices/authSlice';
 
 // Screens & Forms
-import ProfessionalForm from './component/ProfessionalForm';
-import ClientForm from './component/ClientForm';
+import ProfessionalForm from './forms/ProfessionalForm';
+import ClientForm from './forms/ClientForm';
 import { useGetServicesQuery } from '@entities/service/api/service.api';
 
 // Types
-import { AppStackType } from '../../navigation/constant/core';
+import { AppStackType } from '../../../navigation/constant/core';
 
 type AppNavigationProp = NativeStackNavigationProp<AppStackType>;
 

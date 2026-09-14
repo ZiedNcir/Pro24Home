@@ -5,7 +5,7 @@ import styled from 'styled-components/native';
 
 import Text from '@components/Text';
 import { verticalScale, } from '@utils/normalizedCss';
-import CardService from './CardService';
+import CardService from '@entities/service/ui/CardService';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { AppStackType } from '../../../../navigation/constant/core';

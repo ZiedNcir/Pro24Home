@@ -1,4 +1,4 @@
-import { buildProfessionalStatusPayload } from '../src/screens/Home/client/utils/professionalStatus';
+import { buildProfessionalStatusPayload } from '../src/roles/professional/dashboard/model/professional-status';
 
 describe('buildProfessionalStatusPayload', () => {
     it('sends the onligne flag and current coordinates to update-status', () => {

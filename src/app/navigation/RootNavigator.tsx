@@ -10,13 +10,13 @@ import {
 import { AppStackType, BottomTabType } from '../../navigation/constant/core';
 import Text from '@components/Text';
 import {
-  Welcome,
-  VerifyAccountScreen,
+  AccountTypeScreen,
+  ForgetPassword,
   RegisterScreen,
   SignIn,
-  ForgetPassword,
-} from '@screens/index';
-import AccountTypeScreen from '@screens/Auth/AccountTypeScreen';
+  VerifyAccountScreen,
+  Welcome,
+} from '@features/auth';
 import styled from 'styled-components/native';
 import { Platform, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';

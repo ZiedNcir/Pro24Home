@@ -1,4 +1,4 @@
-import { SUPPORT_TOPICS, isSupportFormValid } from '../src/screens/Home/client/utils/contactSupport';
+import { SUPPORT_TOPICS, isSupportFormValid } from '../src/roles/client/home/model/contactSupport';
 
 describe('contact support form', () => {
     it('provides the support topics used by the form', () => {

@@ -9,7 +9,7 @@ import {
   verticalScale,
 } from '@utils/normalizedCss';
 import { colors } from '@theme/index';
-import CardService from '@screens/Home/client/component/CardService';
+import CardService from '@entities/service/ui/CardService';
 import type { Service } from '../../../../store/api/api.types';
 
 const serviceImages: ImageSourcePropType[] = [

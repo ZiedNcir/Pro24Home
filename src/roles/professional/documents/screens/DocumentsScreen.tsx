@@ -23,7 +23,7 @@ import {
     getDocumentForType,
     getDocumentProgress,
     PROFESSIONAL_DOCUMENTS,
-} from '@screens/Home/client/utils/professionalDocuments';
+} from '@roles/professional/documents/model/professional-documents';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 

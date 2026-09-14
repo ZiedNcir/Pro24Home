@@ -9,7 +9,7 @@ import { SvgIcon } from '@components/Icon';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
-import { ACCOUNT_PENDING_STEPS } from '@screens/Home/client/utils/accountPending';
+import { ACCOUNT_PENDING_STEPS } from '@roles/client/home/model/accountPending';
 
 export const AccountPendingScreen = () => {
     const navigation = useNavigation<any>();

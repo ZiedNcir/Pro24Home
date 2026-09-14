@@ -16,7 +16,7 @@ import styled from 'styled-components/native';
 import { Spinner } from '@components/index';
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import NavigationHeader from '@shared/ui/navigation/NavigationHeader';
-import { AppStackType } from '../../navigation/constant/core';
+import { AppStackType } from '../../../navigation/constant/core';
 import { useVerifyAccountMutation, useResendVerificationMutation } from '@features/auth/api/auth.api';
 
 type AppNavigationProp = NativeStackNavigationProp<AppStackType>;
