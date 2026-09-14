@@ -1,4 +1,3 @@
-// screens/auth/component/professional_form/ListeServices.tsx
 import React from 'react';
 import { View, FlatList, StyleSheet, Pressable, Animated, useWindowDimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';

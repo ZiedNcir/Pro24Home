@@ -1,4 +1,3 @@
-// src/screens/intervention/PriceEstimationScreen.tsx
 
 import React, { useState } from 'react';
 import { ActivityIndicator } from 'react-native';

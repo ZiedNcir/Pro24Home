@@ -1,4 +1,3 @@
-// screens/auth/RegisterScreen.tsx
 import React, { useEffect } from 'react';
 import { markAccountCreated } from '@core/session/account-onboarding';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';

@@ -1,4 +1,3 @@
-// src/screens/intervention/components/PhotoPickerRow.tsx
 
 import React from 'react';
 import { Image, Modal, Pressable } from 'react-native';

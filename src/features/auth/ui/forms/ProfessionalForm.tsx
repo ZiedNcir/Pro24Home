@@ -1,4 +1,3 @@
-// screens/auth/component/professional_form/index.tsx
 import { Spinner } from '@components/index';
 import { Button } from '@shared/ui/button/Button';
 import Field from '@shared/ui/form/HookFormField';
