@@ -38,16 +38,14 @@ import ProfileScreen from '@features/profile/screens/ProfileScreen';
 import HomeProfessional from '@roles/professional/documents/screens/DocumentsScreen';
 import ProfessionalHomeDashboard from '@roles/professional/dashboard/screens/DashboardScreen';
 import { NotificationsScreen } from '@features/notification-center/screens/NotificationsScreen';
-import {
-  AddAddressScreen,
-  SavedAddressesScreen,
-  InterventionSuccessScreen,
-  NewInterventionScreen,
-  PaymentTravelFeeScreen,
-  PriceEstimationScreen,
-  InterventionListScreen,
-  InterventionDetailScreen,
-} from '@screens/Intervention/index';
+import { AddAddressScreen } from '@features/address-management/screens/AddAddressScreen';
+import SavedAddressesScreen from '@features/address-management/screens/SavedAddressesScreen';
+import { NewInterventionScreen } from '@features/intervention-creation/screens/NewInterventionScreen';
+import InterventionDetailScreen from '@features/intervention-detail/screens/InterventionDetailScreen';
+import InterventionListScreen from '@features/intervention-list/screens/InterventionListScreen';
+import { InterventionSuccessScreen } from '@roles/client/payment-flow/screens/InterventionSuccessScreen';
+import { PaymentTravelFeeScreen } from '@roles/client/payment-flow/screens/PaymentTravelFeeScreen';
+import { PriceEstimationScreen } from '@roles/client/payment-flow/screens/PriceEstimationScreen';
 import { PROFESSIONAL_BOTTOM_TABS } from '../../navigation/professionalNavigation';
 import ProfessionalInterventionTrackingScreen from '@roles/professional/intervention-tracking/screens/InterventionTrackingScreen';
 
