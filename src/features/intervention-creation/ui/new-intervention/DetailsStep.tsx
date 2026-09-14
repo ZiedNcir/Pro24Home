@@ -4,9 +4,9 @@ import styled from 'styled-components/native';
 import Text from '@components/Text';
 import { colors } from '@theme/index';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
-import SelectableCard from '../SelectableCard';
-import PhotoPickerRow from '../PhotoPickerRow';
-import BottomActions from '../BottomActions';
+import SelectableCard from '@screens/Intervention/components/SelectableCard';
+import PhotoPickerRow from '@screens/Intervention/components/PhotoPickerRow';
+import BottomActions from '@screens/Intervention/components/BottomActions';
 import ScheduleDateModal from './ScheduleDateModal';
 import type { DetailsStepProps } from './types';
 

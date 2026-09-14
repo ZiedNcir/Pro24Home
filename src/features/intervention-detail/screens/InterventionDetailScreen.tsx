@@ -9,9 +9,9 @@ import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
 import { colors } from '@theme/index';
 import InterventionHeader from '@screens/Intervention/components/InterventionHeader';
-import { ClientInterventionDetails, confirmRefusal, ProfessionalInterventionDetails } from '@screens/Intervention/components/intervention-detail/InterventionDetailSections';
-import InterventionDetailSkeleton from '@screens/Intervention/components/intervention-detail/InterventionDetailSkeleton';
-import ClientRatingModal from '@screens/Intervention/components/intervention-detail/ClientRatingModal';
+import { ClientInterventionDetails, confirmRefusal, ProfessionalInterventionDetails } from '../ui/intervention-detail/InterventionDetailSections';
+import InterventionDetailSkeleton from '../ui/intervention-detail/InterventionDetailSkeleton';
+import ClientRatingModal from '../ui/intervention-detail/ClientRatingModal';
 import { moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useGetInterventionQuery } from '@entities/intervention/api/intervention.api';
 import { useAddRatingMutation } from '@entities/intervention/api/intervention.api';
@@ -22,7 +22,7 @@ import {
 import { selectIsProfessional, selectUser } from '@store/slices/authSlice';
 import { normalizeInterventionResponse } from '@store/api/utils/interventionResponse';
 import { AppStackType } from '../../../navigation/constant/core';
-import { getInterventionDetailCopy, getInterventionStatusColor, getInterventionStatusLabel, shouldShowRatingPrompt } from '@screens/Intervention/utils/interventionPresentation';
+import { getInterventionDetailCopy, getInterventionStatusColor, getInterventionStatusLabel, shouldShowRatingPrompt } from '@entities/intervention/model/intervention-presentation';
 
 const InterventionDetailScreen = () => {
     const route = useRoute<RouteProp<AppStackType, 'InterventionDetail'>>();

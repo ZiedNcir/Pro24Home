@@ -9,8 +9,8 @@ import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@components/Text';
 import { SvgIcon } from '@components/Icon';
 import InterventionHeader from '@screens/Intervention/components/InterventionHeader';
-import AddressModal from '@screens/Intervention/components/new-intervention/AddressModal';
-import FullscreenMapModal from '@screens/Intervention/components/new-intervention/FullscreenMapModal';
+import AddressModal from '@features/intervention-creation/ui/new-intervention/AddressModal';
+import FullscreenMapModal from '@features/intervention-creation/ui/new-intervention/FullscreenMapModal';
 import {
   useAddAddressMutation,
   useDeleteAddressMutation,
@@ -23,7 +23,7 @@ import { fetchAddressFromCoordinates } from '@core/maps/google-geocoding-client'
 import {
   mapGooglePlaceToAddress,
   type SelectedAddressLocation,
-} from '@screens/Intervention/utils/googlePlaceAddress';
+} from '@features/intervention-creation/model/google-place-address';
 import { colors } from '@theme/index';
 import {
   horizontalScale,

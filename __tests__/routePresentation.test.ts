@@ -1,4 +1,4 @@
-import { formatRouteDistance, getNavigationBannerCopy, getProfessionalStatusActions, getRouteFitCoordinates, getTrackingPanelMode } from '../src/screens/Intervention/utils/routePresentation';
+import { formatRouteDistance, getNavigationBannerCopy, getProfessionalStatusActions, getRouteFitCoordinates, getTrackingPanelMode } from '../src/roles/professional/intervention-tracking/model/route-presentation';
 
 describe('formatRouteDistance', () => {
     it('formats short and long routes for the tracking card', () => {

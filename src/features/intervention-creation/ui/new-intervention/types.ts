@@ -1,5 +1,5 @@
 import type { Address, Service } from '../../../../store/api/api.types';
-import type { SelectedAddressLocation } from '../../utils/googlePlaceAddress';
+import type { SelectedAddressLocation } from '../../model/google-place-address';
 
 export interface StepNavigationProps {
     onNext: () => void;

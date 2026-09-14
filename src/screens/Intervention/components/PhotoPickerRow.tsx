@@ -13,7 +13,7 @@ import {
     verticalScale,
     moderateScale,
 } from '@utils/normalizedCss';
-import type { InterventionPhoto } from './new-intervention/types';
+import type { InterventionPhoto } from '@features/intervention-creation/ui/new-intervention/types';
 
 interface PhotoPickerRowProps {
     photos: InterventionPhoto[];

@@ -15,8 +15,8 @@ import {
 } from '@utils/normalizedCss';
 
 import InterventionHeader from '@screens/Intervention/components/InterventionHeader';
-import FullscreenMapModal from '@screens/Intervention/components/new-intervention/FullscreenMapModal';
-import type { SelectedAddressLocation } from '@screens/Intervention/utils/googlePlaceAddress';
+import FullscreenMapModal from '@features/intervention-creation/ui/new-intervention/FullscreenMapModal';
+import type { SelectedAddressLocation } from '@features/intervention-creation/model/google-place-address';
 import { colors } from '@theme/index';
 
 export const AddAddressScreen = () => {

@@ -1,4 +1,4 @@
-import { canContinueAddressSelection, formatAddressForSummary } from '../src/screens/Intervention/utils/addressFlow';
+import { canContinueAddressSelection, formatAddressForSummary } from '../src/features/intervention-creation/model/address-flow';
 
 describe('canContinueAddressSelection', () => {
     it('blocks continue while searching or when no address is selected', () => {

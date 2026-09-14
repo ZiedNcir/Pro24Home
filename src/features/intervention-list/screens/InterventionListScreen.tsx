@@ -20,7 +20,7 @@ import {
     getInterventionStatusColor,
     getInterventionStatusLabel,
     type InterventionFilter,
-} from '@screens/Intervention/utils/interventionPresentation';
+} from '@entities/intervention/model/intervention-presentation';
 
 const FILTERS: Array<{ key: InterventionFilter; label: string }> = [
     { key: 'all', label: 'Toutes' },

@@ -15,8 +15,8 @@ import { horizontalScale, moderateScale, verticalScale } from '@utils/normalized
 import { useGetInterventionQuery } from '@entities/intervention/api/intervention.api';
 import { useUpdateStatusMutation, useUpdateInterventionStatusMutation } from '@roles/professional/availability/api/availability.api';
 import { AppStackType } from '../../../../navigation/constant/core';
-import { getInterventionAddress, getInterventionClientName } from '@screens/Intervention/utils/interventionPresentation';
-import { formatRouteDistance, getNavigationBannerCopy, getProfessionalStatusActions, getRouteFitCoordinates, getTrackingPanelMode } from '@screens/Intervention/utils/routePresentation';
+import { getInterventionAddress, getInterventionClientName } from '@entities/intervention/model/intervention-presentation';
+import { formatRouteDistance, getNavigationBannerCopy, getProfessionalStatusActions, getRouteFitCoordinates, getTrackingPanelMode } from '../model/route-presentation';
 
 type Coordinates = { latitude: number; longitude: number };
 

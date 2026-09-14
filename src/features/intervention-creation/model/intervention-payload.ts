@@ -1,5 +1,5 @@
 import type { CreateInterventionRequest } from '@store/api/api.types';
-import type { InterventionPhoto } from '../components/new-intervention/types';
+import type { InterventionPhoto } from '../ui/new-intervention/types';
 
 export interface InterventionPayloadInput {
     serviceId: number;

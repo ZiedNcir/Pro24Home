@@ -1,4 +1,4 @@
-import { buildInterventionPayload } from '../src/screens/Intervention/utils/interventionPayload';
+import { buildInterventionPayload } from '../src/features/intervention-creation/model/intervention-payload';
 
 describe('buildInterventionPayload', () => {
     it('builds the payload required by addIntervention from the selected flow data', () => {

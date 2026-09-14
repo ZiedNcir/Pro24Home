@@ -11,7 +11,7 @@ import { useAddDevisMutation, useAcceptDevisMutation, useReviseDevisMutation } f
 import { API_BASE_URL } from '../../../../config/api';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
-import { formatDistanceBetweenCoordinates, getInterventionAddress, getInterventionClientName, getInterventionImageUrls, getInterventionPrice, isValidInterventionPriceInput, shouldShowClientDevisActions, shouldShowPriceProposal, shouldShowTrackingButton } from '../../utils/interventionPresentation';
+import { formatDistanceBetweenCoordinates, getInterventionAddress, getInterventionClientName, getInterventionImageUrls, getInterventionPrice, isValidInterventionPriceInput, shouldShowClientDevisActions, shouldShowPriceProposal, shouldShowTrackingButton } from '@entities/intervention/model/intervention-presentation';
 
 type InterventionDetailData = Omit<Intervention, 'address' | 'price'> & {
     address?: Intervention['address'];
