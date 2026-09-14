@@ -332,7 +332,7 @@ const uiSlice = createSlice({
         // Network-aware actions
         queueAction: (
             state,
-            action: PayloadAction<{ type: string; payload: any; timestamp: number }>
+            _action: PayloadAction<{ type: string; payload: any; timestamp: number }>
         ) => {
             // This would typically be handled by a middleware
             // but we can store queued actions in state
@@ -341,7 +341,7 @@ const uiSlice = createSlice({
             }
         },
 
-        retryQueuedActions: (state) => {
+        retryQueuedActions: (_state) => {
             // Process queued actions when back online
         },
     },

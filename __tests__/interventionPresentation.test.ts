@@ -1,5 +1,5 @@
 import { InterventionStatus } from '../src/store/api/api.types';
-import { filterInterventions, formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName, getInterventionDetailCopy, getInterventionEmptyCopy, getInterventionImageUrls, getInterventionListCopy, getInterventionPrice, getProfessionalEmptyStateCopy, getInterventionStatusLabel, getInterventionDevis, isValidInterventionPriceInput, shouldShowClientDevisActions, shouldShowPriceProposal, shouldShowRatingPrompt, shouldShowTrackingButton } from '../src/screens/Intervention/utils/interventionPresentation';
+import { filterInterventions, formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName, getInterventionDetailCopy, getInterventionImageUrls, getInterventionListCopy, getInterventionPrice, getProfessionalEmptyStateCopy, getInterventionStatusLabel, getInterventionDevis, isValidInterventionPriceInput, shouldShowClientDevisActions, shouldShowPriceProposal, shouldShowRatingPrompt, shouldShowTrackingButton } from '../src/screens/Intervention/utils/interventionPresentation';
 
 describe('interventionPresentation', () => {
     it('shows tracking for accepted and in-progress professional interventions', () => {
