@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
 
-import Text from '@components/Text';
+import Text from '@shared/ui/typography/Text';
 import { verticalScale } from '@utils/normalizedCss';
 import NotificationCard, { NotificationItem } from './NotificationCard';
 

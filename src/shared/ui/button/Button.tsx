@@ -3,10 +3,10 @@ import { Pressable, PressableProps } from 'react-native';
 import styled from 'styled-components/native';
 import { Colors } from '@utils/constant';
 import { fontPixel, horizontalScale, verticalScale, moderateScale } from '@utils/normalizedCss';
-import Text from '@components/Text';
-import { Spinner } from '@components/Modal/AppSpinner';
-import { SvgIcon } from '@components/Icon';
-import type { IconName } from '@components/Icon/SvgIcon';
+import Text from '@shared/ui/typography/Text';
+import { Spinner } from '@shared/ui/overlay/AppSpinner';
+import { SvgIcon } from '@shared/ui/icon';
+import type { IconName } from '@shared/ui/icon/SvgIcon';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'warning' | 'positive';
 export type ButtonSize = 'small' | 'medium' | 'large' | 'xlarge';

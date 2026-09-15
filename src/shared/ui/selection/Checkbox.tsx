@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
-import Text from '@components/Text';
+import Text from '@shared/ui/typography/Text';
 import { horizontalScale } from '@utils/normalizedCss';
-import SvgIcon, { IconName } from '@components/Icon/SvgIcon';
+import SvgIcon, { IconName } from '@shared/ui/icon/SvgIcon';
 
 export type CheckBoxValue = string | number;
 

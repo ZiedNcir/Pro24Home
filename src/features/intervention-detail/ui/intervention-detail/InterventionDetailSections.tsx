@@ -3,9 +3,9 @@ import { ActivityIndicator, Alert, Modal, Platform, TextInput } from 'react-nati
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import styled from 'styled-components/native';
 
-import Text from '@components/Text';
-import { SvgIcon } from '@components/Icon';
-import AppImage from '@components/Image/AppImage';
+import Text from '@shared/ui/typography/Text';
+import { SvgIcon } from '@shared/ui/icon';
+import AppImage from '@shared/ui/image/AppImage';
 import type { Intervention } from '@entities/intervention/model';
 import { useAddDevisMutation, useAcceptDevisMutation, useReviseDevisMutation } from '@entities/quote/api/quote.api';
 import { API_BASE_URL } from '../../../../config/api';

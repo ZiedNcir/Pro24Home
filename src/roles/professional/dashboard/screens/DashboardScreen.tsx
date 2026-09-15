@@ -6,10 +6,10 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components/native';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
-import Text from '@components/Text';
-import { SvgIcon } from '@components/Icon';
+import Text from '@shared/ui/typography/Text';
+import { SvgIcon } from '@shared/ui/icon';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
-import type { IconName } from '@components/Icon';
+import type { IconName } from '@shared/ui/icon';
 import { useGetInterventionsQuery } from '@entities/intervention/api/intervention.api';
 import { useGetUnreadNotificationCountQuery } from '@entities/notification/api/notification.api';
 import { useUpdateStatusMutation } from '@roles/professional/availability/api/availability.api';

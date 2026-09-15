@@ -5,8 +5,8 @@ import { useNavigation, NavigationProp } from '@react-navigation/core';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '@theme/index';
 import { fontPixel, horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
-import Text from '@components/Text';
-import { Spinner } from '@components/Modal/AppSpinner';
+import Text from '@shared/ui/typography/Text';
+import { Spinner } from '@shared/ui/overlay/AppSpinner';
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 

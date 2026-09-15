@@ -2,7 +2,7 @@ import React from 'react';
 import { ImageSourcePropType, Modal } from 'react-native';
 import styled from 'styled-components/native';
 
-import Text from '@components/Text';
+import Text from '@shared/ui/typography/Text';
 import {
   horizontalScale,
   moderateScale,

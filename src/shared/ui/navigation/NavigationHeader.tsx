@@ -1,10 +1,10 @@
-// src/components/NavigationHeader.tsx
+// Shared navigation header primitive.
 import React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { verticalScale } from '@utils/normalizedCss';
-import SvgIcon from '@components/Icon/SvgIcon';
+import SvgIcon from '@shared/ui/icon/SvgIcon';
 import { AppStackType } from '../../../navigation/constant/core';
 import { colors } from '@theme/index';
 

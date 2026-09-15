@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components/native';
-import { Text, SvgIcon, CustomModal } from '@components/index';
+import { Text, SvgIcon, CustomModal } from '@shared/ui';
 import { Button } from '@shared/ui/button/Button';
-import type { IconName } from '../Icon/SvgIcon';
-import { Colors } from '../../utils/constant';
+import type { IconName } from '../icon/SvgIcon';
+import { Colors } from '@utils/constant';
 import {
     horizontalScale,
     verticalScale,

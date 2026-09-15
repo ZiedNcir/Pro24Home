@@ -7,8 +7,8 @@ import styled from 'styled-components/native';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
-import Text from '@components/Text';
-import { SvgIcon } from '@components/Icon';
+import Text from '@shared/ui/typography/Text';
+import { SvgIcon } from '@shared/ui/icon';
 import { GOOGLE_DIRECTIONS_API_KEY } from '../../../../config/googlePlaces';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';

@@ -1,8 +1,8 @@
 import { Button } from '@shared/ui/button/Button';
 import Field, { FieldValidators } from '@shared/ui/form/HookFormField';
 import { validateClientRegistration, mapApiError, prepareRegistrationPayload } from '@features/auth/services/registration';
-import { Spinner } from '@components/Modal/AppSpinner';
-import Text from '@components/Text';
+import { Spinner } from '@shared/ui/overlay/AppSpinner';
+import Text from '@shared/ui/typography/Text';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';

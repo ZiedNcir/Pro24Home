@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/native';
 
-import Text from '@components/Text';
+import Text from '@shared/ui/typography/Text';
 import { colors } from '@theme/index';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import SelectableCard from '@shared/ui/selection/SelectableCard';

@@ -24,9 +24,9 @@ jest.mock('@shared/ui/layout/ScreenContainer', () => {
   };
 });
 
-jest.mock('@components/Modal/AppSpinner', () => ({ Spinner: () => null }));
+jest.mock('@shared/ui/overlay/AppSpinner', () => ({ Spinner: () => null }));
 
-jest.mock('@components/Text', () => {
+jest.mock('@shared/ui/typography/Text', () => {
   const ReactModule = jest.requireActual<typeof React>('react');
   const { Text: NativeText } = jest.requireActual<typeof import('react-native')>('react-native');
 

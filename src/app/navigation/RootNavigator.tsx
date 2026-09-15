@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { hasCreatedAccount } from '@core/session/account-onboarding';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -8,7 +8,7 @@ import {
 } from '@react-navigation/bottom-tabs';
 
 import { AppStackType, BottomTabType } from '../../navigation/constant/core';
-import Text from '@components/Text';
+import Text from '@shared/ui/typography/Text';
 import {
   AccountTypeScreen,
   ForgetPassword,
@@ -34,7 +34,7 @@ import {
 } from '@roles/client/home';
 import { Button } from '@shared/ui/button/Button';
 import { useTheme } from '@theme/ThemeProvider';
-import { IconName } from '@components/Icon';
+import { IconName } from '@shared/ui/icon';
 import { ProfileScreen } from '@roles/client/profile';
 import { DocumentsScreen as HomeProfessional } from '@roles/professional/documents';
 import { ProfessionalHomeDashboard } from '@roles/professional/dashboard';
@@ -89,10 +89,10 @@ const ActiveIndicator = styled.View<{ isSelected: boolean }>`
     isSelected ? theme.colors.primary : 'transparent'};
 `;
 
-const BottomTabBar: FunctionComponent<BottomTabBarProps> = ({
+const BottomTabBar = ({
   navigation,
   state,
-}) => {
+}: BottomTabBarProps): React.JSX.Element | null => {
   const insets = useSafeAreaInsets();
   const { theme } = useTheme();
 
@@ -160,7 +160,7 @@ const TabNavigator = () => {
   return (
     <BottomTabNavigator
       initialRouteName="Home"
-      tabBar={props => <BottomTabBar {...props} />}
+      tabBar={BottomTabBar}
       screenOptions={{
         headerShown: false,
       }}
@@ -179,7 +179,7 @@ const ProfessionalTabNavigator = () => {
   return (
     <BottomTabNavigator
       initialRouteName="Home"
-      tabBar={props => <BottomTabBar {...props} />}
+      tabBar={BottomTabBar}
       screenOptions={{ headerShown: false }}
     >
       <BottomTabScreen name="Home" component={ProfessionalHomeDashboard} />

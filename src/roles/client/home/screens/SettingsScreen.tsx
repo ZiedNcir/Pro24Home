@@ -3,8 +3,8 @@ import { ActivityIndicator, Modal, Switch } from 'react-native';
 import styled from 'styled-components/native';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
-import Text from '@components/Text';
-import { SvgIcon, type IconName } from '@components/Icon';
+import Text from '@shared/ui/typography/Text';
+import { SvgIcon, type IconName } from '@shared/ui/icon';
 import { useTheme } from '@theme/ThemeProvider';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { logout, selectUser } from '@store/slices/authSlice';

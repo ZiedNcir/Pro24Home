@@ -4,8 +4,8 @@ import { ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
-import Text from '@components/Text';
-import { SvgIcon } from '@components/Icon';
+import Text from '@shared/ui/typography/Text';
+import { SvgIcon } from '@shared/ui/icon';
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import BottomActions from '@shared/ui/action/BottomActions';
 import InfoNotice from '@shared/ui/action/InfoNotice';

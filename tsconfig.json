@@ -68,9 +68,6 @@
       "@shared/*": [
         "./src/shared/*"
       ],
-      "@components/*": [
-        "./src/components/*"
-      ],
       "@assets/*": [
         "./src/assets/*"
       ],
@@ -79,9 +76,6 @@
       ],
       "@store/*": [
         "./src/store/*"
-      ],
-      "@screens/*": [
-        "./src/screens/*"
       ],
       "@services/*": [
         "./src/services/*"

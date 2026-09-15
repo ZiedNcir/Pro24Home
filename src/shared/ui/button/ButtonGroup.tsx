@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { View, StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
-import Button, { ButtonProps } from '../Button/Button';
+import Button, { ButtonProps } from './Button';
 
 export type ButtonGroupAlignment = 'start' | 'center' | 'end' | 'space-between';
 export type ButtonGroupLayout = 'horizontal' | 'vertical';

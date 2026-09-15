@@ -5,8 +5,8 @@ import { useNavigation, useRoute, type RouteProp } from '@react-navigation/nativ
 import { useSelector } from 'react-redux';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
-import Text from '@components/Text';
-import { SvgIcon } from '@components/Icon';
+import Text from '@shared/ui/typography/Text';
+import { SvgIcon } from '@shared/ui/icon';
 import { colors } from '@theme/index';
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import { ClientInterventionDetails, confirmRefusal, ProfessionalInterventionDetails } from '../ui/intervention-detail/InterventionDetailSections';

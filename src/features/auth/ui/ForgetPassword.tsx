@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Toast } from '@core/notifications/toast';
 
-import { Text, Spinner } from '@components/index';
+import { Text, Spinner } from '@shared/ui';
 import { Button } from '@shared/ui/button/Button';
 import Field from '@shared/ui/form/HookFormField';
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';

@@ -12,8 +12,8 @@ import { Toast } from '@core/notifications/toast';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import styled from 'styled-components/native';
 
-import Text from '@components/Text';
-import { SvgIcon } from '@components/Icon';
+import Text from '@shared/ui/typography/Text';
+import { SvgIcon } from '@shared/ui/icon';
 import { colors } from '@theme/index';
 import {
   horizontalScale,

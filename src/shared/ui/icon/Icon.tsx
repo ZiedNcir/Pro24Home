@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import SvgIcon, { SvgIconProps } from './SvgIcon';
-import AppImage, { AppImageProps } from '../Image/AppImage';
+import AppImage, { AppImageProps } from '../image/AppImage';
 
 
 import { useIconRegistry } from './IconRegistry';

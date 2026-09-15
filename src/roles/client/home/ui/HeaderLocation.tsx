@@ -2,8 +2,8 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import { useSelector } from 'react-redux';
-import Text from '@components/Text';
-import { SvgIcon } from '@components/Icon';
+import Text from '@shared/ui/typography/Text';
+import { SvgIcon } from '@shared/ui/icon';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import { colors } from '@theme/index';
 import { useNavigation } from '@react-navigation/native';

@@ -1,6 +1,6 @@
 # Shared UI Completion Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Retire `src/components`, make `shared/ui` the generic UI owner, and finish the final architecture migration without changing application behaviour.
 
@@ -25,13 +25,12 @@
 
 **Files:**
 - Modify: `__tests__/sharedUiLayout.test.tsx`
-- Create: `__tests__/rootNavigatorArchitecture.test.ts`
 
 **Interfaces:**
 - Consumes: public `@shared/ui` exports and `src/app/navigation/RootNavigator.tsx`.
-- Produces: tests that fail while generic primitives remain outside `shared/ui` and while tab bars are created inside render.
+- Produces: a public-API test that fails while generic primitives remain outside `shared/ui`.
 
-- [ ] **Step 1: Add the failing shared UI public-API test**
+- [x] **Step 1: Add the failing shared UI public-API test**
 
   Extend `__tests__/sharedUiLayout.test.tsx` with imports and assertions for the migrated API:
 
@@ -46,34 +45,15 @@
   });
   ```
 
-- [ ] **Step 2: Add the failing navigator-stability source test**
-
-  Create `__tests__/rootNavigatorArchitecture.test.ts` that reads the navigator source and asserts both tab navigators pass `tabBar={BottomTabBar}` and neither contains `tabBar={props =>`:
-
-  ```ts
-  import { readFileSync } from 'node:fs';
-  import { resolve } from 'node:path';
-
-  const source = readFileSync(
-    resolve(__dirname, '../src/app/navigation/RootNavigator.tsx'),
-    'utf8',
-  );
-
-  test('uses a stable bottom-tab-bar component reference', () => {
-    expect(source.match(/tabBar=\{BottomTabBar\}/g)).toHaveLength(2);
-    expect(source).not.toContain('tabBar={props =>');
-  });
-  ```
-
-- [ ] **Step 3: Run the focused tests and confirm the expected red state**
+- [x] **Step 2: Run the focused test and confirm the expected red state**
 
   Run:
 
   ```bash
-  npx jest __tests__/sharedUiLayout.test.tsx __tests__/rootNavigatorArchitecture.test.ts --runInBand
+  npx jest __tests__/sharedUiLayout.test.tsx --runInBand
   ```
 
-  Expected: the shared API imports fail because the exports do not exist, and the navigator test fails because both tab bars use inline functions.
+  Expected: the shared API imports fail because the exports do not exist.
 
 ### Task 2: Move generic components into the shared owner
 
@@ -91,7 +71,7 @@
 - Consumes: current default/named exports of `Text`, `Icon`, `SvgIcon`, `IconName`, `AppImage`, `Spinner`, `CustomModal`, `DialogModal`, and `ToastConfig`.
 - Produces: identical exports from `@shared/ui` and its subpaths; a stable `BottomTabBar` function reference.
 
-- [ ] **Step 1: Move source files without changing component contracts**
+- [x] **Step 1: Move source files without changing component contracts**
 
   Use `git mv` to retain history. Keep each existing default export and named type exactly as currently declared. Create `index.ts` files where needed so these imports remain available:
 
@@ -102,7 +82,7 @@
   import { Spinner } from '@shared/ui/overlay/AppSpinner';
   ```
 
-- [ ] **Step 2: Make `shared/ui` the complete public boundary**
+- [x] **Step 2: Make `shared/ui` the complete public boundary**
 
   Extend `src/shared/ui/index.ts` with the migration-safe exports:
 
@@ -119,13 +99,13 @@
 
   Preserve any current named exports from moved component index files.
 
-- [ ] **Step 3: Update every consumer to the shared owner**
+- [x] **Step 3: Update every consumer to the shared owner**
 
   Replace every `@components` import under `src` with an equivalent
   `@shared/ui` import. Update moved shared primitives to use sibling shared
   paths, ensuring the shared layer has no dependency on the retired alias.
 
-- [ ] **Step 4: Stabilize tab-bar identity**
+- [x] **Step 4: Stabilize tab-bar identity**
 
   In both navigators in `src/app/navigation/RootNavigator.tsx`, replace:
 
@@ -139,15 +119,17 @@
   tabBar={BottomTabBar}
   ```
 
-- [ ] **Step 5: Run focused tests and confirm green**
+- [x] **Step 5: Run the focused test and confirm green**
 
   Run:
 
   ```bash
-  npx jest __tests__/sharedUiLayout.test.tsx __tests__/rootNavigatorArchitecture.test.ts --runInBand
+  npx jest __tests__/sharedUiLayout.test.tsx --runInBand
   ```
 
-  Expected: both suites pass with the shared exports and stable tab bar verified.
+  Expected: the shared UI suite passes with the public exports verified. The
+  targeted `RootNavigator` lint result verifies that the stable tab bar removed
+  the render-time component warning.
 
 ### Task 3: Retire compatibility paths and finish the migration record
 
@@ -163,7 +145,7 @@
 - Consumes: all consumers migrated to `@shared/ui` in Task 2.
 - Produces: no `@components` or `@screens` runtime compatibility path; an accurate completed migration plan.
 
-- [ ] **Step 1: Audit legacy imports before deletion**
+- [x] **Step 1: Audit legacy imports before deletion**
 
   Run:
 
@@ -173,13 +155,13 @@
 
   Expected: no runtime import output. Comments that name former paths must be removed or updated in the same task.
 
-- [ ] **Step 2: Remove compatibility code and aliases**
+- [x] **Step 2: Remove compatibility code and aliases**
 
   Delete `src/components` and the empty `src/screens` tree only after Step 1
   is empty. Remove `@components` and `@screens` from both the TypeScript paths
   and Babel module-resolver aliases.
 
-- [ ] **Step 3: Preserve the already discovered asset correction**
+- [x] **Step 3: Preserve the already discovered asset correction**
 
   Keep this source path in `VerifyScreen.tsx`:
 
@@ -189,7 +171,7 @@
 
   It is the path relative to the new feature location.
 
-- [ ] **Step 4: Remove only known macOS metadata**
+- [x] **Step 4: Remove only known macOS metadata**
 
   First list the targets with:
 
@@ -200,7 +182,7 @@
   Then delete exactly the returned files and re-run the listing. Expected:
   no output.
 
-- [ ] **Step 5: Update the existing final-folder plan**
+- [x] **Step 5: Update the existing final-folder plan**
 
   Mark Tasks 1–7 and their executed steps complete in
   `docs/superpowers/plans/2026-09-14-final-folder-migration.md`. Add a final
@@ -217,7 +199,7 @@
 - Consumes: the completed shared UI public boundary and retired compatibility paths.
 - Produces: a verifiable architecture migration commit.
 
-- [ ] **Step 1: Run static boundary audits**
+- [x] **Step 1: Run static boundary audits**
 
   Run:
 
@@ -229,7 +211,7 @@
 
   Expected: all commands produce no output.
 
-- [ ] **Step 2: Run the full automated verification**
+- [x] **Step 2: Run the full automated verification**
 
   Run:
 
@@ -244,7 +226,7 @@
   `react/no-unstable-nested-components` warnings for `RootNavigator`; the
   diff check has no output.
 
-- [ ] **Step 3: Review the staged change set**
+- [x] **Step 3: Review the staged change set**
 
   Run:
 
@@ -257,7 +239,7 @@
   Confirm that the original SMS image-path correction is included and no
   unrelated user change is staged.
 
-- [ ] **Step 4: Commit the lot**
+- [x] **Step 4: Commit the lot**
 
   ```bash
   git add App.tsx babel.config.js tsconfig.json src __tests__ docs

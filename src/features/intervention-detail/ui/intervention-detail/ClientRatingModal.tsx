@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Pressable, TextInput } from 'react-native';
 import styled from 'styled-components/native';
 
-import Text from '@components/Text';
-import { SvgIcon } from '@components/Icon';
+import Text from '@shared/ui/typography/Text';
+import { SvgIcon } from '@shared/ui/icon';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 

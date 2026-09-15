@@ -1,4 +1,4 @@
-import type { IconName } from '@components/Icon';
+import type { IconName } from '@shared/ui/icon';
 import type { AppStackType, BottomTabType } from './constant/core';
 
 export const PROFESSIONAL_BOTTOM_TABS: Array<{ route: keyof BottomTabType; icon: IconName; title: string }> = [

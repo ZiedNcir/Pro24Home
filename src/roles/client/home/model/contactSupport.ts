@@ -1,4 +1,4 @@
-import type { IconName } from '@components/Icon';
+import type { IconName } from '@shared/ui/icon';
 
 export const SUPPORT_TOPICS: Array<{ key: string; label: string; icon: IconName }> = [
     { key: 'account', label: 'Vérification de mon compte', icon: 'fa-user' },

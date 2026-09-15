@@ -5,9 +5,9 @@ import { useForm } from 'react-hook-form';
 import styled from 'styled-components/native';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
-import Text from '@components/Text';
+import Text from '@shared/ui/typography/Text';
 import Field from '@shared/ui/form/HookFormField';
-import { SvgIcon } from '@components/Icon';
+import { SvgIcon } from '@shared/ui/icon';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import { colors } from '@theme/index';

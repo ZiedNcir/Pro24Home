@@ -1,4 +1,4 @@
-// src/components/Field/Field.tsx
+// Shared React Hook Form field primitive.
 import React, { useEffect, useRef, useState } from 'react';
 import {
     Pressable,
@@ -27,9 +27,9 @@ import CountryPicker, { CountryCode } from 'react-native-country-picker-modal';
 import PhoneInput from 'react-native-phone-input';
 
 // Components
-import Text from '@components/Text';
-import { SvgIcon } from '@components/Icon';
-import type { IconName } from '@components/Icon/SvgIcon';
+import Text from '@shared/ui/typography/Text';
+import { SvgIcon } from '@shared/ui/icon';
+import type { IconName } from '@shared/ui/icon/SvgIcon';
 
 // Hooks
 import useToggle from '@hooks/useToggle';

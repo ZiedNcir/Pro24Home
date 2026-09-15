@@ -3,8 +3,8 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 
-import Text from '@components/Text';
-import { SvgIcon } from '@components/Icon';
+import Text from '@shared/ui/typography/Text';
+import { SvgIcon } from '@shared/ui/icon';
 import { Colors } from '@utils/constant';
 import { horizontalScale, verticalScale, moderateScale } from '@utils/normalizedCss';
 

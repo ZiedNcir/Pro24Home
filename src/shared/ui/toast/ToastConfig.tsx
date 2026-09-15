@@ -1,9 +1,9 @@
-// src/components/Toast/ToastConfig.tsx
+// Shared toast presentation primitive.
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import Text from '@components/Text';
-import SvgIcon from '@components/Icon/SvgIcon';
-import type { IconName } from '@components/Icon/SvgIcon';
+import Text from '@shared/ui/typography/Text';
+import SvgIcon from '@shared/ui/icon/SvgIcon';
+import type { IconName } from '@shared/ui/icon/SvgIcon';
 import { useTheme } from '@theme/ThemeProvider';
 
 interface CustomToastProps {

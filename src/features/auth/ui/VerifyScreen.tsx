@@ -1,7 +1,7 @@
-import { Text } from '@components/index';
+import { Text } from '@shared/ui';
 import { Button } from '@shared/ui/button/Button';
 import Field from '@shared/ui/form/HookFormField';
-import AppImage from '@components/Image/AppImage';
+import AppImage from '@shared/ui/image/AppImage';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { IRole } from '@utils/constant';
@@ -13,7 +13,7 @@ import { useForm } from 'react-hook-form';
 import { Toast } from '@core/notifications/toast';
 import styled from 'styled-components/native';
 
-import { Spinner } from '@components/index';
+import { Spinner } from '@shared/ui';
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import NavigationHeader from '@shared/ui/navigation/NavigationHeader';
 import { AppStackType } from '../../../navigation/constant/core';
@@ -231,7 +231,7 @@ export const VerifyAccountScreen = () => {
             <HeaderContainer>
                 <BrandIconContainer>
                     <AppImage
-                        source={require('../../assets/images/sms.png')}
+                        source={require('../../../assets/images/sms.png')}
                         style={{
                             marginTop: verticalScale(5),
                         }}

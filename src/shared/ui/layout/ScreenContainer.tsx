@@ -1,4 +1,4 @@
-// src/components/ScreenContainer.tsx
+// Shared screen container primitive.
 import React, { useEffect } from 'react';
 import {
   View,

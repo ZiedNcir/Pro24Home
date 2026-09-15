@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import styled from 'styled-components/native';
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
-import Text from '@components/Text';
+import Text from '@shared/ui/typography/Text';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { fontPixel, horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useTheme } from '@theme/ThemeProvider';

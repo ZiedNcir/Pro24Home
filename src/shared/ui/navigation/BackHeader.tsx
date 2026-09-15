@@ -1,7 +1,7 @@
 import React, { type ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import SvgIcon from '@components/Icon/SvgIcon';
+import SvgIcon from '@shared/ui/icon/SvgIcon';
 
 export interface BackHeaderProps {
   title?: string;

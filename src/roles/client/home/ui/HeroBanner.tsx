@@ -4,8 +4,8 @@ import React from 'react';
 import { Image } from 'react-native';
 import styled from 'styled-components/native';
 
-import Text from '@components/Text';
-import { SvgIcon } from '@components/Icon';
+import Text from '@shared/ui/typography/Text';
+import { SvgIcon } from '@shared/ui/icon';
 import {
     horizontalScale,
     verticalScale,

@@ -1,4 +1,4 @@
-// src/components/Icon/SvgIcon.tsx
+// Shared SVG and FontAwesome icon primitive.
 import React, { FC } from 'react';
 import { SvgProps } from 'react-native-svg';
 import styled from 'styled-components/native';

@@ -4,8 +4,8 @@ import styled from 'styled-components/native';
 import { Toast } from '@core/notifications/toast';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
-import Text from '@components/Text';
-import { SvgIcon } from '@components/Icon';
+import Text from '@shared/ui/typography/Text';
+import { SvgIcon } from '@shared/ui/icon';
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import { useTheme } from '@theme/ThemeProvider';
 import { useAppSelector } from '@store/hooks';

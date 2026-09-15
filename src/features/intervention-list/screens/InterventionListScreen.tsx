@@ -5,8 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
-import Text from '@components/Text';
-import { SvgIcon, type IconName } from '@components/Icon';
+import Text from '@shared/ui/typography/Text';
+import { SvgIcon, type IconName } from '@shared/ui/icon';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { colors } from '@theme/index';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';

@@ -1,4 +1,4 @@
-import { Spinner } from '@components/index';
+import { Spinner } from '@shared/ui';
 import { Button } from '@shared/ui/button/Button';
 import Field from '@shared/ui/form/HookFormField';
 import { validateProfessionalRegistration, mapApiError, prepareRegistrationPayload } from '@features/auth/services/registration';
@@ -22,7 +22,7 @@ import { selectAuthLoading, setError, setLoading } from '@store/slices/authSlice
 
 // Components
 import ListeServices from './ListServices';
-import Text from '@components/Text';
+import Text from '@shared/ui/typography/Text';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 
 import { colors } from '@theme/index';

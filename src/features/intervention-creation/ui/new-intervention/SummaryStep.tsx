@@ -2,7 +2,7 @@ import React from 'react';
 import { Image } from 'react-native';
 import styled from 'styled-components/native';
 
-import Text from '@components/Text';
+import Text from '@shared/ui/typography/Text';
 import { colors } from '@theme/index';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import BottomActions from '@shared/ui/action/BottomActions';

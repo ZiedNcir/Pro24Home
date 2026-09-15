@@ -9,8 +9,8 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import styled from 'styled-components/native';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
-import Text from '@components/Text';
-import { SvgIcon } from '@components/Icon';
+import Text from '@shared/ui/typography/Text';
+import { SvgIcon } from '@shared/ui/icon';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { useGetProfileQuery } from '@entities/user/api/user.api';
 import { useUploadDocumentMutation } from '@roles/professional/documents/api/documents.api';
