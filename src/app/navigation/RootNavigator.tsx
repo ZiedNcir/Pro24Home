@@ -50,6 +50,7 @@ import {
 } from '@roles/client/payment-flow';
 import { PROFESSIONAL_BOTTOM_TABS } from '../../navigation/professionalNavigation';
 import { ProfessionalInterventionTrackingScreen } from '@roles/professional/intervention-tracking';
+import { createTabBarRenderer } from './createTabBarRenderer';
 
 const { Navigator: BottomTabNavigator, Screen: BottomTabScreen } =
   createBottomTabNavigator<BottomTabType>();
@@ -156,11 +157,13 @@ const BottomTabBar = ({
   );
 };
 
+const renderBottomTabBar = createTabBarRenderer(BottomTabBar);
+
 const TabNavigator = () => {
   return (
     <BottomTabNavigator
       initialRouteName="Home"
-      tabBar={BottomTabBar}
+      tabBar={renderBottomTabBar}
       screenOptions={{
         headerShown: false,
       }}
@@ -179,7 +182,7 @@ const ProfessionalTabNavigator = () => {
   return (
     <BottomTabNavigator
       initialRouteName="Home"
-      tabBar={BottomTabBar}
+      tabBar={renderBottomTabBar}
       screenOptions={{ headerShown: false }}
     >
       <BottomTabScreen name="Home" component={ProfessionalHomeDashboard} />
