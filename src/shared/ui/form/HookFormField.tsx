@@ -204,7 +204,7 @@ const Input = styled(TextInput) <{ readOnly?: boolean; disabled?: boolean }>`
   font-family: ${({ theme }) => theme.typography.fonts.inter.medium};
   letter-spacing: 0.5px;
   color: ${({ theme, readOnly, disabled }) =>
-        readOnly || disabled ? theme.colors.textDisabled : theme.colors.textPrimary};
+        readOnly || disabled ? theme.colors.textDisabled : theme.colors.inputText};
   padding-vertical: 0;
   ${Platform.select({
             android: {
@@ -225,7 +225,7 @@ const HelperText = styled(Animated.Text) <{ error?: boolean }>`
 const DateText = styled(Text)`
   padding: ${verticalScale(12)}px ${horizontalScale(10)}px;
   flex: 1;
-  color: ${({ theme }) => theme.colors.textPrimary};
+  color: ${({ theme }) => theme.colors.inputText};
 `;
 
 const CodeCell = styled(Text)`
@@ -238,7 +238,7 @@ const CodeCell = styled(Text)`
   text-align: center;
   padding: ${verticalScale(4)}px;
   margin: ${verticalScale(4)}px;
-  color: ${({ theme }) => theme.colors.textPrimary};
+  color: ${({ theme }) => theme.colors.inputText};
   font-family: ${({ theme }) => theme.typography.fonts.inter.medium};
   font-size: ${({ theme }) => fontPixel(theme.typography.sizes.title.medium)}px;
   text-align-vertical: center;
@@ -815,7 +815,7 @@ export function Field<T extends FieldValues>({
                                 color:
                                     disabled || readOnly
                                         ? theme.colors.textDisabled
-                                        : theme.colors.textPrimary,
+                                        : theme.colors.inputText,
                                 fontSize: fontPixel(14),
                                 fontFamily: theme.typography.fonts.inter.medium,
                             }}
@@ -856,7 +856,7 @@ export function Field<T extends FieldValues>({
                             backgroundColor: theme.colors.white,
                             primaryColor: theme.colors.primary,
                             primaryColorVariant: theme.colors.primaryDark,
-                            onBackgroundTextColor: theme.colors.textPrimary,
+                            onBackgroundTextColor: theme.colors.inputText,
                         }}
                     />
                 </InnerTransform>
