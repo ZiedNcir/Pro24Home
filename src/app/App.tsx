@@ -9,7 +9,7 @@ import RootNavigator from './navigation/RootNavigator';
 import { requestPermissions } from '../utils/permissions';
 import '../utils/i18n';
 import { AppProviders } from './providers/AppProviders';
-import { initializeOneSignal } from '@core/notifications/oneSignalSubscription';
+import { initializeOneSignal } from '../core/notifications/oneSignalSubscription';
 
 library.add(fas as any);
 

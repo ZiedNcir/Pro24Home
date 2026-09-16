@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Toast } from '@core/notifications/toast';
-import { getOneSignalSubscriptionId } from '@core/notifications/oneSignalSubscription';
+import { getOneSignalSubscriptionId } from '../../../../core/notifications/oneSignalSubscription';
 import styled from 'styled-components/native';
 import { useTheme } from '@theme';
 

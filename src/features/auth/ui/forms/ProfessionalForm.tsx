@@ -27,7 +27,7 @@ import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import { useTheme } from '@theme';
 import ServicesSkeleton from './ServicesSkeleton';
 import { Toast } from '@core/notifications/toast';
-import { getOneSignalSubscriptionId } from '@core/notifications/oneSignalSubscription';
+import { getOneSignalSubscriptionId } from '../../../../core/notifications/oneSignalSubscription';
 
 
 
