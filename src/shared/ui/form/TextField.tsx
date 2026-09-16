@@ -38,7 +38,7 @@ export const TextField = ({
           {
             backgroundColor: theme.colors.surface,
             borderColor: theme.colors.border,
-            color: theme.colors.textPrimary,
+            color: theme.colors.inputText,
           },
           error ? styles.inputError : undefined,
           style,

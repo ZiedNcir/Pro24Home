@@ -9,7 +9,7 @@ export const lightColors: ThemeColors = {
   gray600: '#757575', gray500: '#9E9E9E', gray400: '#BDBDBD', gray300: '#E0E0E0',
   gray200: '#EEEEEE', gray100: '#F5F5F5', gray50: '#FAFAFA',
   background: '#FFFFFF', surface: '#FFFFFF', surfaceVariant: '#F5F5F5',
-  textPrimary: '#212121', textSecondary: '#616161', textDisabled: '#BDBDBD', textInverse: '#FFFFFF',
+  textPrimary: '#212121', inputText: '#212121', textSecondary: '#616161', textDisabled: '#BDBDBD', textInverse: '#FFFFFF',
   border: '#E0E0E0', borderLight: '#EEEEEE', borderDark: '#BDBDBD',
   overlay: 'rgba(0, 0, 0, 0.5)', backdrop: 'rgba(0, 0, 0, 0.3)', transparent: 'transparent',
 };

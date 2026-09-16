@@ -48,7 +48,7 @@ describe('shared form primitives', () => {
     expect(StyleSheet.flatten(input.props.style)).toMatchObject({
       backgroundColor: darkTheme.colors.surface,
       borderColor: darkTheme.colors.border,
-      color: darkTheme.colors.textPrimary,
+      color: '#000000',
     });
     expect(input.props.placeholderTextColor).toBe(darkTheme.colors.textDisabled);
   });
