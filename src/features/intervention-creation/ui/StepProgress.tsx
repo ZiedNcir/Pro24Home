@@ -8,7 +8,7 @@ import {
     verticalScale,
 } from '@utils/normalizedCss';
 import { InterventionStep } from '@features/intervention-creation/screens/types';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 
 const labels = ['Type de service', 'Détails', 'Adresse', 'Récapitulatif'];
 
@@ -17,6 +17,7 @@ interface Props {
 }
 
 const StepProgress: React.FC<Props> = ({ currentStep }) => {
+    const { theme } = useTheme();
     return (
         <Wrapper>
             <Line />
@@ -31,7 +32,7 @@ const StepProgress: React.FC<Props> = ({ currentStep }) => {
                         <StepItem key={label}>
                             <StepCircle isActive={isActive} isDone={isDone}>
                                 {isDone ? (
-                                    <SvgIcon name="fa-check" size={10} color={colors.success} />
+                                    <SvgIcon name="fa-check" size={10} color={theme.colors.success} />
                                 ) : (
                                     <Text
                                         variant="notification"
@@ -71,7 +72,7 @@ const Line = styled.View`
   right: ${horizontalScale(35)}px;
   top: ${verticalScale(12)}px;
   height: 1px;
-  background-color: #e5e5e5;
+  background-color: ${({ theme }) => theme.colors.border};
 `;
 
 const StepsRow = styled.View`
@@ -88,8 +89,8 @@ const StepCircle = styled.View<{ isActive: boolean; isDone: boolean }>`
   width: ${horizontalScale(24)}px;
   height: ${horizontalScale(24)}px;
   border-radius: ${horizontalScale(12)}px;
-  background-color: ${({ isActive, isDone }) =>
-        isActive ? colors.primary : isDone ? '#E9F8EF' : '#F0F0F0'};
+  background-color: ${({ isActive, isDone, theme }) =>
+        isActive ? theme.colors.primary : isDone ? theme.colors.successLight : theme.colors.surfaceVariant};
   justify-content: center;
   align-items: center;
   z-index: 2;

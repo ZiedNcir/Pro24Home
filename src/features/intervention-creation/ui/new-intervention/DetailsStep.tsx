@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import SelectableCard from '@shared/ui/selection/SelectableCard';
 import PhotoPickerRow from '@features/intervention-creation/ui/PhotoPickerRow';
@@ -23,6 +23,7 @@ const DetailsStep: React.FC<DetailsStepProps> = ({
   onNext,
   onPrevious,
 }) => {
+  const { theme } = useTheme();
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
 
   const chooseScheduledTiming = () => {
@@ -38,7 +39,7 @@ const DetailsStep: React.FC<DetailsStepProps> = ({
         value={description}
         onChangeText={onChangeDescription}
         placeholder="Décrivez votre panne..."
-        placeholderTextColor={colors.gray500}
+        placeholderTextColor={theme.colors.gray500}
         textAlignVertical="top"
       />
 
@@ -96,9 +97,9 @@ const SectionTitle = styled(Text).attrs({
 const InputBox = styled.TextInput`
   height: ${verticalScale(110)}px;
   border-width: 1px;
-  border-color: ${colors.borderLight};
+  border-color: ${({ theme }) => theme.colors.borderLight};
   border-radius: 12px;
   padding: ${horizontalScale(14)}px;
   text-align-vertical: top;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
 `;
