@@ -141,6 +141,10 @@ export const prepareRegistrationPayload = (
   onesignalKey: string,
   selectedServices?: number[]
 ) => {
+  if (!onesignalKey.trim()) {
+    throw new Error('OneSignal subscription key is required');
+  }
+
   const basePayload = {
     ...data,
     onesignal_key: onesignalKey,

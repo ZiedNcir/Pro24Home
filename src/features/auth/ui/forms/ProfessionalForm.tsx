@@ -27,6 +27,7 @@ import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import { useTheme } from '@theme';
 import ServicesSkeleton from './ServicesSkeleton';
 import { Toast } from '@core/notifications/toast';
+import { getOneSignalSubscriptionId } from '@core/notifications/oneSignalSubscription';
 
 
 
@@ -279,10 +280,11 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
             setSubmittedData(data);
 
             // Prepare the registration data with defaults
+            const onesignalKey = await getOneSignalSubscriptionId();
             const registrationData = prepareRegistrationPayload(
                 data,
                 'professional',
-                'onesignal-device-token-here',
+                onesignalKey,
                 selectedServices
             );
 
