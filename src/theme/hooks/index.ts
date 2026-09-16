@@ -1,7 +1,8 @@
 import { useTheme } from '../provider/ThemeProvider';
-import { theme, type BorderRadius, type Color, type Spacing } from '../tokens';
+import type { ThemeColors } from '../colors/types';
+import { elevation, type BorderRadius, type Spacing } from '../tokens';
 
-export const useColor = (color: Color) => {
+export const useColor = (color: keyof ThemeColors) => {
     const { theme } = useTheme();
     return theme.colors[color];
 };
@@ -21,7 +22,7 @@ export const useTypography = () => {
     return theme.typography;
 };
 
-export const useElevation = (level: keyof typeof theme.elevation) => {
+export const useElevation = (level: keyof typeof elevation) => {
     const { theme } = useTheme();
     return theme.elevation[level];
 };

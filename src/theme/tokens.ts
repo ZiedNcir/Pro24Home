@@ -1,65 +1,4 @@
-import { DefaultTheme } from 'styled-components/native';
-
-// Color Palette
-export const colors = {
-    // Brand Colors
-    primary: '#FF6B00', // Orange
-    primaryDark: '#E55E00',
-    primaryLight: '#FF944D',
-    primaryLighter: '#FFD9BF',
-
-    // Secondary Colors
-    secondary: '#1A1A1A', // Dark Gray
-    secondaryLight: '#333333',
-    secondaryLighter: '#4D4D4D',
-
-    // Status Colors
-    success: '#4CAF50',
-    successLight: '#E8F5E9',
-    warning: '#FF9800',
-    warningLight: '#FFF3E0',
-    danger: '#F44336',
-    dangerLight: '#FFEBEE',
-    info: '#2196F3',
-    infoLight: '#E3F2FD',
-
-    // Neutral Colors
-    white: '#FFFFFF',
-    black: '#000000',
-    gray900: '#212121',
-    gray800: '#424242',
-    gray700: '#616161',
-    gray600: '#757575',
-    gray500: '#9E9E9E',
-    gray400: '#BDBDBD',
-    gray300: '#E0E0E0',
-    gray200: '#EEEEEE',
-    gray100: '#F5F5F5',
-    gray50: '#FAFAFA',
-
-    // Background Colors
-    background: '#FFFFFF',
-    surface: '#FFFFFF',
-    surfaceVariant: '#F5F5F5',
-
-    // Text Colors
-    textPrimary: '#212121',
-    textSecondary: '#616161',
-    textDisabled: '#9E9E9E',
-    textInverse: '#FFFFFF',
-
-    // Border Colors
-    border: '#E0E0E0',
-    borderLight: '#EEEEEE',
-    borderDark: '#BDBDBD',
-
-    // Overlay
-    overlay: 'rgba(0, 0, 0, 0.5)',
-    backdrop: 'rgba(0, 0, 0, 0.3)',
-
-    // Transparent
-    transparent: 'transparent',
-};
+import type { ThemeColors } from './colors/types';
 
 // Spacing Scale (8-point grid system)
 export const spacing = {
@@ -156,35 +95,35 @@ export const elevation = {
         elevation: 0,
     },
     xs: {
-        shadowColor: colors.black,
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.05,
         shadowRadius: 2,
         elevation: 1,
     },
     sm: {
-        shadowColor: colors.black,
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
         elevation: 2,
     },
     md: {
-        shadowColor: colors.black,
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.1,
         shadowRadius: 6,
         elevation: 3,
     },
     lg: {
-        shadowColor: colors.black,
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.15,
         shadowRadius: 12,
         elevation: 5,
     },
     xl: {
-        shadowColor: colors.black,
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 12 },
         shadowOpacity: 0.2,
         shadowRadius: 16,
@@ -215,21 +154,10 @@ export const zIndex = {
     tooltip: 1800,
 } as const;
 
-// Main Theme Object
-export const theme: DefaultTheme = {
-    colors,
-    spacing,
-    borderRadius,
-    typography,
-    elevation,
-    animation,
-    zIndex,
-};
-
 // TypeScript declarations for styled-components
 declare module 'styled-components/native' {
     export interface DefaultTheme {
-        colors: typeof colors;
+        colors: ThemeColors;
         spacing: typeof spacing;
         borderRadius: typeof borderRadius;
         typography: typeof typography;
@@ -239,9 +167,5 @@ declare module 'styled-components/native' {
     }
 }
 
-export type Theme = typeof theme;
-export type Color = keyof typeof colors;
 export type Spacing = keyof typeof spacing;
 export type BorderRadius = keyof typeof borderRadius;
-
-export default theme;

@@ -8,7 +8,7 @@ import {
     verticalScale,
     moderateScale,
 } from '@utils/normalizedCss';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 
 interface Props {
     title: string;
@@ -25,6 +25,7 @@ const SelectableCard: React.FC<Props> = ({
     selected,
     onPress,
 }) => {
+    const { theme } = useTheme();
     return (
         <Card selected={!!selected} onPress={onPress} activeOpacity={0.85}>
             <Radio selected={!!selected}>
@@ -33,7 +34,7 @@ const SelectableCard: React.FC<Props> = ({
 
             {icon ? (
                 <IconBox>
-                    <SvgIcon name={icon as any} size={18} color={colors.primary} />
+                    <SvgIcon name={icon as any} size={18} color={theme.colors.primary} />
                 </IconBox>
             ) : null}
 
@@ -62,8 +63,8 @@ const Card = styled.TouchableOpacity<{ selected: boolean }>`
   min-height: ${verticalScale(58)}px;
   border-radius: ${moderateScale(12)}px;
   border-width: 1px;
-  border-color: ${({ selected }) => (selected ? colors.primary : '#E9E9E9')};
-  background-color: ${({ selected }) => (selected ? '#FFF5EF' : colors.white)};
+  border-color: ${({ selected, theme }) => (selected ? theme.colors.primary : theme.colors.border)};
+  background-color: ${({ selected, theme }) => (selected ? theme.colors.primaryLighter : theme.colors.surface)};
   padding-horizontal: ${horizontalScale(12)}px;
   padding-vertical: ${verticalScale(10)}px;
   flex-direction: row;
@@ -76,7 +77,7 @@ const Radio = styled.View<{ selected: boolean }>`
   height: ${horizontalScale(18)}px;
   border-radius: ${horizontalScale(9)}px;
   border-width: 1px;
-  border-color: ${({ selected }) => (selected ? colors.primary : '#D8D8D8')};
+  border-color: ${({ selected, theme }) => (selected ? theme.colors.primary : theme.colors.borderDark)};
   justify-content: center;
   align-items: center;
   margin-right: ${horizontalScale(10)}px;
@@ -86,7 +87,7 @@ const InnerDot = styled.View`
   width: ${horizontalScale(9)}px;
   height: ${horizontalScale(9)}px;
   border-radius: ${horizontalScale(4.5)}px;
-  background-color: ${colors.primary};
+  background-color: ${({ theme }) => theme.colors.primary};
 `;
 
 const IconBox = styled.View`

@@ -9,7 +9,7 @@ import {
     verticalScale,
     moderateScale,
 } from '@utils/normalizedCss';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 
 interface Props {
     primaryTitle: string;
@@ -26,6 +26,7 @@ const BottomActions: React.FC<Props> = ({
     onSecondaryPress,
     primaryDisabled = false,
 }) => {
+    const { theme } = useTheme();
     return (
         <Wrapper>
             {onSecondaryPress ? (
@@ -45,7 +46,7 @@ const BottomActions: React.FC<Props> = ({
                 <Text variant="bold" color="white" fontSize={13}>
                     {primaryTitle}
                 </Text>
-                <SvgIcon name="fa-chevron-right" size={14} color={colors.white} />
+                <SvgIcon name="fa-chevron-right" size={14} color={theme.colors.white} />
             </PrimaryButton>
         </Wrapper>
     );
@@ -67,14 +68,14 @@ const SecondaryButton = styled.TouchableOpacity`
   border-color: #e5e5e5;
   justify-content: center;
   align-items: center;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
 `;
 
 const PrimaryButton = styled.TouchableOpacity<{ primaryDisabled: boolean }>`
   flex: 2;
   height: ${verticalScale(50)}px;
   border-radius: ${moderateScale(12)}px;
-  background-color: ${({ primaryDisabled }) => (primaryDisabled ? '#D7D7D7' : colors.primary)};
+  background-color: ${({ primaryDisabled, theme }) => (primaryDisabled ? theme.colors.gray300 : theme.colors.primary)};
   justify-content: center;
   align-items: center;
   flex-direction: row;

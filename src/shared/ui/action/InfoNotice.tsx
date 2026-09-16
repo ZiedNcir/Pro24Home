@@ -9,7 +9,7 @@ import {
     verticalScale,
     moderateScale,
 } from '@utils/normalizedCss';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 
 interface Props {
     icon: string;
@@ -18,10 +18,11 @@ interface Props {
 }
 
 const InfoNotice: React.FC<Props> = ({ icon, title, description }) => {
+    const { theme } = useTheme();
     return (
         <Notice>
             <IconBox>
-                <SvgIcon name={icon as any} size={18} color={colors.primary} />
+                <SvgIcon name={icon as any} size={18} color={theme.colors.primary} />
             </IconBox>
 
             <Content>
@@ -56,7 +57,7 @@ const IconBox = styled.View`
   width: ${horizontalScale(38)}px;
   height: ${horizontalScale(38)}px;
   border-radius: ${moderateScale(12)}px;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
   justify-content: center;
   align-items: center;
   margin-right: ${horizontalScale(12)}px;
