@@ -94,7 +94,7 @@ const IconBox = styled.View`
   width: ${horizontalScale(34)}px;
   height: ${horizontalScale(34)}px;
   border-radius: ${moderateScale(9)}px;
-  background-color: #fff1e8;
+  background-color: ${({ theme }) => theme.colors.primaryLighter};
   justify-content: center;
   align-items: center;
   margin-right: ${horizontalScale(10)}px;

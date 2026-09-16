@@ -40,12 +40,15 @@ export const TextField = ({
             borderColor: theme.colors.border,
             color: theme.colors.inputText,
           },
-          error ? styles.inputError : undefined,
+          error ? { borderColor: theme.colors.danger } : undefined,
           style,
         ]}
       />
       {error || helperText ? (
-        <Text variant="regularSmall" style={error ? styles.error : styles.helper}>
+        <Text
+          variant="regularSmall"
+          style={[styles.message, { color: error ? theme.colors.danger : theme.colors.textSecondary }]}
+        >
           {error || helperText}
         </Text>
       ) : null}
@@ -62,7 +65,5 @@ const styles = StyleSheet.create({
     minHeight: 40,
     paddingHorizontal: 12,
   },
-  inputError: { borderColor: '#DC2626' },
-  helper: { color: '#6B7280', marginTop: 4 },
-  error: { color: '#DC2626', marginTop: 4 },
+  message: { marginTop: 4 },
 });

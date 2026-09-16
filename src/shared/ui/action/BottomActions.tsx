@@ -65,7 +65,7 @@ const SecondaryButton = styled.TouchableOpacity`
   height: ${verticalScale(50)}px;
   border-radius: ${moderateScale(12)}px;
   border-width: 1px;
-  border-color: #e5e5e5;
+  border-color: ${({ theme }) => theme.colors.border};
   justify-content: center;
   align-items: center;
   background-color: ${({ theme }) => theme.colors.surface};

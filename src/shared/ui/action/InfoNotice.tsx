@@ -46,7 +46,7 @@ export default InfoNotice;
 
 const Notice = styled.View`
   border-radius: ${moderateScale(14)}px;
-  background-color: #fff5ef;
+  background-color: ${({ theme }) => theme.colors.primaryLighter};
   padding: ${horizontalScale(14)}px;
   flex-direction: row;
   align-items: center;
