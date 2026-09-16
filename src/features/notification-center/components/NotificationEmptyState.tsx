@@ -4,13 +4,14 @@ import styled from 'styled-components/native';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 
 const NotificationEmptyState = () => {
+    const { theme } = useTheme();
     return (
         <Wrapper>
             <Circle>
-                <SvgIcon name="fa-bell" size={44} color={colors.primary} />
+                <SvgIcon name="fa-bell" size={44} color={theme.colors.primary} />
             </Circle>
 
             <Text variant="bold" color="black" fontSize={14}>
@@ -40,7 +41,7 @@ const Circle = styled.View`
   height: ${horizontalScale(80)}px;
   border-top-left-radius: ${horizontalScale(80)}px;
   border-top-right-radius: ${horizontalScale(80)}px;
-  background-color: #fff1e8;
+  background-color: ${({ theme }) => theme.colors.primaryLighter};
   justify-content: center;
   align-items: center;
   margin-bottom: ${verticalScale(10)}px;

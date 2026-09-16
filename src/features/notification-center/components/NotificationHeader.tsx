@@ -5,10 +5,11 @@ import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import { useNavigation } from '@react-navigation/native';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 
 const NotificationHeader = () => {
     const navigation = useNavigation();
+    const { theme } = useTheme();
     const appGoBack = () => {
         navigation.goBack();
     }
@@ -16,7 +17,7 @@ const NotificationHeader = () => {
     return (
         <Header>
             <BackButton onPress={appGoBack}>
-                <SvgIcon name="fa-chevron-left" size={22} color={colors.primary} />
+                <SvgIcon name="fa-chevron-left" size={22} color={theme.colors.primary} />
             </BackButton>
 
             <TitleBlock>
@@ -45,7 +46,7 @@ const BackButton = styled.TouchableOpacity`
   width: ${horizontalScale(52)}px;
   height: ${horizontalScale(52)}px;
   border-radius: ${horizontalScale(18)}px;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: ${({ theme }) => theme.colors.surface};
   justify-content: center;
   align-items: center;
   margin-right: ${horizontalScale(14)}px;
@@ -55,4 +56,3 @@ const BackButton = styled.TouchableOpacity`
 const TitleBlock = styled.View`
   flex: 1;
 `;
-

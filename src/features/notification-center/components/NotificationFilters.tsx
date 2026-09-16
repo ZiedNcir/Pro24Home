@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon, IconName } from '@shared/ui/icon';
 import { horizontalScale, verticalScale, moderateScale } from '@utils/normalizedCss';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 
 export interface FilterItem {
     key: string;
@@ -24,6 +24,7 @@ const NotificationFilters: React.FC<NotificationFiltersProps> = ({
     activeFilter,
     onFilterChange,
 }) => {
+    const { theme } = useTheme();
 
     return (
         <Scroll horizontal showsHorizontalScrollIndicator={false}>
@@ -40,7 +41,7 @@ const NotificationFilters: React.FC<NotificationFiltersProps> = ({
                         <SvgIcon
                             name={item.icon}
                             size={18}
-                            color={isActive ? colors.primary : colors.gray600}
+                            color={isActive ? theme.colors.primary : theme.colors.gray600}
                         />
 
                         <Text
@@ -76,9 +77,9 @@ const FilterButton = styled.TouchableOpacity<{ isActive: boolean }>`
   height: ${verticalScale(48)}px;
   padding-horizontal: ${horizontalScale(18)}px;
   border-radius: ${moderateScale(24)}px;
-  background-color: rgba(255, 255, 255, 0.96);
+  background-color: ${({ theme }) => theme.colors.surface};
   border-width: 1px;
-  border-color: ${({ isActive }) => (isActive ? colors.primary : '#eeeeee')};
+  border-color: ${({ isActive, theme }) => (isActive ? theme.colors.primary : theme.colors.borderLight)};
   flex-direction: row;
   align-items: center;
   gap: ${horizontalScale(10)}px;
@@ -90,8 +91,8 @@ const Badge = styled.View<{ isActive: boolean }>`
   width: ${horizontalScale(24)}px;
   height: ${horizontalScale(24)}px;
   border-radius: ${horizontalScale(12)}px;
-  background-color: ${({ isActive }) =>
-        isActive ? colors.primary : colors.gray500};
+  background-color: ${({ isActive, theme }) =>
+        isActive ? theme.colors.primary : theme.colors.gray500};
   justify-content: center;
   align-items: center;
 `;
