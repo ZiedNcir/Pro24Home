@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, TextInput, type TextInputProps, View } from 'react-native';
+import { useTheme } from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
 
@@ -20,29 +21,42 @@ export const TextField = ({
   accessibilityLabel,
   style,
   ...props
-}: TextFieldProps) => (
-  <View style={styles.container}>
-    {label ? <Text variant="medium" style={styles.label}>{label}</Text> : null}
-    <TextInput
-      {...props}
-      accessibilityLabel={accessibilityLabel || label}
-      value={value}
-      onChangeText={onChangeText}
-      style={[styles.input, error ? styles.inputError : undefined, style]}
-    />
-    {error || helperText ? (
-      <Text variant="regularSmall" style={error ? styles.error : styles.helper}>
-        {error || helperText}
-      </Text>
-    ) : null}
-  </View>
-);
+}: TextFieldProps) => {
+  const theme = useTheme();
+
+  return (
+    <View style={styles.container}>
+      {label ? <Text variant="medium" style={styles.label}>{label}</Text> : null}
+      <TextInput
+        {...props}
+        accessibilityLabel={accessibilityLabel || label}
+        value={value}
+        onChangeText={onChangeText}
+        placeholderTextColor={props.placeholderTextColor ?? theme.colors.textDisabled}
+        style={[
+          styles.input,
+          {
+            backgroundColor: theme.colors.surface,
+            borderColor: theme.colors.border,
+            color: theme.colors.textPrimary,
+          },
+          error ? styles.inputError : undefined,
+          style,
+        ]}
+      />
+      {error || helperText ? (
+        <Text variant="regularSmall" style={error ? styles.error : styles.helper}>
+          {error || helperText}
+        </Text>
+      ) : null}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: { width: '100%' },
   label: { marginBottom: 6 },
   input: {
-    borderColor: '#D1D5DB',
     borderRadius: 8,
     borderWidth: 1,
     minHeight: 40,
