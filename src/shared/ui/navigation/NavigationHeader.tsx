@@ -6,7 +6,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { verticalScale } from '@utils/normalizedCss';
 import SvgIcon from '@shared/ui/icon/SvgIcon';
 import { AppStackType } from '../../../navigation/constant/core';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 
 type AppNavigationProp = NativeStackNavigationProp<AppStackType>;
 
@@ -24,6 +24,7 @@ const NavigationHeader: React.FC<NavigationHeaderProps> = ({
     onBackPress,
 }) => {
     const navigation = useNavigation<AppNavigationProp>();
+    const { theme } = useTheme();
 
     const handleBackPress = () => {
         if (onBackPress) {
@@ -37,11 +38,11 @@ const NavigationHeader: React.FC<NavigationHeaderProps> = ({
         <>
             {showBackButton && (
                 <TouchableOpacity
-                    style={styles.backButton}
+                    style={[styles.backButton, { backgroundColor: theme.colors.surface }]}
                     onPress={handleBackPress}
                     testID={backButtonTestID}
                 >
-                    <SvgIcon name="fa-chevron-left" size={verticalScale(20)} color={colors.primary} />
+                    <SvgIcon name="fa-chevron-left" size={verticalScale(20)} color={theme.colors.primary} />
                 </TouchableOpacity>
             )}
 
@@ -62,7 +63,6 @@ const styles = StyleSheet.create({
         zIndex: 1,
         padding: verticalScale(5),
         borderRadius: verticalScale(30),
-        backgroundColor: colors.white,
     },
     logo: {
         alignSelf: 'center',

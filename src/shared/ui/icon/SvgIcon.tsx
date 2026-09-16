@@ -95,7 +95,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import { AppColor } from '@utils/constant';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 
 // Define icon names as union type - include both SVG and FontAwesome icons
 export type IconName =
@@ -291,7 +291,8 @@ const SvgIcon: FC<SvgIconProps> = ({
     testID,
     ...rest
 }) => {
-    const finalColor = color in colors ? colors[color as keyof typeof colors] : color;
+    const { theme } = useTheme();
+    const finalColor = color in theme.colors ? theme.colors[color as keyof typeof theme.colors] : color;
 
     // Check if it's a FontAwesome icon
     const faIcon = faIconMap[name];

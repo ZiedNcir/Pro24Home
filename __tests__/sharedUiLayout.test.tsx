@@ -1,5 +1,6 @@
 import React from 'react';
 import renderer, { act } from 'react-test-renderer';
+import { ThemeProvider } from '@theme';
 
 import {
   AppImage,
@@ -21,7 +22,11 @@ describe('shared layout primitives', () => {
   it('renders a standalone back header', async () => {
     let tree!: renderer.ReactTestRenderer;
     await act(async () => {
-      tree = renderer.create(<BackHeader title="Retour" onBack={jest.fn()} />);
+      tree = renderer.create(
+        <ThemeProvider>
+          <BackHeader title="Retour" onBack={jest.fn()} />
+        </ThemeProvider>,
+      );
     });
 
     expect(tree.root.findByProps({ accessibilityLabel: 'Retour' })).toBeTruthy();
