@@ -1,4 +1,9 @@
-import { getOneSignalSubscriptionId } from '../src/core/notifications/oneSignalSubscription';
+import { OneSignal } from 'react-native-onesignal';
+import {
+  getOneSignalSubscriptionId,
+  initializeOneSignal,
+  subscribeToOneSignalSubscription,
+} from '../src/core/notifications/oneSignalSubscription';
 
 const grantedPermission = {
   getPermission: async () => true,
@@ -6,6 +11,32 @@ const grantedPermission = {
 };
 
 describe('getOneSignalSubscriptionId', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('keeps the server subscription ID received by the persistent observer', async () => {
+    const observedIds: string[] = [];
+    initializeOneSignal();
+    const unsubscribe = subscribeToOneSignalSubscription(id => observedIds.push(id));
+
+    (OneSignal.User.pushSubscription as any).emitChange('subscription-from-server');
+
+    await expect(getOneSignalSubscriptionId()).resolves.toBe('subscription-from-server');
+    expect(observedIds).toEqual(['subscription-from-server']);
+    unsubscribe();
+  });
+
+  it('does not publish OneSignal’s local placeholder identifier', () => {
+    const listener = jest.fn();
+    initializeOneSignal();
+    subscribeToOneSignalSubscription(listener);
+
+    (OneSignal.User.pushSubscription as any).emitChange('local-pending-registration');
+
+    expect(listener).not.toHaveBeenCalledWith('local-pending-registration');
+  });
+
   it('returns the device subscription identifier supplied by OneSignal', async () => {
     await expect(
       getOneSignalSubscriptionId(async () => 'client-device-subscription', grantedPermission),
