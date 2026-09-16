@@ -8,7 +8,7 @@ import {
     verticalScale,
     moderateScale,
 } from '@utils/normalizedCss';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 
 interface Props {
     title: string;
@@ -27,10 +27,11 @@ const AddressCard: React.FC<Props> = ({
     onPress,
     onEditPress,
 }) => {
+    const { theme } = useTheme();
     return (
         <Card selected={!!selected} onPress={onPress} activeOpacity={0.86}>
             <AddressIcon selected={!!selected}>
-                <SvgIcon name="fa-home" size={16} color={selected ? colors.primary : colors.gray600} />
+                <SvgIcon name="fa-home" size={16} color={selected ? theme.colors.primary : theme.colors.gray600} />
             </AddressIcon>
             <Content>
                 <TopLine>
@@ -61,7 +62,7 @@ const AddressCard: React.FC<Props> = ({
             <RightSide>
                 {onEditPress ? (
                     <EditButton onPress={onEditPress}>
-                        <SvgIcon name="fa-pen" size={14} color={colors.gray600} />
+                        <SvgIcon name="fa-pen" size={14} color={theme.colors.gray600} />
                     </EditButton>
                 ) : null}
 
@@ -79,8 +80,8 @@ const Card = styled.TouchableOpacity<{ selected: boolean }>`
   min-height: ${verticalScale(72)}px;
   border-radius: ${moderateScale(14)}px;
   border-width: 1px;
-  border-color: ${({ selected }) => (selected ? colors.primary : '#E9E9E9')};
-  background-color: ${({ selected }) => (selected ? '#FFF5EF' : colors.white)};
+  border-color: ${({ selected, theme }) => (selected ? theme.colors.primary : theme.colors.border)};
+  background-color: ${({ selected, theme }) => (selected ? theme.colors.primaryLighter : theme.colors.surface)};
   padding: ${horizontalScale(14)}px;
   flex-direction: row;
   align-items: center;
@@ -96,7 +97,7 @@ const AddressIcon = styled.View<{ selected: boolean }>`
   width: ${horizontalScale(36)}px;
   height: ${horizontalScale(36)}px;
   border-radius: ${horizontalScale(18)}px;
-  background-color: ${({ selected }) => (selected ? '#FFE7D8' : '#F7F7F7')};
+  background-color: ${({ selected, theme }) => (selected ? theme.colors.primaryLighter : theme.colors.surfaceVariant)};
   justify-content: center;
   align-items: center;
 `;
@@ -109,7 +110,7 @@ const TopLine = styled.View`
 `;
 
 const DefaultBadge = styled.View`
-  background-color: #fff1e8;
+  background-color: ${({ theme }) => theme.colors.primaryLighter};
   padding-horizontal: ${horizontalScale(8)}px;
   padding-vertical: ${verticalScale(3)}px;
   border-radius: ${moderateScale(10)}px;
@@ -133,7 +134,7 @@ const Radio = styled.View<{ selected: boolean }>`
   height: ${horizontalScale(18)}px;
   border-radius: ${horizontalScale(9)}px;
   border-width: 1px;
-  border-color: ${({ selected }) => (selected ? colors.primary : '#D5D5D5')};
+  border-color: ${({ selected, theme }) => (selected ? theme.colors.primary : theme.colors.borderDark)};
   justify-content: center;
   align-items: center;
 `;
@@ -142,5 +143,5 @@ const InnerDot = styled.View`
   width: ${horizontalScale(9)}px;
   height: ${horizontalScale(9)}px;
   border-radius: ${horizontalScale(4.5)}px;
-  background-color: ${colors.primary};
+  background-color: ${({ theme }) => theme.colors.primary};
 `;

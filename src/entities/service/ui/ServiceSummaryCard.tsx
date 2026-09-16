@@ -4,13 +4,12 @@ import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
-import { Colors } from '@utils/constant';
 import {
     horizontalScale,
     verticalScale,
     moderateScale,
 } from '@utils/normalizedCss';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 
 interface Props {
     title: string;
@@ -25,6 +24,7 @@ const ServiceSummaryCard: React.FC<Props> = ({
     image,
     onEditPress,
 }) => {
+    const { theme } = useTheme();
     return (
         <Card>
             <ServiceImage source={image} resizeMode="contain" />
@@ -48,7 +48,7 @@ const ServiceSummaryCard: React.FC<Props> = ({
                 <Text variant="notification" color="primary" fontWeight="700">
                     Modifier
                 </Text>
-                <SvgIcon name="fa-chevron-right" size={10} color={colors.primary} />
+                <SvgIcon name="fa-chevron-right" size={10} color={theme.colors.primary} />
             </EditButton>
         </Card>
     );
@@ -59,9 +59,9 @@ export default ServiceSummaryCard;
 const Card = styled.View`
   min-height: ${verticalScale(62)}px;
   border-radius: ${moderateScale(14)}px;
-  background-color: ${Colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
   border-width: 1px;
-  border-color: #eeeeee;
+  border-color: ${({ theme }) => theme.colors.borderLight};
   flex-direction: row;
   align-items: center;
   padding: ${horizontalScale(10)}px;

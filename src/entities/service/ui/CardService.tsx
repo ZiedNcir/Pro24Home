@@ -13,7 +13,7 @@ import {
     verticalScale,
     moderateScale,
 } from '@utils/normalizedCss';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 
 export interface ICardServiceProps extends TouchableOpacityProps {
     title: string;
@@ -31,6 +31,7 @@ const CardService: React.FC<ICardServiceProps> = ({
     selected = false,
     ...props
 }) => {
+    const { theme } = useTheme();
     return (
         <Container selected={selected} activeOpacity={0.86} onPress={onClick} {...props}>
             <ImageBox>
@@ -44,7 +45,7 @@ const CardService: React.FC<ICardServiceProps> = ({
             {description ? (
                 <Text
                     variant="regularSmall"
-                    color={colors.gray600}
+                    color={theme.colors.gray600}
                     fontSize={14}
                     style={{ marginTop: verticalScale(3) }}
                 >
@@ -53,7 +54,7 @@ const CardService: React.FC<ICardServiceProps> = ({
             ) : null}
 
             <ArrowButton>
-                <SvgIcon name="fa-chevron-right" size={14} color={colors.primary} />
+                <SvgIcon name="fa-chevron-right" size={14} color={theme.colors.primary} />
             </ArrowButton>
         </Container>
     );
@@ -66,12 +67,11 @@ const Container = styled.TouchableOpacity<{ selected: boolean }>`
   min-height: ${verticalScale(178)}px;
   margin-bottom: ${verticalScale(14)}px;
   padding: ${horizontalScale(14)}px;
-  background-color: ${colors.white};
   border-radius: ${moderateScale(20)}px;
   border-width: 1px;
-  border-color: ${({ selected }) => (selected ? colors.primary : '#eeeeee')};
-  background-color: ${({ selected }) => (selected ? '#FFF5EF' : colors.white)};
-  shadow-color: #000;
+  border-color: ${({ selected, theme }) => (selected ? theme.colors.primary : theme.colors.borderLight)};
+  background-color: ${({ selected, theme }) => (selected ? theme.colors.primaryLighter : theme.colors.surface)};
+  shadow-color: ${({ theme }) => theme.colors.black};
   shadow-offset: 0px ${verticalScale(6)}px;
   shadow-opacity: 0.05;
   shadow-radius: ${moderateScale(14)}px;
@@ -82,7 +82,7 @@ const ImageBox = styled.View`
   width: 100%;
   height: ${verticalScale(88)}px;
   border-radius: ${moderateScale(16)}px;
-  background-color: #fbf4ef;
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
   justify-content: center;
   align-items: center;
   margin-bottom: ${verticalScale(10)}px;
@@ -102,7 +102,7 @@ const ArrowButton = styled.View`
   width: ${horizontalScale(34)}px;
   height: ${horizontalScale(34)}px;
   border-radius: ${horizontalScale(17)}px;
-  background-color: #fff1e8;
+  background-color: ${({ theme }) => theme.colors.primaryLighter};
   justify-content: center;
   align-items: center;
 `;
