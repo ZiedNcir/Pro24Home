@@ -273,6 +273,7 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     paddingHorizontal: horizontalScale(18),
+    marginTop: verticalScale(30),
   },
   card: {
     width: '100%',

@@ -111,19 +111,77 @@ export const ForgetPassword = () => {
 };
 
 const styles = StyleSheet.create({
-  primaryHeader: { height: verticalScale(78), position: 'relative', alignItems: 'center', justifyContent: 'center' },
-  backButton: { position: 'absolute', left: horizontalScale(8), top: verticalScale(17), width: 44, height: 44, alignItems: 'center', justifyContent: 'center', zIndex: 1 },
-  backIcon: { fontFamily: 'Inter-Regular', fontSize: 34, lineHeight: 34 },
-  logo: { width: horizontalScale(150), height: verticalScale(42) },
-  cardContainer: { width: '100%', paddingHorizontal: horizontalScale(18) },
-  card: { width: '100%', borderRadius: moderateScale(28), paddingHorizontal: horizontalScale(24), paddingTop: verticalScale(32), paddingBottom: verticalScale(30), shadowOffset: { width: 0, height: verticalScale(8) }, shadowOpacity: 0.06, shadowRadius: moderateScale(16), elevation: 4 },
-  title: { textAlign: 'center', fontSize: moderateScale(28), lineHeight: moderateScale(34), marginBottom: verticalScale(12) },
-  description: { textAlign: 'center', fontSize: moderateScale(14), lineHeight: moderateScale(22), marginBottom: verticalScale(24) },
-  submitButton: { marginTop: verticalScale(18) },
-  signInLink: { alignSelf: 'center', marginTop: verticalScale(22) },
-  successState: { alignItems: 'center', gap: verticalScale(16) },
-  successTitle: { textAlign: 'center' },
-  successText: { textAlign: 'center', lineHeight: moderateScale(22), marginBottom: verticalScale(8) },
+  primaryHeader: {
+    height: verticalScale(78),
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  backButton: {
+    position: 'absolute',
+    left: horizontalScale(8),
+    top: verticalScale(17),
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1
+  },
+  backIcon: {
+    fontFamily: 'Inter-Regular',
+    fontSize: 34,
+    lineHeight: 34
+  },
+  logo: {
+    width: horizontalScale(150),
+    height: verticalScale(42)
+  },
+  cardContainer: {
+    width: '100%',
+    paddingHorizontal: horizontalScale(18),
+    marginTop: verticalScale(30)
+  },
+  card: {
+    width: '100%',
+    borderRadius: moderateScale(28),
+    paddingHorizontal: horizontalScale(24),
+    paddingTop: verticalScale(32),
+    paddingBottom: verticalScale(30),
+    shadowOffset: { width: 0, height: verticalScale(8) },
+    shadowOpacity: 0.06, shadowRadius: moderateScale(16),
+    elevation: 4
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: moderateScale(28),
+    lineHeight: moderateScale(34),
+    marginBottom: verticalScale(12)
+  },
+  description: {
+    textAlign: 'center',
+    fontSize: moderateScale(14),
+    lineHeight: moderateScale(22),
+    marginBottom: verticalScale(24)
+  },
+  submitButton: {
+    marginTop: verticalScale(18)
+  },
+  signInLink: {
+    alignSelf: 'center',
+    marginTop: verticalScale(22)
+  },
+  successState: {
+    alignItems: 'center',
+    gap: verticalScale(16)
+  },
+  successTitle: {
+    textAlign: 'center'
+  },
+  successText: {
+    textAlign: 'center',
+    lineHeight: moderateScale(22),
+    marginBottom: verticalScale(8)
+  },
 });
 
 export default ForgetPassword;
