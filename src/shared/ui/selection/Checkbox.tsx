@@ -421,10 +421,10 @@ const SwitchTrack = styled.View<{ isOn: boolean; disabled: boolean }>`
   height: 28px;
   border-radius: 14px;
   background-color: ${({ isOn, disabled, theme }) => {
-        if (disabled) return theme?.colors?.gray300 || '#E0E0E0';
+        if (disabled) return theme.colors.gray300;
         return isOn
-            ? theme?.colors?.primary || '#FF6B00'
-            : theme?.colors?.gray300 || '#E0E0E0';
+            ? theme.colors.primary
+            : theme.colors.gray300;
     }};
   justify-content: center;
   padding: 2px;
@@ -434,7 +434,7 @@ const SwitchThumb = styled.View<{ isOn: boolean }>`
   width: 24px;
   height: 24px;
   border-radius: 12px;
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.surface};
   align-self: ${({ isOn }) => isOn ? 'flex-end' : 'flex-start'};
 `;
 

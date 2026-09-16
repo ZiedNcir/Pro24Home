@@ -1,6 +1,7 @@
 import React from 'react';
 import { ImageProps, ImageStyle, ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
+import { useTheme } from '@theme';
 
 export interface AppImageProps extends Omit<ImageProps, 'source'> {
     uri?: string;
@@ -62,7 +63,7 @@ const ErrorContainer = styled.View`
   bottom: 0;
   justify-content: center;
   align-items: center;
-  background-color: #f5f5f5;
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
   z-index: 2;
 `;
 
@@ -83,6 +84,7 @@ const AppImage: React.FC<AppImageProps> = ({
     resizeMode = 'cover',
     ...rest
 }) => {
+    const { theme } = useTheme();
     const [isLoading, setIsLoading] = React.useState(true);
     const [hasError, setHasError] = React.useState(false);
     const [currentSource, setCurrentSource] = React.useState<ImageProps['source']>(
@@ -127,7 +129,7 @@ const AppImage: React.FC<AppImageProps> = ({
         <Container width={width} height={height} borderRadius={finalRadius} style={style}>
             {showLoader && isLoading && (
                 <LoaderContainer>
-                    <ActivityIndicator size="small" color="#000" />
+                    <ActivityIndicator size="small" color={theme.colors.inputText} />
                 </LoaderContainer>
             )}
 

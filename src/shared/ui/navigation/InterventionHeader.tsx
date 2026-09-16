@@ -5,8 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
-import { Colors } from '@utils/constant';
 import { horizontalScale, verticalScale, moderateScale } from '@utils/normalizedCss';
+import { useTheme } from '@theme';
 
 interface Props {
     title?: string;
@@ -20,6 +20,7 @@ const InterventionHeader: React.FC<Props> = ({
     onClose,
 }) => {
     const navigation = useNavigation();
+    const { theme } = useTheme();
 
     return (
         <Header>
@@ -28,7 +29,7 @@ const InterventionHeader: React.FC<Props> = ({
                 accessibilityRole="button"
                 accessibilityLabel="Retour"
             >
-                <SvgIcon name="fa-chevron-left" size={18} color={Colors.black} />
+                <SvgIcon name="fa-chevron-left" size={18} color={theme.colors.inputText} />
             </IconButton>
 
             <Text variant="bold" color="black" fontSize={16}>
@@ -37,7 +38,7 @@ const InterventionHeader: React.FC<Props> = ({
 
             <IconButton>
                 {showHelp ? (
-                    <SvgIcon name="fa-question-circle" size={18} color={Colors.black} />
+                    <SvgIcon name="fa-question-circle" size={18} color={theme.colors.inputText} />
                 ) : null}
             </IconButton>
         </Header>
@@ -49,9 +50,9 @@ export default InterventionHeader;
 const Header = styled.View`
   min-height: ${verticalScale(52)}px;
   border-radius: ${moderateScale(14)}px;
-  background-color: ${Colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
   border-width: 1px;
-  border-color: #eeeeee;
+  border-color: ${({ theme }) => theme.colors.borderLight};
   padding-horizontal: ${horizontalScale(6)}px;
   flex-direction: row;
   align-items: center;

@@ -24,7 +24,7 @@ import {
   verticalScale,
 } from '@utils/normalizedCss';
 
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 
 type Mode = 'light' | 'dark';
 
@@ -45,12 +45,6 @@ interface ScreenContainerProps extends ViewProps {
   translucent?: boolean;
   contentContainerStyle?: ScrollViewProps['contentContainerStyle'];
 }
-
-const getBackgroundByMode = (mode: Mode) => {
-  return mode === 'dark'
-    ? colors?.black || '#0D0F12'
-    : colors?.background || '#F6F6F7';
-};
 
 const getStatusBarStyleByMode = (mode: Mode) => {
   return mode === 'dark' ? 'light-content' : 'dark-content';
@@ -78,7 +72,8 @@ const ScreenContainer = React.forwardRef<View, ScreenContainerProps>(
     },
     ref,
   ) => {
-    const resolvedBackground = backgroundColor || getBackgroundByMode(mode);
+    const { theme } = useTheme();
+    const resolvedBackground = backgroundColor || theme.colors.background;
     const resolvedStatusBarStyle =
       statusBarStyle || getStatusBarStyleByMode(mode);
 
