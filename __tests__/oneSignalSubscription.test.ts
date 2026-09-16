@@ -25,6 +25,16 @@ describe('getOneSignalSubscriptionId', () => {
     expect(requestPermission).toHaveBeenCalledWith(true);
   });
 
+  it('waits for OneSignal to create a subscription after permission is granted', async () => {
+    await expect(
+      getOneSignalSubscriptionId(
+        async () => null,
+        grantedPermission,
+        async () => 'subscription-created-after-prompt',
+      ),
+    ).resolves.toBe('subscription-created-after-prompt');
+  });
+
   it('rejects registration when notification permission remains denied', async () => {
     await expect(
       getOneSignalSubscriptionId(async () => 'client-device-subscription', {
@@ -35,7 +45,7 @@ describe('getOneSignalSubscriptionId', () => {
   });
 
   it('rejects when a subscription is not available', async () => {
-    await expect(getOneSignalSubscriptionId(async () => null, grantedPermission)).rejects.toThrow(
+    await expect(getOneSignalSubscriptionId(async () => null, grantedPermission, async () => null)).rejects.toThrow(
       'OneSignal subscription id is unavailable',
     );
   });
