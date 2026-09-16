@@ -7,15 +7,17 @@ describe('getOneSignalSubscriptionId', () => {
     ).resolves.toBe('client-device-subscription');
   });
 
-  it('returns an empty value when a subscription is not available', async () => {
-    await expect(getOneSignalSubscriptionId(async () => null)).resolves.toBe('');
+  it('rejects when a subscription is not available', async () => {
+    await expect(getOneSignalSubscriptionId(async () => null)).rejects.toThrow(
+      'OneSignal subscription id is unavailable',
+    );
   });
 
-  it('does not block registration when the OneSignal SDK is unavailable', async () => {
+  it('propagates an unavailable OneSignal SDK', async () => {
     await expect(
       getOneSignalSubscriptionId(async () => {
         throw new Error('OneSignal is not initialized');
       }),
-    ).resolves.toBe('');
+    ).rejects.toThrow('OneSignal is not initialized');
   });
 });

@@ -8,9 +8,11 @@ const readSubscriptionId: SubscriptionIdReader = () =>
 export const getOneSignalSubscriptionId = async (
   readId: SubscriptionIdReader = readSubscriptionId,
 ): Promise<string> => {
-  try {
-    return (await readId()) ?? '';
-  } catch {
-    return '';
+  const subscriptionId = await readId();
+
+  if (!subscriptionId) {
+    throw new Error('OneSignal subscription id is unavailable');
   }
+
+  return subscriptionId;
 };
