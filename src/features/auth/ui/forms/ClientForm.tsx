@@ -12,6 +12,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Toast } from '@core/notifications/toast';
 import { getOneSignalSubscriptionId } from '@core/notifications/oneSignalSubscription';
 import styled from 'styled-components/native';
+import { useTheme } from '@theme';
 
 // Import from new Redux architecture
 import { useRegisterClientMutation } from '@features/auth/api/auth.api';
@@ -34,17 +35,6 @@ const ProgressHeader = styled(View)`
   margin-bottom: ${verticalScale(8)}px;
 `;
 
-const ProgressLabel = styled(Text)`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font-family: 'Inter-Bold';
-  font-size: 13px;
-`;
-
-const ProgressHint = styled(Text)`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font-family: 'Inter-Regular';
-  font-size: 12px;
-`;
 
 const ProgressTrack = styled(View)`
   height: 6px;
@@ -53,7 +43,7 @@ const ProgressTrack = styled(View)`
   background-color: ${({ theme }) => theme.colors.surfaceVariant};
 `;
 
-const ProgressFill = styled(View)<{ complete: boolean }>`
+const ProgressFill = styled(View) <{ complete: boolean }>`
   width: ${({ complete }) => (complete ? '100%' : '50%')};
   height: 100%;
   border-radius: 3px;
@@ -62,39 +52,18 @@ const ProgressFill = styled(View)<{ complete: boolean }>`
 
 const StyledKeyboardAwareScrollView = styled(KeyboardAwareScrollView)`
   flex: 1;
-  padding-horizontal: ${horizontalScale(20)}px;
+  padding-horizontal: ${horizontalScale(10)}px;
 `;
 
 const FormContainer = styled(View)`
   width: 100%;
-  padding: ${verticalScale(18)}px ${horizontalScale(4)}px ${verticalScale(28)}px;
+  padding: ${verticalScale(3)}px ${horizontalScale(4)}px ${verticalScale(10)}px;
 `;
 
 const FormIntro = styled(View)`
   margin-bottom: ${verticalScale(20)}px;
 `;
 
-const FormKicker = styled(Text)`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font-family: 'Inter-Bold';
-  font-size: 11px;
-  letter-spacing: 1px;
-  margin-bottom: ${verticalScale(6)}px;
-`;
-
-const FormDescription = styled(Text)`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font-family: 'Inter-Regular';
-  font-size: 13px;
-  line-height: 19px;
-`;
-
-const StepTitle = styled(Text)`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font-family: 'Inter-Bold';
-  font-size: 18px;
-  margin-bottom: ${verticalScale(14)}px;
-`;
 
 const fieldStyle = {
     marginBottom: verticalScale(5),
@@ -121,6 +90,7 @@ const SubmitButtonWrapper = styled(View)`
 `;
 
 const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
+    const { theme } = useTheme();
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
     // Use the new RTK Query mutation hook
@@ -297,8 +267,8 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
             <FormContainer>
                 <StepIndicator>
                     <ProgressHeader>
-                        <ProgressLabel testID="client-form-step">Étape {step + 1} sur {steps.length}</ProgressLabel>
-                        <ProgressHint>{step === 0 ? 'Vos informations' : 'Sécurisez votre compte'}</ProgressHint>
+                        <Text variant="bold" color={theme.colors.textPrimary} fontSize={13} testID="client-form-step">Étape {step + 1} sur {steps.length}</Text>
+                        <Text variant="regularSmall" color={theme.colors.textSecondary}>{step === 0 ? 'Vos informations' : 'Sécurisez votre compte'}</Text>
                     </ProgressHeader>
                     <ProgressTrack testID="client-form-progress">
                         <ProgressFill complete={step === steps.length - 1} />
@@ -306,13 +276,13 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                 </StepIndicator>
 
                 <FormIntro>
-                    <FormKicker>CRÉATION DE COMPTE CLIENT</FormKicker>
-                    <StepTitle>
+                    <Text variant="bold" color={theme.colors.textSecondary} fontSize={11} style={{ letterSpacing: 1, marginBottom: verticalScale(6) }}>CRÉATION DE COMPTE CLIENT</Text>
+                    <Text variant="bold" color={theme.colors.textPrimary} fontSize={18} style={{ marginBottom: verticalScale(14) }}>
                         {step === 0 ? t('ui.form.personalInfo.label') : t('ui.form.security.label')}
-                    </StepTitle>
-                    <FormDescription>
+                    </Text>
+                    <Text variant="regular" color={theme.colors.textSecondary} fontSize={13} lineHeight={19}>
                         {step === 0 ? 'Parlez-nous de vous pour personnaliser votre expérience.' : 'Choisissez vos identifiants pour accéder à PRO24HOME.'}
-                    </FormDescription>
+                    </Text>
                 </FormIntro>
 
                 {step === 0 && (

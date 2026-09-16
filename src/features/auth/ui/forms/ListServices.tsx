@@ -44,17 +44,6 @@ const ServiceContent = styled(View)`
  
 `;
 
-const ServiceTitle = styled(Text)`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font-size: ${({ theme }) => theme.typography.sizes.title.small}px;
-`;
-
-const ServiceDescription = styled(Text)`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font-size: ${({ theme }) => theme.typography.sizes.headline.medium}px;
-  margin-top: 2px;
-`;
-
 const CheckIcon = styled(View)`
   width: 24px;
   height: 24px;
@@ -195,11 +184,11 @@ const ListeServices = ({
                 ) : null}
 
                 <ServiceContent>
-                    <ServiceTitle variant="medium">{item.name}</ServiceTitle>
+                    <Text variant="medium" color={theme.colors.textPrimary} fontSize={theme.typography.sizes.title.small}>{item.name}</Text>
                     {item.description ? (
-                        <ServiceDescription variant="regular">
+                        <Text variant="regular" color={theme.colors.textSecondary} fontSize={theme.typography.sizes.headline.medium} style={{ marginTop: 2 }}>
                             {item.description}
-                        </ServiceDescription>
+                        </Text>
                     ) : null}
                 </ServiceContent>
 

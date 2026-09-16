@@ -2,7 +2,6 @@ import { Spinner } from '@shared/ui';
 import { Button } from '@shared/ui/button/Button';
 import Field from '@shared/ui/form/HookFormField';
 import { validateProfessionalRegistration, mapApiError, prepareRegistrationPayload } from '@features/auth/services/registration';
-import { Colors } from '@utils/constant';
 import { StyleSheet } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -25,7 +24,7 @@ import ListeServices from './ListServices';
 import Text from '@shared/ui/typography/Text';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 import ServicesSkeleton from './ServicesSkeleton';
 import { Toast } from '@core/notifications/toast';
 
@@ -56,19 +55,6 @@ const ProgressHeader = styled(View)`
   margin-bottom: ${verticalScale(8)}px;
 `;
 
-const ProgressLabel = styled(Text)`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font-family: 'Inter-Bold';
-  font-size: 13px;
-`;
-
-const ProgressHint = styled(Text)`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font-family: 'Inter-Regular';
-  font-size: 12px;
-  margin-left: ${horizontalScale(12)}px;
-  text-align: right;
-`;
 
 const ProgressTrack = styled(View)`
   height: 6px;
@@ -88,27 +74,6 @@ const FormIntro = styled(View)`
   margin-bottom: ${verticalScale(20)}px;
 `;
 
-const FormKicker = styled(Text)`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font-family: 'Inter-Bold';
-  font-size: 11px;
-  letter-spacing: 1px;
-  margin-bottom: ${verticalScale(6)}px;
-`;
-
-const FormDescription = styled(Text)`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font-family: 'Inter-Regular';
-  font-size: 13px;
-  line-height: 19px;
-  margin-top: ${verticalScale(8)}px;
-`;
-
-const StepTitle = styled(Text)`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font-family: 'Inter-Bold';
-  font-size: 18px;
-`;
 
 const ButtonGroup = styled(View)`
   flex-direction: row;
@@ -117,11 +82,6 @@ const ButtonGroup = styled(View)`
   margin-top: ${verticalScale(20)}px;
 `;
 
-const ErrorText = styled(Text)`
-  color: ${Colors.danger};
-  marginTop: ${verticalScale(10)}px;
-  textAlign: center;
-`;
 
 const ScrollContainer = styled(KeyboardAwareScrollView)`
   flexGrow: 1;
@@ -154,6 +114,7 @@ interface ProfessionalFormProps {
 }
 
 const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: ProfessionalFormProps) => {
+    const { theme } = useTheme();
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
     // Use the new RTK Query mutation hook
@@ -364,8 +325,8 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
     const renderStepIndicator = () => (
         <StepIndicator>
             <ProgressHeader>
-                <ProgressLabel testID="professional-form-step">Étape {step + 1} sur {steps.length}</ProgressLabel>
-                <ProgressHint>{['Vos informations', 'Votre activité', 'Votre sécurité', 'Vos services'][step]}</ProgressHint>
+                <Text variant="bold" color={theme.colors.textPrimary} fontSize={13} testID="professional-form-step">Étape {step + 1} sur {steps.length}</Text>
+                <Text variant="regularSmall" color={theme.colors.textSecondary} style={{ marginLeft: horizontalScale(12), textAlign: 'right' }}>{['Vos informations', 'Votre activité', 'Votre sécurité', 'Vos services'][step]}</Text>
             </ProgressHeader>
             <ProgressTrack testID="professional-form-progress">
                 <ProgressFill width={`${((step + 1) / steps.length) * 100}%`} />
@@ -375,16 +336,16 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
 
     const renderStepTitle = () => (
         <FormIntro>
-            <FormKicker>CRÉATION DE COMPTE PROFESSIONNEL</FormKicker>
-            <StepTitle>{steps[step]?.title ?? ''}</StepTitle>
-            <FormDescription>
+            <Text variant="bold" color={theme.colors.textSecondary} fontSize={11} style={{ letterSpacing: 1, marginBottom: verticalScale(6) }}>CRÉATION DE COMPTE PROFESSIONNEL</Text>
+            <Text variant="bold" color={theme.colors.textPrimary} fontSize={18}>{steps[step]?.title ?? ''}</Text>
+            <Text variant="regular" color={theme.colors.textSecondary} fontSize={13} lineHeight={19} style={{ marginTop: verticalScale(8) }}>
                 {[
                     'Présentez-vous pour commencer votre inscription.',
                     'Ajoutez les informations de votre activité professionnelle.',
                     'Créez vos identifiants pour accéder à votre espace.',
                     'Choisissez les services que vous proposez.',
                 ][step]}
-            </FormDescription>
+            </Text>
         </FormIntro>
     );
 
@@ -627,9 +588,9 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                             onSelect={handleServiceSelection}
                         />
                         {selectedServices.length === 0 && (
-                            <ErrorText variant="regular">
+                            <Text variant="regular" color={theme.colors.danger} style={{ marginTop: verticalScale(10), textAlign: 'center' }}>
                                 {t('ui.form.services.required')}
-                            </ErrorText>
+                            </Text>
                         )}
                     </StepContainer>
                 )}
@@ -679,7 +640,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                         showBackdrop={true}
                         iconName='logo-pro24'
                         size={600}
-                        color={colors.primary} />
+                        color={theme.colors.primary} />
                 )}
             </Container>
         </ScrollContainer>
