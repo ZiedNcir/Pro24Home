@@ -3,7 +3,7 @@ import { Image } from 'react-native';
 import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import BottomActions from '@shared/ui/action/BottomActions';
 import type { SummaryStepProps } from './types';

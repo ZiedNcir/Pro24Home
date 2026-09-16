@@ -6,7 +6,7 @@ import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import { useNavigation } from '@react-navigation/core';
 
 export const InterventionSuccessScreen = () => {

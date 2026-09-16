@@ -4,7 +4,7 @@ import { View, StyleSheet } from 'react-native';
 import Text from '@shared/ui/typography/Text';
 import SvgIcon from '@shared/ui/icon/SvgIcon';
 import type { IconName } from '@shared/ui/icon/SvgIcon';
-import { useTheme } from '@theme/ThemeProvider';
+import { useTheme } from '@theme';
 
 interface CustomToastProps {
     message: string;

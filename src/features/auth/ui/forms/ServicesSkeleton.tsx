@@ -1,4 +1,4 @@
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import React from 'react';
 import { Animated, View } from 'react-native';

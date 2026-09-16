@@ -7,11 +7,11 @@ import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
-import { useTheme } from '@theme/ThemeProvider';
+import { useTheme } from '@theme';
 import { useAppSelector } from '@store/hooks';
 import { selectUser } from '@store/slices/authSlice';
 import { useUpdateClientProfileMutation } from '@entities/user/api/user.api';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 
 const ProfileScreen = () => {

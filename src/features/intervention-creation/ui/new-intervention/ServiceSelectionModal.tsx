@@ -8,7 +8,7 @@ import {
   moderateScale,
   verticalScale,
 } from '@utils/normalizedCss';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import CardService from '@entities/service/ui/CardService';
 import type { Service } from '../../../../store/api/api.types';
 

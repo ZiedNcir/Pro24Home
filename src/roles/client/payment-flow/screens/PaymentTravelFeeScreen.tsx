@@ -8,7 +8,7 @@ import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import { horizontalScale, verticalScale, moderateScale } from '@utils/normalizedCss';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import { useNavigation } from '@react-navigation/core';
 import { useRoute, type RouteProp } from '@react-navigation/native';
 import { Toast } from '@core/notifications/toast';

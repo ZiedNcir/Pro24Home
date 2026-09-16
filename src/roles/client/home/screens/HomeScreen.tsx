@@ -8,7 +8,7 @@ import HeaderLocation from '@roles/client/home/ui/HeaderLocation';
 import HeroBanner from '@roles/client/home/ui/HeroBanner';
 import ServiceCategoryGrid from '@roles/client/home/ui/ServiceCategoryGrid';
 import FeatureHighlights from '@roles/client/home/ui/FeatureHighlights';
-import { useTheme } from '@theme/ThemeProvider';
+import { useTheme } from '@theme';
 
 const ClientHome = () => {
     const { themeMode } = useTheme();

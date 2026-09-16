@@ -6,7 +6,7 @@ import type { Service } from '@entities/service/model';
 import Text from '@shared/ui/typography/Text';
 import SvgIcon from '@shared/ui/icon/SvgIcon';
 import { verticalScale, horizontalScale } from '@utils/normalizedCss';
-import { useTheme } from '@theme/ThemeProvider';
+import { useTheme } from '@theme';
 
 interface ListeServicesProps {
     services: Service[];

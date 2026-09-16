@@ -33,7 +33,7 @@ import {
   ProfessionalSettingsScreen,
 } from '@roles/client/home';
 import { Button } from '@shared/ui/button/Button';
-import { useTheme } from '@theme/ThemeProvider';
+import { useTheme } from '@theme';
 import { IconName } from '@shared/ui/icon';
 import { ProfileScreen } from '@roles/client/profile';
 import { DocumentsScreen as HomeProfessional } from '@roles/professional/documents';

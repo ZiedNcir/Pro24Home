@@ -16,7 +16,7 @@ import { useGetProfileQuery } from '@entities/user/api/user.api';
 import { useUploadDocumentMutation } from '@roles/professional/documents/api/documents.api';
 import { selectUser } from '@store/slices/authSlice';
 import type { Document, DocumentType } from '@entities/user/model';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import type { AppStackType } from '../../../../navigation/constant/core';
 import {

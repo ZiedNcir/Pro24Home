@@ -3,8 +3,7 @@ import { StyleSheet, TextInput } from 'react-native';
 import renderer, { act } from 'react-test-renderer';
 
 import { TextField, Toggle } from '@shared/ui';
-import darkTheme from '../src/theme/darkTheme';
-import { ThemeProvider, useTheme } from '../src/theme/ThemeProvider';
+import { darkTheme, ThemeProvider, useTheme } from '@theme';
 
 let setThemeMode!: (mode: 'light' | 'dark') => void;
 

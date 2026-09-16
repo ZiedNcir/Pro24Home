@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 
-import { useTheme } from '@theme/ThemeProvider';
+import { useTheme } from '@theme';
 import type { ScheduleDateModalProps } from './types';
 
 const DatePicker = require('react-native-date-picker').default;

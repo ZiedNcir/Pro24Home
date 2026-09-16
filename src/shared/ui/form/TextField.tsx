@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, TextInput, type TextInputProps, View } from 'react-native';
 
 import Text from '@shared/ui/typography/Text';
-import { useTheme } from '@theme/ThemeProvider';
+import { useTheme } from '@theme';
 
 export interface TextFieldProps extends Omit<TextInputProps, 'value' | 'onChangeText'> {
   label?: string;

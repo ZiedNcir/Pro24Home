@@ -25,7 +25,7 @@ import ListeServices from './ListServices';
 import Text from '@shared/ui/typography/Text';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import ServicesSkeleton from './ServicesSkeleton';
 import { Toast } from '@core/notifications/toast';
 

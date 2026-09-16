@@ -44,7 +44,7 @@ import {
 
 // Validation utils
 import { Regex } from '@utils/constant';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 
 // Configure LayoutAnimation for Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {

@@ -5,7 +5,7 @@ import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import { useNavigation } from '@react-navigation/native';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 
 const NotificationHeader = () => {
     const navigation = useNavigation();

@@ -13,7 +13,7 @@ import {
     verticalScale,
     moderateScale,
 } from '@utils/normalizedCss';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 
 export interface ICardServiceProps extends TouchableOpacityProps {
     title: string;

@@ -15,7 +15,7 @@ import { useGetUnreadNotificationCountQuery } from '@entities/notification/api/n
 import { useUpdateStatusMutation } from '@roles/professional/availability/api/availability.api';
 import { selectUser } from '@store/slices/authSlice';
 import type { Intervention } from '@entities/intervention/model';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { buildProfessionalStatusPayload, type Coordinates } from '@roles/professional/dashboard/model/professional-status';
 

@@ -3,7 +3,7 @@ import { Animated, Pressable } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation, NavigationProp } from '@react-navigation/core';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import { fontPixel, horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import Text from '@shared/ui/typography/Text';
 import { Spinner } from '@shared/ui/overlay/AppSpinner';

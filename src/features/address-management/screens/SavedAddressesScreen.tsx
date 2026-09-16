@@ -24,7 +24,7 @@ import {
   mapGooglePlaceToAddress,
   type SelectedAddressLocation,
 } from '@features/intervention-creation/model/google-place-address';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import {
   horizontalScale,
   moderateScale,

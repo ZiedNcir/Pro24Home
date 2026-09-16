@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 
 interface ClientRatingModalProps {

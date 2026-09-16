@@ -95,7 +95,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import { AppColor } from '@utils/constant';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 
 // Define icon names as union type - include both SVG and FontAwesome icons
 export type IconName =

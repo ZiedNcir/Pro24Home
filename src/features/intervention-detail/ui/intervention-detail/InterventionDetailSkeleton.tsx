@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import { moderateScale, verticalScale } from '@utils/normalizedCss';
 
 const InterventionDetailSkeleton = () => (

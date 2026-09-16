@@ -1,5 +1,5 @@
 import { DefaultTheme } from 'styled-components/native';
-import { colors, spacing, borderRadius, typography, elevation, animation, zIndex } from './index';
+import { colors, spacing, borderRadius, typography, elevation, animation, zIndex } from '../tokens';
 
 const darkTheme: DefaultTheme = {
     colors: {

@@ -10,7 +10,7 @@ import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import { GOOGLE_DIRECTIONS_API_KEY } from '../../../../config/googlePlaces';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useGetInterventionQuery } from '@entities/intervention/api/intervention.api';
 import { useUpdateStatusMutation, useUpdateInterventionStatusMutation } from '@roles/professional/availability/api/availability.api';

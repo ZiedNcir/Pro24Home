@@ -10,7 +10,7 @@ import Field from '@shared/ui/form/HookFormField';
 import { SvgIcon } from '@shared/ui/icon';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { isSupportFormValid, SUPPORT_TOPICS } from '@roles/client/home/model/contactSupport';
 

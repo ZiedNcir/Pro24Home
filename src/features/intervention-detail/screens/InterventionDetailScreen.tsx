@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import { ClientInterventionDetails, confirmRefusal, ProfessionalInterventionDetails } from '../ui/intervention-detail/InterventionDetailSections';
 import InterventionDetailSkeleton from '../ui/intervention-detail/InterventionDetailSkeleton';

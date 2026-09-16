@@ -10,7 +10,7 @@ import {
     verticalScale,
     moderateScale,
 } from '@utils/normalizedCss';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 
 const features = [
     {

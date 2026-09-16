@@ -24,7 +24,7 @@ import {
   verticalScale,
 } from '@utils/normalizedCss';
 
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 
 type Mode = 'light' | 'dark';
 

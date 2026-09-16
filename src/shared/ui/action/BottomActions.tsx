@@ -9,7 +9,7 @@ import {
     verticalScale,
     moderateScale,
 } from '@utils/normalizedCss';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 
 interface Props {
     primaryTitle: string;

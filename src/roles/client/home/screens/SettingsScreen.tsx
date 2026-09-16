@@ -5,11 +5,11 @@ import styled from 'styled-components/native';
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon, type IconName } from '@shared/ui/icon';
-import { useTheme } from '@theme/ThemeProvider';
+import { useTheme } from '@theme';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { logout, selectUser } from '@store/slices/authSlice';
 import { useLogoutMutation } from '@features/auth/api/auth.api';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import {
   horizontalScale,
   moderateScale,

@@ -1,5 +1,5 @@
-import { useTheme } from './ThemeProvider';
-import theme, { Color, Spacing, BorderRadius } from './index';
+import { useTheme } from '../provider/ThemeProvider';
+import { theme, type BorderRadius, type Color, type Spacing } from '../tokens';
 
 export const useColor = (color: Color) => {
     const { theme } = useTheme();

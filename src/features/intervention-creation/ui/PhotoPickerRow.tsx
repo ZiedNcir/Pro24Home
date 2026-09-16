@@ -6,7 +6,7 @@ import styled from 'styled-components/native';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import { Colors } from '@utils/constant';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import {
     horizontalScale,
     verticalScale,

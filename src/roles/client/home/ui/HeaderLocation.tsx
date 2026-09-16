@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 import { useNavigation } from '@react-navigation/native';
 import { selectAuthLoading, selectUser } from '@store/slices/authSlice';
 

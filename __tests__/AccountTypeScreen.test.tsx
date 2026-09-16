@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 import AccountTypeScreen from '../src/features/auth/ui/AccountTypeScreen';
-import { ThemeProvider } from '../src/theme/ThemeProvider';
+import { ThemeProvider } from '@theme';
 
 const themedScreen = <ThemeProvider><AccountTypeScreen /></ThemeProvider>;
 

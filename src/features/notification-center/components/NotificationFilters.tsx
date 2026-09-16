@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon, IconName } from '@shared/ui/icon';
 import { horizontalScale, verticalScale, moderateScale } from '@utils/normalizedCss';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 
 export interface FilterItem {
     key: string;

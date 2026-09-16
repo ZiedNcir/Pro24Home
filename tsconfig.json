@@ -95,6 +95,9 @@
       "@constants/*": [
         "./src/constants/*"
       ],
+      "@theme": [
+        "./src/theme/index.ts"
+      ],
       "@theme/*": [
         "./src/theme/*"
       ],

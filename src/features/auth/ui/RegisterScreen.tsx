@@ -8,7 +8,7 @@ import { Toast } from '@core/notifications/toast';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
-import { useTheme } from '@theme/ThemeProvider';
+import { useTheme } from '@theme';
 
 // Components
 import { Text } from '@shared/ui';

@@ -4,7 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ToastProvider } from 'react-native-toast-notifications';
 
 import { store } from '../../store';
-import { ThemeProvider } from '../../theme/ThemeProvider';
+import { ThemeProvider } from '@theme';
 
 interface AppProvidersProps {
   children: React.ReactNode;

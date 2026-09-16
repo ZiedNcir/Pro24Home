@@ -6,7 +6,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { verticalScale } from '@utils/normalizedCss';
 import SvgIcon from '@shared/ui/icon/SvgIcon';
 import { AppStackType } from '../../../navigation/constant/core';
-import { colors } from '@theme/index';
+import { colors } from '@theme';
 
 type AppNavigationProp = NativeStackNavigationProp<AppStackType>;
 
