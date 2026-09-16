@@ -1,7 +1,6 @@
 // utils/permissions.ts
 import { PermissionsAndroid, Platform } from 'react-native';
 import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
-import { OneSignal } from 'react-native-onesignal';
 
 export const requestPermissions = async (): Promise<void> => {
     try {
@@ -66,15 +65,6 @@ export const requestPermissions = async (): Promise<void> => {
             if (locationWhenInUse === RESULTS.GRANTED) {
                 await request(PERMISSIONS.IOS.LOCATION_ALWAYS);
             }
-        }
-
-        // OneSignal owns the notification prompt on both platforms. On a prior
-        // denial, it opens system settings instead of requesting an invalid
-        // Android permission such as RECEIVE_WAP_PUSH.
-        const notificationGranted = await OneSignal.Notifications.getPermissionAsync();
-        if (!notificationGranted) {
-            const canRequest = await OneSignal.Notifications.canRequestPermission();
-            await OneSignal.Notifications.requestPermission(!canRequest);
         }
 
     } catch (error) {

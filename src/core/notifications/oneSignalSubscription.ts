@@ -13,6 +13,9 @@ interface PermissionApi {
 const readSubscriptionId: SubscriptionIdReader = () =>
   OneSignal.User.pushSubscription.getIdAsync();
 
+const isRegisteredSubscriptionId = (subscriptionId: string | null): subscriptionId is string =>
+  Boolean(subscriptionId && !subscriptionId.startsWith('local-'));
+
 const waitForSubscriptionId: SubscriptionWaiter = () => new Promise(resolve => {
   const timeout = setTimeout(() => {
     OneSignal.User.pushSubscription.removeEventListener('change', listener);
@@ -20,11 +23,12 @@ const waitForSubscriptionId: SubscriptionWaiter = () => new Promise(resolve => {
   }, 15_000);
 
   const listener = (event: { current: { id?: string } }) => {
-    if (!event.current.id) return;
+    const subscriptionId = event.current.id ?? null;
+    if (!isRegisteredSubscriptionId(subscriptionId)) return;
 
     clearTimeout(timeout);
     OneSignal.User.pushSubscription.removeEventListener('change', listener);
-    resolve(event.current.id);
+    resolve(subscriptionId);
   };
 
   OneSignal.User.pushSubscription.addEventListener('change', listener);
@@ -41,6 +45,11 @@ export const getOneSignalSubscriptionId = async (
   permission: PermissionApi = notificationPermission,
   waitForId: SubscriptionWaiter = waitForSubscriptionId,
 ): Promise<string> => {
+  const currentSubscriptionId = await readId();
+  const subscriptionReady = isRegisteredSubscriptionId(currentSubscriptionId)
+    ? Promise.resolve(currentSubscriptionId)
+    : waitForId();
+
   const hasPermission = await permission.getPermission();
   const granted = hasPermission || await permission.requestPermission(true);
 
@@ -48,9 +57,9 @@ export const getOneSignalSubscriptionId = async (
     throw new Error('Notification permission is required');
   }
 
-  const subscriptionId = await readId() ?? await waitForId();
+  const subscriptionId = await subscriptionReady;
 
-  if (!subscriptionId) {
+  if (!isRegisteredSubscriptionId(subscriptionId)) {
     throw new Error('OneSignal subscription id is unavailable');
   }
 

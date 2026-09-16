@@ -35,6 +35,12 @@ describe('getOneSignalSubscriptionId', () => {
     ).resolves.toBe('subscription-created-after-prompt');
   });
 
+  it('does not use OneSignal’s local placeholder as a device subscription identifier', async () => {
+    await expect(
+      getOneSignalSubscriptionId(async () => 'local-pending-registration', grantedPermission, async () => null),
+    ).rejects.toThrow('OneSignal subscription id is unavailable');
+  });
+
   it('rejects registration when notification permission remains denied', async () => {
     await expect(
       getOneSignalSubscriptionId(async () => 'client-device-subscription', {
