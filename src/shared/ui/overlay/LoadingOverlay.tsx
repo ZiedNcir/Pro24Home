@@ -1,5 +1,6 @@
 import React from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { useTheme } from '@theme';
 
 export interface LoadingOverlayProps {
   visible: boolean;
@@ -7,12 +8,13 @@ export interface LoadingOverlayProps {
 }
 
 export const LoadingOverlay = ({ visible, message }: LoadingOverlayProps) => {
+  const { theme } = useTheme();
   if (!visible) return null;
 
   return (
-    <View testID="loading-overlay" style={styles.overlay}>
-      <ActivityIndicator color="#FFFFFF" />
-      {message ? <Text style={styles.message}>{message}</Text> : null}
+    <View testID="loading-overlay" style={[styles.overlay, { backgroundColor: theme.colors.overlay }]}>
+      <ActivityIndicator color={theme.colors.textInverse} />
+      {message ? <Text style={[styles.message, { color: theme.colors.textInverse }]}>{message}</Text> : null}
     </View>
   );
 };
@@ -20,7 +22,6 @@ export const LoadingOverlay = ({ visible, message }: LoadingOverlayProps) => {
 const styles = StyleSheet.create({
   overlay: {
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.55)',
     bottom: 0,
     justifyContent: 'center',
     left: 0,
@@ -29,5 +30,5 @@ const styles = StyleSheet.create({
     top: 0,
     zIndex: 10,
   },
-  message: { color: '#FFFFFF', marginTop: 12 },
+  message: { marginTop: 12 },
 });

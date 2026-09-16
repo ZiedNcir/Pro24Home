@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, Pressable, StyleSheet } from 'react-native';
+import { useTheme } from '@theme';
 
 export interface BottomSheetProps {
   visible: boolean;
@@ -7,17 +8,20 @@ export interface BottomSheetProps {
   children: React.ReactNode;
 }
 
-export const BottomSheet = ({ visible, onDismiss, children }: BottomSheetProps) => (
+export const BottomSheet = ({ visible, onDismiss, children }: BottomSheetProps) => {
+  const { theme } = useTheme();
+  return (
   <Modal transparent visible={visible} onRequestClose={onDismiss}>
-    <Pressable onPress={onDismiss} style={styles.overlay}>
-      <Pressable onPress={event => event.stopPropagation()} style={styles.content}>
+    <Pressable onPress={onDismiss} style={[styles.overlay, { backgroundColor: theme.colors.overlay }]}>
+      <Pressable onPress={event => event.stopPropagation()} style={[styles.content, { backgroundColor: theme.colors.surface }]}>
         {children}
       </Pressable>
     </Pressable>
   </Modal>
-);
+  );
+};
 
 const styles = StyleSheet.create({
-  overlay: { backgroundColor: 'rgba(0,0,0,0.5)', flex: 1, justifyContent: 'flex-end' },
-  content: { backgroundColor: '#FFFFFF', borderTopLeftRadius: 16, borderTopRightRadius: 16, padding: 20 },
+  overlay: { flex: 1, justifyContent: 'flex-end' },
+  content: { borderTopLeftRadius: 16, borderTopRightRadius: 16, padding: 20 },
 });

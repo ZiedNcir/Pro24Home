@@ -35,7 +35,11 @@ describe('shared layout primitives', () => {
   it('renders a visible loading overlay', async () => {
     let tree!: renderer.ReactTestRenderer;
     await act(async () => {
-      tree = renderer.create(<LoadingOverlay visible message="Chargement" />);
+      tree = renderer.create(
+        <ThemeProvider>
+          <LoadingOverlay visible message="Chargement" />
+        </ThemeProvider>,
+      );
     });
 
     expect(tree.root.findByProps({ testID: 'loading-overlay' })).toBeTruthy();

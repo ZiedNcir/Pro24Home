@@ -56,7 +56,11 @@ describe('shared form primitives', () => {
   it('renders a toggle without role-specific dependencies', async () => {
     let tree!: renderer.ReactTestRenderer;
     await act(async () => {
-      tree = renderer.create(<Toggle value onValueChange={jest.fn()} />);
+      tree = renderer.create(
+        <ThemeProvider>
+          <Toggle value onValueChange={jest.fn()} />
+        </ThemeProvider>,
+      );
     });
 
     expect(tree.root.findByProps({ accessibilityRole: 'switch' })).toBeTruthy();
