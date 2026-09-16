@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Toast } from '@core/notifications/toast';
+import { getOneSignalSubscriptionId } from '@core/notifications/oneSignalSubscription';
 import styled from 'styled-components/native';
 
 // Import from new Redux architecture
@@ -248,7 +249,8 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
             setSubmittedData(data);
 
             // Prepare the registration data with defaults
-            const registrationData = prepareRegistrationPayload(data, 'client', 'onesignal-device-token-here');
+            const onesignalKey = await getOneSignalSubscriptionId();
+            const registrationData = prepareRegistrationPayload(data, 'client', onesignalKey);
 
             // Call the API using RTK Query mutation
             const result = await registerClient(registrationData).unwrap();
