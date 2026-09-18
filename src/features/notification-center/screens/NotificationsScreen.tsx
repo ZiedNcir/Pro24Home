@@ -177,7 +177,7 @@ export const NotificationsScreen = () => {
 
 
 const Content = styled.View`
-  margin-top: ${verticalScale(20)}px;
+  margin-top: ${verticalScale(8)}px;
   gap: ${verticalScale(20)}px;
 `;
 
