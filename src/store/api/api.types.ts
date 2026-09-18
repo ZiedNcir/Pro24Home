@@ -467,16 +467,16 @@ export interface CreateRatingRequest {
 
 // Notification Types
 export interface Notification {
-    id: number;
-    user_id: number;
-    user_type: UserType;
+    id: string;
+    user_id?: number;
+    user_type?: UserType;
     title: string;
     message: string;
-    type: 'intervention' | 'devis' | 'reclamation' | 'payment' | 'system';
+    type: string;
     data?: Record<string, any>;
     read: boolean;
     created_at: string;
-    read_at?: string;
+    read_at?: string | null;
 }
 
 // Payment Types

@@ -9,7 +9,7 @@ interface Props {
     title: string;
     data: NotificationItem[];
     grouped?: boolean;
-    onDelete?: (id: number) => void;
+    onDelete?: (id: string) => void;
 }
 
 const NotificationSection: React.FC<Props> = ({ title, data, grouped, onDelete }) => {

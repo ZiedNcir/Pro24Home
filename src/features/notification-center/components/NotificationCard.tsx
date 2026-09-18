@@ -8,7 +8,7 @@ import { horizontalScale, verticalScale, moderateScale } from '@utils/normalized
 import { colors } from '@theme';
 
 export interface NotificationItem {
-    id: number;
+    id: string;
     icon: IconName;
     title: string;
     description: string;
@@ -22,7 +22,7 @@ interface Props {
     item: NotificationItem;
     compact?: boolean;
     isLast?: boolean;
-    onDelete?: (id: number) => void;
+    onDelete?: (id: string) => void;
 }
 
 const getAccentColor = (item: NotificationItem) => {
@@ -141,4 +141,3 @@ const DeleteIcon = styled.TouchableOpacity`
   border-radius: ${moderateScale(4)}px;
   background-color: ${colors.gray100 || '#f5f5f5'};
 `;
-

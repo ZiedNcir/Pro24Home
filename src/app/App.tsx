@@ -10,6 +10,7 @@ import { requestPermissions } from '../utils/permissions';
 import '../utils/i18n';
 import { AppProviders } from './providers/AppProviders';
 import { initializeOneSignal } from '../core/notifications/oneSignalSubscription';
+import { initializeNotificationOpenHandler } from '../core/notifications/notification-open';
 
 library.add(fas as any);
 
@@ -19,6 +20,7 @@ const App = (): React.JSX.Element => {
   useEffect(() => {
     SplashScreen.hide();
     initializeOneSignal();
+    initializeNotificationOpenHandler();
     requestPermissions();
   }, []);
 

@@ -51,6 +51,8 @@ import {
 import { PROFESSIONAL_BOTTOM_TABS } from '../../navigation/professionalNavigation';
 import { ProfessionalInterventionTrackingScreen } from '@roles/professional/intervention-tracking';
 import { createTabBarRenderer } from './createTabBarRenderer';
+import { navigationRef } from './navigation-service';
+import { flushPendingNotificationOpen } from '@core/notifications/notification-open';
 
 const { Navigator: BottomTabNavigator, Screen: BottomTabScreen } =
   createBottomTabNavigator<BottomTabType>();
@@ -216,7 +218,7 @@ const AppNavigator: React.FC = () => {
   if (!initialRoute) return null;
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef} onReady={flushPendingNotificationOpen}>
       <Stack.Navigator
         initialRouteName={initialRoute}
         screenOptions={{

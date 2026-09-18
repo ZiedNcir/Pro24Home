@@ -25,6 +25,7 @@ export const formatTimeAgo = (dateString: string): string => {
 };
 
 export const getNotificationIcon = (type: Notification['type']): NotificationItem['icon'] => {
+    if (type.endsWith('NewMessageNotification')) return 'fa-file-alt';
     switch (type) {
         case 'intervention':
             return 'fa-file-alt';
@@ -41,6 +42,7 @@ export const getNotificationIcon = (type: Notification['type']): NotificationIte
 };
 
 export const getNotificationColor = (type: Notification['type']): NotificationItem['color'] => {
+    if (type.endsWith('NewMessageNotification')) return 'success';
     switch (type) {
         case 'intervention':
             return 'success';

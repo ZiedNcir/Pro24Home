@@ -24,6 +24,7 @@ jest.mock('react-native-onesignal', () => {
       Notifications: {
         getPermissionAsync: jest.fn(async () => true),
         requestPermission: jest.fn(async () => true),
+        addEventListener: jest.fn(),
       },
       User: {
         pushSubscription: {

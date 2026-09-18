@@ -28,7 +28,7 @@ export const NotificationsScreen = () => {
             case 'unread':
                 return notificationsResponse.data.filter(notification => !notification.read);
             case 'requests':
-                return notificationsResponse.data.filter(notification => notification.type === 'intervention');
+                return notificationsResponse.data.filter(notification => notification.type.endsWith('NewMessageNotification') || notification.type === 'intervention');
             case 'promos':
                 return notificationsResponse.data.filter(notification => notification.type === 'system');
             case 'all':
@@ -62,7 +62,7 @@ export const NotificationsScreen = () => {
         ];
     }, [notificationsResponse]);
 
-    const handleDeleteNotification = async (id: number) => {
+    const handleDeleteNotification = async (id: string) => {
         try {
             await readNotification(id).unwrap();
         } catch (err) {
