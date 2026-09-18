@@ -23,6 +23,7 @@ interface Props {
     compact?: boolean;
     isLast?: boolean;
     onDelete?: (id: string) => void;
+    onPress?: (id: string) => void;
 }
 
 const getAccentColor = (item: NotificationItem) => {
@@ -32,13 +33,13 @@ const getAccentColor = (item: NotificationItem) => {
     return colors.primary;
 };
 
-const NotificationCard: React.FC<Props> = ({ item, compact, isLast, onDelete }) => {
+const NotificationCard: React.FC<Props> = ({ item, compact, isLast, onDelete, onPress }) => {
     const accent = getAccentColor(item);
 
 
     return (
 
-        <Card unread={item.unread} compact={compact} isLast={isLast}>
+        <Card unread={item.unread} compact={compact} isLast={isLast} onPress={() => onPress?.(item.id)}>
             {item.unread && <UnreadDot />}
 
             <IconCircle color={accent}>

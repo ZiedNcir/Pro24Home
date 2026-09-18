@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import styled from 'styled-components/native';
+import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import NotificationHeader from '../components/NotificationHeader';
@@ -9,11 +11,16 @@ import NotificationEmptyState from '../components/NotificationEmptyState';
 
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import { useGetNotificationsQuery, useReadNotificationMutation } from '@entities/notification/api/notification.api';
+import { useLazyGetInterventionsQuery } from '@entities/intervention/api/intervention.api';
 import { transformNotificationToItem, groupNotificationsByTime } from '@utils/notificationHelpers';
+import { selectUser } from '@store/slices/authSlice';
 
 export const NotificationsScreen = () => {
     const { data: notificationsResponse, isLoading, error } = useGetNotificationsQuery({});
     const [readNotification] = useReadNotificationMutation();
+    const [getInterventions] = useLazyGetInterventionsQuery();
+    const navigation = useNavigation<any>();
+    const user = useSelector(selectUser);
     const [activeFilter, setActiveFilter] = useState('all');
 
     const transformedNotifications = useMemo(() => {
@@ -67,6 +74,28 @@ export const NotificationsScreen = () => {
             await readNotification(id).unwrap();
         } catch (err) {
             console.error('Failed to mark notification as read:', err);
+        }
+    };
+
+    const handleOpenNotification = async (id: string) => {
+        const notification = notificationsResponse?.data.find(item => item.id === id);
+        await handleDeleteNotification(id);
+
+        const candidate = notification?.data?.intervention_id;
+        const interventionId = typeof candidate === 'number' ? candidate : Number(candidate);
+        if (Number.isFinite(interventionId) && interventionId > 0) {
+            navigation.navigate('InterventionDetail', { intervention_id: interventionId });
+            return;
+        }
+
+        try {
+            const response = await getInterventions({ type: user?.type === 'professional' ? 'professional' : 'client' }).unwrap();
+            const latestIntervention = response.data?.[0];
+            if (latestIntervention) {
+                navigation.navigate('InterventionDetail', { intervention_id: latestIntervention.id });
+            }
+        } catch (err) {
+            console.error('Failed to load the latest intervention:', err);
         }
     };
 
@@ -131,13 +160,13 @@ export const NotificationsScreen = () => {
 
             <Content>
                 {today.length > 0 && (
-                    <NotificationSection title="Aujourd’hui" data={today} onDelete={handleDeleteNotification} />
+                    <NotificationSection title="Aujourd’hui" data={today} onDelete={handleDeleteNotification} onPress={handleOpenNotification} />
                 )}
                 {week.length > 0 && (
-                    <NotificationSection title="Cette semaine" data={week} grouped onDelete={handleDeleteNotification} />
+                    <NotificationSection title="Cette semaine" data={week} grouped onDelete={handleDeleteNotification} onPress={handleOpenNotification} />
                 )}
                 {older.length > 0 && (
-                    <NotificationSection title="Plus anciennes" data={older} onDelete={handleDeleteNotification} />
+                    <NotificationSection title="Plus anciennes" data={older} onDelete={handleDeleteNotification} onPress={handleOpenNotification} />
                 )}
 
                 {transformedNotifications.length === 0 && <NotificationEmptyState />}

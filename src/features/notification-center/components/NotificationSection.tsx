@@ -10,9 +10,10 @@ interface Props {
     data: NotificationItem[];
     grouped?: boolean;
     onDelete?: (id: string) => void;
+    onPress?: (id: string) => void;
 }
 
-const NotificationSection: React.FC<Props> = ({ title, data, grouped, onDelete }) => {
+const NotificationSection: React.FC<Props> = ({ title, data, grouped, onDelete, onPress }) => {
     return (
         <Wrapper>
             <Text
@@ -33,13 +34,14 @@ const NotificationSection: React.FC<Props> = ({ title, data, grouped, onDelete }
                             compact
                             isLast={index === data.length - 1}
                             onDelete={onDelete}
+                            onPress={onPress}
                         />
                     ))}
                 </GroupCard>
             ) : (
                 <List>
                     {data.map(item => (
-                        <NotificationCard key={item.id} item={item} onDelete={onDelete} />
+                        <NotificationCard key={item.id} item={item} onDelete={onDelete} onPress={onPress} />
                     ))}
                 </List>
             )}
