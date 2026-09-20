@@ -90,6 +90,7 @@ export const ClientInterventionDetails = ({ intervention }: DetailProps) => {
 export const ProfessionalInterventionDetails = ({ intervention, professionalLatitude, professionalLongitude, isAccepting = false, isRefusing = false, onAccept, onRefuse, onOpenTracking }: DetailProps) => {
     const [isPriceModalVisible, setIsPriceModalVisible] = useState(false);
     const [proposedPrice, setProposedPrice] = useState('');
+    const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
     const [addDevis, { isLoading: isSubmittingPrice }] = useAddDevisMutation();
     const address = getInterventionAddress(intervention);
     const clientName = getInterventionClientName(intervention.client);
@@ -129,12 +130,20 @@ export const ProfessionalInterventionDetails = ({ intervention, professionalLati
                     const imageUrl = imageUrls[index];
                     const uri = imageUrl;
 
-                    return <ImageTile key={index}>
+                    return <ImageTile key={index} onPress={() => uri && setSelectedImageUrl(uri)} disabled={!uri}>
                         {uri ? <TileImage uri={uri} borderRadius={moderateScale(10)} renderLoading={() => <ImageSkeleton />} renderError={() => <ImageFallback><SvgIcon name="image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Photo indisponible</Text></ImageFallback>} /> : <ImageFallback><SvgIcon name="image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Aucune photo</Text></ImageFallback>}
                     </ImageTile>;
                 })}
             </ImageGrid>
         </Section>
+        <Modal visible={Boolean(selectedImageUrl)} transparent animationType="fade" onRequestClose={() => setSelectedImageUrl(null)}>
+            <ImagePreviewBackdrop onPress={() => setSelectedImageUrl(null)}>
+                <ImagePreviewClose onPress={() => setSelectedImageUrl(null)} accessibilityRole="button" accessibilityLabel="Fermer l’image">
+                    <SvgIcon name="fa-times" size={22} color={colors.white} />
+                </ImagePreviewClose>
+                {selectedImageUrl ? <ImagePreview source={{ uri: selectedImageUrl }} resizeMode="contain" /> : null}
+            </ImagePreviewBackdrop>
+        </Modal>
         <Section>
             <InfoRow><SvgIcon name="fa-map-marked-alt" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDistanceBetweenCoordinates(professionalLatitude, professionalLongitude, Number(address?.latitude), Number(address?.longitude))}</Text></InfoRow>
             {requestedDate ? <InfoRow><SvgIcon name="fa-user-clock" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDate(requestedDate)}</Text></InfoRow> : null}
@@ -167,10 +176,13 @@ const TrackingButton = styled.TouchableOpacity`height: ${verticalScale(52)}px; m
 const PriceButton = styled.TouchableOpacity`height: ${verticalScale(48)}px; margin-top: ${verticalScale(4)}px; border-radius: ${moderateScale(14)}px; background-color: ${colors.primary}; flex-direction: row; gap: ${horizontalScale(8)}px; align-items: center; justify-content: center;`;
 const RefuseButton = styled.TouchableOpacity`height: ${verticalScale(52)}px; border-radius: ${moderateScale(14)}px; border-width: 1px; border-color: ${colors.danger}; align-items: center; justify-content: center;`;
 const ImageGrid = styled.View`flex-direction: row; gap: ${horizontalScale(8)}px;`;
-const ImageTile = styled.View`flex: 1; height: ${verticalScale(92)}px; overflow: hidden; border-radius: ${moderateScale(10)}px; background-color: #f5f5f5;`;
+const ImageTile = styled.TouchableOpacity`flex: 1; height: ${verticalScale(92)}px; overflow: hidden; border-radius: ${moderateScale(10)}px; background-color: #f5f5f5;`;
 const ImageFallback = styled.View`flex: 1; align-items: center; justify-content: center; gap: ${verticalScale(4)}px; padding: ${horizontalScale(4)}px;`;
 const ImageSkeleton = styled.View`width: 100%; height: 100%; background-color: ${colors.gray200};`;
 const TileImage = styled(AppImage)`width: 100%; height: 100%;`;
+const ImagePreviewBackdrop = styled.Pressable`flex: 1; background-color: rgba(0, 0, 0, 0.94); justify-content: center; align-items: center; padding: ${horizontalScale(16)}px;`;
+const ImagePreview = styled.Image`width: 100%; height: 82%;`;
+const ImagePreviewClose = styled.TouchableOpacity`position: absolute; top: ${verticalScale(44)}px; right: ${horizontalScale(22)}px; z-index: 2; width: ${moderateScale(44)}px; height: ${moderateScale(44)}px; border-radius: ${moderateScale(22)}px; background-color: rgba(255, 255, 255, 0.2); align-items: center; justify-content: center;`;
 const ClientMap = styled(MapView)`height: ${verticalScale(190)}px; border-radius: ${moderateScale(12)}px; overflow: hidden;`;
 const ModalBackdrop = styled.View`flex: 1; justify-content: flex-end; background-color: rgba(0, 0, 0, 0.42);`;
 const PriceModalCard = styled.View`background-color: ${colors.white}; border-top-left-radius: ${moderateScale(24)}px; border-top-right-radius: ${moderateScale(24)}px; padding: ${verticalScale(14)}px ${horizontalScale(18)}px ${verticalScale(24)}px;`;
