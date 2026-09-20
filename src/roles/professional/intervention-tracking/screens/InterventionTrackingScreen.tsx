@@ -1,42 +1,39 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Modal, PermissionsAndroid, Platform, Pressable } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE, type Region } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
-import MapViewDirections from 'react-native-maps-directions';
 import styled from 'styled-components/native';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import {
+    NavigationView,
+    NavigationUIEnabledPreference,
+    TravelMode,
+    useNavigation as useGoogleNavigation,
+} from '@googlemaps/react-native-navigation-sdk';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
-import { GOOGLE_DIRECTIONS_API_KEY } from '../../../../config/googlePlaces';
 import { colors } from '@theme';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useGetInterventionQuery } from '@entities/intervention/api/intervention.api';
 import { useUpdateStatusMutation, useUpdateInterventionStatusMutation } from '@roles/professional/availability/api/availability.api';
 import { AppStackType } from '../../../../navigation/constant/core';
 import { getInterventionAddress, getInterventionClientName } from '@entities/intervention/model/intervention-presentation';
-import { formatRouteDistance, getNavigationBannerCopy, getProfessionalStatusActions, getRouteFitCoordinates, getTrackingPanelMode } from '../model/route-presentation';
+import { formatRouteDistance, getNavigationBannerCopy, getProfessionalStatusActions, getTrackingPanelMode } from '../model/route-presentation';
 
 type Coordinates = { latitude: number; longitude: number };
-
-const DEFAULT_REGION: Region = { latitude: 36.8065, longitude: 10.1815, latitudeDelta: 0.12, longitudeDelta: 0.12 };
 
 const ProfessionalInterventionTrackingScreen = () => {
     const route = useRoute<RouteProp<AppStackType, 'ProfessionalInterventionTracking'>>();
     const navigation = useNavigation<any>();
-    const mapRef = useRef<MapView>(null);
     const lastStatusUpdate = useRef(0);
-    const isProgrammaticCameraChange = useRef(false);
     const [professionalPosition, setProfessionalPosition] = useState<Coordinates | null>(null);
     const [eta, setEta] = useState<number | null>(null);
     const [routeDistance, setRouteDistance] = useState<number | null>(null);
     const [isTripStarted, setIsTripStarted] = useState(false);
     const [locationError, setLocationError] = useState(false);
-    const [routeError, setRouteError] = useState(false);
-    const [isFollowingRoute, setIsFollowingRoute] = useState(true);
-    const [mapType, setMapType] = useState<'standard' | 'satellite' | 'hybrid' | 'terrain'>('standard');
     const [isArrivalActionsVisible, setIsArrivalActionsVisible] = useState(false);
+    const { navigationController, setOnArrival, setOnLocationChanged, setOnRemainingTimeOrDistanceChanged, removeAllListeners } = useGoogleNavigation();
     const { data: intervention, isLoading, isError } = useGetInterventionQuery(route.params.intervention_id);
     const [updateStatus] = useUpdateStatusMutation();
     const [updateInterventionStatus, { isLoading: isUpdatingStatus }] = useUpdateInterventionStatusMutation();
@@ -96,26 +93,46 @@ const ProfessionalInterventionTrackingScreen = () => {
     }, [updateStatus]);
 
     useEffect(() => {
-        if (isFollowingRoute) {
-            const coordinates = getRouteFitCoordinates(professionalPosition, destination);
-            if (coordinates) {
-                isProgrammaticCameraChange.current = true;
-                mapRef.current?.fitToCoordinates(coordinates, { edgePadding: { top: 150, right: 70, bottom: 300, left: 40 }, animated: true });
-            }
-        }
-    }, [professionalPosition, destination, isFollowingRoute]);
+        setOnLocationChanged(location => {
+            const coordinates = { latitude: location.lat, longitude: location.lng };
+            setProfessionalPosition(coordinates);
+        });
+        setOnRemainingTimeOrDistanceChanged(value => {
+            setEta(Math.max(0, Math.round(value.seconds / 60)));
+            setRouteDistance(value.meters / 1000);
+        });
+        setOnArrival(() => setIsArrivalActionsVisible(true));
+        return () => removeAllListeners();
+    }, [removeAllListeners, setOnArrival, setOnLocationChanged, setOnRemainingTimeOrDistanceChanged]);
+
+    useEffect(() => () => {
+        navigationController.stopGuidance().catch(() => undefined);
+    }, [navigationController]);
 
     if (isLoading) return <ScreenContainer mode="light" centered><ActivityIndicator color={colors.primary} /></ScreenContainer>;
     if (isError || !intervention) return <ScreenContainer mode="light" centered><Text variant="regularSmall" color="gray600">Impossible de charger le trajet.</Text></ScreenContainer>;
 
     const clientName = getInterventionClientName(intervention.client);
     const clientPhone = intervention.client?.phone_number;
-    const region = destination ? { ...destination, latitudeDelta: 0.08, longitudeDelta: 0.08 } : DEFAULT_REGION;
     const navigationBannerCopy = getNavigationBannerCopy(isTripStarted);
     const trackingPanelMode = getTrackingPanelMode(isTripStarted);
 
+    const startGoogleGuidance = async () => {
+        if (!destination) throw new Error('Adresse du client invalide');
+        const accepted = await navigationController.showTermsAndConditionsDialog();
+        if (!accepted) throw new Error('Les conditions de navigation doivent être acceptées.');
+        await navigationController.init();
+        const status = await navigationController.setDestinations([{
+            title: address?.address || 'Destination client',
+            position: { lat: destination.latitude, lng: destination.longitude },
+        }], { routingOptions: { travelMode: TravelMode.DRIVING }, displayOptions: { showDestinationMarkers: true } });
+        if (status !== 'OK') throw new Error(`Itinéraire indisponible (${status}).`);
+        await navigationController.startGuidance();
+    };
+
     const handleTripAction = async () => {
         try {
+            await startGoogleGuidance();
             await updateInterventionStatus({ interventionId: intervention.id, status: 'in progress' }).unwrap();
             setIsTripStarted(true);
         } catch {
@@ -127,44 +144,25 @@ const ProfessionalInterventionTrackingScreen = () => {
         try {
             await updateInterventionStatus({ interventionId: intervention.id, status }).unwrap();
             setIsArrivalActionsVisible(false);
-            if (status === 'rejected' || status === 'completed') navigation.goBack();
+            if (status === 'rejected' || status === 'completed') {
+                await navigationController.stopGuidance().catch(() => undefined);
+                navigation.goBack();
+            }
         } catch {
             Alert.alert('Mise à jour impossible', 'Le statut de l’intervention n’a pas pu être mis à jour.');
         }
     };
 
-    const handleUserLocationChange = (event: { nativeEvent: { coordinate?: Coordinates } }) => {
-        const coordinate = event.nativeEvent.coordinate;
-        if (!coordinate || !Number.isFinite(coordinate.latitude) || !Number.isFinite(coordinate.longitude)) return;
-        setProfessionalPosition(coordinate);
-    };
-
-    const fitRoute = () => {
-        const coordinates = getRouteFitCoordinates(professionalPosition, destination);
-        if (!coordinates) return;
-        setIsFollowingRoute(true);
-        isProgrammaticCameraChange.current = true;
-        mapRef.current?.fitToCoordinates(coordinates, { edgePadding: { top: 150, right: 70, bottom: 300, left: 40 }, animated: true });
-    };
-
-    const recenterOnProfessional = () => {
-        if (!professionalPosition) return;
-        setIsFollowingRoute(false);
-        mapRef.current?.animateToRegion({ ...professionalPosition, latitudeDelta: 0.015, longitudeDelta: 0.015 }, 350);
-    };
-
-    const cycleMapType = () => {
-        const types: Array<typeof mapType> = ['standard', 'satellite', 'hybrid', 'terrain'];
-        setMapType(types[(types.indexOf(mapType) + 1) % types.length] ?? 'standard');
-    };
-
     return <ScreenContainer mode="light" paddingHorizontal={0} paddingVertical={0}>
         <MapWrapper>
-            <TrackingMap ref={mapRef} initialRegion={region} mapType={mapType} customMapStyle={mapType === 'standard' ? PRO24_MAP_STYLE : undefined} showsUserLocation onUserLocationChange={handleUserLocationChange} showsMyLocationButton showsCompass toolbarEnabled onRegionChangeComplete={() => { if (isProgrammaticCameraChange.current) { isProgrammaticCameraChange.current = false; return; } setIsFollowingRoute(false); }}>
-                {professionalPosition ? <Marker coordinate={professionalPosition} pinColor="#1E88E5" title="Ma position" /> : null}
-                {destination ? <Marker coordinate={destination} pinColor={colors.primary} title="Destination client" description={address?.address} /> : null}
-                {professionalPosition && destination ? <MapViewDirections origin={professionalPosition} destination={destination} apikey={GOOGLE_DIRECTIONS_API_KEY} mode="DRIVING" precision="high" strokeWidth={7} strokeColor={colors.primary} resetOnChange onReady={result => { setEta(Math.round(result.duration)); setRouteDistance(result.distance); setRouteError(false); }} onError={() => setRouteError(true)} /> : null}
-            </TrackingMap>
+            <NavigationView
+                style={{ flex: 1 }}
+                navigationUIEnabledPreference={NavigationUIEnabledPreference.AUTOMATIC}
+                tripProgressBarEnabled
+                trafficPromptsEnabled
+                headerEnabled
+                footerEnabled
+            />
             <NavigationBanner active={isTripStarted}>
                 <NavigationIcon active={isTripStarted}>
                     <SvgIcon name="fa-chevron-up" size={19} color={isTripStarted ? colors.primary : colors.white} />
@@ -175,14 +173,14 @@ const ProfessionalInterventionTrackingScreen = () => {
                 </NavigationCopy>
             </NavigationBanner>
             <MapTools>
-                <MapControlButton accessibilityRole="button" accessibilityLabel="Changer le style de carte" onPress={cycleMapType}>
+                <MapControlButton accessibilityRole="button" accessibilityLabel="Recentrer sur le trajet" onPress={() => undefined}>
                     <SvgIcon name="fa-layer-group" size={17} color={colors.black} />
                 </MapControlButton>
-                <MapControlButton accessibilityRole="button" accessibilityLabel="Recentrer sur ma position" onPress={recenterOnProfessional} disabled={!professionalPosition}>
+                <MapControlButton accessibilityRole="button" accessibilityLabel="Recentrer sur ma position" onPress={() => undefined} disabled={!professionalPosition}>
                     <SvgIcon name="fa-crosshairs" size={17} color={professionalPosition ? colors.primary : colors.gray400} />
                 </MapControlButton>
-                <MapControlButton accessibilityRole="button" accessibilityLabel="Afficher le trajet complet" onPress={fitRoute} disabled={!professionalPosition || !destination} active={isFollowingRoute}>
-                    <SvgIcon name="fa-map-marked-alt" size={17} color={isFollowingRoute ? colors.white : colors.black} />
+                <MapControlButton accessibilityRole="button" accessibilityLabel="Afficher le trajet complet" onPress={() => undefined} disabled={!destination}>
+                    <SvgIcon name="fa-map-marked-alt" size={17} color={colors.black} />
                 </MapControlButton>
             </MapTools>
             <TopBar>
@@ -203,7 +201,6 @@ const ProfessionalInterventionTrackingScreen = () => {
                     <Row><Avatar><SvgIcon name="fa-user" size={17} color={colors.primary} /></Avatar><ClientInfo><Text variant="bold" color="black" fontSize={17}>{clientName || 'Client'}</Text>{clientPhone ? <Text variant="regularSmall" color="gray600">{clientPhone}</Text> : null}</ClientInfo></Row>
                     <DestinationText><SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{address?.location_name || address?.address || 'Adresse du client'}</Text></DestinationText>
                     {locationError ? <WarningText>Activez la localisation pour suivre votre trajet en temps réel.</WarningText> : null}
-                    {routeError ? <WarningText>Itinéraire momentanément indisponible. Vérifiez votre connexion.</WarningText> : null}
                     <RouteStats>
                         <RouteStat><SvgIcon name="fa-map-marked-alt" size={15} color={colors.primary} /><RouteStatText>{formatRouteDistance(routeDistance)}<StatCaption>Distance</StatCaption></RouteStatText></RouteStat>
                         <StatsDivider />
@@ -243,7 +240,6 @@ const geolocationCleanup = (watchId: number) => {
 export default ProfessionalInterventionTrackingScreen;
 
 const MapWrapper = styled.View`flex: 1;`;
-const TrackingMap = styled(MapView).attrs({ provider: Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined })`flex: 1;`;
 const NavigationBanner = styled.View<{ active: boolean }>`position: absolute; top: ${verticalScale(78)}px; left: ${horizontalScale(18)}px; right: ${horizontalScale(18)}px; min-height: ${verticalScale(70)}px; padding: ${verticalScale(10)}px ${horizontalScale(12)}px; border-radius: ${moderateScale(16)}px; background-color: ${({ active }) => active ? colors.primary : colors.white}; flex-direction: row; align-items: center; elevation: 5;`;
 const NavigationIcon = styled.View<{ active: boolean }>`width: ${horizontalScale(48)}px; height: ${horizontalScale(48)}px; border-radius: ${horizontalScale(12)}px; background-color: ${({ active }) => active ? colors.white : colors.primary}; align-items: center; justify-content: center;`;
 const NavigationCopy = styled.View`margin-left: ${horizontalScale(12)}px; flex: 1;`;
@@ -282,11 +278,3 @@ const StatusActionList = styled.View`border-top-width: 1px; border-top-color: ${
 const StatusAction = styled(Pressable)`min-height: ${verticalScale(58)}px; flex-direction: row; align-items: center; border-bottom-width: 1px; border-bottom-color: ${colors.gray200}; gap: ${horizontalScale(12)}px;`;
 const StatusActionIcon = styled.View`width: ${horizontalScale(36)}px; height: ${horizontalScale(36)}px; border-radius: ${horizontalScale(18)}px; background-color: ${colors.primaryLighter}; align-items: center; justify-content: center;`;
 const CancelAction = styled(Pressable)`height: ${verticalScale(48)}px; align-items: center; justify-content: center; margin-top: ${verticalScale(8)}px;`;
-
-const PRO24_MAP_STYLE = [
-    { elementType: 'geometry', stylers: [{ color: '#f5f2ef' }] },
-    { elementType: 'labels.text.fill', stylers: [{ color: '#6b625b' }] },
-    { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#ffffff' }] },
-    { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#ffd9bf' }] },
-    { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#dcecf2' }] },
-];

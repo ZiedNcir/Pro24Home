@@ -20,3 +20,14 @@ export const getProfessionalStatusActions = () => [
     { status: 'rejected' as const, label: 'Refuser l’intervention' },
     { status: 'completed' as const, label: 'Terminer l’intervention' },
 ];
+
+export const getGoogleNavigationWaypoint = (address?: { latitude?: unknown; longitude?: unknown; address?: string | null }) => {
+    const latitude = Number(address?.latitude);
+    const longitude = Number(address?.longitude);
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null;
+    return { title: address?.address || 'Destination client', position: { lat: latitude, lng: longitude } };
+};
+
+export const getNavigationRouteError = (status?: string) => status && status !== 'OK'
+    ? `Itinéraire indisponible (${status}).`
+    : null;

@@ -1,4 +1,4 @@
-import { formatRouteDistance, getNavigationBannerCopy, getProfessionalStatusActions, getRouteFitCoordinates, getTrackingPanelMode } from '../src/roles/professional/intervention-tracking/model/route-presentation';
+import { formatRouteDistance, getGoogleNavigationWaypoint, getNavigationBannerCopy, getNavigationRouteError, getProfessionalStatusActions, getRouteFitCoordinates, getTrackingPanelMode } from '../src/roles/professional/intervention-tracking/model/route-presentation';
 
 describe('formatRouteDistance', () => {
     it('formats short and long routes for the tracking card', () => {
@@ -38,5 +38,19 @@ describe('getProfessionalStatusActions', () => {
             { status: 'rejected', label: 'Refuser l’intervention' },
             { status: 'completed', label: 'Terminer l’intervention' },
         ]);
+    });
+});
+
+describe('Google navigation route orchestration', () => {
+    it('rejects an intervention without usable coordinates', () => {
+        expect(getGoogleNavigationWaypoint({ latitude: 'bad', longitude: 2 })).toBeNull();
+    });
+
+    it('creates a waypoint and recoverable route error copy', () => {
+        expect(getGoogleNavigationWaypoint({ latitude: 36.8, longitude: 10.1, address: 'Client' })).toEqual({
+            title: 'Client', position: { lat: 36.8, lng: 10.1 },
+        });
+        expect(getNavigationRouteError('NETWORK_ERROR')).toBe('Itinéraire indisponible (NETWORK_ERROR).');
+        expect(getNavigationRouteError('OK')).toBeNull();
     });
 });

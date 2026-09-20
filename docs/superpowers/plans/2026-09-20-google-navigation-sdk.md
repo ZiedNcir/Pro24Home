@@ -4,7 +4,7 @@
 
 **Goal:** Replace the current React Native polyline route with Google Navigation SDK turn-by-turn guidance embedded in Pro24Home on Android and iOS.
 
-**Architecture:** A small TypeScript navigation service owns the cross-platform contract and the tracking screen owns intervention/status orchestration. Native Android and iOS modules expose a navigation view plus imperative commands/events; Google Navigation owns route calculation, camera, maneuvers, voice guidance, rerouting, and arrival.
+**Architecture:** A small TypeScript navigation service owns the cross-platform contract and the tracking screen owns intervention/status orchestration. The official Google React Native Navigation plugin exposes the native Android/iOS navigation view and controller; Google Navigation owns route calculation, camera, maneuvers, voice guidance, rerouting, and arrival.
 
 **Tech Stack:** React Native 0.83.1, TypeScript, Kotlin, Swift, Google Navigation SDK for Android/iOS, React Native Native Modules, Jest, Gradle, CocoaPods/Swift Package Manager.
 
@@ -14,6 +14,7 @@
 
 - Support Android and iOS in the same delivery.
 - Use the Google-provided navigation experience; do not recreate turn-by-turn guidance in JavaScript.
+- Use `@googlemaps/react-native-navigation-sdk@0.16.3`, the plugin release compatible with this project's React Native 0.83.1.
 - Keep existing Pro24Home status actions and intervention lifecycle unchanged.
 - Stop native navigation and remove listeners when the screen unmounts or the trip ends.
 - Use existing coordinates as the required destination and accept an optional `placeId`.
@@ -85,21 +86,19 @@ git add src/core/navigation/types.ts src/core/navigation/native-navigation.ts sr
 git commit -m "feat: define native navigation contract"
 ```
 
-### Task 2: Add Android Navigation SDK integration
+### Task 2: Install the Google React Native Navigation plugin and configure Android
 
 **Files:**
-- Modify: `android/build.gradle`
+- Modify: `package.json`
+- Modify: `package-lock.json`
 - Modify: `android/app/build.gradle`
+- Modify: `android/gradle.properties`
 - Modify: `android/app/src/main/AndroidManifest.xml`
-- Modify: `android/app/src/main/java/com/pro24home/MainApplication.kt`
-- Create: `android/app/src/main/java/com/pro24home/navigation/NavigationPackage.kt`
-- Create: `android/app/src/main/java/com/pro24home/navigation/NavigationModule.kt`
-- Create: `android/app/src/main/java/com/pro24home/navigation/NavigationViewManager.kt`
 - Test: `__tests__/androidNavigationContract.test.ts`
 
 **Interfaces:**
 - Consumes the Task 1 destination/options/event contract.
-- Produces a `Pro24HomeNavigation` module and `Pro24HomeNavigationView` native component with matching command/event names.
+- Produces the installed `NavigationProvider`, `NavigationView`, and `NavigationController` APIs used by the shared TypeScript adapter.
 
 - [ ] **Step 1: Add a failing contract test for Android command/event names**
 
@@ -111,44 +110,36 @@ Run: `npm test -- --runInBand __tests__/androidNavigationContract.test.ts`
 
 Expected: FAIL until the native-facing adapter contract is implemented.
 
-- [ ] **Step 3: Add the pinned Google Navigation dependency and remove Android Maps duplication**
+- [ ] **Step 3: Install the pinned React Native plugin and configure Android**
 
-Use the current Google Maven Navigation artifact compatible with the repository’s Gradle/AGP toolchain, exclude transitive `com.google.android.gms:play-services-maps` copies where required, keep the API key in the existing Android manifest resource, and add required navigation attribution resources.
+Install `@googlemaps/react-native-navigation-sdk@0.16.3`, enable the existing new architecture and Jetifier settings, enable core library desugaring, keep the API key in the existing Android manifest resource, and add required navigation attribution resources.
 
-- [ ] **Step 4: Implement the Kotlin module**
 
-Initialize `NavigationApi`, create the `Navigator`, set a `Waypoint` from `placeId` or lat/lng, configure voice guidance, start/stop guidance, and emit route/progress/arrival/error events. The view manager must release the navigator and listeners in `onDropViewInstance`.
-
-- [ ] **Step 5: Register the package and native view**
-
-Add `NavigationPackage()` to `MainApplication` and expose the view through `requireNativeComponent('Pro24HomeNavigationView')` in the TypeScript wrapper.
-
-- [ ] **Step 6: Verify Android build and tests**
+- [ ] **Step 4: Verify Android dependency resolution and contract**
 
 Run: `npm test -- --runInBand __tests__/androidNavigationContract.test.ts && npx tsc --noEmit && cd android && ./gradlew assembleDebug`
 
 Expected: focused test, TypeScript, and debug APK build pass.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 5: Commit**
 
 ```bash
-git add android src/core/navigation __tests__/androidNavigationContract.test.ts
+git add package.json package-lock.json android __tests__/androidNavigationContract.test.ts
 git commit -m "feat: add android google navigation bridge"
 ```
 
-### Task 3: Add iOS Navigation SDK integration
+### Task 3: Configure iOS Navigation through the React Native plugin
 
 **Files:**
-- Modify: `ios/Podfile` or the Xcode Swift Package configuration, using one dependency mechanism consistently.
+- Modify: `ios/Podfile`
+- Modify: `ios/Pro24Home.xcodeproj/project.pbxproj`
 - Modify: `ios/Pro24Home/AppDelegate.swift`
-- Create: `ios/Pro24Home/Navigation/NavigationModule.swift`
-- Create: `ios/Pro24Home/Navigation/NavigationViewManager.swift`
-- Create: `ios/Pro24Home/Navigation/NavigationBridge.m`
+- Modify: `ios/Pro24Home/Info.plist`
 - Test: `__tests__/iosNavigationContract.test.ts`
 
 **Interfaces:**
 - Consumes the Task 1 destination/options/event contract.
-- Produces the same `Pro24HomeNavigation` commands/events and `Pro24HomeNavigationView` name as Android.
+- Produces the `NavigationProvider`, `NavigationView`, and `NavigationController` APIs used by the shared TypeScript adapter on iOS.
 
 - [ ] **Step 1: Add a failing contract test for iOS event normalization**
 
@@ -160,21 +151,17 @@ Run: `npm test -- --runInBand __tests__/iosNavigationContract.test.ts`
 
 Expected: FAIL before the iOS bridge is present.
 
-- [ ] **Step 3: Add the Google Navigation SDK dependency and API key bootstrap**
+- [ ] **Step 3: Add the iOS plugin configuration and API key bootstrap**
 
-Use the supported Swift Package Manager package `https://github.com/googlemaps/ios-navigation-sdk`, configure Maps/Navigation API keys through the existing iOS build settings, and keep the current uncommitted OneSignal files untouched.
+Use the plugin's CocoaPods integration through the existing React Native autolinking, keep the iOS deployment target at 16.0, configure Maps/Navigation API keys through the existing iOS build settings and AppDelegate, add `NSMotionUsageDescription` plus location/audio background modes, and keep the current uncommitted OneSignal files untouched.
 
-- [ ] **Step 4: Implement the Swift module and view manager**
-
-Create the navigator/controller, accept a `GMSNavigationWaypoint` from place ID or coordinates, configure voice guidance, forward navigation events, and stop/remove delegates on invalidation. Export the module using the React Native bridge file.
-
-- [ ] **Step 5: Verify iOS build and tests**
+- [ ] **Step 4: Verify iOS dependency resolution and tests**
 
 Run: `npm test -- --runInBand __tests__/iosNavigationContract.test.ts && npx tsc --noEmit && cd ios && bundle exec pod install && xcodebuild -workspace Pro24Home.xcworkspace -scheme Pro24Home -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' build`
 
 Expected: focused test, TypeScript, dependency resolution, and simulator build pass. If the host lacks CocoaPods/Xcode tooling, record the exact blocked command without modifying unrelated files.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 5: Commit**
 
 ```bash
 git add ios/Podfile ios/Pro24Home/AppDelegate.swift ios/Pro24Home/Navigation __tests__/iosNavigationContract.test.ts

@@ -5,6 +5,10 @@ import { ToastProvider } from 'react-native-toast-notifications';
 
 import { store } from '../../store';
 import { ThemeProvider } from '@theme';
+import {
+  NavigationProvider,
+  TaskRemovedBehavior,
+} from '@googlemaps/react-native-navigation-sdk';
 
 interface AppProvidersProps {
   children: React.ReactNode;
@@ -28,7 +32,18 @@ export const AppProviders = ({ children }: AppProvidersProps) => (
         offsetBottom={40}
         swipeEnabled
       >
-        <SafeAreaProvider>{children}</SafeAreaProvider>
+        <SafeAreaProvider>
+          <NavigationProvider
+            termsAndConditionsDialogOptions={{
+              title: 'Navigation Pro24Home',
+              companyName: 'Pro24Home',
+              showOnlyDisclaimer: false,
+            }}
+            taskRemovedBehavior={TaskRemovedBehavior.CONTINUE_SERVICE}
+          >
+            {children}
+          </NavigationProvider>
+        </SafeAreaProvider>
       </ToastProvider>
     </ThemeProvider>
   </Provider>
