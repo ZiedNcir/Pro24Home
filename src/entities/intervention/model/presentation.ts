@@ -37,6 +37,21 @@ type InterventionClientLike = {
     };
 };
 
+type ProfessionalBriefIntervention = InterventionWithApiAliases & {
+    client?: InterventionClientLike | null;
+    title?: string;
+    description?: string;
+    service?: { name?: string | null } | null;
+    price?: number | string | null;
+};
+
+export type ProfessionalInterventionBriefItem = {
+    key: 'client' | 'location' | 'request' | 'price';
+    label: string;
+    primary: string;
+    secondary?: string;
+};
+
 export type InterventionFilter = 'all' | 'active' | 'completed';
 
 export const getInterventionListCopy = (isProfessional: boolean) => isProfessional
@@ -44,7 +59,7 @@ export const getInterventionListCopy = (isProfessional: boolean) => isProfession
     : { title: 'Mes interventions', empty: 'Vous n’avez pas encore d’intervention.' };
 
 export const getInterventionDetailCopy = (isProfessional: boolean) => isProfessional
-    ? { title: 'Demande d’intervention', section: 'Détails de la demande' }
+    ? { title: 'Nouvelle intervention', section: 'Détails de la demande' }
     : { title: 'Détail de l’intervention', section: 'Votre demande' };
 
 export const getProfessionalEmptyStateCopy = () => ({
@@ -100,6 +115,19 @@ export const getInterventionClientName = (client?: InterventionClientLike | null
     if (nestedName) return nestedName;
 
     return [client?.first_name, client?.last_name].filter(Boolean).join(' ').trim() || null;
+};
+
+export const getProfessionalInterventionBrief = (intervention: ProfessionalBriefIntervention): ProfessionalInterventionBriefItem[] => {
+    const address = getInterventionAddress(intervention)?.address?.trim() || 'Adresse non renseignée';
+    const service = intervention.service?.name?.trim() || intervention.title?.trim() || 'Service non renseigné';
+    const description = intervention.description?.trim() || 'Aucun détail complémentaire.';
+
+    return [
+        { key: 'client', label: 'Client', primary: getInterventionClientName(intervention.client) || 'Client non renseigné' },
+        { key: 'location', label: 'Adresse d’intervention', primary: address },
+        { key: 'request', label: 'Détails de la demande', primary: service, secondary: description },
+        { key: 'price', label: 'Montant de l’intervention', primary: getInterventionPrice(intervention) || 'Prix à proposer' },
+    ];
 };
 
 export const getInterventionImageUrls = (intervention: InterventionWithApiAliases) => {

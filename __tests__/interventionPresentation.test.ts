@@ -1,5 +1,5 @@
 import { InterventionStatus } from '../src/store/api/api.types';
-import { filterInterventions, formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName, getInterventionDetailCopy, getInterventionImageUrls, getInterventionListCopy, getInterventionPrice, getProfessionalEmptyStateCopy, getInterventionStatusLabel, getInterventionDevis, isValidInterventionPriceInput, shouldShowClientDevisActions, shouldShowPriceProposal, shouldShowRatingPrompt, shouldShowTrackingButton } from '../src/entities/intervention/model/intervention-presentation';
+import { filterInterventions, formatDistanceBetweenCoordinates, formatInterventionPrice, getInterventionAddress, getInterventionClientName, getInterventionDetailCopy, getInterventionImageUrls, getInterventionListCopy, getInterventionPrice, getProfessionalEmptyStateCopy, getProfessionalInterventionBrief, getInterventionStatusLabel, getInterventionDevis, isValidInterventionPriceInput, shouldShowClientDevisActions, shouldShowPriceProposal, shouldShowRatingPrompt, shouldShowTrackingButton } from '../src/entities/intervention/model/intervention-presentation';
 
 describe('interventionPresentation', () => {
     it('shows tracking for accepted and in-progress professional interventions', () => {
@@ -62,7 +62,7 @@ describe('interventionPresentation', () => {
     });
 
     it('uses request copy for professional intervention details', () => {
-        expect(getInterventionDetailCopy(true)).toEqual({ title: 'Demande d’intervention', section: 'Détails de la demande' });
+        expect(getInterventionDetailCopy(true)).toEqual({ title: 'Nouvelle intervention', section: 'Détails de la demande' });
     });
 
     it('provides reassuring content for the professional empty state', () => {
@@ -118,6 +118,21 @@ describe('interventionPresentation', () => {
         expect(getInterventionClientName({ name: 'Zied Ncir' })).toBe('Zied Ncir');
         expect(getInterventionClientName({ client: { first_name: 'Zied', last_name: 'Ncir' } })).toBe('Zied Ncir');
         expect(getInterventionClientName(null)).toBeNull();
+    });
+
+    it('builds an ordered professional intervention brief from the live request data', () => {
+        expect(getProfessionalInterventionBrief({
+            client: { first_name: 'Zied', last_name: 'Ncir' },
+            adress: { address: '12 Rue des Acacias, 75015 Paris' },
+            service: { name: 'Réparation fenêtre PVC / Bois / Alu' },
+            description: 'Poignée cassée et fenêtre difficile à fermer.',
+            price: '20.00',
+        } as any)).toEqual([
+            { key: 'client', label: 'Client', primary: 'Zied Ncir' },
+            { key: 'location', label: 'Adresse d’intervention', primary: '12 Rue des Acacias, 75015 Paris' },
+            { key: 'request', label: 'Détails de la demande', primary: 'Réparation fenêtre PVC / Bois / Alu', secondary: 'Poignée cassée et fenêtre difficile à fermer.' },
+            { key: 'price', label: 'Montant de l’intervention', primary: '20,00 €' },
+        ]);
     });
 
     it('collects legacy and relation image URLs without duplicates or empty values', () => {

@@ -10,7 +10,7 @@ import type { Intervention } from '@entities/intervention/model';
 import { useAddDevisMutation, useAcceptDevisMutation, useReviseDevisMutation } from '@entities/quote/api/quote.api';
 import { colors } from '@theme';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
-import { formatDistanceBetweenCoordinates, getInterventionAddress, getInterventionClientName, getInterventionImageUrls, getInterventionPrice, isValidInterventionPriceInput, shouldShowClientDevisActions, shouldShowPriceProposal, shouldShowTrackingButton } from '@entities/intervention/model/intervention-presentation';
+import { formatDistanceBetweenCoordinates, getInterventionAddress, getInterventionImageUrls, getInterventionPrice, getProfessionalInterventionBrief, isValidInterventionPriceInput, shouldShowClientDevisActions, shouldShowPriceProposal, shouldShowTrackingButton } from '@entities/intervention/model/intervention-presentation';
 
 type InterventionDetailData = Omit<Intervention, 'address' | 'price'> & {
     address?: Intervention['address'];
@@ -93,9 +93,10 @@ export const ProfessionalInterventionDetails = ({ intervention, professionalLati
     const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
     const [addDevis, { isLoading: isSubmittingPrice }] = useAddDevisMutation();
     const address = getInterventionAddress(intervention);
-    const clientName = getInterventionClientName(intervention.client);
     const imageUrls = getInterventionImageUrls(intervention);
     const price = getInterventionPrice(intervention);
+    const brief = getProfessionalInterventionBrief(intervention);
+    const priceBrief = brief[3]!;
     const requestedDate = intervention.scheduled_date || intervention.requested_date;
     const canProposePrice = !price && shouldShowPriceProposal(intervention.price, intervention.status);
     const handleSubmitPrice = async () => {
@@ -115,27 +116,46 @@ export const ProfessionalInterventionDetails = ({ intervention, professionalLati
     };
 
     return <>
-        <Section>
-            <SectionLabel>Détails de la demande</SectionLabel>
-            <Text variant="regularSmall" color="gray600">{intervention.description || 'Aucune description renseignée.'}</Text>
-        </Section>
-        {clientName ? <Section>
-            <SectionLabel>Client</SectionLabel>
-            <InfoRow><SvgIcon name="fa-user" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{clientName}</Text></InfoRow>
-        </Section> : null}
-        <Section>
-            <SectionLabel>Photos de l’intervention</SectionLabel>
-            <ImageGrid>
-                {[0, 1, 2].map(index => {
-                    const imageUrl = imageUrls[index];
-                    const uri = imageUrl;
+        <Timeline accessibilityLabel="Résumé de l’intervention">
+            {brief.slice(0, 3).map((item, index) => <TimelineStep key={item.key}>
+                <TimelineRail>
+                    <TimelineMarker><Text variant="bold" color={colors.white} fontSize={13}>{index + 1}</Text></TimelineMarker>
+                    <TimelineLine />
+                </TimelineRail>
+                <TimelineContent>
+                    <TimelineHeading><TimelineIcon><SvgIcon name={item.key === 'client' ? 'fa-user' : item.key === 'location' ? 'fa-map-marker-alt' : 'fa-wrench'} size={17} color={colors.primary} /></TimelineIcon><Text variant="bold" color="black" fontSize={15}>{item.label}</Text></TimelineHeading>
+                    <Text variant="regularSmall" color="black">{item.primary}</Text>
+                    {item.secondary ? <TimelineSecondary variant="regularSmall" color="gray600">{item.secondary}</TimelineSecondary> : null}
+                    {item.key === 'location' ? <TimelineMeta><SvgIcon name="fa-map-marked-alt" size={14} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDistanceBetweenCoordinates(professionalLatitude, professionalLongitude, Number(address?.latitude), Number(address?.longitude))}</Text></TimelineMeta> : null}
+                    {item.key === 'request' && requestedDate ? <TimelineMeta><SvgIcon name="fa-user-clock" size={14} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDate(requestedDate)}</Text></TimelineMeta> : null}
+                </TimelineContent>
+            </TimelineStep>)}
+            <TimelineStep>
+                <TimelineRail>
+                    <TimelineMarker><Text variant="bold" color={colors.white} fontSize={13}>4</Text></TimelineMarker>
+                    <TimelineLine />
+                </TimelineRail>
+                <TimelineContent>
+                    <TimelineHeading><TimelineIcon><SvgIcon name="image" size={17} color={colors.primary} /></TimelineIcon><Text variant="bold" color="black" fontSize={15}>Photos de l’intervention</Text></TimelineHeading>
+                    <ImageGrid>
+                        {[0, 1, 2].map(index => {
+                            const uri = imageUrls[index];
 
-                    return <ImageTile key={index} onPress={() => uri && setSelectedImageUrl(uri)} disabled={!uri}>
-                        {uri ? <TileImage uri={uri} borderRadius={moderateScale(10)} renderLoading={() => <ImageSkeleton />} renderError={() => <ImageFallback><SvgIcon name="image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Photo indisponible</Text></ImageFallback>} /> : <ImageFallback><SvgIcon name="image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Aucune photo</Text></ImageFallback>}
-                    </ImageTile>;
-                })}
-            </ImageGrid>
-        </Section>
+                            return <ImageTile key={index} onPress={() => uri && setSelectedImageUrl(uri)} disabled={!uri}>
+                                {uri ? <TileImage uri={uri} borderRadius={moderateScale(10)} renderLoading={() => <ImageSkeleton />} renderError={() => <ImageFallback><SvgIcon name="image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Photo indisponible</Text></ImageFallback>} /> : <ImageFallback><SvgIcon name="image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Aucune photo</Text></ImageFallback>}
+                            </ImageTile>;
+                        })}
+                    </ImageGrid>
+                </TimelineContent>
+            </TimelineStep>
+            <TimelineStep>
+                <TimelineRail><TimelineMarker><Text variant="bold" color={colors.white} fontSize={13}>5</Text></TimelineMarker></TimelineRail>
+                <TimelineContent>
+                    <TimelineHeading><TimelineIcon><SvgIcon name="fa-euro-sign" size={17} color={colors.primary} /></TimelineIcon><Text variant="bold" color="black" fontSize={15}>{priceBrief.label}</Text></TimelineHeading>
+                    <Text variant="bold" color="black" fontSize={20}>{priceBrief.primary}</Text>
+                </TimelineContent>
+            </TimelineStep>
+        </Timeline>
         <Modal visible={Boolean(selectedImageUrl)} transparent animationType="fade" onRequestClose={() => setSelectedImageUrl(null)}>
             <ImagePreviewBackdrop onPress={() => setSelectedImageUrl(null)}>
                 <ImagePreviewClose onPress={() => setSelectedImageUrl(null)} accessibilityRole="button" accessibilityLabel="Fermer l’image">
@@ -144,12 +164,6 @@ export const ProfessionalInterventionDetails = ({ intervention, professionalLati
                 {selectedImageUrl ? <ImagePreview source={{ uri: selectedImageUrl }} resizeMode="contain" /> : null}
             </ImagePreviewBackdrop>
         </Modal>
-        <Section>
-            <InfoRow><SvgIcon name="fa-map-marked-alt" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDistanceBetweenCoordinates(professionalLatitude, professionalLongitude, Number(address?.latitude), Number(address?.longitude))}</Text></InfoRow>
-            {requestedDate ? <InfoRow><SvgIcon name="fa-user-clock" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDate(requestedDate)}</Text></InfoRow> : null}
-            <InfoRow><SvgIcon name="fa-wrench" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{intervention.service?.name || intervention.title}</Text></InfoRow>
-            <InfoRow><SvgIcon name="fa-euro-sign" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{price || 'Prix à proposer'}</Text></InfoRow>
-        </Section>
         {canProposePrice ? <PriceButton onPress={() => setIsPriceModalVisible(true)} accessibilityRole="button"><SvgIcon name="fa-euro-sign" size={17} color={colors.white} /><Text variant="bold" color={colors.white}>Proposer un prix</Text></PriceButton> : null}
         {intervention.status === 'pending' ? <Actions><ActionButton disabled={isAccepting || isRefusing} onPress={onAccept}><Text variant="bold" color={colors.white}>{isAccepting ? 'Acceptation...' : 'Accepter la demande'}</Text></ActionButton><RefuseButton disabled={isAccepting || isRefusing} onPress={onRefuse}><Text variant="bold" color={colors.danger}>{isRefusing ? 'Refus...' : 'Refuser la demande'}</Text></RefuseButton></Actions> : null}
         {shouldShowTrackingButton(intervention.status, true) ? <TrackingButton onPress={onOpenTracking} accessibilityRole="button" accessibilityLabel="Ouvrir le trajet"><SvgIcon name="fa-map-marked-alt" size={17} color={colors.white} /><Text variant="bold" color={colors.white}>Ouvrir le trajet</Text></TrackingButton> : null}
@@ -183,6 +197,16 @@ const TileImage = styled(AppImage)`width: 100%; height: 100%;`;
 const ImagePreviewBackdrop = styled.Pressable`flex: 1; background-color: rgba(0, 0, 0, 0.94); justify-content: center; align-items: center; padding: ${horizontalScale(16)}px;`;
 const ImagePreview = styled.Image`width: 100%; height: 82%;`;
 const ImagePreviewClose = styled.TouchableOpacity`position: absolute; top: ${verticalScale(44)}px; right: ${horizontalScale(22)}px; z-index: 2; width: ${moderateScale(44)}px; height: ${moderateScale(44)}px; border-radius: ${moderateScale(22)}px; background-color: rgba(255, 255, 255, 0.2); align-items: center; justify-content: center;`;
+const Timeline = styled.View`margin-top: ${verticalScale(18)}px; padding: ${verticalScale(4)}px 0;`;
+const TimelineStep = styled.View`flex-direction: row; min-height: ${verticalScale(92)}px;`;
+const TimelineRail = styled.View`width: ${horizontalScale(48)}px; align-items: center;`;
+const TimelineMarker = styled.View`width: ${moderateScale(32)}px; height: ${moderateScale(32)}px; border-radius: ${moderateScale(16)}px; background-color: ${colors.primary}; align-items: center; justify-content: center;`;
+const TimelineLine = styled.View`width: ${moderateScale(2)}px; flex: 1; margin: ${verticalScale(4)}px 0; background-color: ${colors.primary};`;
+const TimelineContent = styled.View`flex: 1; padding-bottom: ${verticalScale(18)}px; border-bottom-width: 1px; border-bottom-color: ${colors.gray200}; margin-bottom: ${verticalScale(14)}px;`;
+const TimelineHeading = styled.View`flex-direction: row; align-items: center; gap: ${horizontalScale(9)}px; margin-bottom: ${verticalScale(8)}px;`;
+const TimelineIcon = styled.View`width: ${moderateScale(30)}px; height: ${moderateScale(30)}px; border-radius: ${moderateScale(15)}px; background-color: ${colors.primaryLighter}; align-items: center; justify-content: center;`;
+const TimelineSecondary = styled(Text)`margin-top: ${verticalScale(4)}px;`;
+const TimelineMeta = styled.View`flex-direction: row; align-items: center; gap: ${horizontalScale(7)}px; margin-top: ${verticalScale(9)}px;`;
 const ClientMap = styled(MapView)`height: ${verticalScale(190)}px; border-radius: ${moderateScale(12)}px; overflow: hidden;`;
 const ModalBackdrop = styled.View`flex: 1; justify-content: flex-end; background-color: rgba(0, 0, 0, 0.42);`;
 const PriceModalCard = styled.View`background-color: ${colors.white}; border-top-left-radius: ${moderateScale(24)}px; border-top-right-radius: ${moderateScale(24)}px; padding: ${verticalScale(14)}px ${horizontalScale(18)}px ${verticalScale(24)}px;`;
