@@ -6,6 +6,7 @@ import { useNavigation, useRoute, type RouteProp } from '@react-navigation/nativ
 import {
     NavigationView,
     NavigationUIEnabledPreference,
+    AudioGuidance,
     TravelMode,
     useNavigation as useGoogleNavigation,
 } from '@googlemaps/react-native-navigation-sdk';
@@ -33,6 +34,8 @@ const ProfessionalInterventionTrackingScreen = () => {
     const [isTripStarted, setIsTripStarted] = useState(false);
     const [locationError, setLocationError] = useState(false);
     const [isArrivalActionsVisible, setIsArrivalActionsVisible] = useState(false);
+    const [voiceGuidance, setVoiceGuidance] = useState(true);
+    const [navigationError, setNavigationError] = useState<string | null>(null);
     const { navigationController, setOnArrival, setOnLocationChanged, setOnRemainingTimeOrDistanceChanged, removeAllListeners } = useGoogleNavigation();
     const { data: intervention, isLoading, isError } = useGetInterventionQuery(route.params.intervention_id);
     const [updateStatus] = useUpdateStatusMutation();
@@ -128,6 +131,8 @@ const ProfessionalInterventionTrackingScreen = () => {
         }], { routingOptions: { travelMode: TravelMode.DRIVING }, displayOptions: { showDestinationMarkers: true } });
         if (status !== 'OK') throw new Error(`Itinéraire indisponible (${status}).`);
         await navigationController.startGuidance();
+        await navigationController.setAudioGuidanceType(voiceGuidance ? AudioGuidance.VOICE_ALERTS_AND_GUIDANCE : AudioGuidance.SILENT);
+        setNavigationError(null);
     };
 
     const handleTripAction = async () => {
@@ -136,6 +141,7 @@ const ProfessionalInterventionTrackingScreen = () => {
             await updateInterventionStatus({ interventionId: intervention.id, status: 'in progress' }).unwrap();
             setIsTripStarted(true);
         } catch {
+            setNavigationError('Navigation indisponible. Vérifiez la connexion et réessayez.');
             Alert.alert('Mise à jour impossible', 'Le statut n’a pas pu être mis à jour.');
         }
     };
@@ -173,6 +179,13 @@ const ProfessionalInterventionTrackingScreen = () => {
                 </NavigationCopy>
             </NavigationBanner>
             <MapTools>
+                <MapControlButton accessibilityRole="button" accessibilityLabel="Activer ou couper le guidage vocal" onPress={() => {
+                    const next = !voiceGuidance;
+                    setVoiceGuidance(next);
+                    navigationController.setAudioGuidanceType(next ? AudioGuidance.VOICE_ALERTS_AND_GUIDANCE : AudioGuidance.SILENT);
+                }}>
+                    <SvgIcon name="fa-bell" size={17} color={voiceGuidance ? colors.primary : colors.gray500} />
+                </MapControlButton>
                 <MapControlButton accessibilityRole="button" accessibilityLabel="Recentrer sur le trajet" onPress={() => undefined}>
                     <SvgIcon name="fa-layer-group" size={17} color={colors.black} />
                 </MapControlButton>
@@ -201,6 +214,7 @@ const ProfessionalInterventionTrackingScreen = () => {
                     <Row><Avatar><SvgIcon name="fa-user" size={17} color={colors.primary} /></Avatar><ClientInfo><Text variant="bold" color="black" fontSize={17}>{clientName || 'Client'}</Text>{clientPhone ? <Text variant="regularSmall" color="gray600">{clientPhone}</Text> : null}</ClientInfo></Row>
                     <DestinationText><SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{address?.location_name || address?.address || 'Adresse du client'}</Text></DestinationText>
                     {locationError ? <WarningText>Activez la localisation pour suivre votre trajet en temps réel.</WarningText> : null}
+                    {navigationError ? <RetryRow><WarningText>{navigationError}</WarningText><RetryButton onPress={() => startGoogleGuidance().catch(() => setNavigationError('Navigation indisponible. Réessayez.'))}><Text variant="bold" color="primary">Réessayer</Text></RetryButton></RetryRow> : null}
                     <RouteStats>
                         <RouteStat><SvgIcon name="fa-map-marked-alt" size={15} color={colors.primary} /><RouteStatText>{formatRouteDistance(routeDistance)}<StatCaption>Distance</StatCaption></RouteStatText></RouteStat>
                         <StatsDivider />
@@ -262,6 +276,8 @@ const Avatar = styled.View`width: ${horizontalScale(40)}px; height: ${horizontal
 const ClientInfo = styled.View`margin-left: ${horizontalScale(10)}px;`;
 const DestinationText = styled.View`flex-direction: row; align-items: center; margin-top: ${verticalScale(14)}px; gap: ${horizontalScale(10)}px;`;
 const WarningText = styled(Text).attrs({ variant: 'regularSmall', color: 'danger' })`margin-top: ${verticalScale(10)}px;`;
+const RetryRow = styled.View`flex-direction: row; align-items: center; justify-content: space-between; gap: ${horizontalScale(10)}px;`;
+const RetryButton = styled.TouchableOpacity`margin-top: ${verticalScale(10)}px; padding: ${verticalScale(8)}px ${horizontalScale(10)}px;`;
 const RouteStats = styled.View`flex-direction: row; align-items: center; margin-top: ${verticalScale(16)}px;`;
 const RouteStat = styled.View`flex-direction: row; align-items: center; gap: ${horizontalScale(6)}px;`;
 const RouteStatText = styled(Text).attrs({ variant: 'bold', color: 'gray700', fontSize: 16 })``;
