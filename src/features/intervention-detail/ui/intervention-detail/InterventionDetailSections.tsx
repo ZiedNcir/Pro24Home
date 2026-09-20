@@ -130,7 +130,7 @@ export const ProfessionalInterventionDetails = ({ intervention, professionalLati
                     const uri = imageUrl;
 
                     return <ImageTile key={index}>
-                        {uri ? <TileImage uri={uri} borderRadius={moderateScale(10)} showLoader={false} renderError={() => <ImageFallback><SvgIcon name="image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Photo indisponible</Text></ImageFallback>} /> : <ImageFallback><SvgIcon name="image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Aucune photo</Text></ImageFallback>}
+                        {uri ? <TileImage uri={uri} borderRadius={moderateScale(10)} renderLoading={() => <ImageSkeleton />} renderError={() => <ImageFallback><SvgIcon name="image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Photo indisponible</Text></ImageFallback>} /> : <ImageFallback><SvgIcon name="image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Aucune photo</Text></ImageFallback>}
                     </ImageTile>;
                 })}
             </ImageGrid>
@@ -169,6 +169,7 @@ const RefuseButton = styled.TouchableOpacity`height: ${verticalScale(52)}px; bor
 const ImageGrid = styled.View`flex-direction: row; gap: ${horizontalScale(8)}px;`;
 const ImageTile = styled.View`flex: 1; height: ${verticalScale(92)}px; overflow: hidden; border-radius: ${moderateScale(10)}px; background-color: #f5f5f5;`;
 const ImageFallback = styled.View`flex: 1; align-items: center; justify-content: center; gap: ${verticalScale(4)}px; padding: ${horizontalScale(4)}px;`;
+const ImageSkeleton = styled.View`width: 100%; height: 100%; background-color: ${colors.gray200};`;
 const TileImage = styled(AppImage)`width: 100%; height: 100%;`;
 const ClientMap = styled(MapView)`height: ${verticalScale(190)}px; border-radius: ${moderateScale(12)}px; overflow: hidden;`;
 const ModalBackdrop = styled.View`flex: 1; justify-content: flex-end; background-color: rgba(0, 0, 0, 0.42);`;

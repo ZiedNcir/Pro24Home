@@ -13,6 +13,7 @@ export interface AppImageProps extends Omit<ImageProps, 'source'> {
 
     fallbackSource?: ImageProps['source'];
     renderError?: () => React.ReactNode;
+    renderLoading?: () => React.ReactNode;
 
     width?: number;
     height?: number;
@@ -78,6 +79,7 @@ const AppImage: React.FC<AppImageProps> = ({
     onError,
     fallbackSource,
     renderError,
+    renderLoading,
     width,
     height,
     borderRadius,
@@ -129,7 +131,7 @@ const AppImage: React.FC<AppImageProps> = ({
         <Container width={width} height={height} borderRadius={finalRadius} style={style}>
             {showLoader && isLoading && (
                 <LoaderContainer>
-                    <ActivityIndicator size="small" color={theme.colors.inputText} />
+                    {renderLoading ? renderLoading() : <ActivityIndicator size="small" color={theme.colors.inputText} />}
                 </LoaderContainer>
             )}
 
