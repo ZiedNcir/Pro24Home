@@ -8,7 +8,6 @@ import { SvgIcon } from '@shared/ui/icon';
 import AppImage from '@shared/ui/image/AppImage';
 import type { Intervention } from '@entities/intervention/model';
 import { useAddDevisMutation, useAcceptDevisMutation, useReviseDevisMutation } from '@entities/quote/api/quote.api';
-import { API_BASE_URL } from '../../../../config/api';
 import { colors } from '@theme';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { formatDistanceBetweenCoordinates, getInterventionAddress, getInterventionClientName, getInterventionImageUrls, getInterventionPrice, isValidInterventionPriceInput, shouldShowClientDevisActions, shouldShowPriceProposal, shouldShowTrackingButton } from '@entities/intervention/model/intervention-presentation';
@@ -128,7 +127,7 @@ export const ProfessionalInterventionDetails = ({ intervention, professionalLati
             <ImageGrid>
                 {[0, 1, 2].map(index => {
                     const imageUrl = imageUrls[index];
-                    const uri = imageUrl && (imageUrl.startsWith('http://') || imageUrl.startsWith('https://') ? imageUrl : `${API_BASE_URL}/${imageUrl.replace(/^\//, '')}`);
+                    const uri = imageUrl;
 
                     return <ImageTile key={index}>
                         {uri ? <TileImage uri={uri} borderRadius={moderateScale(10)} showLoader={false} renderError={() => <ImageFallback><SvgIcon name="image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Photo indisponible</Text></ImageFallback>} /> : <ImageFallback><SvgIcon name="image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Aucune photo</Text></ImageFallback>}

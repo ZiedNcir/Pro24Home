@@ -126,6 +126,15 @@ describe('interventionPresentation', () => {
             image_1: 'photo-1.jpg',
             image_2: 'photo-3.jpg',
             image_3: null,
-        })).toEqual(['photo-1.jpg', 'photo-2.jpg', 'photo-3.jpg']);
+        })).toEqual([
+            'https://dev.pro24home.com/storage/photo-1.jpg',
+            'https://dev.pro24home.com/storage/photo-2.jpg',
+            'https://dev.pro24home.com/storage/photo-3.jpg',
+        ]);
+    });
+
+    it('resolves intervention image paths through the public storage URL', () => {
+        expect(getInterventionImageUrls({ image_1: 'interventions/photo-1.jpg' } as any))
+            .toEqual(['https://dev.pro24home.com/storage/interventions/photo-1.jpg']);
     });
 });

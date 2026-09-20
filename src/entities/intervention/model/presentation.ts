@@ -1,4 +1,5 @@
 import { InterventionStatus, type Intervention } from './types';
+import { API_BASE_URL } from '@core/api/base-api';
 
 type InterventionAddressLike = Partial<NonNullable<Intervention['address']>> & {
     latitude?: number | string;
@@ -109,7 +110,11 @@ export const getInterventionImageUrls = (intervention: InterventionWithApiAliase
 
     return [...relationImages, ...legacyImages].filter((url, index, urls): url is string => (
         typeof url === 'string' && url.trim().length > 0 && urls.indexOf(url) === index
-    ));
+    )).map(url => {
+        if (url.startsWith('http://') || url.startsWith('https://')) return url;
+        const path = url.replace(/^\/+/, '').replace(/^storage\//, '');
+        return `${API_BASE_URL}/storage/${path}`;
+    });
 };
 
 export const formatDistanceBetweenCoordinates = (
