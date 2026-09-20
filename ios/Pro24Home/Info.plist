@@ -39,6 +39,10 @@
 	<string>Votre position peut être utilisée en arrière-plan pour maintenir à jour le suivi de votre intervention.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Votre position peut être utilisée pour le suivi de votre intervention.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Les mouvements de l’appareil améliorent la précision de la navigation.</string>
+	<key>GOOGLE_MAPS_API_KEY</key>
+	<string>AIzaSyBSKNWoXE0jFU4yqXavXZxK7MDVOk-GUgg</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Nous avons besoin d’accéder à la caméra pour ajouter des photos à votre demande.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -51,6 +55,8 @@
 	<string>LaunchScreen</string>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>location</string>
+		<string>audio</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UIRequiredDeviceCapabilities</key>
