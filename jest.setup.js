@@ -1,5 +1,28 @@
 /* global jest */
 
+jest.mock('@googlemaps/react-native-navigation-sdk', () => ({
+  NavigationProvider: ({ children }) => children,
+  NavigationView: 'NavigationView',
+  NavigationUIEnabledPreference: { AUTOMATIC: 0 },
+  TaskRemovedBehavior: { CONTINUE_SERVICE: 0 },
+  TravelMode: { DRIVING: 0 },
+  AudioGuidance: { SILENT: 0, VOICE_ALERTS_AND_GUIDANCE: 4 },
+  useNavigation: () => ({
+    navigationController: {
+      showTermsAndConditionsDialog: jest.fn(async () => true),
+      init: jest.fn(async () => 'ok'),
+      setDestinations: jest.fn(async () => 'OK'),
+      startGuidance: jest.fn(async () => undefined),
+      stopGuidance: jest.fn(async () => undefined),
+      setAudioGuidanceType: jest.fn(),
+    },
+    setOnArrival: jest.fn(),
+    setOnLocationChanged: jest.fn(),
+    setOnRemainingTimeOrDistanceChanged: jest.fn(),
+    removeAllListeners: jest.fn(),
+  }),
+}));
+
 if (typeof window !== 'undefined' && typeof window.dispatchEvent !== 'function') {
   window.dispatchEvent = jest.fn();
 }
