@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, Pressable, StyleSheet, View } from 'react-native';
 import DocumentPicker, { types } from 'react-native-document-picker';
 import { launchCamera } from 'react-native-image-picker';
@@ -28,6 +29,7 @@ import {
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 const HomeProfessional = () => {
+    const { t } = useTranslation();
     const navigation = useNavigation<NativeStackNavigationProp<AppStackType>>();
     const user = useSelector(selectUser);
     const { data, isFetching, refetch } = useGetProfileQuery();
@@ -44,7 +46,7 @@ const HomeProfessional = () => {
     const handleUpload = async (file: { uri: string; type?: string | null; name?: string | null; size?: number | null }) => {
         if (!file.uri) return;
         if (file.size && file.size > MAX_FILE_SIZE) {
-            Alert.alert('Fichier trop volumineux', 'Choisissez un fichier de 5 Mo maximum.');
+            Alert.alert(t('professional.documents.fileTooLarge'), t('professional.documents.fileTooLargeDescription'));
             return;
         }
 
@@ -59,9 +61,9 @@ const HomeProfessional = () => {
                 name: activeType,
             }).unwrap();
             await refetch();
-            Toast.show('Document envoyé pour vérification.', { type: 'success', placement: 'bottom' });
+            Toast.show(t('professional.documents.uploadSuccess'), { type: 'success', placement: 'bottom' });
         } catch (error: any) {
-            Toast.show(error?.data?.message || 'Impossible d’envoyer ce document.', { type: 'danger', placement: 'bottom' });
+            Toast.show(error?.data?.message || t('professional.documents.uploadFailed'), { type: 'danger', placement: 'bottom' });
         }
     };
 
@@ -71,7 +73,7 @@ const HomeProfessional = () => {
             await handleUpload(file);
         } catch (error) {
             if (!DocumentPicker.isCancel(error)) {
-                Toast.show('Impossible d’ouvrir vos fichiers.', { type: 'danger', placement: 'bottom' });
+                Toast.show(t('professional.documents.openFailed'), { type: 'danger', placement: 'bottom' });
             }
         }
     };
@@ -80,7 +82,7 @@ const HomeProfessional = () => {
         const result = await launchCamera({ mediaType: 'photo', cameraType: 'back', saveToPhotos: false, quality: 0.8 });
         if (result.didCancel) return;
         if (result.errorCode) {
-            Toast.show(result.errorMessage || 'La caméra n’est pas disponible.', { type: 'danger', placement: 'bottom' });
+            Toast.show(result.errorMessage || t('professional.documents.cameraUnavailable'), { type: 'danger', placement: 'bottom' });
             return;
         }
         const asset = result.assets?.[0];
@@ -99,68 +101,68 @@ const HomeProfessional = () => {
     return (
         <ScreenContainer scrollable paddingHorizontal={horizontalScale(18)} paddingVertical={verticalScale(12)} backgroundColor={colors.white}>
             <Header>
-                <BackButton accessibilityRole="button" accessibilityLabel="Retour" onPress={() => navigation.canGoBack() && navigation.goBack()}>
+                <BackButton accessibilityRole="button" accessibilityLabel={t('professional.documents.back')} onPress={() => navigation.canGoBack() && navigation.goBack()}>
                     <SvgIcon name="fa-chevron-left" size={22} color={colors.gray900} />
                 </BackButton>
                 <LogoMediumPro24Icon width={moderateScale(104)} height={moderateScale(34)} />
-                <HelpButton accessibilityRole="button" accessibilityLabel="Aide" onPress={() => Alert.alert('Vérification du profil', 'Ajoutez vos documents pour que notre équipe puisse valider votre compte professionnel.')}>
+                <HelpButton accessibilityRole="button" accessibilityLabel={t('professional.documents.help')} onPress={() => Alert.alert(t('professional.documents.verificationTitle'), t('professional.documents.verificationDescription'))}>
                     <SvgIcon name="fa-question" size={16} color={colors.white} />
                 </HelpButton>
             </Header>
 
             <ProgressTrack>
-                <ProgressStep done={progress.completed > 0}><StepCircle done={progress.completed > 0}><Text variant="bold" color={progress.completed > 0 ? colors.success : colors.gray900}>{progress.completed > 0 ? '✓' : '1'}</Text></StepCircle><Text variant="regularSmall" color={colors.gray800}>Informations</Text></ProgressStep>
+                <ProgressStep done={progress.completed > 0}><StepCircle done={progress.completed > 0}><Text variant="bold" color={progress.completed > 0 ? colors.success : colors.gray900}>{progress.completed > 0 ? '✓' : '1'}</Text></StepCircle><Text variant="regularSmall" color={colors.gray800}>{t('professional.documents.stepInfo')}</Text></ProgressStep>
                 <ProgressLine />
-                <ProgressStep active><StepCircle active><Text variant="bold" color={colors.white}>{progress.completed < progress.total ? '2' : '✓'}</Text></StepCircle><Text variant="regularSmall" color={colors.gray800}>Documents</Text></ProgressStep>
+                <ProgressStep active><StepCircle active><Text variant="bold" color={colors.white}>{progress.completed < progress.total ? '2' : '✓'}</Text></StepCircle><Text variant="regularSmall" color={colors.gray800}>{t('professional.documents.stepDocuments')}</Text></ProgressStep>
                 <ProgressLine />
-                <ProgressStep><StepCircle><Text variant="bold" color={colors.gray900}>3</Text></StepCircle><Text variant="regularSmall" color={colors.gray800}>Validation</Text></ProgressStep>
+                <ProgressStep><StepCircle><Text variant="bold" color={colors.gray900}>3</Text></StepCircle><Text variant="regularSmall" color={colors.gray800}>{t('professional.documents.stepValidation')}</Text></ProgressStep>
             </ProgressTrack>
 
-            <Text variant="title" color={colors.gray900} style={styles.heading}>Étape 2 sur 3</Text>
-            <Text variant="regular" color={colors.gray700} style={styles.subtitle}>Ajoutez vos documents pour vérifier votre identité.</Text>
+            <Text variant="title" color={colors.gray900} style={styles.heading}>{t('professional.documents.step')}</Text>
+            <Text variant="regular" color={colors.gray700} style={styles.subtitle}>{t('professional.documents.subtitle')}</Text>
 
             <CurrentCard>
                 <CurrentIntro>
                     <DocumentIcon><SvgIcon name={activeMeta.icon} size={30} color={colors.primary} /></DocumentIcon>
                     <View style={styles.currentText}>
-                        <Badge>{activeDocument?.status === 'rejected' ? 'À corriger' : activeDocument ? 'En attente' : 'En cours'}</Badge>
-                        <Text variant="bold" color={colors.gray900} style={styles.cardTitle}>{activeMeta.title}</Text>
-                        <Text variant="regular" color={colors.gray700}>{activeMeta.description}</Text>
+                        <Badge>{activeDocument?.status === 'rejected' ? t('professional.documents.fix') : activeDocument ? t('professional.documents.pending') : t('professional.documents.inProgress')}</Badge>
+                        <Text variant="bold" color={colors.gray900} style={styles.cardTitle}>{t(activeMeta.titleKey)}</Text>
+                        <Text variant="regular" color={colors.gray700}>{t(activeMeta.descriptionKey)}</Text>
                     </View>
                 </CurrentIntro>
                 <UploadArea>
                     {isUploading ? <ActivityIndicator color={colors.primary} size="large" /> : <SvgIcon name="fa-file-upload" size={34} color={colors.primary} />}
-                    <Text variant="bold" color={colors.gray900} style={styles.uploadTitle}>{isUploading ? 'Envoi en cours…' : 'Ajoutez votre fichier'}</Text>
-                    {!isUploading && <Text variant="regular" color={colors.gray600}>Choisissez une option ci-dessous</Text>}
+                    <Text variant="bold" color={colors.gray900} style={styles.uploadTitle}>{isUploading ? t('professional.documents.uploading') : t('professional.documents.addFile')}</Text>
+                    {!isUploading && <Text variant="regular" color={colors.gray600}>{t('professional.documents.chooseOption')}</Text>}
                     <ActionRow>
                         <UploadAction disabled={isUploading} onPress={chooseFile} accessibilityRole="button">
-                            <SvgIcon name="fa-file-alt" size={18} color={colors.primary} /><Text variant="bold" color={colors.gray900} style={styles.actionLabel}>Choisir un fichier</Text>
+                            <SvgIcon name="fa-file-alt" size={18} color={colors.primary} /><Text variant="bold" color={colors.gray900} style={styles.actionLabel}>{t('professional.documents.chooseFile')}</Text>
                         </UploadAction>
                         <UploadAction disabled={isUploading} onPress={takePhoto} accessibilityRole="button">
-                            <SvgIcon name="fa-camera" size={18} color={colors.primary} /><Text variant="bold" color={colors.gray900} style={styles.actionLabel}>Prendre une photo</Text>
+                            <SvgIcon name="fa-camera" size={18} color={colors.primary} /><Text variant="bold" color={colors.gray900} style={styles.actionLabel}>{t('professional.documents.takePhoto')}</Text>
                         </UploadAction>
                     </ActionRow>
-                    <Text variant="regularSmall" color={colors.gray600}>PDF, JPG ou PNG • 5 Mo maximum</Text>
+                    <Text variant="regularSmall" color={colors.gray600}>{t('professional.documents.fileFormats')}</Text>
                 </UploadArea>
             </CurrentCard>
 
-            {remainingDocuments.length > 0 && <Text variant="bold" color={colors.gray900} style={styles.sectionTitle}>Documents restants</Text>}
+            {remainingDocuments.length > 0 && <Text variant="bold" color={colors.gray900} style={styles.sectionTitle}>{t('professional.documents.remaining')}</Text>}
             <QueueCard>
                 {remainingDocuments.slice(0, 3).map((item, index) => (
                     <QueueItem key={item.name} isLast={index === Math.min(remainingDocuments.length, 3) - 1} onPress={() => setActiveType(item.name)} accessibilityRole="button">
                         <SmallDocumentIcon><SvgIcon name={item.icon} size={18} color={colors.primary} /></SmallDocumentIcon>
-                        <View style={styles.queueText}><Text variant="bold" color={colors.gray900}>{item.title}</Text><Text variant="regularSmall" color={colors.gray600}>{item.description}</Text></View>
+                        <View style={styles.queueText}><Text variant="bold" color={colors.gray900}>{t(item.titleKey)}</Text><Text variant="regularSmall" color={colors.gray600}>{t(item.descriptionKey)}</Text></View>
                         <QueueCircle active={item.name === activeType}>{item.name === activeType ? '•' : ''}</QueueCircle>
                     </QueueItem>
                 ))}
             </QueueCard>
 
-            <SecurityNotice><SvgIcon name="fa-shield-alt" size={28} color={colors.primary} /><View style={styles.securityText}><Text variant="bold" color={colors.gray900}>Vos données sont 100 % sécurisées</Text><Text variant="regularSmall" color={colors.gray700}>Vos documents sont chiffrés et utilisés uniquement pour la vérification.</Text></View><SvgIcon name="fa-info" size={16} color={colors.gray700} /></SecurityNotice>
+            <SecurityNotice><SvgIcon name="fa-shield-alt" size={28} color={colors.primary} /><View style={styles.securityText}><Text variant="bold" color={colors.gray900}>{t('professional.documents.secureTitle')}</Text><Text variant="regularSmall" color={colors.gray700}>{t('professional.documents.secureDescription')}</Text></View><SvgIcon name="fa-info" size={16} color={colors.gray700} /></SecurityNotice>
 
             <ContinueButton disabled={isUploading || activeDocument?.status !== 'approved'} onPress={continueToNext} accessibilityRole="button">
-                <Text variant="bold" color={colors.white}>Continuer</Text><SvgIcon name="fa-chevron-right" size={18} color={colors.white} />
+                <Text variant="bold" color={colors.white}>{t('professional.documents.continue')}</Text><SvgIcon name="fa-chevron-right" size={18} color={colors.white} />
             </ContinueButton>
-            <Text variant="regularSmall" color={colors.gray600} style={styles.counter}>{progress.completed}/{progress.total} documents validés</Text>
+            <Text variant="regularSmall" color={colors.gray600} style={styles.counter}>{progress.completed}/{progress.total} {t('professional.documents.validated')}</Text>
             {isFetching && <ActivityIndicator color={colors.primary} style={styles.refreshIndicator} />}
         </ScreenContainer>
     );

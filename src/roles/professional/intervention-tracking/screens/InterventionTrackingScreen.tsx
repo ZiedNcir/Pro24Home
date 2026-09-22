@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, Modal, PermissionsAndroid, Platform, Pressable } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import styled from 'styled-components/native';
@@ -26,6 +27,7 @@ import { formatRouteDistance, getNavigationBannerCopy, getProfessionalStatusActi
 type Coordinates = { latitude: number; longitude: number };
 
 const ProfessionalInterventionTrackingScreen = () => {
+    const { t } = useTranslation();
     const route = useRoute<RouteProp<AppStackType, 'ProfessionalInterventionTracking'>>();
     const navigation = useNavigation<any>();
     const lastStatusUpdate = useRef(0);
@@ -38,7 +40,7 @@ const ProfessionalInterventionTrackingScreen = () => {
     const [voiceGuidance, setVoiceGuidance] = useState(true);
     const [navigationError, setNavigationError] = useState<string | null>(null);
     const { navigationController, setOnArrival, setOnLocationChanged, setOnRemainingTimeOrDistanceChanged, removeAllListeners } = useNavigationController({
-        title: 'Navigation Pro24Home',
+        title: t('professional.tracking.navigationTitle'),
         companyName: 'Pro24Home',
         showOnlyDisclaimer: false,
     }, TaskRemovedBehavior.CONTINUE_SERVICE);
@@ -118,7 +120,7 @@ const ProfessionalInterventionTrackingScreen = () => {
     }, [navigationController]);
 
     if (isLoading) return <ScreenContainer mode="light" centered><ActivityIndicator color={colors.primary} /></ScreenContainer>;
-    if (isError || !intervention) return <ScreenContainer mode="light" centered><Text variant="regularSmall" color="gray600">Impossible de charger le trajet.</Text></ScreenContainer>;
+    if (isError || !intervention) return <ScreenContainer mode="light" centered><Text variant="regularSmall" color="gray600">{t('professional.tracking.loadFailed')}</Text></ScreenContainer>;
 
     const clientName = getInterventionClientName(intervention.client);
     const clientPhone = intervention.client?.phone_number;
@@ -126,15 +128,15 @@ const ProfessionalInterventionTrackingScreen = () => {
     const trackingPanelMode = getTrackingPanelMode(isTripStarted);
 
     const startGoogleGuidance = async () => {
-        if (!destination) throw new Error('Adresse du client invalide');
+        if (!destination) throw new Error(t('professional.tracking.invalidAddress'));
         const accepted = await navigationController.showTermsAndConditionsDialog();
-        if (!accepted) throw new Error('Les conditions de navigation doivent être acceptées.');
+        if (!accepted) throw new Error(t('professional.tracking.termsRequired'));
         await navigationController.init();
         const status = await navigationController.setDestinations([{
-            title: address?.address || 'Destination client',
+            title: address?.address || t('professional.tracking.destination'),
             position: { lat: destination.latitude, lng: destination.longitude },
         }], { routingOptions: { travelMode: TravelMode.DRIVING }, displayOptions: { showDestinationMarkers: true } });
-        if (status !== 'OK') throw new Error(`Itinéraire indisponible (${status}).`);
+        if (status !== 'OK') throw new Error(t('professional.tracking.routeUnavailable', { status }));
         await navigationController.startGuidance();
         await navigationController.setAudioGuidanceType(voiceGuidance ? AudioGuidance.VOICE_ALERTS_AND_GUIDANCE : AudioGuidance.SILENT);
         setNavigationError(null);
@@ -146,8 +148,8 @@ const ProfessionalInterventionTrackingScreen = () => {
             await updateInterventionStatus({ interventionId: intervention.id, status: 'in progress' }).unwrap();
             setIsTripStarted(true);
         } catch {
-            setNavigationError('Navigation indisponible. Vérifiez la connexion et réessayez.');
-            Alert.alert('Mise à jour impossible', 'Le statut n’a pas pu être mis à jour.');
+            setNavigationError(t('professional.tracking.navigationUnavailable'));
+            Alert.alert(t('professional.tracking.updateFailed'), t('professional.tracking.statusFailed'));
         }
     };
 
@@ -160,7 +162,7 @@ const ProfessionalInterventionTrackingScreen = () => {
                 navigation.goBack();
             }
         } catch {
-            Alert.alert('Mise à jour impossible', 'Le statut de l’intervention n’a pas pu être mis à jour.');
+            Alert.alert(t('professional.tracking.updateFailed'), t('professional.tracking.interventionStatusFailed'));
         }
     };
 
@@ -179,72 +181,72 @@ const ProfessionalInterventionTrackingScreen = () => {
                     <SvgIcon name="fa-chevron-up" size={19} color={isTripStarted ? colors.primary : colors.white} />
                 </NavigationIcon>
                 <NavigationCopy>
-                    <Text variant="bold" color={isTripStarted ? colors.white : colors.black} fontSize={17}>{navigationBannerCopy.title}</Text>
-                    <Text variant="regularSmall" color={isTripStarted ? colors.white : colors.gray700}>{navigationBannerCopy.subtitle}</Text>
+                    <Text variant="bold" color={isTripStarted ? colors.white : colors.black} fontSize={17}>{t(navigationBannerCopy.titleKey)}</Text>
+                    <Text variant="regularSmall" color={isTripStarted ? colors.white : colors.gray700}>{t(navigationBannerCopy.subtitleKey)}</Text>
                 </NavigationCopy>
             </NavigationBanner>
             <MapTools>
-                <MapControlButton accessibilityRole="button" accessibilityLabel="Activer ou couper le guidage vocal" onPress={() => {
+                <MapControlButton accessibilityRole="button" accessibilityLabel={t('professional.tracking.voice')} onPress={() => {
                     const next = !voiceGuidance;
                     setVoiceGuidance(next);
                     navigationController.setAudioGuidanceType(next ? AudioGuidance.VOICE_ALERTS_AND_GUIDANCE : AudioGuidance.SILENT);
                 }}>
                     <SvgIcon name="fa-bell" size={17} color={voiceGuidance ? colors.primary : colors.gray500} />
                 </MapControlButton>
-                <MapControlButton accessibilityRole="button" accessibilityLabel="Recentrer sur le trajet" onPress={() => undefined}>
+                <MapControlButton accessibilityRole="button" accessibilityLabel={t('professional.tracking.recenterRoute')} onPress={() => undefined}>
                     <SvgIcon name="fa-layer-group" size={17} color={colors.black} />
                 </MapControlButton>
-                <MapControlButton accessibilityRole="button" accessibilityLabel="Recentrer sur ma position" onPress={() => undefined} disabled={!professionalPosition}>
+                <MapControlButton accessibilityRole="button" accessibilityLabel={t('professional.tracking.recenterPosition')} onPress={() => undefined} disabled={!professionalPosition}>
                     <SvgIcon name="fa-crosshairs" size={17} color={professionalPosition ? colors.primary : colors.gray400} />
                 </MapControlButton>
-                <MapControlButton accessibilityRole="button" accessibilityLabel="Afficher le trajet complet" onPress={() => undefined} disabled={!destination}>
+                <MapControlButton accessibilityRole="button" accessibilityLabel={t('professional.tracking.showRoute')} onPress={() => undefined} disabled={!destination}>
                     <SvgIcon name="fa-map-marked-alt" size={17} color={colors.black} />
                 </MapControlButton>
             </MapTools>
             <TopBar>
-                <BackButton accessibilityRole="button" accessibilityLabel="Retour" onPress={() => navigation.goBack()}><SvgIcon name="arrow-left" size={18} color={colors.black} /></BackButton>
-                {!isTripStarted ? <TopTitle>Trajet vers le client</TopTitle> : <MapSpacer />}
+                <BackButton accessibilityRole="button" accessibilityLabel={t('professional.tracking.back')} onPress={() => navigation.goBack()}><SvgIcon name="arrow-left" size={18} color={colors.black} /></BackButton>
+                {!isTripStarted ? <TopTitle>{t('professional.tracking.toClient')}</TopTitle> : <MapSpacer />}
                 <MapSpacer />
             </TopBar>
             <InfoCard compact={trackingPanelMode === 'compact'}>
                 {trackingPanelMode === 'compact' ? <CompactPanel>
                     <CompactStats>
-                        <CompactStat><SvgIcon name="fa-map-marked-alt" size={15} color={colors.primary} /><CompactStatCopy><CompactValue>{formatRouteDistance(routeDistance)}</CompactValue><CompactLabel>Distance</CompactLabel></CompactStatCopy></CompactStat>
+                        <CompactStat><SvgIcon name="fa-map-marked-alt" size={15} color={colors.primary} /><CompactStatCopy><CompactValue>{formatRouteDistance(routeDistance) || t('professional.tracking.distanceUnavailable')}</CompactValue><CompactLabel>{t('professional.tracking.distance')}</CompactLabel></CompactStatCopy></CompactStat>
                         <StatsDivider />
-                        <CompactStat><SvgIcon name="fa-clock" size={15} color={colors.primary} /><CompactStatCopy><CompactValue>{eta !== null ? `${eta} min` : '—'}</CompactValue><CompactLabel>ETA</CompactLabel></CompactStatCopy></CompactStat>
+                        <CompactStat><SvgIcon name="fa-clock" size={15} color={colors.primary} /><CompactStatCopy><CompactValue>{eta !== null ? `${eta} min` : '—'}</CompactValue><CompactLabel>{t('professional.tracking.eta')}</CompactLabel></CompactStatCopy></CompactStat>
                     </CompactStats>
-                    <ArrivedButton disabled={isUpdatingStatus} onPress={() => setIsArrivalActionsVisible(true)}><Text variant="bold" color={colors.white}>{isUpdatingStatus ? 'Mise à jour...' : 'Je suis arrivé'}</Text></ArrivedButton>
+                    <ArrivedButton disabled={isUpdatingStatus} onPress={() => setIsArrivalActionsVisible(true)}><Text variant="bold" color={colors.white}>{isUpdatingStatus ? t('professional.tracking.updating') : t('professional.tracking.arrived')}</Text></ArrivedButton>
                 </CompactPanel> : <>
-                    <CardEyebrow>INTERVENTION CHEZ</CardEyebrow>
-                    <Row><Avatar><SvgIcon name="fa-user" size={17} color={colors.primary} /></Avatar><ClientInfo><Text variant="bold" color="black" fontSize={17}>{clientName || 'Client'}</Text>{clientPhone ? <Text variant="regularSmall" color="gray600">{clientPhone}</Text> : null}</ClientInfo></Row>
-                    <DestinationText><SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{address?.location_name || address?.address || 'Adresse du client'}</Text></DestinationText>
-                    {locationError ? <WarningText>Activez la localisation pour suivre votre trajet en temps réel.</WarningText> : null}
-                    {navigationError ? <RetryRow><WarningText>{navigationError}</WarningText><RetryButton onPress={() => startGoogleGuidance().catch(() => setNavigationError('Navigation indisponible. Réessayez.'))}><Text variant="bold" color="primary">Réessayer</Text></RetryButton></RetryRow> : null}
+                    <CardEyebrow>{t('professional.tracking.atClient')}</CardEyebrow>
+                    <Row><Avatar><SvgIcon name="fa-user" size={17} color={colors.primary} /></Avatar><ClientInfo><Text variant="bold" color="black" fontSize={17}>{clientName || t('professional.tracking.client')}</Text>{clientPhone ? <Text variant="regularSmall" color="gray600">{clientPhone}</Text> : null}</ClientInfo></Row>
+                    <DestinationText><SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{address?.location_name || address?.address || t('professional.tracking.clientAddress')}</Text></DestinationText>
+                    {locationError ? <WarningText>{t('professional.tracking.enableLocation')}</WarningText> : null}
+                    {navigationError ? <RetryRow><WarningText>{navigationError}</WarningText><RetryButton onPress={() => startGoogleGuidance().catch(() => setNavigationError(t('professional.tracking.navigationRetry')))}><Text variant="bold" color="primary">{t('professional.tracking.retry')}</Text></RetryButton></RetryRow> : null}
                     <RouteStats>
-                        <RouteStat><SvgIcon name="fa-map-marked-alt" size={15} color={colors.primary} /><RouteStatText>{formatRouteDistance(routeDistance)}<StatCaption>Distance</StatCaption></RouteStatText></RouteStat>
+                        <RouteStat><SvgIcon name="fa-map-marked-alt" size={15} color={colors.primary} /><RouteStatText>{formatRouteDistance(routeDistance) || t('professional.tracking.distanceUnavailable')}<StatCaption>{t('professional.tracking.distance')}</StatCaption></RouteStatText></RouteStat>
                         <StatsDivider />
-                        {eta !== null ? <RouteStat><SvgIcon name="fa-clock" size={15} color={colors.primary} /><RouteStatText>{eta} min<StatCaption>Arrivée estimée</StatCaption></RouteStatText></RouteStat> : null}
+                        {eta !== null ? <RouteStat><SvgIcon name="fa-clock" size={15} color={colors.primary} /><RouteStatText>{eta} min<StatCaption>{t('professional.tracking.arrivalEstimate')}</StatCaption></RouteStatText></RouteStat> : null}
                     </RouteStats>
                     <ProgressTrack><ProgressFill /></ProgressTrack>
-                    <ArrivedButton disabled={isUpdatingStatus} onPress={handleTripAction}><Text variant="bold" color={colors.white}>{isUpdatingStatus ? 'Mise à jour...' : 'Démarrer le trajet'}</Text></ArrivedButton>
+                    <ArrivedButton disabled={isUpdatingStatus} onPress={handleTripAction}><Text variant="bold" color={colors.white}>{isUpdatingStatus ? t('professional.tracking.updating') : t('professional.tracking.start')}</Text></ArrivedButton>
                 </>}
             </InfoCard>
             <Modal visible={isArrivalActionsVisible} transparent animationType="slide" onRequestClose={() => setIsArrivalActionsVisible(false)}>
                 <StatusModalBackdrop>
                     <StatusModalCard>
                         <StatusModalHandle />
-                        <Text variant="bold" color="black" fontSize={18}>Mettre à jour l’intervention</Text>
-                        <StatusModalDescription>Choisissez l’état actuel de l’intervention.</StatusModalDescription>
+                        <Text variant="bold" color="black" fontSize={18}>{t('professional.tracking.updateIntervention')}</Text>
+                        <StatusModalDescription>{t('professional.tracking.chooseStatus')}</StatusModalDescription>
                         <StatusActionList>
                             {getProfessionalStatusActions().map(action => (
                                 <StatusAction key={action.status} disabled={isUpdatingStatus} onPress={() => handleStatusSelection(action.status)}>
                                     <StatusActionIcon><SvgIcon name={action.status === 'completed' ? 'fa-check-circle' : action.status === 'rejected' ? 'fa-times-circle' : 'fa-wrench'} size={17} color={action.status === 'rejected' ? colors.danger : colors.primary} /></StatusActionIcon>
-                                    <Text variant="bold" color="black" fontSize={14}>{action.label}</Text>
+                                    <Text variant="bold" color="black" fontSize={14}>{t(action.labelKey)}</Text>
                                     <SvgIcon name="fa-chevron-right" size={14} color={colors.gray500} />
                                 </StatusAction>
                             ))}
                         </StatusActionList>
-                        <CancelAction onPress={() => setIsArrivalActionsVisible(false)}><Text variant="bold" color="gray600">Annuler</Text></CancelAction>
+                        <CancelAction onPress={() => setIsArrivalActionsVisible(false)}><Text variant="bold" color="gray600">{t('professional.tracking.cancel')}</Text></CancelAction>
                     </StatusModalCard>
                 </StatusModalBackdrop>
             </Modal>

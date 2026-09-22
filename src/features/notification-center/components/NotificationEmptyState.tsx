@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
@@ -8,6 +9,7 @@ import { useTheme } from '@theme';
 
 const NotificationEmptyState = () => {
     const { theme } = useTheme();
+    const { t } = useTranslation();
     return (
         <Wrapper>
             <Circle>
@@ -15,7 +17,7 @@ const NotificationEmptyState = () => {
             </Circle>
 
             <Text variant="bold" color="black" fontSize={14}>
-                Vous êtes à jour !
+                {t('notifications.emptyTitle')}
             </Text>
 
             <Text
@@ -23,7 +25,7 @@ const NotificationEmptyState = () => {
                 color="gray600"
                 style={{ textAlign: 'center', marginTop: verticalScale(4) }}
             >
-                Aucune nouvelle notification pour le moment.
+                {t('notifications.emptyDescription')}
             </Text>
         </Wrapper>
     );

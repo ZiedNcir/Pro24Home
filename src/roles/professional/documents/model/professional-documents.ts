@@ -2,15 +2,15 @@ import type { Document, DocumentType } from '@entities/user/model';
 
 export const PROFESSIONAL_DOCUMENTS: Array<{
     name: DocumentType;
-    title: string;
-    description: string;
+    titleKey: string;
+    descriptionKey: string;
     icon: 'fa-id-card' | 'fa-home' | 'fa-building' | 'fa-credit-card';
 }> = [
-    { name: 'identity_front', title: "Pièce d’identité recto", description: 'Carte nationale ou titre de séjour', icon: 'fa-id-card' },
-    { name: 'identity_back', title: "Pièce d’identité verso", description: 'Le verso de votre pièce d’identité', icon: 'fa-id-card' },
-    { name: 'proof_of_address', title: 'Justificatif de domicile', description: 'Facture ou attestation de moins de 3 mois', icon: 'fa-home' },
-    { name: 'kbis', title: 'Extrait Kbis', description: 'Document officiel de votre entreprise', icon: 'fa-building' },
-    { name: 'rib', title: 'Relevé d’identité bancaire', description: 'Pour recevoir vos paiements', icon: 'fa-credit-card' },
+    { name: 'identity_front', titleKey: 'professional.documents.identityFront', descriptionKey: 'professional.documents.identityFrontDescription', icon: 'fa-id-card' },
+    { name: 'identity_back', titleKey: 'professional.documents.identityBack', descriptionKey: 'professional.documents.identityBackDescription', icon: 'fa-id-card' },
+    { name: 'proof_of_address', titleKey: 'professional.documents.proofAddress', descriptionKey: 'professional.documents.proofAddressDescription', icon: 'fa-home' },
+    { name: 'kbis', titleKey: 'professional.documents.kbis', descriptionKey: 'professional.documents.kbisDescription', icon: 'fa-building' },
+    { name: 'rib', titleKey: 'professional.documents.rib', descriptionKey: 'professional.documents.ribDescription', icon: 'fa-credit-card' },
 ];
 
 export const getDocumentForType = (documents: Document[], name: DocumentType) =>

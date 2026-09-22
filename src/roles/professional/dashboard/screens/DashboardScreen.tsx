@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { useNavigation } from '@react-navigation/native';
@@ -19,11 +20,11 @@ import { colors } from '@theme';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { buildProfessionalStatusPayload, type Coordinates } from '@roles/professional/dashboard/model/professional-status';
 
-const formatDate = (value?: string) => {
-    if (!value) return 'Date à confirmer';
+const formatDate = (value?: string, language = 'fr') => {
+    if (!value) return '';
     const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return 'Date à confirmer';
-    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleDateString(language.startsWith('en') ? 'en' : 'fr-FR', { day: 'numeric', month: 'short' });
 };
 
 const serviceIcon = (item: Intervention): IconName => {
@@ -32,6 +33,7 @@ const serviceIcon = (item: Intervention): IconName => {
 };
 
 const ProfessionalHomeDashboard = () => {
+    const { t, i18n } = useTranslation();
     const navigation = useNavigation<any>();
     const user = useSelector(selectUser);
     const [updateStatus] = useUpdateStatusMutation();
@@ -41,19 +43,19 @@ const ProfessionalHomeDashboard = () => {
     const [currentPosition, setCurrentPosition] = useState<Coordinates | null>(null);
     const isOnline = localOnline ?? user?.professional?.online_status ?? false;
     const interventions = useMemo(() => data?.data ?? [], [data?.data]);
-    const name = user?.professional?.first_name || user?.name?.split(' ')[0] || 'Professionnel';
+    const name = user?.professional?.first_name || user?.name?.split(' ')[0] || t('client.home.user');
 
     const toggleStatus = async () => {
         const next = !isOnline;
         try {
             if (!currentPosition) {
-                Alert.alert('Position indisponible', 'Attendez que votre position soit détectée, puis réessayez.');
+                Alert.alert(t('professional.dashboard.positionUnavailable'), t('professional.dashboard.positionRequired'));
                 return;
             }
             await updateStatus(buildProfessionalStatusPayload(next, currentPosition)).unwrap();
             setLocalOnline(next);
         } catch {
-            Alert.alert('Statut indisponible', 'Votre statut n’a pas pu être mis à jour.');
+            Alert.alert(t('professional.dashboard.statusUnavailable'), t('professional.dashboard.statusFailed'));
         }
     };
 
@@ -64,7 +66,7 @@ const ProfessionalHomeDashboard = () => {
             <Header>
                 <LogoMediumPro24Icon width={moderateScale(112)} height={moderateScale(36)} />
                 <HeaderActions>
-                    <NotificationButton accessibilityRole="button" accessibilityLabel="Notifications" onPress={() => navigation.navigate('Notifications')}>
+                    <NotificationButton accessibilityRole="button" accessibilityLabel={t('client.settings.notifications')} onPress={() => navigation.navigate('Notifications')}>
                         <SvgIcon name="fa-bell" size={21} color={colors.gray900} />
                         {!!unreadData?.count && <NotificationDot><Text variant="notification" color={colors.white}>{unreadData.count > 9 ? '9+' : unreadData.count}</Text></NotificationDot>}
                     </NotificationButton>
@@ -72,28 +74,28 @@ const ProfessionalHomeDashboard = () => {
                 </HeaderActions>
             </Header>
 
-            <Text variant="title" color={colors.gray900} style={styles.greeting}>Bonjour, {name}</Text>
-            <Text variant="regular" color={colors.gray700} style={styles.subtitle}>Voici votre activité du jour.</Text>
+            <Text variant="title" color={colors.gray900} style={styles.greeting}>{t('professional.dashboard.greeting', { name })}</Text>
+            <Text variant="regular" color={colors.gray700} style={styles.subtitle}>{t('professional.dashboard.subtitle')}</Text>
 
             <StatusCard online={isOnline}>
                 <StatusIcon online={isOnline}><SvgIcon name={isOnline ? 'fa-check' : 'fa-user-clock'} size={23} color={colors.white} /></StatusIcon>
-                <View style={styles.statusCopy}><Text variant="bold" color={colors.gray900}>{isOnline ? 'Vous êtes en ligne' : 'Vous êtes hors ligne'}</Text><Text variant="regularSmall" color={colors.gray700}>{isOnline ? 'Vous recevez des demandes d’intervention.' : 'Activez votre statut pour recevoir des demandes.'}</Text></View>
+                <View style={styles.statusCopy}><Text variant="bold" color={colors.gray900}>{isOnline ? t('professional.dashboard.online') : t('professional.dashboard.offline')}</Text><Text variant="regularSmall" color={colors.gray700}>{isOnline ? t('professional.dashboard.onlineDescription') : t('professional.dashboard.offlineDescription')}</Text></View>
                 <StatusSwitch accessibilityRole="switch" accessibilityState={{ checked: isOnline }} onPress={toggleStatus} online={isOnline}><SwitchThumb online={isOnline} /></StatusSwitch>
             </StatusCard>
 
-            <SectionHeading><View style={styles.sectionTitleWrap}><SvgIcon name="fa-folder-open" size={22} color={colors.primary} /><Text variant="title" color={colors.gray900} style={styles.sectionTitle}>Nouvelles demandes</Text></View>{interventions.length > 0 && <CountBadge><Text variant="bold" color={colors.primary}>{interventions.length}</Text></CountBadge>}</SectionHeading>
+            <SectionHeading><View style={styles.sectionTitleWrap}><SvgIcon name="fa-folder-open" size={22} color={colors.primary} /><Text variant="title" color={colors.gray900} style={styles.sectionTitle}>{t('professional.dashboard.requests')}</Text></View>{interventions.length > 0 && <CountBadge><Text variant="bold" color={colors.primary}>{interventions.length}</Text></CountBadge>}</SectionHeading>
 
-            {isLoading ? <Loading><ActivityIndicator color={colors.primary} /></Loading> : interventions.length === 0 ? <EmptyCard><SvgIcon name="fa-inbox" size={28} color={colors.gray500} /><Text variant="regular" color={colors.gray700}>Aucune nouvelle demande pour le moment.</Text></EmptyCard> : interventions.slice(0, 2).map(item => <RequestCard key={item.id} onPress={() => openIntervention(item)} accessibilityRole="button" accessibilityLabel={`Voir ${item.title || 'la demande'}`}>
-                <RequestTop><ServiceIcon><SvgIcon name={serviceIcon(item)} size={22} color={colors.white} /></ServiceIcon><View style={styles.requestCopy}><Text variant="bold" color={colors.gray900}>{item.title || item.service?.name || 'Intervention'}</Text><Text variant="regularSmall" color={colors.gray600}>{formatDate(item.requested_date || item.scheduled_date)}</Text></View><SvgIcon name="fa-chevron-right" size={16} color={colors.gray600} /></RequestTop>
-                <RequestDetails><View style={styles.detail}><SvgIcon name="fa-map-marker-alt" size={14} color={colors.gray600} /><Text variant="regularSmall" color={colors.gray700} numberOfLines={1}>{item.address?.address || 'Adresse à consulter'}</Text></View><View style={styles.detail}><SvgIcon name="fa-clock" size={14} color={colors.gray600} /><Text variant="regularSmall" color={colors.gray700}>{formatDate(item.requested_date || item.scheduled_date)}</Text></View></RequestDetails>
-                <View style={styles.requestFooter}><Text variant="bold" color={colors.primary}>Voir la demande</Text><SvgIcon name="fa-chevron-right" size={14} color={colors.primary} /></View>
+            {isLoading ? <Loading><ActivityIndicator color={colors.primary} /></Loading> : interventions.length === 0 ? <EmptyCard><SvgIcon name="fa-inbox" size={28} color={colors.gray500} /><Text variant="regular" color={colors.gray700}>{t('professional.dashboard.emptyRequests')}</Text></EmptyCard> : interventions.slice(0, 2).map(item => <RequestCard key={item.id} onPress={() => openIntervention(item)} accessibilityRole="button" accessibilityLabel={t('professional.dashboard.viewRequest') + ' ' + (item.title || t('professional.dashboard.request'))}>
+                <RequestTop><ServiceIcon><SvgIcon name={serviceIcon(item)} size={22} color={colors.white} /></ServiceIcon><View style={styles.requestCopy}><Text variant="bold" color={colors.gray900}>{item.title || item.service?.name || t('professional.dashboard.intervention')}</Text><Text variant="regularSmall" color={colors.gray600}>{formatDate(item.requested_date || item.scheduled_date, i18n.language) || t('professional.dashboard.dateFallback')}</Text></View><SvgIcon name="fa-chevron-right" size={16} color={colors.gray600} /></RequestTop>
+                <RequestDetails><View style={styles.detail}><SvgIcon name="fa-map-marker-alt" size={14} color={colors.gray600} /><Text variant="regularSmall" color={colors.gray700} numberOfLines={1}>{item.address?.address || t('professional.dashboard.address')}</Text></View><View style={styles.detail}><SvgIcon name="fa-clock" size={14} color={colors.gray600} /><Text variant="regularSmall" color={colors.gray700}>{formatDate(item.requested_date || item.scheduled_date, i18n.language) || t('professional.dashboard.dateFallback')}</Text></View></RequestDetails>
+                <View style={styles.requestFooter}><Text variant="bold" color={colors.primary}>{t('professional.dashboard.viewRequest')}</Text><SvgIcon name="fa-chevron-right" size={14} color={colors.primary} /></View>
             </RequestCard>)}
 
-            <SectionHeading><View style={styles.sectionTitleWrap}><SvgIcon name="fa-chart-line" size={22} color={colors.primary} /><Text variant="title" color={colors.gray900} style={styles.sectionTitle}>Aujourd’hui</Text></View></SectionHeading>
-            <StatsCard><Stat><StatNumber color={colors.primary}>{interventions.length}</StatNumber><Text variant="regularSmall" color={colors.gray700}>Demandes reçues</Text></Stat><Divider /><Stat><StatNumber color={colors.success}>{user?.professional?.services?.length || 0}</StatNumber><Text variant="regularSmall" color={colors.gray700}>Services actifs</Text></Stat><Divider /><Stat><StatNumber color={colors.info}>—</StatNumber><Text variant="regularSmall" color={colors.gray700}>Note moyenne</Text></Stat></StatsCard>
+            <SectionHeading><View style={styles.sectionTitleWrap}><SvgIcon name="fa-chart-line" size={22} color={colors.primary} /><Text variant="title" color={colors.gray900} style={styles.sectionTitle}>{t('professional.dashboard.today')}</Text></View></SectionHeading>
+            <StatsCard><Stat><StatNumber color={colors.primary}>{interventions.length}</StatNumber><Text variant="regularSmall" color={colors.gray700}>{t('professional.dashboard.received')}</Text></Stat><Divider /><Stat><StatNumber color={colors.success}>{user?.professional?.services?.length || 0}</StatNumber><Text variant="regularSmall" color={colors.gray700}>{t('professional.dashboard.activeServices')}</Text></Stat><Divider /><Stat><StatNumber color={colors.info}>—</StatNumber><Text variant="regularSmall" color={colors.gray700}>{t('professional.dashboard.rating')}</Text></Stat></StatsCard>
 
-            {user?.documents?.some(document => document.status !== 'approved') !== false && <ProfilePrompt onPress={() => navigation.navigate('Documents')} accessibilityRole="button"><SvgIcon name="fa-shield-alt" size={25} color={colors.primary} /><View style={styles.promptCopy}><Text variant="bold" color={colors.gray900}>Complétez votre profil</Text><Text variant="regularSmall" color={colors.gray700}>Finalisez vos documents pour recevoir plus de demandes.</Text></View><SvgIcon name="fa-chevron-right" size={16} color={colors.primary} /></ProfilePrompt>}
-            <Pressable onPress={refetch} accessibilityRole="button"><Text variant="regularSmall" color={colors.primary} style={styles.refresh}>Actualiser les demandes</Text></Pressable>
+            {user?.documents?.some(document => document.status !== 'approved') !== false && <ProfilePrompt onPress={() => navigation.navigate('Documents')} accessibilityRole="button"><SvgIcon name="fa-shield-alt" size={25} color={colors.primary} /><View style={styles.promptCopy}><Text variant="bold" color={colors.gray900}>{t('professional.dashboard.completeProfile')}</Text><Text variant="regularSmall" color={colors.gray700}>{t('professional.dashboard.documentsPrompt')}</Text></View><SvgIcon name="fa-chevron-right" size={16} color={colors.primary} /></ProfilePrompt>}
+            <Pressable onPress={refetch} accessibilityRole="button"><Text variant="regularSmall" color={colors.primary} style={styles.refresh}>{t('professional.dashboard.refresh')}</Text></Pressable>
             <LocationMap
                 initialRegion={{ latitude: 36.8065, longitude: 10.1815, latitudeDelta: 0.1, longitudeDelta: 0.1 }}
                 provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}

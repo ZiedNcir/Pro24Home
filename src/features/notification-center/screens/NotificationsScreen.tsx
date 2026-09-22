@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
@@ -16,6 +17,7 @@ import { transformNotificationToItem, groupNotificationsByTime } from '@utils/no
 import { selectUser } from '@store/slices/authSlice';
 
 export const NotificationsScreen = () => {
+    const { t } = useTranslation();
     const { data: notificationsResponse, isLoading, error } = useGetNotificationsQuery({});
     const [readNotification] = useReadNotificationMutation();
     const [getInterventions] = useLazyGetInterventionsQuery();
@@ -62,12 +64,12 @@ export const NotificationsScreen = () => {
         const promos = notificationsResponse.data.filter(n => n.type === 'system').length;
 
         return [
-            { key: 'all', label: 'Toutes', icon: 'fa-bell', count: all },
-            { key: 'unread', label: 'Non lues', icon: 'fa-envelope-open-text', count: unread },
-            { key: 'requests', label: 'Demandes', icon: 'fa-file-alt', count: requests },
-            { key: 'promos', label: 'Promotions', icon: 'fa-tag', count: promos },
+            { key: 'all', label: t('notifications.all'), icon: 'fa-bell', count: all },
+            { key: 'unread', label: t('notifications.unread'), icon: 'fa-envelope-open-text', count: unread },
+            { key: 'requests', label: t('notifications.requests'), icon: 'fa-file-alt', count: requests },
+            { key: 'promos', label: t('notifications.promos'), icon: 'fa-tag', count: promos },
         ];
-    }, [notificationsResponse]);
+    }, [notificationsResponse, t]);
 
     const handleDeleteNotification = async (id: string) => {
         try {
@@ -113,7 +115,7 @@ export const NotificationsScreen = () => {
             >
                 <NotificationHeader />
                 <Content>
-                    <LoadingText>Chargement des notifications...</LoadingText>
+                    <LoadingText>{t('notifications.loading')}</LoadingText>
                 </Content>
             </ScreenContainer>
         );
@@ -133,7 +135,7 @@ export const NotificationsScreen = () => {
             >
                 <NotificationHeader />
                 <Content>
-                    <ErrorText>Erreur lors du chargement des notifications</ErrorText>
+                    <ErrorText>{t('notifications.loadError')}</ErrorText>
                 </Content>
             </ScreenContainer>
         );
@@ -160,13 +162,13 @@ export const NotificationsScreen = () => {
 
             <Content>
                 {today.length > 0 && (
-                    <NotificationSection title="Aujourd’hui" data={today} onDelete={handleDeleteNotification} onPress={handleOpenNotification} />
+                    <NotificationSection title={t('notifications.today')} data={today} onDelete={handleDeleteNotification} onPress={handleOpenNotification} />
                 )}
                 {week.length > 0 && (
-                    <NotificationSection title="Cette semaine" data={week} grouped onDelete={handleDeleteNotification} onPress={handleOpenNotification} />
+                    <NotificationSection title={t('notifications.week')} data={week} grouped onDelete={handleDeleteNotification} onPress={handleOpenNotification} />
                 )}
                 {older.length > 0 && (
-                    <NotificationSection title="Plus anciennes" data={older} onDelete={handleDeleteNotification} onPress={handleOpenNotification} />
+                    <NotificationSection title={t('notifications.older')} data={older} onDelete={handleDeleteNotification} onPress={handleOpenNotification} />
                 )}
 
                 {transformedNotifications.length === 0 && <NotificationEmptyState />}

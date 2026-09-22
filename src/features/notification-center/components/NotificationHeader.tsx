@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
@@ -10,6 +11,7 @@ import { useTheme } from '@theme';
 const NotificationHeader = () => {
     const navigation = useNavigation();
     const { theme } = useTheme();
+    const { t } = useTranslation();
     const appGoBack = () => {
         navigation.goBack();
     }
@@ -22,10 +24,10 @@ const NotificationHeader = () => {
 
             <TitleBlock>
                 <Text variant="bold" color="black" fontSize={28} lineHeight={34}>
-                    Notifications
+                    {t('client.settings.notifications')}
                 </Text>
                 <Text variant="regular" color="gray600" fontSize={14}>
-                    Restez informé de tout ce qui compte.
+                    {t('notifications.subtitle')}
                 </Text>
             </TitleBlock>
 

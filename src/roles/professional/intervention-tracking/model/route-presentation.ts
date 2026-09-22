@@ -1,5 +1,5 @@
 export const formatRouteDistance = (distanceInKm?: number | null) => {
-    if (distanceInKm === null || distanceInKm === undefined || !Number.isFinite(distanceInKm)) return 'Distance indisponible';
+    if (distanceInKm === null || distanceInKm === undefined || !Number.isFinite(distanceInKm)) return null;
     if (distanceInKm < 1) return `${Math.round(distanceInKm * 1000)} m`;
     return `${distanceInKm.toFixed(1).replace('.', ',')} km`;
 };
@@ -10,24 +10,22 @@ export const getRouteFitCoordinates = <T extends { latitude: number; longitude: 
 ) => professional && client ? [professional, client] : null;
 
 export const getNavigationBannerCopy = (isTripStarted: boolean) => isTripStarted
-    ? { title: 'Navigation active', subtitle: 'Suivez l’itinéraire dans Pro24Home' }
-    : { title: 'Prêt à partir ?', subtitle: 'Itinéraire vers le client' };
+    ? { titleKey: 'professional.tracking.active', subtitleKey: 'professional.tracking.activeSubtitle' }
+    : { titleKey: 'professional.tracking.ready', subtitleKey: 'professional.tracking.readySubtitle' };
 
 export const getTrackingPanelMode = (isTripStarted: boolean): 'expanded' | 'compact' => isTripStarted ? 'compact' : 'expanded';
 
 export const getProfessionalStatusActions = () => [
-    { status: 'in progress' as const, label: 'Intervention en cours' },
-    { status: 'rejected' as const, label: 'Refuser l’intervention' },
-    { status: 'completed' as const, label: 'Terminer l’intervention' },
+    { status: 'in progress' as const, labelKey: 'professional.tracking.inProgress' },
+    { status: 'rejected' as const, labelKey: 'professional.tracking.reject' },
+    { status: 'completed' as const, labelKey: 'professional.tracking.complete' },
 ];
 
 export const getGoogleNavigationWaypoint = (address?: { latitude?: unknown; longitude?: unknown; address?: string | null }) => {
     const latitude = Number(address?.latitude);
     const longitude = Number(address?.longitude);
     if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null;
-    return { title: address?.address || 'Destination client', position: { lat: latitude, lng: longitude } };
+    return { title: address?.address || '', position: { lat: latitude, lng: longitude } };
 };
 
-export const getNavigationRouteError = (status?: string) => status && status !== 'OK'
-    ? `Itinéraire indisponible (${status}).`
-    : null;
+export const getNavigationRouteError = (status?: string) => status && status !== 'OK' ? status : null;
