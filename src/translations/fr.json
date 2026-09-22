@@ -28,7 +28,8 @@
                 "label": "Email",
                 "placeholder": "email@exemple.com",
                 "required": "L'email est requis",
-                "invalidEmail": "Format d'email invalide"
+                "invalidEmail": "Format d'email invalide",
+                "invalid": "Adresse email invalide"
             },
             "password": {
                 "label": "Mot de passe",
@@ -178,7 +179,8 @@
         "forgetPassword": "Mot de passe oublier ?",
         "client": "Déjà membre ?",
         "loginAccount": "Se connecter",
-        "labelCode": "Veuillez entrez le code de validation reçu par SMS"
+        "labelCode": "Veuillez entrez le code de validation reçu par SMS",
+        "privacy": "Politique de confidentialité"
     },
     "services": {
         "loadFailed": "Échec du chargement des services"

@@ -14,7 +14,8 @@
                 "label": "Email",
                 "placeholder": "example@email.com",
                 "required": "Email is required",
-                "invalidEmail": "Invalid email format"
+                "invalidEmail": "Invalid email format",
+                "invalid": "Invalid email address"
             },
             "companyName": {
                 "label": "Company Name",
@@ -182,6 +183,7 @@
         "forgetPassword": "Forget your password ? ",
         "client": "Already a member?",
         "loginAccount": "Sign In",
-        "labelCode": "Please enter the validation code received by SMS"
+        "labelCode": "Please enter the validation code received by SMS",
+        "privacy": "Privacy policy"
     }
 }

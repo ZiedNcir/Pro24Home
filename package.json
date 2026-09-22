@@ -8,6 +8,7 @@
     "dev:ios": "bash scripts/ios-dev.sh",
     "capture:ios": "bash scripts/capture-ios.sh",
     "lint": "eslint .",
+    "check:i18n": "node scripts/check-i18n.js",
     "start": "react-native start",
     "test": "jest",
     "postinstall": "patch-package"
