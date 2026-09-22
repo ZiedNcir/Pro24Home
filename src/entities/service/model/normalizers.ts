@@ -6,7 +6,6 @@ export const normalizeServicesResponse = (response: unknown): ApiResponse<Servic
         return {
             success: true,
             data: response as Service[],
-            message: 'Services fetched successfully',
         };
     }
 
@@ -18,7 +17,7 @@ export const normalizeServicesResponse = (response: unknown): ApiResponse<Servic
             return {
                 success: payload.success !== false,
                 data: services as Service[],
-                message: payload.message || 'Services fetched successfully',
+                ...(payload.message ? { message: payload.message } : {}),
                 ...(payload.meta ? { meta: payload.meta } : {}),
             };
         }
@@ -27,6 +26,5 @@ export const normalizeServicesResponse = (response: unknown): ApiResponse<Servic
     return {
         success: false,
         data: [],
-        message: 'Invalid response format',
     };
 };

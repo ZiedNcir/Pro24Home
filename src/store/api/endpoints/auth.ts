@@ -280,7 +280,7 @@ export const authApiEndpoints = api.injectEndpoints({
                 return {
                     success: false,
                     data: [],
-                    message: response?.data?.message || response?.message || 'Failed to fetch services',
+                    message: response?.data?.message || response?.message,
                     errors: response?.data?.errors,
                 };
             },

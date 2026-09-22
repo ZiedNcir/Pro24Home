@@ -6,7 +6,6 @@ export const normalizeInterventionsResponse = (response: unknown): ApiResponse<I
         return {
             success: true,
             data: response as Intervention[],
-            message: 'Interventions fetched successfully',
         };
     }
 
@@ -18,10 +17,10 @@ export const normalizeInterventionsResponse = (response: unknown): ApiResponse<I
             return {
                 success: payload.success !== false,
                 data: interventions as Intervention[],
-                message: payload.message || 'Interventions fetched successfully',
+                ...(payload.message ? { message: payload.message } : {}),
             };
         }
     }
 
-    return { success: false, data: [], message: 'Invalid response format' };
+    return { success: false, data: [] };
 };

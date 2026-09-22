@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
@@ -28,6 +29,7 @@ const AddressCard: React.FC<Props> = ({
     onEditPress,
 }) => {
     const { theme } = useTheme();
+    const { t } = useTranslation();
     return (
         <Card selected={!!selected} onPress={onPress} activeOpacity={0.86}>
             <AddressIcon selected={!!selected}>
@@ -42,7 +44,7 @@ const AddressCard: React.FC<Props> = ({
                     {isDefault ? (
                         <DefaultBadge>
                             <Text variant="notification" color="primary">
-                                Par défaut
+                                {t('address.default')}
                             </Text>
                         </DefaultBadge>
                     ) : null}

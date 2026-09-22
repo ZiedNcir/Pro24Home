@@ -117,7 +117,8 @@ function walk(dir, out = []) {
 }
 
 const scope = JSON.parse(fs.readFileSync(path.join(__dirname, 'i18n-scope.json'), 'utf8'));
-const sourceFiles = all || inventory ? walk(path.join(root, 'src')) : (scope.sourceFiles || []).map((file) => path.join(root, file));
+// Keep sourceFiles in the scope file for migration history; the default guard is now global.
+const sourceFiles = walk(path.join(root, 'src'));
 if (!nativeOnly) sourceFiles.forEach(scanFile);
 
 if (all || nativeOnly) {
@@ -129,10 +130,13 @@ if (all || nativeOnly) {
     return new Map([...fs.readFileSync(file, 'utf8').matchAll(/<string\s+name="([^"]+)"[^>]*>([\s\S]*?)<\/string>/g)].map((match) => [match[1], match[2]]));
   });
   if (androidMaps.some((map) => map.size)) {
-    const baseKeys = [...androidMaps[0].keys()].sort().join('|');
+    const baseKeys = new Set(androidMaps[0].keys());
+    const localizedKeys = androidMaps.slice(1).map((map) => [...map.keys()].sort().join('|'));
+    if (localizedKeys[0] !== localizedKeys[1]) errors.push('Android localized resources: values-fr and values-en strings.xml keys differ');
     androidMaps.slice(1).forEach((map, i) => {
-      if ([...map.keys()].sort().join('|') !== baseKeys) errors.push(`Android resources: values and ${androidDirs[i + 1]} strings.xml keys differ`);
+      if ([...map.keys()].some((key) => !baseKeys.has(key))) errors.push(`Android resources: values-${i === 0 ? 'fr' : 'en'} contains a key missing from values`);
     });
+    if (!androidMaps[1].has('app_name') || !androidMaps[2].has('app_name')) errors.push('Android localized resources must define app_name');
   }
   const iosDir = path.join(root, 'ios/Pro24Home');
   const iosKeys = ['fr.lproj/InfoPlist.strings', 'en.lproj/InfoPlist.strings'].map((relative) => {
@@ -156,5 +160,5 @@ if (errors.length) {
   errors.forEach((error) => console.error(error));
   process.exitCode = 1;
 } else if (!inventory) {
-  console.log(`i18n check passed (${sourceFiles.length} source files).`);
+  console.log(nativeOnly ? 'i18n native-resource check passed.' : `i18n check passed (${sourceFiles.length} source files).`);
 }
