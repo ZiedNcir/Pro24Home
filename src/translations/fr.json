@@ -459,6 +459,191 @@
             "showPhoto": "Photo {{count}}"
         }
     },
+    "client": {
+        "pending": {
+            "receivedTitle": "Informations reçues",
+            "receivedDescription": "Votre dossier a bien été reçu.",
+            "verifyingTitle": "Vérification en cours",
+            "verifyingDescription": "Nous vérifions vos informations.",
+            "activatedTitle": "Compte activé",
+            "activatedDescription": "Vous pourrez commencer à recevoir des missions.",
+            "eyebrow": "EN COURS DE VÉRIFICATION",
+            "title": "Votre compte est en cours de vérification",
+            "description": "Merci ! Notre équipe examine actuellement vos informations professionnelles et vos documents. Vous serez informé dès que votre compte sera activé.",
+            "duration": "Cela peut prendre jusqu’à 24 à 48 h.",
+            "support": "Contacter le support",
+            "logout": "Se déconnecter"
+        },
+        "support": {
+            "subjectAccount": "Vérification de mon compte",
+            "subjectDocuments": "Documents",
+            "subjectPayment": "Paiement",
+            "subjectApplication": "Application",
+            "incompleteTitle": "Message incomplet",
+            "incompleteDescription": "Sélectionnez un sujet et décrivez votre demande.",
+            "title": "Contacter le support",
+            "sentTitle": "Votre demande a été envoyée",
+            "sentDescription": "Notre équipe vous répondra dans les meilleurs délais.",
+            "backSettings": "Retour aux paramètres",
+            "question": "Comment pouvons-nous vous aider ?",
+            "description": "Décrivez votre demande et notre équipe vous répondra rapidement.",
+            "subjectLabel": "Sujet de votre demande",
+            "messageLabel": "Décrivez votre demande",
+            "messagePlaceholder": "Décrivez votre demande en détail. Incluez les informations utiles…",
+            "messageRequired": "Décrivez votre demande.",
+            "attachments": "Pièces jointes",
+            "fileSelected": "Fichier sélectionné",
+            "attachFile": "Joindre un fichier",
+            "optional": "(facultatif)",
+            "attachmentFormats": "PDF, JPG ou PNG · 10 Mo maximum",
+            "send": "Envoyer la demande",
+            "secure": "Vos données sont en sécurité",
+            "privacy": "Votre demande reste confidentielle et notre équipe répond généralement sous 24 à 48 h ouvrées.",
+            "chooseSubject": "Choisissez un sujet"
+        },
+        "settings": {
+            "account": "COMPTE",
+            "paymentSection": "PAIEMENT",
+            "paymentTitle": "Paiement",
+            "faqTitle": "FAQ",
+            "assistance": "ASSISTANCE",
+            "title": "Paramètres",
+            "description": "Gérez votre compte et vos préférences.",
+            "profile": "Profil",
+            "profileWithName": "{{name}} · Informations personnelles",
+            "personalInfo": "Informations personnelles",
+            "manageAccount": "Gérez votre compte et vos préférences.",
+            "preferences": "PRÉFÉRENCES",
+            "savedAddresses": "Adresses enregistrées",
+            "manageAddresses": "Consultez et gérez vos adresses",
+            "notifications": "Notifications",
+            "notificationDescription": "Recevez des alertes sur vos interventions",
+            "language": "Langue",
+            "languageDescription": "Choisissez votre langue",
+            "theme": "Thème",
+            "themeDark": "Sombre",
+            "themeLight": "Clair",
+            "themeDescription": "Personnalisez l’apparence de l’application",
+            "paymentMethods": "Modes de paiement",
+            "paymentMethodsDescription": "Gérez vos moyens de paiement",
+            "travelFees": "Frais de déplacement",
+            "travelFeesDescription": "Consultez les informations de paiement",
+            "help": "Aide",
+            "helpDescription": "Trouvez rapidement une réponse",
+            "terms": "Conditions d’utilisation",
+            "termsDescription": "Consultez les conditions du service",
+            "support": "Contacter le support",
+            "professionalDocuments": "Mes documents",
+            "manageDocuments": "Gérez vos documents professionnels",
+            "languageFrench": "Français",
+            "languageEnglish": "Anglais",
+            "logoutPending": "Déconnexion en cours...",
+            "logoutDescription": "Se déconnecter de votre compte",
+            "supportDescription": "Obtenez de l’aide pour votre compte",
+            "logout": "Déconnexion",
+            "faqTracking": "Comment suivre mon intervention ?",
+            "faqTrackingAnswer": "Retrouvez son statut dans l’onglet Interventions.",
+            "faqPrice": "Quand le prix final est-il confirmé ?",
+            "faqPriceAnswer": "Après le diagnostic réalisé par le professionnel.",
+            "termsCopy": "En utilisant Pro24Home, vous acceptez nos conditions d’utilisation et notre politique de confidentialité. Les interventions et paiements sont soumis aux conditions affichées avant confirmation.",
+            "paymentCopy": "Vos paiements sont sécurisés. Les frais de déplacement sont affichés avant confirmation et sont déduits du prix final si l’intervention est réalisée."
+        },
+        "home": {
+            "myLocation": "Ma position",
+            "user": "Client",
+            "loading": "Chargement...",
+            "hello": "Bonjour,",
+            "welcome": "Bienvenue,",
+            "headline": "Comment pouvons-nous vous aider aujourd’hui ?",
+            "features": {
+                "verifiedTitle": "Techniciens vérifiés",
+                "verifiedDescription": "Professionnels de confiance",
+                "fastTitle": "Intervention rapide",
+                "fastDescription": "À votre domicile en un rien de temps",
+                "transparentTitle": "Tarifs transparents",
+                "transparentDescription": "Aucun frais caché",
+                "supportTitle": "Support 24/7",
+                "supportDescription": "Nous sommes là pour vous"
+            },
+            "heroTitle": "Des pros à votre service, à domicile",
+            "heroDescription": "Réparation, installation et dépannage rapide et fiable.",
+            "fast": "Intervention rapide",
+            "verified": "Pros vérifiés",
+            "categories": "Catégories de services",
+            "window": "Fenêtre & Vitrerie",
+            "windowDescription": "Réparation et installation",
+            "electrician": "Électricien",
+            "electricianDescription": "Dépannage électrique",
+            "plumbingDescription": "Fuites, chauffage",
+            "locksmithDescription": "Ouverture de porte"
+        },
+        "profile": {
+            "title": "Profil",
+            "defaultName": "Mon profil",
+            "updateSuccess": "Votre profil a été mis à jour.",
+            "updateFailed": "Impossible de mettre à jour votre profil.",
+            "firstNameRequired": "Le prénom est obligatoire.",
+            "lastNameRequired": "Le nom est obligatoire.",
+            "addressRequired": "L’adresse principale est obligatoire.",
+            "editPhoto": "Modifier la photo de profil",
+            "role": "Client Pro24Home",
+            "intro": "Gérez vos informations personnelles et comment nous vous contactons.",
+            "personalInfo": "Informations personnelles",
+            "editInfo": "Modifier les informations personnelles",
+            "edit": "Modifier",
+            "editing": "Modification activée",
+            "identity": "Identité",
+            "email": "Adresse e-mail",
+            "phone": "Téléphone",
+            "coordinates": "Coordonnées",
+            "mainAddress": "Adresse principale"
+        }
+    },
+    "payment": {
+        "success": {
+            "title": "Demande confirmée !",
+            "description": "Votre demande a été envoyée avec succès. Vous recevrez une confirmation dès qu’un professionnel l’acceptera.",
+            "service": "Électricien – Dépannage électrique",
+            "addressName": "Maison secondaire",
+            "address": "10 Allée des Acacias, 92130 Issy-les-Moulineaux",
+            "asap": "Dès que possible",
+            "within24Hours": "dans les 24h",
+            "viewRequests": "Voir mes demandes",
+            "home": "Retour à l’accueil"
+        },
+        "travel": {
+            "title": "Paiement des frais de déplacement",
+            "confirmRequest": "Pour confirmer votre demande",
+            "description": "Un frais de déplacement est demandé pour réserver l’intervention. Ce montant sera déduit du prix final si l’intervention est réalisée.",
+            "proReview": "Un professionnel vérifiera le prix avant l’intervention.",
+            "fee": "Frais de déplacement",
+            "secure": "Paiement 100% sécurisé",
+            "method": "Mode de paiement",
+            "card": "Carte bancaire",
+            "sampleCard": "Visa **** 4242",
+            "otherCard": "Autre carte",
+            "payAmount": "Payer {{amount}}"
+            ,"failed": "Le paiement n’a pas pu être finalisé."
+        },
+        "estimate": {
+            "title": "Estimation du prix",
+            "average": "Prix moyen estimé",
+            "range": "Fourchette basée sur des interventions similaires.",
+            "confirmation": "Besoin d’une confirmation ?",
+            "professionalCheck": "Faire vérifier le prix par un professionnel",
+            "beforeIntervention": "Recevez une confirmation avant l’intervention.",
+            "factors": "Ce qui peut influencer le prix",
+            "complexity": "Complexité du problème",
+            "complexityDescription": "Plus le problème est complexe, plus le prix peut augmenter.",
+            "equipment": "Matériel nécessaire",
+            "equipmentDescription": "Les pièces ou équipements peuvent influencer le prix.",
+            "time": "Temps d’intervention",
+            "timeDescription": "La durée peut faire varier le coût.",
+            "disclaimer": "Le prix affiché est indicatif. Le montant final sera confirmé par le professionnel après son diagnostic sur place.",
+            "defaultRange": "{{min}} € – {{max}} €"
+            ,"understood": "Compris"
+        }
+    },
     "permissions": {},
     "terms": {
         "welcome": "Bienvenue sur Pro24Home",
@@ -470,7 +655,33 @@
         "labelCode": "Veuillez entrez le code de validation reçu par SMS",
         "privacy": "Politique de confidentialité"
     },
+    "notifications": {
+        "all": "Toutes", "unread": "Non lues", "requests": "Demandes", "promos": "Promotions",
+        "loading": "Chargement des notifications...", "loadError": "Erreur lors du chargement des notifications",
+        "today": "Aujourd’hui", "week": "Cette semaine", "older": "Plus anciennes",
+        "emptyTitle": "Vous êtes à jour !", "emptyDescription": "Aucune nouvelle notification pour le moment.",
+        "subtitle": "Restez informé de tout ce qui compte."
+    },
+    "address": { "default": "Par défaut" },
+    "professional": {
+        "dashboard": {
+            "greeting": "Bonjour, {{name}}", "subtitle": "Voici votre activité du jour.", "online": "Vous êtes en ligne", "offline": "Vous êtes hors ligne",
+            "onlineDescription": "Vous recevez des demandes d’intervention.", "offlineDescription": "Activez votre statut pour recevoir des demandes.",
+            "requests": "Nouvelles demandes", "emptyRequests": "Aucune nouvelle demande pour le moment.", "viewRequest": "Voir la demande", "request": "la demande", "intervention": "Intervention", "address": "Adresse à consulter", "dateFallback": "Date à confirmer",
+            "today": "Aujourd’hui", "received": "Demandes reçues", "activeServices": "Services actifs", "rating": "Note moyenne", "completeProfile": "Complétez votre profil", "documentsPrompt": "Finalisez vos documents pour recevoir plus de demandes.", "refresh": "Actualiser les demandes",
+            "positionUnavailable": "Position indisponible", "positionRequired": "Attendez que votre position soit détectée, puis réessayez.", "statusUnavailable": "Statut indisponible", "statusFailed": "Votre statut n’a pas pu être mis à jour."
+        },
+        "documents": {
+            "identityFront": "Pièce d’identité recto", "identityFrontDescription": "Carte nationale ou titre de séjour", "identityBack": "Pièce d’identité verso", "identityBackDescription": "Le verso de votre pièce d’identité", "proofAddress": "Justificatif de domicile", "proofAddressDescription": "Facture ou attestation de moins de 3 mois", "kbis": "Extrait Kbis", "kbisDescription": "Document officiel de votre entreprise", "rib": "Relevé d’identité bancaire", "ribDescription": "Pour recevoir vos paiements",
+            "fileTooLarge": "Fichier trop volumineux", "fileTooLargeDescription": "Choisissez un fichier de 5 Mo maximum.", "verificationTitle": "Vérification du profil", "verificationDescription": "Ajoutez vos documents pour que notre équipe puisse valider votre compte professionnel.", "uploadSuccess": "Document envoyé pour vérification.", "uploadFailed": "Impossible d’envoyer ce document.", "openFailed": "Impossible d’ouvrir vos fichiers.", "cameraUnavailable": "La caméra n’est pas disponible.", "back": "Retour", "help": "Aide", "stepInfo": "Informations", "stepDocuments": "Documents", "stepValidation": "Validation", "step": "Étape 2 sur 3", "subtitle": "Ajoutez vos documents pour vérifier votre identité.", "fix": "À corriger", "pending": "En attente", "inProgress": "En cours", "uploading": "Envoi en cours…", "addFile": "Ajoutez votre fichier", "chooseOption": "Choisissez une option ci-dessous", "chooseFile": "Choisir un fichier", "takePhoto": "Prendre une photo", "fileFormats": "PDF, JPG ou PNG • 5 Mo maximum", "remaining": "Documents restants", "secureTitle": "Vos données sont 100 % sécurisées", "secureDescription": "Vos documents sont chiffrés et utilisés uniquement pour la vérification.", "validated": "documents validés", "continue": "Continuer"
+        },
+        "tracking": {
+            "distanceUnavailable": "Distance indisponible", "active": "Navigation active", "activeSubtitle": "Suivez l’itinéraire dans Pro24Home", "ready": "Prêt à partir ?", "readySubtitle": "Itinéraire vers le client", "inProgress": "Intervention en cours", "reject": "Refuser l’intervention", "complete": "Terminer l’intervention", "destination": "Destination client", "navigationTitle": "Navigation Pro24Home", "loadFailed": "Impossible de charger le trajet.", "invalidAddress": "Adresse du client invalide", "termsRequired": "Les conditions de navigation doivent être acceptées.", "routeUnavailable": "Itinéraire indisponible ({{status}}).", "navigationUnavailable": "Navigation indisponible. Vérifiez la connexion et réessayez.", "navigationRetry": "Navigation indisponible. Réessayez.", "updateFailed": "Mise à jour impossible", "statusFailed": "Le statut n’a pas pu être mis à jour.", "interventionStatusFailed": "Le statut de l’intervention n’a pas pu être mis à jour.", "voice": "Activer ou couper le guidage vocal", "recenterRoute": "Recentrer sur le trajet", "recenterPosition": "Recentrer sur ma position", "showRoute": "Afficher le trajet complet", "back": "Retour", "toClient": "Trajet vers le client", "distance": "Distance", "eta": "ETA", "arrived": "Je suis arrivé", "updating": "Mise à jour...", "start": "Démarrer le trajet", "atClient": "INTERVENTION CHEZ", "client": "Client", "clientAddress": "Adresse du client", "enableLocation": "Activez la localisation pour suivre votre trajet en temps réel.", "retry": "Réessayer", "arrivalEstimate": "Arrivée estimée", "updateIntervention": "Mettre à jour l’intervention", "chooseStatus": "Choisissez l’état actuel de l’intervention.", "cancel": "Annuler"
+        }
+    },
     "services": {
-        "loadFailed": "Échec du chargement des services"
+        "loadFailed": "Échec du chargement des services",
+        "plumbing": "Plomberie",
+        "locksmith": "Serrurerie"
     }
 }

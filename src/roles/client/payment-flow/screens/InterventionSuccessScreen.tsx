@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
@@ -10,6 +11,7 @@ import { colors } from '@theme';
 import { useNavigation } from '@react-navigation/core';
 
 export const InterventionSuccessScreen = () => {
+    const { t } = useTranslation();
     const navigation = useNavigation<any>();
     return (
         <ScreenContainer
@@ -28,7 +30,7 @@ export const InterventionSuccessScreen = () => {
                 fontSize={22}
                 style={{ textAlign: 'center', marginTop: verticalScale(24) }}
             >
-                Demande confirmée !
+                {t('payment.success.title')}
             </Text>
 
             <Text
@@ -36,24 +38,24 @@ export const InterventionSuccessScreen = () => {
                 color="gray600"
                 style={{ textAlign: 'center', marginTop: verticalScale(12) }}
             >
-                Votre demande a été envoyée avec succès. Vous recevrez une confirmation dès qu’un professionnel l’acceptera.
+                {t('payment.success.description')}
             </Text>
 
             <DetailsCard>
-                <DetailRow icon="fa-tools" title="Électricien – Dépannage électrique" />
-                <DetailRow icon="fa-map-marker-alt" title="Maison secondaire" subtitle="10 Allée des Acacias, 92130 Issy-les-Moulineaux" />
-                <DetailRow icon="fa-clock" title="Dès que possible" subtitle="dans les 24h" />
+                <DetailRow icon="fa-tools" title={t('payment.success.service')} />
+                <DetailRow icon="fa-map-marker-alt" title={t('payment.success.addressName')} subtitle={t('payment.success.address')} />
+                <DetailRow icon="fa-clock" title={t('payment.success.asap')} subtitle={t('payment.success.within24Hours')} />
             </DetailsCard>
 
             <SecondaryButton onPress={() => {navigation.navigate('InterventionDetail')}}>
                 <Text variant="bold" color="black" fontSize={14}>
-                    Voir mes demandes
+                    {t('payment.success.viewRequests')}
                 </Text>
             </SecondaryButton>
 
             <PrimaryButton onPress={() => {navigation.navigate('Tabs', { screen: 'Home' })}}>
                 <Text variant="bold" color="white" fontSize={14}>
-                    Retour à l’accueil
+                    {t('payment.success.home')}
                 </Text>
             </PrimaryButton>
         </ScreenContainer>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components/native';
@@ -12,6 +13,7 @@ import { horizontalScale, moderateScale, verticalScale } from '@utils/normalized
 import { ACCOUNT_PENDING_STEPS } from '@roles/client/home/model/accountPending';
 
 export const AccountPendingScreen = () => {
+    const { t } = useTranslation();
     const navigation = useNavigation<any>();
 
     const handleLogout = () => {
@@ -26,36 +28,36 @@ export const AccountPendingScreen = () => {
         <ScreenContainer scrollable paddingHorizontal={horizontalScale(18)} paddingVertical={verticalScale(14)} backgroundColor={colors.white} contentContainerStyle={styles.content}>
             <Header>
                 <LogoMediumPro24Icon width={moderateScale(126)} height={moderateScale(40)} />
-                <HelpButton accessibilityRole="button" accessibilityLabel="Aide" onPress={handleSupport}>
+                <HelpButton accessibilityRole="button" accessibilityLabel={t('client.settings.help')} onPress={handleSupport}>
                     <SvgIcon name="fa-question" size={18} color={colors.gray900} />
                 </HelpButton>
             </Header>
 
             <Hero>
                 <HeroImage source={require('@assets/images/account-pending-illustration.png')} resizeMode="contain" />
-                <StatusPill><SvgIcon name="fa-clock" size={14} color={colors.primary} /><Text variant="notification" color={colors.primary}>EN COURS DE VÉRIFICATION</Text></StatusPill>
-                <Text variant="title" color={colors.gray900} style={styles.heroTitle}>Votre compte est en cours de vérification</Text>
-                <Text variant="regular" color={colors.gray700} style={styles.heroDescription}>Merci ! Notre équipe examine actuellement vos informations professionnelles et vos documents. Vous serez informé dès que votre compte sera activé.</Text>
+                <StatusPill><SvgIcon name="fa-clock" size={14} color={colors.primary} /><Text variant="notification" color={colors.primary}>{t('client.pending.eyebrow')}</Text></StatusPill>
+                <Text variant="title" color={colors.gray900} style={styles.heroTitle}>{t('client.pending.title')}</Text>
+                <Text variant="regular" color={colors.gray700} style={styles.heroDescription}>{t('client.pending.description')}</Text>
             </Hero>
 
             <TimelineCard>
                 {ACCOUNT_PENDING_STEPS.map((step, index) => (
-                    <TimelineRow key={step.title}>
+                    <TimelineRow key={step.titleKey}>
                         <TimelineRail>
                             <StepCircle status={step.status}>
                                 {step.status === 'done' ? <SvgIcon name="fa-check" size={15} color={colors.white} /> : step.status === 'current' ? <View style={styles.currentDot} /> : <Text variant="bold" color={colors.gray700}>{index + 1}</Text>}
                             </StepCircle>
                             {index < ACCOUNT_PENDING_STEPS.length - 1 && <RailLine active={step.status === 'done'} />}
                         </TimelineRail>
-                        <View style={styles.stepCopy}><Text variant="bold" color={colors.gray900}>{step.title}</Text><Text variant="regular" color={colors.gray700} style={styles.stepDescription}>{step.description}</Text>{step.status === 'current' && <Text variant="regularSmall" color={colors.primary} style={styles.stepHint}>Cela peut prendre jusqu’à 24 à 48 h.</Text>}</View>
+                        <View style={styles.stepCopy}><Text variant="bold" color={colors.gray900}>{t(step.titleKey)}</Text><Text variant="regular" color={colors.gray700} style={styles.stepDescription}>{t(step.descriptionKey)}</Text>{step.status === 'current' && <Text variant="regularSmall" color={colors.primary} style={styles.stepHint}>{t('client.pending.duration')}</Text>}</View>
                     </TimelineRow>
                 ))}
             </TimelineCard>
 
             <SupportButton accessibilityRole="button" onPress={handleSupport}>
-                <SvgIcon name="fa-headset" size={21} color={colors.white} /><Text variant="bold" color={colors.white}>Contacter le support</Text>
+                <SvgIcon name="fa-headset" size={21} color={colors.white} /><Text variant="bold" color={colors.white}>{t('client.pending.support')}</Text>
             </SupportButton>
-            <LogoutButton accessibilityRole="button" onPress={handleLogout}><SvgIcon name="fa-sign-out-alt" size={18} color={colors.primary} /><Text variant="bold" color={colors.primary}>Se déconnecter</Text></LogoutButton>
+            <LogoutButton accessibilityRole="button" onPress={handleLogout}><SvgIcon name="fa-sign-out-alt" size={18} color={colors.primary} /><Text variant="bold" color={colors.primary}>{t('client.pending.logout')}</Text></LogoutButton>
         </ScreenContainer>
     );
 };

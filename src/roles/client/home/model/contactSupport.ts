@@ -1,10 +1,10 @@
 import type { IconName } from '@shared/ui/icon';
 
-export const SUPPORT_TOPICS: Array<{ key: string; label: string; icon: IconName }> = [
-    { key: 'account', label: 'Vérification de mon compte', icon: 'fa-user' },
-    { key: 'documents', label: 'Documents', icon: 'fa-file-alt' },
-    { key: 'payment', label: 'Paiement', icon: 'fa-credit-card' },
-    { key: 'application', label: 'Application', icon: 'fa-cog' },
+export const SUPPORT_TOPICS: Array<{ key: string; labelKey: string; icon: IconName }> = [
+    { key: 'account', labelKey: 'client.support.subjectAccount', icon: 'fa-user' },
+    { key: 'documents', labelKey: 'client.support.subjectDocuments', icon: 'fa-file-alt' },
+    { key: 'payment', labelKey: 'client.support.subjectPayment', icon: 'fa-credit-card' },
+    { key: 'application', labelKey: 'client.support.subjectApplication', icon: 'fa-cog' },
 ];
 
 export const isSupportFormValid = (topic: string, message: string) => Boolean(topic && message.trim());

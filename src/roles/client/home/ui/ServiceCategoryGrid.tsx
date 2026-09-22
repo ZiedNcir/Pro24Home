@@ -1,6 +1,7 @@
 // components/ServiceCategoryGrid.tsx
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
@@ -13,31 +14,32 @@ import type { AppStackType } from '../../../../navigation/constant/core';
 const services = [
     {
         id: 0,
-        title: 'Fenêtre & Vitrerie',
-        description: 'Réparation et installation',
+        titleKey: 'client.home.window',
+        descriptionKey: 'client.home.windowDescription',
         image: require('@assets/images/fenetre.png'),
     },
     {
         id: 1,
-        title: 'Électricien',
-        description: 'Dépannage \n. électrique',
+        titleKey: 'client.home.electrician',
+        descriptionKey: 'client.home.electricianDescription',
         image: require('@assets/images/electricien.png'),
     },
     {
         id: 2,
-        title: 'Plomberie',
-        description: 'Fuites, chauffage',
+        titleKey: 'services.plumbing',
+        descriptionKey: 'client.home.plumbingDescription',
         image: require('@assets/images/chauffagiste.png'),
     },
     {
         id: 3,
-        title: 'Serrurerie',
-        description: 'Ouverture de porte',
+        titleKey: 'services.locksmith',
+        descriptionKey: 'client.home.locksmithDescription',
         image: require('@assets/images/serrurier.png'),
     },
 ];
 
 const ServiceCategoryGrid = () => {
+    const { t } = useTranslation();
     const navigation = useNavigation();
     const appNavigation = navigation as unknown as NativeStackNavigationProp<AppStackType>;
 
@@ -45,20 +47,20 @@ const ServiceCategoryGrid = () => {
     return (
         <Wrapper>
             <Header>
-                <Text variant="bold">Catégories de services</Text>
+                <Text variant="bold">{t('client.home.categories')}</Text>
             </Header>
 
             <Grid>
                 {services.map(item => (
                     <CardService
                         key={item.id}
-                        title={item.title}
+                        title={t(item.titleKey)}
                         image={item.image}
-                        description={item.description}
+                        description={t(item.descriptionKey)}
                         onClick={() =>
                             appNavigation.navigate('NewIntervention', {
                                 service_id: item.id,
-                                service_name: item.title,
+                                service_name: t(item.titleKey),
                             })
                         }
                     />

@@ -149,7 +149,7 @@ export const prepareRegistrationPayload = (
   const basePayload = {
     ...data,
     onesignal_key: onesignalKey,
-    lang: 'fr',
+    lang: i18n.language,
   };
 
   if (role === 'professional' && selectedServices) {

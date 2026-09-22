@@ -1,6 +1,7 @@
 // components/FeatureHighlights.tsx
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
@@ -15,31 +16,32 @@ import { colors } from '@theme';
 const features = [
     {
         icon: 'fa-shield-alt',
-        title: 'Techniciens\nvérifiés',
-        description: 'Professionnels\nde confiance',
+        titleKey: 'client.home.features.verifiedTitle',
+        descriptionKey: 'client.home.features.verifiedDescription',
     },
     {
         icon: 'fa-clock',
-        title: 'Intervention\nrapide',
-        description: 'À votre domicile\nen un rien de temps',
+        titleKey: 'client.home.features.fastTitle',
+        descriptionKey: 'client.home.features.fastDescription',
     },
     {
         icon: 'fa-award',
-        title: 'Tarifs\ntransparents',
-        description: 'Aucun frais\ncaché',
+        titleKey: 'client.home.features.transparentTitle',
+        descriptionKey: 'client.home.features.transparentDescription',
     },
     {
         icon: 'fa-headset',
-        title: 'Support\n24/7',
-        description: 'Nous sommes\nlà pour vous',
+        titleKey: 'client.home.features.supportTitle',
+        descriptionKey: 'client.home.features.supportDescription',
     },
 ];
 
 const FeatureHighlights = () => {
+    const { t } = useTranslation();
     return (
         <Container>
             {features.map((item, index) => (
-                <FeatureItem key={item.title}>
+                <FeatureItem key={item.titleKey}>
                     <SvgIcon name={item.icon as IconProps['name']} size={24} color={colors.primary} />
 
                     <Text
@@ -49,7 +51,7 @@ const FeatureHighlights = () => {
                         lineHeight={16}
                         style={{ textAlign: 'center', marginTop: verticalScale(8) }}
                     >
-                        {item.title}
+                        {t(item.titleKey)}
                     </Text>
 
                     <Text
@@ -59,7 +61,7 @@ const FeatureHighlights = () => {
                         lineHeight={15}
                         style={{ textAlign: 'center', marginTop: verticalScale(8) }}
                     >
-                        {item.description}
+                        {t(item.descriptionKey)}
                     </Text>
 
                     {index < features.length - 1 && <Divider />}

@@ -1,5 +1,6 @@
 // HeaderLocation.tsx
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 import { useSelector } from 'react-redux';
 import Text from '@shared/ui/typography/Text';
@@ -10,6 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import { selectAuthLoading, selectUser } from '@store/slices/authSlice';
 
 const HeaderLocation = () => {
+    const { t } = useTranslation();
     const navigation = useNavigation();
     const user = useSelector(selectUser);
     const isLoading = useSelector(selectAuthLoading);
@@ -20,15 +22,15 @@ const HeaderLocation = () => {
             ? `${user.client.first_name} ${user.client.last_name}`.trim()
             : user.type === 'professional' && user.professional
             ? `${user.professional.first_name} ${user.professional.last_name}`.trim()
-            : user.name || 'User'
-        : 'User';
+            : user.name || t('client.home.user')
+        : t('client.home.user');
     return (
         <Container>
             <TopRow>
                 <LocationRow>
                     <SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} />
                     <Text variant="medium" color="primary" fontSize={13}>
-                        Ma position
+                        {t('client.home.myLocation')}
                     </Text>
                     <SvgIcon name="fa-chevron-down" size={11} color={colors.primary} />
                 </LocationRow>
@@ -47,9 +49,9 @@ const HeaderLocation = () => {
             </TopRow>
 
             <Text variant="bold" color="black" fontSize={27} lineHeight={34}>
-                Bienvenue,{' '}
+                {t('client.home.welcome')}{' '}
                 <Text variant="regular" color="black" fontSize={27} lineHeight={34}>
-                    {isLoading ? 'Chargement...' : displayName}
+                    {isLoading ? t('client.home.loading') : displayName}
                 </Text>{' '}
                 👋
             </Text>
@@ -61,7 +63,7 @@ const HeaderLocation = () => {
                 lineHeight={20}
                 style={{ marginTop: verticalScale(4) }}
             >
-                Comment pouvons-nous vous aider aujourd’hui ?
+                {t('client.home.headline')}
             </Text>
 
         </Container>

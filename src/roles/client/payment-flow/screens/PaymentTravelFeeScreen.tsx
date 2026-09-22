@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 
@@ -16,6 +17,7 @@ import { useAddInterventionMutation } from '@entities/intervention/api/intervent
 import { AppStackType } from '../../../../navigation/constant/core';
 
 export const PaymentTravelFeeScreen = () => {
+    const { t } = useTranslation();
     const [selectedCard, setSelectedCard] = useState('main');
     const navigation = useNavigation();
     const route = useRoute<RouteProp<AppStackType, 'PaymentTravelFee'>>();
@@ -27,7 +29,7 @@ export const PaymentTravelFeeScreen = () => {
             await addIntervention(route.params.intervention).unwrap();
             (navigation as any).navigate('InterventionSuccess');
         } catch (error: any) {
-            Toast.show(error?.data?.message || error?.message || 'Le paiement n’a pas pu être finalisé.', {
+            Toast.show(error?.data?.message || error?.message || t('payment.travel.failed'), {
                 type: 'danger',
                 placement: 'bottom',
             });
@@ -40,30 +42,30 @@ export const PaymentTravelFeeScreen = () => {
             paddingHorizontal={horizontalScale(18)}
             paddingVertical={verticalScale(12)}
         >
-            <InterventionHeader title="Paiement des frais de déplacement" showHelp={false} />
+            <InterventionHeader title={t('payment.travel.title')} showHelp={false} />
 
             <HeroIcon>
                 <SvgIcon name="fa-credit-card" size={42} color={colors.primary} />
             </HeroIcon>
 
-            <Title>Pour confirmer votre demande</Title>
+            <Title>{t('payment.travel.confirmRequest')}</Title>
 
             <Description>
-                Un frais de déplacement est demandé pour réserver l’intervention. Ce montant sera déduit du prix final si l’intervention est réalisée.
+                {t('payment.travel.description')}
             </Description>
 
             {checkPriceWithProfessional ? (
                 <ProfessionalNote>
                     <SvgIcon name="fa-user-check" size={16} color={colors.primary} />
                     <Text variant="regularSmall" color="gray700">
-                        Un professionnel vérifiera le prix avant l’intervention.
+                        {t('payment.travel.proReview')}
                     </Text>
                 </ProfessionalNote>
             ) : null}
 
             <FeeCard>
                 <Text variant="bold" color="black" fontSize={15}>
-                    Frais de déplacement
+                    {t('payment.travel.fee')}
                 </Text>
                 <Text variant="bold" color="black" fontSize={24}>
                     20 €
@@ -73,11 +75,11 @@ export const PaymentTravelFeeScreen = () => {
             <SecureRow>
                 <SvgIcon name="fa-lock" size={12} color={colors.gray600} />
                 <Text variant="regularSmall" color="gray600">
-                    Paiement 100% sécurisé
+                    {t('payment.travel.secure')}
                 </Text>
             </SecureRow>
 
-            <SectionLabel>Mode de paiement</SectionLabel>
+            <SectionLabel>{t('payment.travel.method')}</SectionLabel>
 
             <PaymentOption
                 selected={selectedCard === 'main'}
@@ -86,10 +88,10 @@ export const PaymentTravelFeeScreen = () => {
                 <SvgIcon name="fa-credit-card" size={20} color={colors.primary} />
                 <PaymentText>
                     <Text variant="bold" color="black" fontSize={13}>
-                        Carte bancaire
+                        {t('payment.travel.card')}
                     </Text>
                     <Text variant="regularSmall" color="gray600">
-                        Visa **** 4242
+                        {t('payment.travel.sampleCard')}
                     </Text>
                 </PaymentText>
                 <Radio selected={selectedCard === 'main'} />
@@ -102,7 +104,7 @@ export const PaymentTravelFeeScreen = () => {
                 <SvgIcon name="fa-credit-card" size={20} color={colors.gray600} />
                 <PaymentText>
                     <Text variant="bold" color="black" fontSize={13}>
-                        Autre carte
+                        {t('payment.travel.otherCard')}
                     </Text>
                 </PaymentText>
                 <Radio selected={selectedCard === 'other'} />
@@ -111,7 +113,7 @@ export const PaymentTravelFeeScreen = () => {
             <Spacer />
 
             <PayButton onPress={handlePayment} disabled={isLoading}>
-                {isLoading ? <ActivityIndicator color={colors.white} /> : <Text variant="bold" color="white" fontSize={14}>Payer 20 €</Text>}
+                {isLoading ? <ActivityIndicator color={colors.white} /> : <Text variant="bold" color="white" fontSize={14}>{t('payment.travel.payAmount', { amount: '20 €' })}</Text>}
             </PayButton>
         </ScreenContainer>
     );

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Modal, Switch } from 'react-native';
 import styled from 'styled-components/native';
 
@@ -26,6 +27,7 @@ const ClientSettingsScreen = ({
 }: {
   professional?: boolean;
 }) => {
+  const { t, i18n } = useTranslation();
   const { theme, themeMode, toggleTheme } = useTheme();
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -65,27 +67,29 @@ const ClientSettingsScreen = ({
       contentContainerStyle={{ paddingBottom: verticalScale(180) }}
     >
       <InterventionHeader
-        title="Paramètres"
+        title={t('client.settings.title')}
         showHelp={false}
         onClose={() => (navigation as any).navigate('Home')}
       />
-      <Subtitle>Gérez votre compte et vos préférences.</Subtitle>
+      <Subtitle>{t('client.settings.description')}</Subtitle>
 
-      <SectionLabel>COMPTE</SectionLabel>
+      <SectionLabel>{t('client.settings.account')}</SectionLabel>
       <SectionCard>
         <SettingsRow
           icon="fa-user"
-          title="Profil"
+          title={t('client.settings.profile')}
           description={
             user?.name
-              ? `${user.name} · Informations personnelles`
-              : 'Gérez vos informations personnelles'
+              ? t('client.settings.profileWithName', { name: user.name })
+              : t('client.settings.personalInfo')
           }
           onPress={() => (navigation as any).navigate('Profile')}
         />
         {professional ? (
           <SettingsRow
-            {...PROFESSIONAL_SETTINGS_DOCUMENT}
+            icon={PROFESSIONAL_SETTINGS_DOCUMENT.icon}
+            title={t('client.settings.professionalDocuments')}
+            description={t('client.settings.manageDocuments')}
             onPress={() =>
               (navigation.getParent?.() as any)?.navigate(
                 PROFESSIONAL_SETTINGS_DOCUMENT.route,
@@ -95,19 +99,19 @@ const ClientSettingsScreen = ({
         ) : (
           <SettingsRow
             icon="fa-map-marker-alt"
-            title="Adresses enregistrées"
-            description="Consultez et gérez vos adresses"
+            title={t('client.settings.savedAddresses')}
+            description={t('client.settings.manageAddresses')}
             onPress={() => (navigation as any).navigate('SavedAddresses')}
           />
         )}
       </SectionCard>
 
-      <SectionLabel>PRÉFÉRENCES</SectionLabel>
+      <SectionLabel>{t('client.settings.preferences')}</SectionLabel>
       <SectionCard>
         <SettingsRow
           icon="fa-bell"
-          title="Notifications"
-          description="Recevez des alertes sur vos interventions"
+          title={t('client.settings.notifications')}
+          description={t('client.settings.notificationDescription')}
           accessory={
             <Switch
               value={notificationsEnabled}
@@ -122,54 +126,54 @@ const ClientSettingsScreen = ({
         />
         <SettingsRow
           icon="fa-info"
-          title="Langue"
-          description="Choisissez votre langue"
-          value="Français"
+          title={t('client.settings.language')}
+          description={t('client.settings.languageDescription')}
+          value={i18n.language === 'en' ? t('client.settings.languageEnglish') : t('client.settings.languageFrench')}
           onPress={() => undefined}
         />
         <SettingsRow
           icon="fa-cog"
-          title="Thème"
-          description="Personnalisez l’apparence de l’application"
-          value={themeMode === 'dark' ? 'Sombre' : 'Clair'}
+          title={t('client.settings.theme')}
+          description={t('client.settings.themeDescription')}
+          value={themeMode === 'dark' ? t('client.settings.themeDark') : t('client.settings.themeLight')}
           onPress={toggleTheme}
         />
       </SectionCard>
 
-      <SectionLabel>PAIEMENT</SectionLabel>
+      <SectionLabel>{t('client.settings.paymentSection')}</SectionLabel>
       <SectionCard>
         <SettingsRow
           icon="fa-credit-card"
-          title="Modes de paiement"
-          description="Gérez vos moyens de paiement"
+          title={t('client.settings.paymentMethods')}
+          description={t('client.settings.paymentMethodsDescription')}
           onPress={() => setActiveModal('payment')}
         />
         <SettingsRow
           icon="fa-file-invoice"
-          title="Frais de déplacement"
-          description="Consultez les informations de paiement"
+          title={t('client.settings.travelFees')}
+          description={t('client.settings.travelFeesDescription')}
           onPress={() => setActiveModal('payment')}
         />
       </SectionCard>
 
-      <SectionLabel>ASSISTANCE</SectionLabel>
+      <SectionLabel>{t('client.settings.assistance')}</SectionLabel>
       <SectionCard>
         <SettingsRow
           icon="fa-question-circle"
-          title="FAQ"
-          description="Trouvez rapidement une réponse"
+          title={t('client.settings.faqTitle')}
+          description={t('client.settings.helpDescription')}
           onPress={() => setActiveModal('faq')}
         />
         <SettingsRow
           icon="fa-file-alt"
-          title="Conditions d’utilisation"
-          description="Consultez les conditions du service"
+          title={t('client.settings.terms')}
+          description={t('client.settings.termsDescription')}
           onPress={() => setActiveModal('terms')}
         />
         <SettingsRow
           icon="fa-headset"
-          title="Contacter le support"
-          description="Obtenez de l’aide pour votre compte"
+          title={t('client.settings.support')}
+          description={t('client.settings.supportDescription')}
           onPress={() => (navigation as any).navigate('ContactSupport')}
         />
       </SectionCard>
@@ -184,12 +188,12 @@ const ClientSettingsScreen = ({
         </RowIcon>
         <RowContent>
           <Text variant="bold" color="#D92D20" fontSize={14}>
-            Déconnexion
+            {t('client.settings.logout')}
           </Text>
           <Text variant="regularSmall" color="gray600">
             {isLoggingOut
-              ? 'Déconnexion en cours...'
-              : 'Se déconnecter de votre compte'}
+              ? t('client.settings.logoutPending')
+              : t('client.settings.logoutDescription')}
           </Text>
         </RowContent>
         {isLoggingOut ? (
@@ -260,12 +264,13 @@ const SettingsModal = ({
   type: ModalType;
   onClose: () => void;
 }) => {
+  const { t } = useTranslation();
   const title =
     type === 'faq'
-      ? 'FAQ'
+      ? t('client.settings.help')
       : type === 'terms'
-      ? 'Conditions d’utilisation'
-      : 'Paiement';
+      ? t('client.settings.terms')
+      : t('client.settings.paymentTitle');
   return (
     <Modal
       visible={type !== null}
@@ -289,27 +294,23 @@ const SettingsModal = ({
           {type === 'faq' ? (
             <ModalText>
               <Text variant="bold" color="black">
-                Comment suivre mon intervention ?
+                {t('client.settings.faqTracking')}
               </Text>
-              {'\n'}Retrouvez son statut dans l’onglet Interventions.{'\n\n'}
+              {'\n'}{t('client.settings.faqTrackingAnswer')}{'\n\n'}
               <Text variant="bold" color="black">
-                Quand le prix final est-il confirmé ?
+                {t('client.settings.faqPrice')}
               </Text>
-              {'\n'}Après le diagnostic réalisé par le professionnel.
+              {'\n'}{t('client.settings.faqPriceAnswer')}
             </ModalText>
           ) : null}
           {type === 'terms' ? (
             <ModalText>
-              En utilisant Pro24Home, vous acceptez nos conditions d’utilisation
-              et notre politique de confidentialité. Les interventions et
-              paiements sont soumis aux conditions affichées avant confirmation.
+              {t('client.settings.termsCopy')}
             </ModalText>
           ) : null}
           {type === 'payment' ? (
             <ModalText>
-              Vos paiements sont sécurisés. Les frais de déplacement sont
-              affichés avant confirmation et sont déduits du prix final si
-              l’intervention est réalisée.
+              {t('client.settings.paymentCopy')}
             </ModalText>
           ) : null}
         </ModalSheet>

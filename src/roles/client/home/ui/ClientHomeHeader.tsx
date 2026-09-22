@@ -1,31 +1,39 @@
 // components/ClientHomeHeader.tsx
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import { colors } from '@theme';
+import { selectUser } from '@store/slices/authSlice';
 
 const ClientHomeHeader = () => {
+    const { t } = useTranslation();
+    const user = useSelector(selectUser);
+    const displayName = user?.client
+        ? `${user.client.first_name} ${user.client.last_name}`.trim()
+        : user?.name || t('client.home.user');
     return (
         <Container>
             <Left>
                 <LocationRow>
                     <SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} />
                     <Text variant="medium" color="black">
-                        Ma position
+                        {t('client.home.myLocation')}
                     </Text>
                     <SvgIcon name="fa-chevron-down" size={12} color={colors.gray600} />
                 </LocationRow>
 
                 <Title>
                     <Text variant="bold" fontSize={26}>
-                        Bonjour,{' '}
+                        {t('client.home.hello')}{' '}
                     </Text>
                     <Text variant="bold" color="primary" fontSize={26}>
-                        John
+                        {displayName}
                     </Text>
                     <Text variant="bold" fontSize={26}>
                         {' '}👋
@@ -33,7 +41,7 @@ const ClientHomeHeader = () => {
                 </Title>
 
                 <Text variant="regular" color="gray600">
-                    Comment pouvons-nous vous aider aujourd’hui ?
+                    {t('client.home.headline')}
                 </Text>
             </Left>
 

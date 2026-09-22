@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Animated, Image } from 'react-native';
 import styled from 'styled-components/native';
 import { Toast } from '@core/notifications/toast';
@@ -15,6 +16,7 @@ import { colors } from '@theme';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 
 const ProfileScreen = () => {
+    const { t } = useTranslation();
     const { themeMode } = useTheme();
     const user = useAppSelector(selectUser);
     const [updateClientProfile, { isLoading }] = useUpdateClientProfileMutation();
@@ -46,15 +48,15 @@ const ProfileScreen = () => {
     }, [user]);
 
     const displayName = useMemo(
-        () => `${firstName} ${lastName}`.trim() || user?.name || 'Mon profil',
-        [firstName, lastName, user?.name],
+        () => `${firstName} ${lastName}`.trim() || user?.name || t('client.profile.defaultName'),
+        [firstName, lastName, user?.name, t],
     );
 
     const saveProfile = async () => {
         const nextErrors: Record<string, string> = {};
-        if (!firstName.trim()) nextErrors.firstName = 'Le prénom est obligatoire.';
-        if (!lastName.trim()) nextErrors.lastName = 'Le nom est obligatoire.';
-        if (!address.trim()) nextErrors.address = 'L’adresse principale est obligatoire.';
+        if (!firstName.trim()) nextErrors.firstName = t('client.profile.firstNameRequired');
+        if (!lastName.trim()) nextErrors.lastName = t('client.profile.lastNameRequired');
+        if (!address.trim()) nextErrors.address = t('client.profile.addressRequired');
 
         setErrors(nextErrors);
         if (Object.keys(nextErrors).length > 0) return;
@@ -83,9 +85,9 @@ const ProfileScreen = () => {
             await updateClientProfile(changedFields).unwrap();
             setSavedValues(normalizedValues);
             setIsEditing(false);
-            Toast.show('Votre profil a été mis à jour.', { type: 'success', placement: 'bottom' });
+            Toast.show(t('client.profile.updateSuccess'), { type: 'success', placement: 'bottom' });
         } catch (error: any) {
-            Toast.show(error?.data?.message || 'Impossible de mettre à jour votre profil.', { type: 'danger', placement: 'bottom' });
+            Toast.show(error?.data?.message || t('client.profile.updateFailed'), { type: 'danger', placement: 'bottom' });
         }
     };
 
@@ -101,21 +103,21 @@ const ProfileScreen = () => {
 
     return (
         <ScreenContainer mode={themeMode} scrollable paddingHorizontal={horizontalScale(18)} paddingVertical={verticalScale(12)} contentContainerStyle={{ paddingBottom: verticalScale(32) }}>
-            <InterventionHeader title="Profil" showHelp={false} />
+            <InterventionHeader title={t('client.profile.title')} showHelp={false} />
             <ProfileIntro>
                 <AvatarWrap>
                     <Avatar source={require('@assets/images/worker_avatar.png')} resizeMode="cover" />
-                    <CameraButton accessibilityRole="button" accessibilityLabel="Modifier la photo de profil">
+                    <CameraButton accessibilityRole="button" accessibilityLabel={t('client.profile.editPhoto')}>
                         <SvgIcon name="fa-camera" size={15} color={colors.white} />
                     </CameraButton>
                 </AvatarWrap>
                 <Text variant="title" color="black" style={{ marginTop: verticalScale(12) }}>{displayName}</Text>
-                <RoleBadge><SvgIcon name="fa-user" size={13} color={colors.primary} /><Text variant="bold" color={colors.primary} fontSize={12}>Client Pro24Home</Text></RoleBadge>
-                <IntroText>Gérez vos informations personnelles et comment nous vous contactons.</IntroText>
+                <RoleBadge><SvgIcon name="fa-user" size={13} color={colors.primary} /><Text variant="bold" color={colors.primary} fontSize={12}>{t('client.profile.role')}</Text></RoleBadge>
+                <IntroText>{t('client.profile.intro')}</IntroText>
             </ProfileIntro>
 
             <SectionHeader>
-                <SectionTitle>Informations personnelles</SectionTitle>
+                <SectionTitle>{t('client.profile.personalInfo')}</SectionTitle>
                 {!isEditing ? (
                     <AnimatedEditButton style={{ transform: [{ scale: editButtonScale }] }}>
                         <EditButton
@@ -123,38 +125,38 @@ const ProfileScreen = () => {
                             onPressIn={() => Animated.spring(editButtonScale, { toValue: 0.92, useNativeDriver: true }).start()}
                             onPressOut={() => Animated.spring(editButtonScale, { toValue: 1, useNativeDriver: true }).start()}
                             accessibilityRole="button"
-                            accessibilityLabel="Modifier les informations personnelles"
+                            accessibilityLabel={t('client.profile.editInfo')}
                         >
                             <SvgIcon name="fa-pen" size={13} color={colors.primary} />
-                            <Text variant="bold" color={colors.primary} fontSize={12}>Modifier</Text>
+                            <Text variant="bold" color={colors.primary} fontSize={12}>{t('client.profile.edit')}</Text>
                         </EditButton>
                     </AnimatedEditButton>
-                ) : <EditingBadge><SvgIcon name="fa-pen" size={11} color={colors.primary} /><Text variant="notification" color={colors.primary}>Modification activée</Text></EditingBadge>}
+                ) : <EditingBadge><SvgIcon name="fa-pen" size={11} color={colors.primary} /><Text variant="notification" color={colors.primary}>{t('client.profile.editing')}</Text></EditingBadge>}
             </SectionHeader>
             <FormCard>
-                <FormGroupTitle>Identité</FormGroupTitle>
-                <ProfileField editable={isEditing} icon="fa-user" label="Prénom" value={firstName} error={errors.firstName} onChangeText={value => { setFirstName(value); setErrors(previous => ({ ...previous, firstName: '' })); }} />
-                <ProfileField editable={isEditing} icon="fa-user" label="Nom" value={lastName} error={errors.lastName} onChangeText={value => { setLastName(value); setErrors(previous => ({ ...previous, lastName: '' })); }} last />
+                <FormGroupTitle>{t('client.profile.identity')}</FormGroupTitle>
+                <ProfileField editable={isEditing} icon="fa-user" label={t('ui.form.firstName.label')} value={firstName} error={errors.firstName} onChangeText={value => { setFirstName(value); setErrors(previous => ({ ...previous, firstName: '' })); }} />
+                <ProfileField editable={isEditing} icon="fa-user" label={t('ui.form.lastName.label')} value={lastName} error={errors.lastName} onChangeText={value => { setLastName(value); setErrors(previous => ({ ...previous, lastName: '' })); }} last />
             </FormCard>
 
             <FormCard>
-                <FormGroupTitle>Coordonnées</FormGroupTitle>
-                <ProfileField editable={false} icon="fa-envelope-open-text" label="Adresse e-mail" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
-                <ProfileField editable={false} icon="fa-user-circle" label="Téléphone" value={phone} onChangeText={setPhone} keyboardType="phone-pad" last />
+                <FormGroupTitle>{t('client.profile.coordinates')}</FormGroupTitle>
+                <ProfileField editable={false} icon="fa-envelope-open-text" label={t('client.profile.email')} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
+                <ProfileField editable={false} icon="fa-user-circle" label={t('client.profile.phone')} value={phone} onChangeText={setPhone} keyboardType="phone-pad" last />
             </FormCard>
 
             <FormCard>
-                <FormGroupTitle>Adresse principale</FormGroupTitle>
-                <ProfileField editable={isEditing} icon="fa-map-marker-alt" label="Adresse" value={address} error={errors.address} onChangeText={value => { setAddress(value); setErrors(previous => ({ ...previous, address: '' })); }} last />
+                <FormGroupTitle>{t('client.profile.mainAddress')}</FormGroupTitle>
+                <ProfileField editable={isEditing} icon="fa-map-marker-alt" label={t('ui.form.address.label')} value={address} error={errors.address} onChangeText={value => { setAddress(value); setErrors(previous => ({ ...previous, address: '' })); }} last />
             </FormCard>
 
             {isEditing ? (
                 <Actions>
                     <CancelButton onPress={cancelEditing} disabled={isLoading}>
-                        <Text variant="bold" color="gray700" fontSize={13}>Annuler</Text>
+                        <Text variant="bold" color="gray700" fontSize={13}>{t('common.actions.cancel')}</Text>
                     </CancelButton>
                     <SaveButton onPress={saveProfile} disabled={isLoading} activeOpacity={0.85}>
-                        {isLoading ? <ActivityIndicator color={colors.white} /> : <><SvgIcon name="fa-check" size={16} color={colors.white} /><Text variant="bold" color={colors.white} fontSize={14}>Enregistrer</Text></>}
+                        {isLoading ? <ActivityIndicator color={colors.white} /> : <><SvgIcon name="fa-check" size={16} color={colors.white} /><Text variant="bold" color={colors.white} fontSize={14}>{t('common.actions.save')}</Text></>}
                     </SaveButton>
                 </Actions>
             ) : null}

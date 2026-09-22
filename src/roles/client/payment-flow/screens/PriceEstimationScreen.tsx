@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 
@@ -16,6 +17,7 @@ import { AppStackType } from '../../../../navigation/constant/core';
 import { useGetInterventionPriceQuery } from '@entities/payment/api/payment.api';
 
 export const PriceEstimationScreen = () => {
+    const { t } = useTranslation();
     const navigation = useNavigation();
     const route = useRoute<RouteProp<AppStackType, 'PriceEstimation'>>();
     const [checkWithProfessional, setCheckWithProfessional] = useState(false);
@@ -25,7 +27,7 @@ export const PriceEstimationScreen = () => {
         ? `${price.minPrice} € – ${price.maxPrice} €`
         : price?.price
             ? `${price.price} €`
-            : '50 € – 80 €';
+            : t('payment.estimate.defaultRange', { min: 50, max: 80 });
 
     const continueToPayment = () => {
         const intervention = {
@@ -49,7 +51,7 @@ export const PriceEstimationScreen = () => {
             paddingVertical={verticalScale(12)}
             contentContainerStyle={{ paddingBottom: verticalScale(18) }}
         >
-            <InterventionHeader title="Estimation du prix" showHelp={false} />
+            <InterventionHeader title={t('payment.estimate.title')} showHelp={false} />
 
             <PriceBox>
                 <PriceIcon>
@@ -57,7 +59,7 @@ export const PriceEstimationScreen = () => {
                 </PriceIcon>
                 <PriceContent>
                     <Text variant="bold" color="black" fontSize={13}>
-                        Prix moyen estimé
+                        {t('payment.estimate.average')}
                     </Text>
                     {isPriceLoading ? (
                         <ActivityIndicator color="#FF6B00" />
@@ -65,12 +67,12 @@ export const PriceEstimationScreen = () => {
                         <Text variant="bold" color="black" fontSize={24}>{priceLabel}</Text>
                     )}
                     <Text variant="regularSmall" color="gray600">
-                        Fourchette basée sur des interventions similaires.
+                        {t('payment.estimate.range')}
                     </Text>
                 </PriceContent>
             </PriceBox>
 
-            <SectionTitle>Besoin d’une confirmation ?</SectionTitle>
+            <SectionTitle>{t('payment.estimate.confirmation')}</SectionTitle>
 
             <ProfessionalOption
                 selected={checkWithProfessional}
@@ -82,43 +84,43 @@ export const PriceEstimationScreen = () => {
                 </OptionIcon>
                 <OptionContent>
                     <Text variant="bold" color="black" fontSize={13}>
-                        Faire vérifier le prix par un professionnel
+                        {t('payment.estimate.professionalCheck')}
                     </Text>
                     <Text variant="regularSmall" color="gray600">
-                        Recevez une confirmation avant l’intervention.
+                        {t('payment.estimate.beforeIntervention')}
                     </Text>
                 </OptionContent>
                 <Radio selected={checkWithProfessional} />
             </ProfessionalOption>
 
-            <SectionTitle>Ce qui peut influencer le prix</SectionTitle>
+            <SectionTitle>{t('payment.estimate.factors')}</SectionTitle>
 
             <FactorsCard>
                 <InfoNotice
                     icon="fa-exclamation-circle"
-                    title="Complexité du problème"
-                    description="Plus le problème est complexe, plus le prix peut augmenter."
+                    title={t('payment.estimate.complexity')}
+                    description={t('payment.estimate.complexityDescription')}
                 />
 
                 <InfoNotice
                     icon="fa-tools"
-                    title="Matériel nécessaire"
-                    description="Les pièces ou équipements peuvent influencer le prix."
+                    title={t('payment.estimate.equipment')}
+                    description={t('payment.estimate.equipmentDescription')}
                 />
 
                 <InfoNotice
                     icon="fa-clock"
-                    title="Temps d’intervention"
-                    description="La durée peut faire varier le coût."
+                    title={t('payment.estimate.time')}
+                    description={t('payment.estimate.timeDescription')}
                 />
             </FactorsCard>
 
             <FooterNote>
-                Le prix affiché est indicatif. Le montant final sera confirmé par le professionnel après son diagnostic sur place.
+                {t('payment.estimate.disclaimer')}
             </FooterNote>
 
             <BottomActions
-                primaryTitle="Compris"
+                primaryTitle={t('payment.estimate.understood')}
                 onPrimaryPress={continueToPayment}
                     //appNavigate('PaymentTravelFee')
             />

@@ -1,6 +1,7 @@
 // components/HeroBanner.tsx
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Image } from 'react-native';
 import styled from 'styled-components/native';
 
@@ -14,14 +15,12 @@ import {
 import { colors } from '@theme';
 
 const HeroBanner = () => {
+    const { t } = useTranslation();
     return (
         <Card>
             <Content>
                 <Text variant="bold" color={colors.primary} fontSize={22} >
-                    Des pros <Text variant="bold" color="black" fontSize={22} >
-                        à votre service, à
-                        domicile
-                    </Text>
+                    {t('client.home.heroTitle')}
                 </Text>
 
                 <Text
@@ -30,9 +29,7 @@ const HeroBanner = () => {
                     fontSize={16}
                     style={{ marginTop: verticalScale(10) }}
                 >
-                    Réparation, installation et
-                    dépannage rapide et{'\n'}
-                    fiable.
+                    {t('client.home.heroDescription')}
                 </Text>
 
 
@@ -47,13 +44,13 @@ const HeroBanner = () => {
                 <FeatureItem>
                     <SvgIcon name="fa-clock" size={16} color={colors.primary} />
                     <Text variant="medium" color="black" fontSize={13}>
-                        Intervention rapide
+                        {t('client.home.fast')}
                     </Text>
                 </FeatureItem>
                 <FeatureItem>
                     <SvgIcon name="fa-shield-alt" size={16} color={colors.primary} />
                     <Text variant="medium" color="black" fontSize={13}>
-                        Pros vérifiés
+                        {t('client.home.verified')}
                     </Text>
                 </FeatureItem>
             </FeatureRow>

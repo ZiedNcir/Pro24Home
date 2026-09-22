@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, Modal, Pressable, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
@@ -17,6 +18,7 @@ import { isSupportFormValid, SUPPORT_TOPICS } from '@roles/client/home/model/con
 type SupportFormValues = { message: string };
 
 const ContactSupportScreen = () => {
+    const { t } = useTranslation();
     const navigation = useNavigation<any>();
     const { control, handleSubmit } = useForm<SupportFormValues>({ defaultValues: { message: '' } });
     const [topic, setTopic] = useState(SUPPORT_TOPICS[0]!);
@@ -26,7 +28,7 @@ const ContactSupportScreen = () => {
 
     const submitRequest = handleSubmit(({ message: submittedMessage }) => {
         if (!isSupportFormValid(topic.key, submittedMessage)) {
-            Alert.alert('Message incomplet', 'Sélectionnez un sujet et décrivez votre demande.');
+            Alert.alert(t('client.support.incompleteTitle'), t('client.support.incompleteDescription'));
             return;
         }
         setSubmitted(true);
@@ -36,12 +38,12 @@ const ContactSupportScreen = () => {
         return (
             <ScreenContainer paddingHorizontal={horizontalScale(18)} paddingVertical={verticalScale(14)} backgroundColor={colors.white}>
                 <BrandRow><LogoMediumPro24Icon width={moderateScale(126)} height={moderateScale(40)} /></BrandRow>
-                <InterventionHeader title="Contacter le support" showHelp={false} onClose={() => navigation.goBack()} />
+                <InterventionHeader title={t('client.support.title')} showHelp={false} onClose={() => navigation.goBack()} />
                 <SuccessState>
                     <SuccessIcon><SvgIcon name="fa-check" size={28} color={colors.white} /></SuccessIcon>
-                    <Text variant="title" color={colors.gray900} style={styles.center}>Votre demande a été envoyée</Text>
-                    <Text variant="regular" color={colors.gray700} style={[styles.center, styles.successDescription]}>Notre équipe vous répondra dans les meilleurs délais.</Text>
-                    <BackButton onPress={() => navigation.goBack()} accessibilityRole="button"><Text variant="bold" color={colors.primary}>Retour aux paramètres</Text></BackButton>
+                    <Text variant="title" color={colors.gray900} style={styles.center}>{t('client.support.sentTitle')}</Text>
+                    <Text variant="regular" color={colors.gray700} style={[styles.center, styles.successDescription]}>{t('client.support.sentDescription')}</Text>
+                    <BackButton onPress={() => navigation.goBack()} accessibilityRole="button"><Text variant="bold" color={colors.primary}>{t('client.support.backSettings')}</Text></BackButton>
                 </SuccessState>
             </ScreenContainer>
         );
@@ -50,43 +52,43 @@ const ContactSupportScreen = () => {
     return (
         <ScreenContainer scrollable paddingHorizontal={horizontalScale(18)} paddingVertical={verticalScale(14)} backgroundColor={colors.white} contentContainerStyle={{ paddingBottom: verticalScale(24) }}>
             <BrandRow><LogoMediumPro24Icon width={moderateScale(126)} height={moderateScale(40)} /></BrandRow>
-            <InterventionHeader title="Contacter le support" showHelp={false} onClose={() => navigation.goBack()} />
+            <InterventionHeader title={t('client.support.title')} showHelp={false} onClose={() => navigation.goBack()} />
 
-            <Text variant="title" color={colors.gray900} style={styles.heading}>Comment pouvons-nous vous aider ?</Text>
-            <Text variant="regular" color={colors.gray700} style={styles.subtitle}>Décrivez votre demande et notre équipe vous répondra rapidement.</Text>
+            <Text variant="title" color={colors.gray900} style={styles.heading}>{t('client.support.question')}</Text>
+            <Text variant="regular" color={colors.gray700} style={styles.subtitle}>{t('client.support.description')}</Text>
 
-            <Label>Sujet de votre demande <Required>*</Required></Label>
+            <Label>{t('client.support.subjectLabel')} <Required>*</Required></Label>
             <TopicButton onPress={() => setTopicModalVisible(true)} accessibilityRole="button">
                 <TopicIcon><SvgIcon name={topic.icon} size={19} color={colors.white} /></TopicIcon>
-                <Text variant="regular" color={colors.gray900} style={styles.flex}>{topic.label}</Text>
+                <Text variant="regular" color={colors.gray900} style={styles.flex}>{t(topic.labelKey)}</Text>
                 <SvgIcon name="fa-chevron-down" size={15} color={colors.gray700} />
             </TopicButton>
 
             <Field<SupportFormValues>
                 name="message"
                 control={control}
-                label="Décrivez votre demande"
+                label={t('client.support.messageLabel')}
                 required
                 multiline
                 maxCharacters={1000}
                 showCharacterCount
-                placeholder="Décrivez votre demande en détail. Incluez les informations utiles…"
-                rules={{ minLength: { value: 1, message: 'Décrivez votre demande.' } }}
+                placeholder={t('client.support.messagePlaceholder')}
+                rules={{ minLength: { value: 1, message: t('client.support.messageRequired') } }}
                 containerStyle={styles.field}
             />
 
-            <Label>Pièces jointes <Optional>(facultatif)</Optional></Label>
+            <Label>{t('client.support.attachments')} <Optional>{t('client.support.optional')}</Optional></Label>
             <AttachmentButton onPress={() => setAttachment(value => !value)} accessibilityRole="button">
                 <AttachmentIcon><SvgIcon name="fa-file-upload" size={21} color={colors.primary} /></AttachmentIcon>
-                <View style={styles.flex}><Text variant="bold" color={colors.gray900}>{attachment ? 'Fichier sélectionné' : 'Joindre un fichier'}</Text><Text variant="regularSmall" color="gray600">PDF, JPG ou PNG · 10 Mo maximum</Text></View>
+                <View style={styles.flex}><Text variant="bold" color={colors.gray900}>{attachment ? t('client.support.fileSelected') : t('client.support.attachFile')}</Text><Text variant="regularSmall" color="gray600">{t('client.support.attachmentFormats')}</Text></View>
                 <SvgIcon name="fa-chevron-right" size={15} color={colors.gray700} />
             </AttachmentButton>
 
-            <SubmitButton onPress={submitRequest} accessibilityRole="button"><Text variant="bold" color={colors.white}>Envoyer la demande</Text></SubmitButton>
-            <PrivacyNote><SvgIcon name="fa-shield-alt" size={20} color={colors.primary} /><View style={styles.flex}><Text variant="bold" color={colors.gray900}>Vos données sont en sécurité</Text><Text variant="regularSmall" color="gray600" style={styles.noteText}>Votre demande reste confidentielle et notre équipe répond généralement sous 24 à 48 h ouvrées.</Text></View></PrivacyNote>
+            <SubmitButton onPress={submitRequest} accessibilityRole="button"><Text variant="bold" color={colors.white}>{t('client.support.send')}</Text></SubmitButton>
+            <PrivacyNote><SvgIcon name="fa-shield-alt" size={20} color={colors.primary} /><View style={styles.flex}><Text variant="bold" color={colors.gray900}>{t('client.support.secure')}</Text><Text variant="regularSmall" color="gray600" style={styles.noteText}>{t('client.support.privacy')}</Text></View></PrivacyNote>
 
             <Modal visible={topicModalVisible} transparent animationType="slide" onRequestClose={() => setTopicModalVisible(false)}>
-                <ModalBackdrop><TopicSheet><ModalHandle /><Text variant="bold" color={colors.gray900} fontSize={18}>Choisissez un sujet</Text>{SUPPORT_TOPICS.map(item => <TopicOption key={item.key} onPress={() => { setTopic(item); setTopicModalVisible(false); }}><TopicIcon><SvgIcon name={item.icon} size={18} color={colors.white} /></TopicIcon><Text variant="regular" color={colors.gray900} style={styles.flex}>{item.label}</Text>{topic.key === item.key && <SvgIcon name="fa-check" size={17} color={colors.primary} />}</TopicOption>)}</TopicSheet></ModalBackdrop>
+                <ModalBackdrop><TopicSheet><ModalHandle /><Text variant="bold" color={colors.gray900} fontSize={18}>{t('client.support.chooseSubject')}</Text>{SUPPORT_TOPICS.map(item => <TopicOption key={item.key} onPress={() => { setTopic(item); setTopicModalVisible(false); }}><TopicIcon><SvgIcon name={item.icon} size={18} color={colors.white} /></TopicIcon><Text variant="regular" color={colors.gray900} style={styles.flex}>{t(item.labelKey)}</Text>{topic.key === item.key && <SvgIcon name="fa-check" size={17} color={colors.primary} />}</TopicOption>)}</TopicSheet></ModalBackdrop>
             </Modal>
         </ScreenContainer>
     );
