@@ -1,0 +1,8 @@
+"CFBundleDisplayName" = "Pro24Home";
+"NSLocationWhenInUseUsageDescription" = "Your location is used to select the intervention address and find nearby professionals.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Your location may be used in the background to keep your intervention tracking up to date.";
+"NSLocationAlwaysUsageDescription" = "Your location may be used to track your intervention.";
+"NSMotionUsageDescription" = "Device motion improves navigation accuracy.";
+"NSCameraUsageDescription" = "Camera access is needed to add photos to your request.";
+"NSPhotoLibraryUsageDescription" = "Photo library access is needed to attach photos to your request.";
+"NSPhotoLibraryAddUsageDescription" = "Access is needed to save the images you select for your request.";

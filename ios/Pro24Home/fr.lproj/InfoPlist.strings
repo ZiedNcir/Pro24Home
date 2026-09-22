@@ -1,0 +1,8 @@
+"CFBundleDisplayName" = "Pro24Home";
+"NSLocationWhenInUseUsageDescription" = "Votre position est utilisée pour sélectionner l’adresse de l’intervention et trouver les professionnels proches.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "Votre position peut être utilisée en arrière-plan pour maintenir à jour le suivi de votre intervention.";
+"NSLocationAlwaysUsageDescription" = "Votre position peut être utilisée pour le suivi de votre intervention.";
+"NSMotionUsageDescription" = "Les mouvements de l’appareil améliorent la précision de la navigation.";
+"NSCameraUsageDescription" = "Nous avons besoin d’accéder à la caméra pour ajouter des photos à votre demande.";
+"NSPhotoLibraryUsageDescription" = "Nous avons besoin d’accéder à vos photos pour les joindre à votre demande.";
+"NSPhotoLibraryAddUsageDescription" = "Nous avons besoin d’enregistrer les images que vous choisissez dans votre demande.";
