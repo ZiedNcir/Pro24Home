@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import { Toast } from '@core/notifications/toast';
@@ -26,9 +27,10 @@ import { buildInterventionPayload } from '../model/intervention-payload';
 import type { InterventionPhoto } from '../ui/new-intervention/types';
 
 export const NewInterventionScreen = () => {
+    const { i18n } = useTranslation();
     const route = useRoute<RouteProp<AppStackType, 'NewIntervention'>>();
     const navigation = useNavigation();
-    const { data: servicesResponse, isLoading: servicesLoading } = useGetServicesQuery({ lang: 'fr' });
+    const { data: servicesResponse, isLoading: servicesLoading } = useGetServicesQuery({ lang: i18n.resolvedLanguage || i18n.language });
     const services = useMemo(() => servicesResponse?.data || [], [servicesResponse?.data]);
     const [selectedServiceId, setSelectedServiceId] = useState<number | undefined>(route.params?.service_id);
     const selectedService = useMemo(() => {

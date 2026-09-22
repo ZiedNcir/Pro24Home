@@ -1,6 +1,7 @@
 // src/services/authService.ts
 import type { RegisterClientRequest, RegisterProfessionalRequest } from '@entities/user/model/types';
 import i18n from '@utils/i18n';
+import { resolveSupportedLanguage } from '@utils/locale';
 
 /**
  * Auth Service - Centralized authentication business logic
@@ -149,7 +150,9 @@ export const prepareRegistrationPayload = (
   const basePayload = {
     ...data,
     onesignal_key: onesignalKey,
-    lang: i18n.language,
+    lang: resolveSupportedLanguage([
+      { languageCode: i18n.resolvedLanguage || i18n.language },
+    ]),
   };
 
   if (role === 'professional' && selectedServices) {

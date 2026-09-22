@@ -33,7 +33,7 @@ interface RouteParams {
 }
 
 export const RegisterScreen = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const route = useRoute();
     const navigation = useNavigation<AppNavigationProp>();
     const insets = useSafeAreaInsets();
@@ -48,7 +48,7 @@ export const RegisterScreen = () => {
     const authLoading = useAppSelector(selectAuthLoading);
 
     // Get services for professional form
-    const { data: services, isLoading: servicesLoading, error: servicesError } = useGetServicesQuery({ lang: 'fr' });
+    const { data: services, isLoading: servicesLoading, error: servicesError } = useGetServicesQuery({ lang: i18n.resolvedLanguage || i18n.language });
 
     // Redirect to home if already authenticated
     useEffect(() => {

@@ -25,6 +25,7 @@ import Text from '@shared/ui/typography/Text';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 
 import { useTheme } from '@theme';
+import { resolveSupportedLanguage } from '@utils/locale';
 import ServicesSkeleton from './ServicesSkeleton';
 import { Toast } from '@core/notifications/toast';
 import { getOneSignalSubscriptionId } from '../../../../core/notifications/oneSignalSubscription';
@@ -116,7 +117,7 @@ interface ProfessionalFormProps {
 
 const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: ProfessionalFormProps) => {
     const { theme } = useTheme();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const dispatch = useAppDispatch();
     // Use the new RTK Query mutation hook
     const [registerProfessional, { isLoading, error, isSuccess }] = useRegisterProfessionalMutation();
@@ -143,7 +144,9 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
             siret_number: '',
             services: [],
             onesignal_key: '',
-            lang: 'fr',
+            lang: resolveSupportedLanguage([
+                { languageCode: i18n.resolvedLanguage || i18n.language },
+            ]),
         },
         mode: 'onBlur',
     });

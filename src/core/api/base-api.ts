@@ -1,4 +1,9 @@
-import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react';
+import {
+  createApi,
+  defaultSerializeQueryArgs,
+  fetchBaseQuery,
+  retry,
+} from '@reduxjs/toolkit/query/react';
 import type {
   BaseQueryFn,
   FetchArgs,
@@ -9,8 +14,27 @@ import { API_BASE_URL } from '../../config/api';
 import { readSession, clearSession } from '../session/session-storage';
 import type { RootState } from '../../store';
 import { logout } from '../../store/slices/authSlice';
+import i18n from '../../utils/i18n';
+import { resolveSupportedLanguage } from '../../utils/locale';
 
 export { API_BASE_URL } from '../../config/api';
+
+const getApiLanguage = () =>
+  resolveSupportedLanguage([
+    { languageCode: i18n.resolvedLanguage || i18n.language },
+  ]);
+
+const withLanguageParam = (args: string | FetchArgs): FetchArgs => {
+  const request = typeof args === 'string' ? { url: args } : args;
+
+  return {
+    ...request,
+    params: {
+      ...request.params,
+      lang: getApiLanguage(),
+    },
+  };
+};
 
 interface ApiError {
   status: number;
@@ -39,7 +63,7 @@ export const baseQueryWithReauth: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-  const result = await baseQuery(args, api, extraOptions);
+  const result = await baseQuery(withLanguageParam(args), api, extraOptions);
 
   if (result.error?.status === 401) {
     await clearSession();
@@ -68,6 +92,8 @@ const staggeredBaseQuery = retry(baseQueryWithReauth, {
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: staggeredBaseQuery,
+  serializeQueryArgs: ({ endpointName, queryArgs, endpointDefinition }) =>
+    `${defaultSerializeQueryArgs({ endpointName, queryArgs, endpointDefinition })}|lang=${getApiLanguage()}`,
   tagTypes: [
     'Auth',
     'User',
