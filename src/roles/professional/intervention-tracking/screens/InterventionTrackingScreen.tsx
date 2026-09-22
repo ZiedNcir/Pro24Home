@@ -4,12 +4,13 @@ import Geolocation from '@react-native-community/geolocation';
 import styled from 'styled-components/native';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import {
-    NavigationView,
-    NavigationUIEnabledPreference,
     AudioGuidance,
     TravelMode,
-    useNavigation as useGoogleNavigation,
-} from '@googlemaps/react-native-navigation-sdk';
+} from '@googlemaps/react-native-navigation-sdk/src/navigation/types';
+import { NavigationUIEnabledPreference } from '@googlemaps/react-native-navigation-sdk/src/navigation/navigationView/types';
+import { NavigationView } from '@googlemaps/react-native-navigation-sdk/src/navigation/navigationView/navigationView';
+import { useNavigationController } from '@googlemaps/react-native-navigation-sdk/src/navigation/navigation/useNavigationController';
+import { TaskRemovedBehavior } from '@googlemaps/react-native-navigation-sdk/src/navigation/navigation/types';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@shared/ui/typography/Text';
@@ -36,7 +37,11 @@ const ProfessionalInterventionTrackingScreen = () => {
     const [isArrivalActionsVisible, setIsArrivalActionsVisible] = useState(false);
     const [voiceGuidance, setVoiceGuidance] = useState(true);
     const [navigationError, setNavigationError] = useState<string | null>(null);
-    const { navigationController, setOnArrival, setOnLocationChanged, setOnRemainingTimeOrDistanceChanged, removeAllListeners } = useGoogleNavigation();
+    const { navigationController, setOnArrival, setOnLocationChanged, setOnRemainingTimeOrDistanceChanged, removeAllListeners } = useNavigationController({
+        title: 'Navigation Pro24Home',
+        companyName: 'Pro24Home',
+        showOnlyDisclaimer: false,
+    }, TaskRemovedBehavior.CONTINUE_SERVICE);
     const { data: intervention, isLoading, isError } = useGetInterventionQuery(route.params.intervention_id);
     const [updateStatus] = useUpdateStatusMutation();
     const [updateInterventionStatus, { isLoading: isUpdatingStatus }] = useUpdateInterventionStatusMutation();
