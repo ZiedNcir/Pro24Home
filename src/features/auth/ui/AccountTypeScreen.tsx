@@ -6,6 +6,7 @@ import Text from '@shared/ui/typography/Text';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { fontPixel, horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useTheme } from '@theme';
+import { useTranslation } from 'react-i18next';
 
 type AccountNavigation = {
   RegisterScreen: { role: 'client' | 'professional' };
@@ -14,32 +15,33 @@ type AccountNavigation = {
 const AccountTypeScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<AccountNavigation>>();
   const { theme, themeMode } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <ScreenContainer mode={themeMode} scrollable paddingHorizontal={0} paddingVertical={0} withTopSafeArea>
       <Page>
         <Header>
-          <BackButton onPress={() => navigation.goBack()} accessibilityRole="button" accessibilityLabel="Retour">
+          <BackButton onPress={() => navigation.goBack()} accessibilityRole="button" accessibilityLabel={t('accessibility.back')}>
             <BackIcon>‹</BackIcon>
           </BackButton>
           <Logo />
         </Header>
 
         <Content>
-          <Eyebrow>VOTRE PROJET, NOTRE EXPERTISE</Eyebrow>
-          <Title>Comment souhaitez-vous utiliser PRO24HOME ?</Title>
-          <Description>Choisissez votre profil pour créer le compte adapté à vos besoins.</Description>
+          <Eyebrow>{t('auth.accountType.eyebrow')}</Eyebrow>
+          <Title>{t('auth.accountType.title')}</Title>
+          <Description>{t('auth.accountType.description')}</Description>
 
           <RoleCard
             onPress={() => navigation.navigate('RegisterScreen', { role: 'client' })}
             accessibilityRole="button"
-            accessibilityLabel="Je suis un client"
+            accessibilityLabel={t('auth.accountType.client')}
             activeOpacity={0.88}
           >
             <IconCircle background={theme.colors.surfaceVariant}><IconText color={theme.colors.primary}>⌂</IconText></IconCircle>
             <RoleCopy>
-              <RoleTitle>Je suis un client</RoleTitle>
-              <RoleDescription>Je cherche un professionnel pour mes travaux ou dépannages.</RoleDescription>
+              <RoleTitle>{t('auth.accountType.client')}</RoleTitle>
+              <RoleDescription>{t('auth.accountType.clientDescription')}</RoleDescription>
             </RoleCopy>
             <Arrow>›</Arrow>
           </RoleCard>
@@ -48,18 +50,18 @@ const AccountTypeScreen: React.FC = () => {
             secondary
             onPress={() => navigation.navigate('RegisterScreen', { role: 'professional' })}
             accessibilityRole="button"
-            accessibilityLabel="Je suis un professionnel"
+            accessibilityLabel={t('auth.accountType.professional')}
             activeOpacity={0.88}
           >
             <IconCircle background={theme.colors.surfaceVariant}><IconText color={theme.colors.success}>✓</IconText></IconCircle>
             <RoleCopy>
-              <RoleTitle>Je suis un professionnel</RoleTitle>
-              <RoleDescription>Je souhaite proposer mes services et rejoindre le réseau.</RoleDescription>
+              <RoleTitle>{t('auth.accountType.professional')}</RoleTitle>
+              <RoleDescription>{t('auth.accountType.professionalDescription')}</RoleDescription>
             </RoleCopy>
             <Arrow>›</Arrow>
           </RoleCard>
 
-          <TrustNote>Vous pourrez modifier vos informations plus tard.</TrustNote>
+          <TrustNote>{t('auth.accountType.note')}</TrustNote>
         </Content>
       </Page>
     </ScreenContainer>

@@ -327,8 +327,8 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
     const renderStepIndicator = () => (
         <StepIndicator>
             <ProgressHeader>
-                <Text variant="bold" color={theme.colors.textPrimary} fontSize={13} testID="professional-form-step">Étape {step + 1} sur {steps.length}</Text>
-                <Text variant="regularSmall" color={theme.colors.textSecondary} style={{ marginLeft: horizontalScale(12), textAlign: 'right' }}>{['Vos informations', 'Votre activité', 'Votre sécurité', 'Vos services'][step]}</Text>
+                <Text variant="bold" color={theme.colors.textPrimary} fontSize={13} testID="professional-form-step">{t('auth.registrationSteps.counter', { current: step + 1, total: steps.length })}</Text>
+                <Text variant="regularSmall" color={theme.colors.textSecondary} style={{ marginLeft: horizontalScale(12), textAlign: 'right' }}>{t(['auth.registrationSteps.professionalProfile', 'auth.registrationSteps.professionalActivity', 'auth.registrationSteps.professionalSecurity', 'auth.registrationSteps.professionalServices'][step]!)}</Text>
             </ProgressHeader>
             <ProgressTrack testID="professional-form-progress">
                 <ProgressFill width={`${((step + 1) / steps.length) * 100}%`} />
@@ -338,15 +338,10 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
 
     const renderStepTitle = () => (
         <FormIntro>
-            <Text variant="bold" color={theme.colors.textSecondary} fontSize={11} style={{ letterSpacing: 1, marginBottom: verticalScale(6) }}>CRÉATION DE COMPTE PROFESSIONNEL</Text>
+            <Text variant="bold" color={theme.colors.textSecondary} fontSize={11} style={{ letterSpacing: 1, marginBottom: verticalScale(6) }}>{t('auth.registrationSteps.professionalHeading')}</Text>
             <Text variant="bold" color={theme.colors.textPrimary} fontSize={18}>{steps[step]?.title ?? ''}</Text>
             <Text variant="regular" color={theme.colors.textSecondary} fontSize={13} lineHeight={19} style={{ marginTop: verticalScale(8) }}>
-                {[
-                    'Présentez-vous pour commencer votre inscription.',
-                    'Ajoutez les informations de votre activité professionnelle.',
-                    'Créez vos identifiants pour accéder à votre espace.',
-                    'Choisissez les services que vous proposez.',
-                ][step]}
+                {t(['auth.registrationSteps.professionalProfileDescription', 'auth.registrationSteps.professionalActivityDescription', 'auth.registrationSteps.professionalSecurityDescription', 'auth.registrationSteps.professionalServicesDescription'][step]!)}
             </Text>
         </FormIntro>
     );

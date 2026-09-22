@@ -267,8 +267,8 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
             <FormContainer>
                 <StepIndicator>
                     <ProgressHeader>
-                        <Text variant="bold" color={theme.colors.textPrimary} fontSize={13} testID="client-form-step">Étape {step + 1} sur {steps.length}</Text>
-                        <Text variant="regularSmall" color={theme.colors.textSecondary}>{step === 0 ? 'Vos informations' : 'Sécurisez votre compte'}</Text>
+                        <Text variant="bold" color={theme.colors.textPrimary} fontSize={13} testID="client-form-step">{t('auth.registrationSteps.counter', { current: step + 1, total: steps.length })}</Text>
+                        <Text variant="regularSmall" color={theme.colors.textSecondary}>{t(step === 0 ? 'auth.registrationSteps.clientProfile' : 'auth.registrationSteps.clientSecurity')}</Text>
                     </ProgressHeader>
                     <ProgressTrack testID="client-form-progress">
                         <ProgressFill complete={step === steps.length - 1} />
@@ -276,12 +276,12 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                 </StepIndicator>
 
                 <FormIntro>
-                    <Text variant="bold" color={theme.colors.textSecondary} fontSize={11} style={{ letterSpacing: 1, marginBottom: verticalScale(6) }}>CRÉATION DE COMPTE CLIENT</Text>
+                    <Text variant="bold" color={theme.colors.textSecondary} fontSize={11} style={{ letterSpacing: 1, marginBottom: verticalScale(6) }}>{t('auth.registrationSteps.clientHeading')}</Text>
                     <Text variant="bold" color={theme.colors.textPrimary} fontSize={18} style={{ marginBottom: verticalScale(14) }}>
                         {step === 0 ? t('ui.form.personalInfo.label') : t('ui.form.security.label')}
                     </Text>
                     <Text variant="regular" color={theme.colors.textSecondary} fontSize={13} lineHeight={19}>
-                        {step === 0 ? 'Parlez-nous de vous pour personnaliser votre expérience.' : 'Choisissez vos identifiants pour accéder à PRO24HOME.'}
+                        {t(step === 0 ? 'auth.registrationSteps.clientProfileDescription' : 'auth.registrationSteps.clientSecurityDescription')}
                     </Text>
                 </FormIntro>
 

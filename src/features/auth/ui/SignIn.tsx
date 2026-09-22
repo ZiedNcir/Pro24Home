@@ -72,8 +72,8 @@ export const SignIn = () => {
     if (!availableRoutes.includes(destination)) {
       Toast.show(
         fallbackRole === 'professional'
-          ? 'L’espace professionnel n’est pas disponible pour le moment.'
-          : 'Impossible d’ouvrir votre espace.',
+          ? t('auth.loginUnavailableProfessional')
+          : t('auth.loginUnavailable'),
         {
           type: 'danger',
           placement: 'bottom',
@@ -87,7 +87,7 @@ export const SignIn = () => {
       index: 0,
       routes: [{ name: destination }],
     });
-  }, [navigation, role]);
+  }, [navigation, role, t]);
 
   const doLogin = useCallback(
     async (data: SignInFormValues) => {
@@ -106,7 +106,7 @@ export const SignIn = () => {
         }
 
         Toast.show(
-          error?.data?.message || t('auth.loginFailed') || 'Connexion échouée',
+          error?.data?.message || t('auth.loginFailed'),
           {
             type: 'danger',
             placement: 'bottom',
@@ -140,7 +140,7 @@ export const SignIn = () => {
             style={styles.backButton}
             onPress={() => navigation.goBack()}
             accessibilityRole="button"
-            accessibilityLabel="Retour"
+            accessibilityLabel={t('accessibility.back')}
           >
             <Text style={[styles.backIcon, { color: theme.colors.primary }]}>‹</Text>
           </TouchableOpacity>
@@ -156,14 +156,11 @@ export const SignIn = () => {
         <View style={styles.cardContainer}>
           <View style={[styles.card, { backgroundColor: theme.colors.surface, shadowColor: theme.colors.black }]}>
             <Text variant="title" style={[styles.title, { color: theme.colors.textPrimary }]}>
-              {t('screen.connexion') || 'Connection'}
+              {t('screen.connexion')}
             </Text>
 
             <Text variant="regular" color={theme.colors.textSecondary} style={styles.description}>
-              Accédez à votre espace en
-            </Text>
-            <Text variant="regular" color={theme.colors.textSecondary} style={styles.descriptionLine2}>
-              quelques instants
+              {t('auth.loginSubtitle')}
             </Text>
 
             <View style={styles.formSection}>
@@ -174,7 +171,7 @@ export const SignIn = () => {
                 autoCorrect={false}
                 control={control}
                 keyboardType="email-address"
-                placeholder={t('ui.form.email.placeholder') || 'example@email.com'}
+                placeholder={t('ui.form.email.placeholder')}
                 regex={Regex.email}
               />
 
@@ -187,7 +184,7 @@ export const SignIn = () => {
                 autoCapitalize="none"
                 autoCorrect={false}
                 control={control}
-                placeholder={t('ui.form.password.placeholder') || 'Enter password'}
+                placeholder={t('ui.form.password.placeholder')}
                 regex={Regex.password}
               />
 
@@ -197,13 +194,13 @@ export const SignIn = () => {
                 disabled={isLoading}
               >
                 <Text variant="medium" color={theme.colors.primary} style={styles.forgetPasswordText}>
-                  {t('terms.forgetPassword') || 'Forgot your password?'}
+                  {t('terms.forgetPassword')}
                 </Text>
               </TouchableOpacity>
 
               <Button
                 variant="primary"
-                title={t('ui.button.signIn') || 'Sign In'}
+                title={t('ui.button.signIn')}
                 style={styles.signInButton}
                 onPress={handleSubmit(doLogin)}
                 disabled={isLoading}
@@ -213,7 +210,7 @@ export const SignIn = () => {
             <View style={styles.termsRow}>
               <View style={[styles.termsLine, { backgroundColor: theme.colors.border }]} />
               <Text variant="notification" color={theme.colors.textSecondary} style={styles.termsText}>
-                {t('terms.privacy') || 'Terms & Privacy'}
+                {t('terms.privacy')}
               </Text>
               <View style={[styles.termsLine, { backgroundColor: theme.colors.border }]} />
             </View>
@@ -224,10 +221,10 @@ export const SignIn = () => {
               disabled={isLoading}
             >
               <Text variant="regular" color={theme.colors.textPrimary}>
-                {t('terms.notClient') || 'Not a member?'}{' '}
+                {t('terms.notClient')}{' '}
               </Text>
               <Text variant="regular" color={theme.colors.primary} style={styles.createAccountText}>
-                {t('terms.createAccount') || 'Create account'}
+                {t('terms.createAccount')}
               </Text>
             </TouchableOpacity>
           </View>

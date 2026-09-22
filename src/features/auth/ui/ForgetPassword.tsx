@@ -32,15 +32,15 @@ export const ForgetPassword = () => {
     try {
       const response = await forgotPassword({ phone_number }).unwrap();
       setSent(true);
-      Toast.show(response?.message || 'Un lien de réinitialisation vous a été envoyé.', {
+      Toast.show(response?.message || t('auth.forgot.sentToast'), {
         type: 'success', placement: 'bottom', duration: 4000,
       });
     } catch (error: any) {
-      Toast.show(error?.data?.message || error?.message || 'Impossible d’envoyer le lien de réinitialisation.', {
+      Toast.show(error?.data?.message || error?.message || t('auth.forgot.failedToast'), {
         type: 'danger', placement: 'bottom', duration: 4000,
       });
     }
-  }, [forgotPassword]);
+  }, [forgotPassword, t]);
 
   return (
     <ScreenContainer mode={themeMode} scrollable paddingHorizontal={0} paddingVertical={0}>
@@ -49,7 +49,7 @@ export const ForgetPassword = () => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
           accessibilityRole="button"
-          accessibilityLabel="Retour"
+          accessibilityLabel={t('accessibility.back')}
         >
           <Text style={[styles.backIcon, { color: theme.colors.primary }]}>‹</Text>
         </TouchableOpacity>
@@ -58,39 +58,39 @@ export const ForgetPassword = () => {
 
       <View style={styles.cardContainer}>
         <View style={[styles.card, { backgroundColor: theme.colors.surface, shadowColor: theme.colors.black }]}>
-          <Text variant="title" style={[styles.title, { color: theme.colors.textPrimary }]}>Mot de passe oublié ?</Text>
+          <Text variant="title" style={[styles.title, { color: theme.colors.textPrimary }]}>{t('auth.forgot.title')}</Text>
           <Text variant="regular" color={theme.colors.textSecondary} style={styles.description}>
-            Entrez votre numéro de téléphone et nous vous enverrons les instructions pour réinitialiser votre mot de passe.
+            {t('auth.forgot.description')}
           </Text>
 
           {sent ? (
             <View style={styles.successState}>
-              <Text variant="bold" color={theme.colors.success} style={styles.successTitle}>Vérifiez votre boîte mail</Text>
+              <Text variant="bold" color={theme.colors.success} style={styles.successTitle}>{t('auth.forgot.successTitle')}</Text>
               <Text variant="regular" color={theme.colors.textSecondary} style={styles.successText}>
-                Si un compte correspond à cette adresse, vous recevrez bientôt les instructions de réinitialisation.
+                {t('auth.forgot.successDescription')}
               </Text>
-              <Button title="Retour à la connexion" variant="primary" fullWidth onPress={() => navigation.navigate('SignIn', { role: 'client' })} />
+              <Button title={t('auth.forgot.backToLogin')} variant="primary" fullWidth onPress={() => navigation.navigate('SignIn', { role: 'client' })} />
             </View>
           ) : (
             <>
               <Field
                 name="phone_number"
-                label={t('ui.form.phone.label') || 'Téléphone'}
+                label={t('ui.form.phone.label')}
                 required
                 isPhone
                 control={control}
-                placeholder={t('ui.form.phone.placeholder') || 'Numéro de téléphone'}
+                placeholder={t('ui.form.phone.placeholder')}
                 returnKeyType="done"
                 rules={{
-                  required: t('ui.form.phone.required') || 'Le téléphone est requis',
+                  required: t('ui.form.phone.required'),
                   pattern: {
                     value: /^[+]?\d[\d\s-]{9,}$/,
-                    message: t('ui.form.phone.invalid') || 'Numéro de téléphone invalide',
+                    message: t('ui.form.phone.invalid'),
                   },
                 }}
               />
               <Button
-                title="Envoyer le lien"
+                title={t('auth.forgot.sendLink')}
                 variant="primary"
                 fullWidth
                 style={styles.submitButton}
@@ -99,7 +99,7 @@ export const ForgetPassword = () => {
                 loading={isLoading}
               />
               <TouchableOpacity style={styles.signInLink} onPress={() => navigation.goBack()} disabled={isLoading}>
-                <Text variant="medium" color={theme.colors.primary}>Retour à la connexion</Text>
+                <Text variant="medium" color={theme.colors.primary}>{t('auth.forgot.backToLogin')}</Text>
               </TouchableOpacity>
             </>
           )}

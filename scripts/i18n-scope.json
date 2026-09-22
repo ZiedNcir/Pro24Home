@@ -1,6 +1,18 @@
 {
   "sourceFiles": [
     "src/app/navigation/RootNavigator.tsx",
+    "src/features/auth/services/registration.ts",
+    "src/features/auth/ui/AccountTypeScreen.tsx",
+    "src/features/auth/ui/ForgetPassword.tsx",
+    "src/features/auth/ui/RegisterScreen.tsx",
+    "src/features/auth/ui/RegistrationWizard.tsx",
+    "src/features/auth/ui/SignIn.tsx",
+    "src/features/auth/ui/VerifyScreen.tsx",
+    "src/features/auth/ui/WelcomeScreen.tsx",
+    "src/features/auth/ui/forms/ClientForm.tsx",
+    "src/features/auth/ui/forms/ListServices.tsx",
+    "src/features/auth/ui/forms/ProfessionalForm.tsx",
+    "src/features/auth/ui/forms/ServicesSkeleton.tsx",
     "src/shared/ui/action/BottomActions.tsx",
     "src/shared/ui/button/ButtonGroup.tsx",
     "src/shared/ui/form/HookFormField.tsx",
@@ -8,7 +20,8 @@
     "src/shared/ui/navigation/InterventionHeader.tsx",
     "src/shared/ui/navigation/NavigationHeader.tsx",
     "src/shared/ui/overlay/AppSpinner.tsx",
-    "src/shared/ui/overlay/DialogModal.tsx"
+    "src/shared/ui/overlay/DialogModal.tsx",
+    "src/utils/validationMessages.ts"
   ],
   "exceptions": []
 }

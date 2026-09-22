@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Animated, Pressable } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation, NavigationProp } from '@react-navigation/core';
@@ -17,34 +18,35 @@ type RootStackParamList = {
 };
 
 type TutorialStep = {
-  title: string;
-  description: string;
+  titleKey: 'describeTitle' | 'matchTitle' | 'completeTitle';
+  descriptionKey: 'describeDescription' | 'matchDescription' | 'completeDescription';
   image: ReturnType<typeof require>;
-  actionLabel: string;
+  actionLabelKey: 'next' | 'start';
 };
 
 const tutorialSteps: TutorialStep[] = [
   {
-    title: 'Décrivez votre besoin',
-    description: "Expliquez-nous ce qu'il faut réparer ou améliorer chez vous.",
+    titleKey: 'describeTitle',
+    descriptionKey: 'describeDescription',
     image: require('@assets/images/onboarding-hero-v2.png'),
-    actionLabel: 'Suivant',
+    actionLabelKey: 'next',
   },
   {
-    title: 'PRO24HOME choisit votre expert',
-    description: 'Nous vous attribuons automatiquement le professionnel le plus adapté à votre besoin et à votre localisation.',
+    titleKey: 'matchTitle',
+    descriptionKey: 'matchDescription',
     image: require('@assets/images/onboarding-match.png'),
-    actionLabel: 'Suivant',
+    actionLabelKey: 'next',
   },
   {
-    title: 'Votre intervention est prise en charge',
-    description: "Recevez la confirmation et avancez sereinement jusqu'à la fin de l'intervention.",
+    titleKey: 'completeTitle',
+    descriptionKey: 'completeDescription',
     image: require('@assets/images/onboarding-complete.png'),
-    actionLabel: 'Commencer',
+    actionLabelKey: 'start',
   },
 ];
 
 const Welcome: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const insets = useSafeAreaInsets();
   const [loading, setLoading] = useState(false);
@@ -52,6 +54,9 @@ const Welcome: React.FC = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(20)).current;
   const activeStep = tutorialSteps[currentStep]!;
+  const activeTitle = t(`auth.welcome.${activeStep.titleKey}`);
+  const activeDescription = t(`auth.welcome.${activeStep.descriptionKey}`);
+  const activeActionLabel = t(`auth.welcome.${activeStep.actionLabelKey}`);
 
   useEffect(() => {
     fadeAnim.setValue(0);
@@ -94,9 +99,9 @@ const Welcome: React.FC = () => {
           <SkipButton
             onPress={() => navigation.navigate('SignIn', { role: 'client' })}
             accessibilityRole="button"
-            accessibilityLabel="Passer"
+            accessibilityLabel={t('auth.welcome.skip')}
           >
-            <SkipLabel>Passer</SkipLabel>
+            <SkipLabel>{t('auth.welcome.skip')}</SkipLabel>
           </SkipButton>
         </TopBar>
 
@@ -105,46 +110,46 @@ const Welcome: React.FC = () => {
             testID="tutorial-step-content"
             style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}
           >
-            <Eyebrow>{`ÉTAPE ${currentStep + 1} SUR 3`}</Eyebrow>
+            <Eyebrow>{t('auth.welcome.step', { current: currentStep + 1, total: tutorialSteps.length })}</Eyebrow>
             <HeroFrame>
               <HeroImage
                 testID="tutorial-hero-image"
                 source={activeStep.image}
                 resizeMode="cover"
                 accessible
-                accessibilityLabel={`Illustration : ${activeStep.title}`}
+                accessibilityLabel={t('auth.welcome.illustration', { title: activeTitle })}
               />
             </HeroFrame>
 
             <BottomContent paddingBottom={Math.max(insets.bottom + verticalScale(8), verticalScale(18))}>
-              <Title>{activeStep.title}</Title>
-              <Description>{activeStep.description}</Description>
+              <Title>{activeTitle}</Title>
+              <Description>{activeDescription}</Description>
 
               <PrimaryAction
                 testID="tutorial-primary-action"
                 onPress={handlePrimaryAction}
                 activeOpacity={0.88}
                 accessibilityRole="button"
-                accessibilityLabel={activeStep.actionLabel}
+                accessibilityLabel={activeActionLabel}
               >
-                <ActionLabel>{activeStep.actionLabel}</ActionLabel>
+                <ActionLabel>{activeActionLabel}</ActionLabel>
               </PrimaryAction>
 
               <ProgressRow
                 testID="tutorial-progress"
                 accessible
                 accessibilityRole="progressbar"
-                accessibilityLabel={`Étape ${currentStep + 1} sur 3`}
+                accessibilityLabel={t('auth.welcome.step', { current: currentStep + 1, total: tutorialSteps.length })}
                 accessibilityValue={{
                   min: 1,
                   max: 3,
                   now: currentStep + 1,
-                  text: `Étape ${currentStep + 1} sur 3`,
+                  text: t('auth.welcome.step', { current: currentStep + 1, total: tutorialSteps.length }),
                 }}
               >
                 {tutorialSteps.map((step, index) => (
                   <ProgressDot
-                    key={step.title}
+                    key={step.titleKey}
                     testID={`tutorial-progress-dot-${index + 1}`}
                     active={index === currentStep}
                     accessible
@@ -156,10 +161,10 @@ const Welcome: React.FC = () => {
               <LoginButton
                 onPress={() => navigation.navigate('SignIn', { role: 'client' })}
                 accessibilityRole="button"
-                accessibilityLabel="Se connecter"
+                accessibilityLabel={t('auth.welcome.login')}
                 hitSlop={8}
               >
-                <LoginHint>Vous avez déjà un compte ? <LoginLink>Se connecter</LoginLink></LoginHint>
+                <LoginHint>{t('auth.welcome.loginPrompt')} <LoginLink>{t('auth.welcome.login')}</LoginLink></LoginHint>
               </LoginButton>
             </BottomContent>
           </AnimatedStepContent>
@@ -170,7 +175,7 @@ const Welcome: React.FC = () => {
           onRequestClose={() => setLoading(false)}
           animationType="rotate"
           color={colors.primary}
-          message="Chargement..."
+          message={t('common.status.loading')}
         />
       </Page>
     </ScreenContainer>
