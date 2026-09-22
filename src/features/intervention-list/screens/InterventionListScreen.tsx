@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, FlatList, Image, RefreshControl, StyleSheet, View } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
@@ -22,10 +23,10 @@ import {
     type InterventionFilter,
 } from '@entities/intervention/model/intervention-presentation';
 
-const FILTERS: Array<{ key: InterventionFilter; label: string }> = [
-    { key: 'all', label: 'Toutes' },
-    { key: 'active', label: 'En cours' },
-    { key: 'completed', label: 'Terminées' },
+const FILTERS: Array<{ key: InterventionFilter; labelKey: string }> = [
+    { key: 'all', labelKey: 'intervention.list.all' },
+    { key: 'active', labelKey: 'intervention.list.active' },
+    { key: 'completed', labelKey: 'intervention.list.completed' },
 ];
 
 const serviceIcon = (intervention: Intervention): IconName => {
@@ -36,21 +37,21 @@ const serviceIcon = (intervention: Intervention): IconName => {
     return 'fa-building';
 };
 
-const formatDate = (value?: string) => {
-    if (!value) return 'Date à confirmer';
+const formatDate = (value: string | undefined, locale: string, fallback: string) => {
+    if (!value) return fallback;
     const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return 'Date à confirmer';
-    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+    if (Number.isNaN(date.getTime())) return fallback;
+    return date.toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' });
 };
 
-const ProfessionalEmpty = ({ onRefresh, copy }: { onRefresh: () => unknown; copy: ReturnType<typeof getProfessionalEmptyStateCopy> }) => (
+const ProfessionalEmpty = ({ onRefresh, copy, t }: { onRefresh: () => unknown; copy: ReturnType<typeof getProfessionalEmptyStateCopy>; t: (key: any) => string }) => (
     <ProfessionalEmptyState>
-        <EmptyIllustration source={require('@assets/images/professional-empty-interventions.png')} resizeMode="contain" accessibilityLabel="Professionnel prêt à recevoir des demandes" />
+        <EmptyIllustration source={require('@assets/images/professional-empty-interventions.png')} resizeMode="contain" accessibilityLabel={t('intervention.list.ready')} />
         <EmptyTitle>{copy.heading}</EmptyTitle>
         <EmptyDescription>{copy.description}</EmptyDescription>
-        <RefreshButton onPress={onRefresh} accessibilityRole="button" accessibilityLabel="Actualiser les demandes">
+        <RefreshButton onPress={onRefresh} accessibilityRole="button" accessibilityLabel={t('intervention.list.refresh')}>
             <SvgIcon name="fa-sync-alt" size={18} color={colors.primary} />
-            <Text variant="bold" color={colors.primary}>Actualiser</Text>
+            <Text variant="bold" color={colors.primary}>{t('intervention.list.refreshShort')}</Text>
         </RefreshButton>
         <ReassuranceCard>
             <ReassuranceIcon><SvgIcon name="fa-shield-alt" size={22} color={colors.primary} /></ReassuranceIcon>
@@ -63,6 +64,7 @@ const ProfessionalEmpty = ({ onRefresh, copy }: { onRefresh: () => unknown; copy
 );
 
 const InterventionListScreen = () => {
+    const { t, i18n } = useTranslation();
     const navigation = useNavigation();
     const isProfessional = useSelector(selectIsProfessional);
     const copy = getInterventionListCopy(isProfessional);
@@ -74,16 +76,16 @@ const InterventionListScreen = () => {
     const renderItem = ({ item }: { item: Intervention }) => (
         <InterventionCard
             accessibilityRole="button"
-            accessibilityLabel={`Ouvrir ${item.title}`}
+            accessibilityLabel={t('intervention.list.openIntervention', { title: item.title })}
             onPress={() => (navigation as any).navigate('InterventionDetail', { intervention_id: item.id })}
         >
             <ServiceIcon>
                 <SvgIcon name={serviceIcon(item)} size={24} color={colors.primary} />
             </ServiceIcon>
             <CardContent>
-                <CardTitle numberOfLines={1}>{item.title || item.service?.name || 'Intervention'}</CardTitle>
-                <CardAddress numberOfLines={1}>{item.address?.address || (item as Intervention & { adress?: { address?: string } }).adress?.address || 'Adresse sélectionnée'}</CardAddress>
-                <CardDate>{formatDate(item.scheduled_date || item.requested_date)}</CardDate>
+                <CardTitle numberOfLines={1}>{item.title || item.service?.name || t('intervention.list.fallbackTitle')}</CardTitle>
+                <CardAddress numberOfLines={1}>{item.address?.address || (item as Intervention & { adress?: { address?: string } }).adress?.address || t('intervention.list.fallbackAddress')}</CardAddress>
+                <CardDate>{formatDate(item.scheduled_date || item.requested_date, i18n.language, t('intervention.list.dateTbd'))}</CardDate>
             </CardContent>
             <CardAside>
                 <StatusBadge background={getInterventionStatusColor(item.status)}>
@@ -100,14 +102,14 @@ const InterventionListScreen = () => {
                 <LogoMediumPro24Icon width={horizontalScale(112)} height={verticalScale(36)} />
                 {!isProfessional && <NewButton onPress={() => (navigation as any).navigate('NewIntervention')}>
                     <SvgIcon name="fa-user-plus" size={14} color={colors.white} />
-                    <Text variant="bold" color="white" fontSize={12}>Nouvelle intervention</Text>
+                    <Text variant="bold" color="white" fontSize={12}>{t('intervention.list.new')}</Text>
                 </NewButton>}
             </ListHeader>
             <Title>{copy.title}</Title>
             {!(isProfessional && !isLoading && interventions.length === 0) && <FilterRow>
                 {FILTERS.map(item => (
                     <FilterButton key={item.key} active={filter === item.key} onPress={() => setFilter(item.key)}>
-                        <FilterText active={filter === item.key}>{item.label}</FilterText>
+                        <FilterText active={filter === item.key}>{t(item.labelKey)}</FilterText>
                     </FilterButton>
                 ))}
             </FilterRow>}
@@ -119,7 +121,7 @@ const InterventionListScreen = () => {
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ paddingBottom: verticalScale(110), gap: verticalScale(12) }}
                     refreshControl={<RefreshControl refreshing={isFetching && !isLoading} onRefresh={refetch} tintColor={colors.primary} />}
-                    ListEmptyComponent={isProfessional ? <ProfessionalEmpty onRefresh={refetch} copy={emptyStateCopy} /> : <Empty><Text variant="regularSmall" color="gray600">{copy.empty}</Text><NewButton onPress={() => (navigation as any).navigate('NewIntervention')}><Text variant="bold" color="white" fontSize={12}>Créer une intervention</Text></NewButton></Empty>}
+                    ListEmptyComponent={isProfessional ? <ProfessionalEmpty onRefresh={refetch} copy={emptyStateCopy} t={t} /> : <Empty><Text variant="regularSmall" color="gray600">{copy.empty}</Text><NewButton onPress={() => (navigation as any).navigate('NewIntervention')}><Text variant="bold" color="white" fontSize={12}>{t('intervention.list.create')}</Text></NewButton></Empty>}
                 />
             )}
         </ScreenContainer>

@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal, Platform } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Toast } from '@core/notifications/toast';
@@ -38,6 +39,7 @@ const toCoordinate = (value: number | string | undefined, fallback: number) => {
 };
 
 const SavedAddressesScreen = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const {
     data: addresses = [],
@@ -73,12 +75,12 @@ const SavedAddressesScreen = () => {
         address:
           selectedAddress.address ||
           selectedAddress.location_name ||
-          'Adresse sélectionnée',
+          t('intervention.address.preview'),
         latitude: toCoordinate(selectedAddress.latitude, 36.8065),
         longitude: toCoordinate(selectedAddress.longitude, 10.1815),
       }
     : {
-        address: 'Adresse sélectionnée',
+        address: t('intervention.address.preview'),
         latitude: 36.8065,
         longitude: 10.1815,
       };
@@ -112,7 +114,7 @@ const SavedAddressesScreen = () => {
       const details = await fetchGooglePlaceDetails(placeId);
       setNewAddress(mapGooglePlaceToAddress(details));
     } catch (error: any) {
-      Toast.show(error?.message || 'Impossible de récupérer cette adresse.', {
+      Toast.show(error?.message || t('intervention.address.fetchFailed'), {
         type: 'danger',
         placement: 'bottom',
       });
@@ -128,7 +130,7 @@ const SavedAddressesScreen = () => {
       setNewAddress({ address, latitude, longitude });
     } catch {
       setNewAddress({
-        address: 'Adresse sélectionnée sur la carte',
+        address: t('intervention.address.preview'),
         latitude,
         longitude,
       });
@@ -144,7 +146,7 @@ const SavedAddressesScreen = () => {
         latitude: newAddress.latitude,
         longitude: newAddress.longitude,
         address: newAddress.address,
-        location_name: locationName.trim() || 'Mon adresse',
+        location_name: locationName.trim() || t('intervention.address.locationName'),
         details: locationDetails.trim(),
         phone: user?.phone_number || '',
         zone_id: 1,
@@ -155,7 +157,7 @@ const SavedAddressesScreen = () => {
       Toast.show(
         error?.data?.message ||
           error?.message ||
-          'Impossible d’enregistrer cette adresse.',
+          t('intervention.address.saveFailed'),
         { type: 'danger', placement: 'bottom' },
       );
     }
@@ -169,19 +171,19 @@ const SavedAddressesScreen = () => {
       paddingVertical={verticalScale(12)}
       contentContainerStyle={{ paddingBottom: verticalScale(110) }}
     >
-      <InterventionHeader title="Mes adresses" showHelp={false} />
+      <InterventionHeader title={t('intervention.address.savedTitle')} showHelp={false} />
       <Text
         variant="regular"
         color="gray600"
         style={{ marginTop: verticalScale(10) }}
       >
-        Gérez les adresses utilisées pour localiser vos interventions.
+        {t('intervention.address.savedDescription')}
       </Text>
 
       {isLoading || isFetching ? (
         <LoadingBox>
           <Text variant="regular" color="gray600">
-            Chargement de vos adresses…
+            {t('intervention.address.loading')}
           </Text>
         </LoadingBox>
       ) : null}
@@ -189,7 +191,7 @@ const SavedAddressesScreen = () => {
       {selectedAddress ? (
         <MapCard
           accessibilityRole="button"
-          accessibilityLabel="Ouvrir la carte"
+          accessibilityLabel={t('intervention.address.openMap')}
           onPress={() => setMapOpen(true)}
           activeOpacity={0.9}
         >
@@ -218,13 +220,13 @@ const SavedAddressesScreen = () => {
               color={colors.primary}
             />
             <Text variant="bold" color="black" fontSize={11}>
-              Ouvrir la carte
+              {t('intervention.address.openMap')}
             </Text>
           </OpenMap>
         </MapCard>
       ) : null}
 
-      <SectionTitle>ADRESSES ENREGISTRÉES</SectionTitle>
+      <SectionTitle>{t('intervention.address.eyebrow')}</SectionTitle>
       {!isLoading && !addresses.length ? (
         <EmptyState>
           <SvgIcon name="fa-map-marker-alt" size={22} color={colors.primary} />
@@ -233,7 +235,7 @@ const SavedAddressesScreen = () => {
             color="gray600"
             style={{ marginTop: verticalScale(8) }}
           >
-            Vous n’avez pas encore d’adresse enregistrée.
+            {t('intervention.address.empty')}
           </Text>
         </EmptyState>
       ) : null}
@@ -242,6 +244,7 @@ const SavedAddressesScreen = () => {
         <AddressItem
           key={address.id}
           address={address}
+          t={t}
           selected={selectedAddress?.id === address.id}
           onSelect={() => setSelectedId(address.id)}
           onEdit={() => navigation.navigate('AddAddress')}
@@ -252,7 +255,7 @@ const SavedAddressesScreen = () => {
       <AddButton onPress={() => setAddModalOpen(true)} activeOpacity={0.85}>
         <SvgIcon name="fa-plus" size={15} color={colors.white} />
         <Text variant="bold" color="white" fontSize={14}>
-          Ajouter une adresse
+          {t('intervention.address.addTitle')}
         </Text>
       </AddButton>
 
@@ -320,14 +323,14 @@ const SavedAddressesScreen = () => {
               <SvgIcon name="fa-trash" size={22} color={colors.danger} />
             </ConfirmationIcon>
             <ConfirmationTitle variant="bold" color="black" fontSize={18}>
-              Supprimer cette adresse ?
+              {t('intervention.address.deleteTitle')}
             </ConfirmationTitle>
             <ConfirmationMessage
               variant="regular"
               color="gray600"
               fontSize={13}
             >
-              Cette adresse sera définitivement supprimée de votre compte.
+              {t('intervention.address.deleteDescription')}
             </ConfirmationMessage>
             <ConfirmationActions>
               <CancelButton
@@ -335,12 +338,12 @@ const SavedAddressesScreen = () => {
                 activeOpacity={0.8}
               >
                 <Text variant="bold" color="gray700" fontSize={13}>
-                  Annuler
+                  {t('common.actions.cancel')}
                 </Text>
               </CancelButton>
               <DeleteButton onPress={confirmDelete} activeOpacity={0.8}>
                 <Text variant="bold" color="white" fontSize={13}>
-                  Supprimer
+                  {t('intervention.address.delete')}
                 </Text>
               </DeleteButton>
             </ConfirmationActions>
@@ -353,12 +356,14 @@ const SavedAddressesScreen = () => {
 
 const AddressItem = ({
   address,
+  t,
   selected,
   onSelect,
   onEdit,
   onDelete,
 }: {
   address: Address;
+  t: (key: string) => string;
   selected: boolean;
   onSelect: () => void;
   onEdit: () => void;
@@ -371,18 +376,18 @@ const AddressItem = ({
     <AddressContent>
       <AddressTitleRow>
         <Text variant="bold" color="black" fontSize={14}>
-          {address.location_name || address.type || 'Adresse'}
+          {address.location_name || address.type || t('intervention.address.generic')}
         </Text>
         {address.is_default ? (
           <DefaultBadge>
             <Text variant="bold" color="primary" fontSize={10}>
-              PAR DÉFAUT
+              {t('intervention.address.default')}
             </Text>
           </DefaultBadge>
         ) : null}
       </AddressTitleRow>
       <Text variant="regularSmall" color="gray700" numberOfLines={1}>
-        {address.address || 'Adresse non renseignée'}
+        {address.address || t('intervention.address.unspecified')}
       </Text>
       {address.details ? (
         <Text variant="regularSmall" color="gray600" numberOfLines={1}>
@@ -391,10 +396,10 @@ const AddressItem = ({
       ) : null}
     </AddressContent>
     <ActionColumn>
-      <ActionButton onPress={onEdit} accessibilityLabel="Modifier l’adresse">
+      <ActionButton onPress={onEdit} accessibilityLabel={t('intervention.address.edit')}>
         <SvgIcon name="fa-pen" size={14} color={colors.gray600} />
       </ActionButton>
-      <ActionButton onPress={onDelete} accessibilityLabel="Supprimer l’adresse">
+      <ActionButton onPress={onDelete} accessibilityLabel={t('intervention.address.delete')}>
         <SvgIcon name="fa-trash" size={14} color={colors.gray600} />
       </ActionButton>
     </ActionColumn>

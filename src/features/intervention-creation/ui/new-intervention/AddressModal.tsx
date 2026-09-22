@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Keyboard,
@@ -41,7 +42,9 @@ const AddressModal: React.FC<AddressModalProps> = ({
   onSelectPlace,
   onOpenMapFullscreen,
   onSave,
-}) => (
+}) => {
+  const { t } = useTranslation();
+  return (
   <Modal
     visible={visible}
     transparent
@@ -57,10 +60,10 @@ const AddressModal: React.FC<AddressModalProps> = ({
             <NewAddressPanel>
               <ModalHandle />
               <ModalHeader>
-                <PanelTitle>Ajouter une adresse</PanelTitle>
+                <PanelTitle>{t('intervention.address.addTitle')}</PanelTitle>
                 <ModalCloseButton
                   accessibilityRole="button"
-                  accessibilityLabel="Fermer"
+                  accessibilityLabel={t('intervention.address.close')}
                   onPress={onClose}
                 >
                   <SvgIcon name="fa-times" size={14} color={colors.gray600} />
@@ -72,7 +75,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
                 showsVerticalScrollIndicator={false}
               >
                 <GooglePlacesAutocomplete
-                  placeholder="Rechercher une adresse"
+                  placeholder={t('intervention.address.search')}
                   fetchDetails={false}
                   isNewPlacesAPI
                   enablePoweredByContainer={false}
@@ -90,20 +93,20 @@ const AddressModal: React.FC<AddressModalProps> = ({
                     data?.place_id && onSelectPlace(data.place_id)
                   }
                   onNotFound={() =>
-                    Toast.show('Adresse introuvable.', {
+                    Toast.show(t('intervention.address.notFound'), {
                       type: 'warning',
                       placement: 'bottom',
                     })
                   }
                   onFail={() =>
-                    Toast.show('La recherche d’adresse est indisponible.', {
+                    Toast.show(t('intervention.address.searchUnavailable'), {
                       type: 'danger',
                       placement: 'bottom',
                     })
                   }
                   styles={googlePlacesStyles}
                   textInputProps={{
-                    accessibilityLabel: 'Rechercher une adresse avec Google',
+                    accessibilityLabel: t('intervention.address.searchGoogle'),
                   }}
                 />
 
@@ -132,7 +135,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
                     zoomEnabled={false}
                     pitchEnabled={false}
                     rotateEnabled={false}
-                    accessibilityLabel="Aperçu de la nouvelle adresse"
+                    accessibilityLabel={t('intervention.address.newAddressPreview')}
                   >
                     {selectedLocation ? (
                       <AddressMarker
@@ -143,7 +146,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
                   </AddressMap>
                   <PreviewOpenOverlay
                     accessibilityRole="button"
-                    accessibilityLabel="Ouvrir la carte en plein écran"
+                    accessibilityLabel={t('intervention.address.openMapFullscreen')}
                     onPress={onOpenMapFullscreen}
                   >
                     <SvgIcon
@@ -152,7 +155,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
                       color={colors.primary}
                     />
                     <Text variant="bold" color="black" fontSize={11}>
-                      Ouvrir la carte
+                      {t('intervention.address.openMap')}
                     </Text>
                   </PreviewOpenOverlay>
                 </AddressMapPreview>
@@ -161,19 +164,19 @@ const AddressModal: React.FC<AddressModalProps> = ({
                   <AddressLoading>
                     <ActivityIndicator color={colors.primary} />
                     <Text variant="regularSmall" color="gray600">
-                      Récupération de l’adresse...
+                      {t('intervention.address.fetching')}
                     </Text>
                   </AddressLoading>
                 ) : null}
 
                 <CompactInput
-                  placeholder="Nom (ex. Maison)"
+                  placeholder={t('intervention.address.namePlaceholder')}
                   placeholderTextColor={colors.gray500}
                   value={locationName}
                   onChangeText={onChangeLocationName}
                 />
                 <CompactInput
-                  placeholder="Complément (étage, code, bâtiment)"
+                  placeholder={t('intervention.address.detailsPlaceholder')}
                   placeholderTextColor={colors.gray500}
                   value={locationDetails}
                   onChangeText={onChangeLocationDetails}
@@ -183,7 +186,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
               <PanelActions>
                 <CancelButton onPress={onClose}>
                   <Text variant="bold" color="black" fontSize={13}>
-                    Annuler
+                    {t('common.actions.cancel')}
                   </Text>
                 </CancelButton>
                 <SaveAddressButton
@@ -197,7 +200,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
                     <ActivityIndicator color={colors.white} />
                   ) : (
                     <Text variant="bold" color="white" fontSize={13}>
-                      Enregistrer
+                      {t('common.actions.save')}
                     </Text>
                   )}
                 </SaveAddressButton>
@@ -208,7 +211,8 @@ const AddressModal: React.FC<AddressModalProps> = ({
       </ModalBackdrop>
     </TouchableWithoutFeedback>
   </Modal>
-);
+  );
+};
 
 export default AddressModal;
 

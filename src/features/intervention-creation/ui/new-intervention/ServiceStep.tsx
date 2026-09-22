@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
@@ -21,6 +22,7 @@ const ServiceStep: React.FC<ServiceStepProps> = ({
     onSelectService,
     onNext,
 }) => {
+    const { t } = useTranslation();
     const [isServiceModalVisible, setIsServiceModalVisible] = useState(false);
 
     const handleSelectService = (serviceId: number) => {
@@ -31,26 +33,26 @@ const ServiceStep: React.FC<ServiceStepProps> = ({
     return (
         <>
         <ServiceSummaryCard
-            title={service?.name || 'Type de service'}
-            description={service?.description || 'Choisissez le service adapté à votre besoin'}
+            title={service?.name || t('intervention.creation.serviceType')}
+            description={service?.description || t('intervention.creation.serviceTypeDescription')}
             image={require('@assets/images/electricien.png')}
             onEditPress={() => setIsServiceModalVisible(true)}
         />
 
-        <SectionTitle>Type de service</SectionTitle>
+        <SectionTitle>{t('intervention.creation.serviceType')}</SectionTitle>
 
         {servicesLoading ? (
-            <Message>Chargement des pannes...</Message>
+            <Message>{t('intervention.creation.loadingBreakdowns')}</Message>
         ) : problemTypes.length === 0 ? (
-            <Message>Les pannes de ce service ne sont pas encore disponibles.</Message>
+            <Message>{t('intervention.creation.noBreakdowns')}</Message>
         ) : (
             <>
-                <Hint>Quelle panne rencontrez-vous ?</Hint>
+                <Hint>{t('intervention.creation.chooseBreakdown')}</Hint>
                 {problemTypes.map(item => (
                     <SelectableCard
                         key={item.id}
                         title={item.title}
-                        description={item.description || 'Décrivez cette panne à notre expert.'}
+                        description={item.description || t('intervention.creation.describeBreakdown')}
                         icon="fa-building"
                         selected={selectedProblem === item.id}
                         onPress={() => onSelectProblem(item.id)}
@@ -61,12 +63,12 @@ const ServiceStep: React.FC<ServiceStepProps> = ({
 
         <InfoNotice
             icon="fa-shield-alt"
-            title="Professionnels qualifiés et vérifiés"
-            description="Nos électriciens sont notés et évalués par nos clients."
+            title={t('intervention.creation.verifiedPros')}
+            description={t('intervention.creation.ratedElectricians')}
         />
 
         <BottomActions
-            primaryTitle="Continuer"
+            primaryTitle={t('common.actions.continue')}
             onPrimaryPress={onNext}
             primaryDisabled={servicesLoading || selectedProblem === null}
         />

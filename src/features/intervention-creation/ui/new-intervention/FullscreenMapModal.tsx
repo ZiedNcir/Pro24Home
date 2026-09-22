@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal, Platform } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -44,6 +45,7 @@ const MapModalContent: React.FC<FullscreenMapModalProps> = ({
   onSelectCoordinate,
   onSearchAddress,
 }) => {
+  const { t } = useTranslation();
   const [mapType, setMapType] = useState<
     'standard' | 'satellite' | 'hybrid' | 'terrain'
   >('standard');
@@ -96,7 +98,7 @@ const MapModalContent: React.FC<FullscreenMapModalProps> = ({
             const { latitude, longitude } = event.nativeEvent.coordinate;
             onSelectCoordinate(latitude, longitude);
           }}
-          accessibilityLabel="Carte plein écran pour choisir une adresse"
+          accessibilityLabel={t('intervention.creation.mapFullscreen')}
         >
           {selectedLocation ? (
             <Marker coordinate={selectedLocation} pinColor={colors.primary} />
@@ -105,7 +107,7 @@ const MapModalContent: React.FC<FullscreenMapModalProps> = ({
 
         <FullscreenMapHeader topInset={insets.top}>
           <InterventionHeader
-            title="Sélectionner une adresse"
+            title={t('intervention.creation.selectAddress')}
             showHelp={false}
             onClose={onClose}
           />
@@ -118,7 +120,7 @@ const MapModalContent: React.FC<FullscreenMapModalProps> = ({
               active={mapType === type.value}
               onPress={() => setMapType(type.value)}
               accessibilityRole="button"
-              accessibilityLabel={`Afficher la carte en mode ${type.label}`}
+              accessibilityLabel={t('intervention.creation.mapType', { type: t(type.labelKey) })}
             >
               <SvgIcon
                 name={type.icon}
@@ -132,14 +134,14 @@ const MapModalContent: React.FC<FullscreenMapModalProps> = ({
         <MapControls bottomInset={insets.bottom}>
           <MapControlButton
             accessibilityRole="button"
-            accessibilityLabel="Zoomer"
+            accessibilityLabel={t('intervention.creation.zoomIn')}
             onPress={() => zoomMap(0.5)}
           >
             <SvgIcon name="fa-plus" size={17} color={colors.black} />
           </MapControlButton>
           <MapControlButton
             accessibilityRole="button"
-            accessibilityLabel="Dézoomer"
+            accessibilityLabel={t('intervention.creation.zoomOut')}
             onPress={() => zoomMap(2)}
           >
             <SvgIcon name="fa-minus" size={17} color={colors.black} />
@@ -148,7 +150,7 @@ const MapModalContent: React.FC<FullscreenMapModalProps> = ({
 
         <FullscreenMapFooter>
           <FooterHandle />
-          <FooterLabel>ADRESSE SÉLECTIONNÉE</FooterLabel>
+          <FooterLabel>{t('intervention.creation.selectedAddress')}</FooterLabel>
           <SelectedAddressRow>
             <SelectedAddressIcon>
               <SvgIcon
@@ -159,13 +161,13 @@ const MapModalContent: React.FC<FullscreenMapModalProps> = ({
             </SelectedAddressIcon>
             <SelectedAddressText numberOfLines={2}>
               {selectedLocation?.address ||
-                'Touchez la carte pour choisir une adresse'}
+                t('intervention.creation.tapToChoose')}
             </SelectedAddressText>
           </SelectedAddressRow>
           {onSearchAddress ? (
             <SearchAddressButton
               accessibilityRole="button"
-              accessibilityLabel="Rechercher une adresse"
+              accessibilityLabel={t('intervention.address.search')}
               onPress={onSearchAddress}
             >
               <SvgIcon
@@ -174,7 +176,7 @@ const MapModalContent: React.FC<FullscreenMapModalProps> = ({
                 color={colors.primary}
               />
               <Text variant="bold" color="black" fontSize={13}>
-                Rechercher une adresse
+                {t('intervention.address.search')}
               </Text>
             </SearchAddressButton>
           ) : null}
@@ -184,7 +186,7 @@ const MapModalContent: React.FC<FullscreenMapModalProps> = ({
           >
             <SvgIcon name="fa-check" size={16} color={colors.white} />
             <Text variant="bold" color="white" fontSize={14}>
-              Valider l’adresse
+              {t('intervention.creation.validateAddress')}
             </Text>
           </MapConfirmButton>
         </FullscreenMapFooter>
@@ -209,22 +211,22 @@ const FullscreenMap = styled(MapView).attrs({
 const MAP_TYPES = [
   {
     value: 'standard' as const,
-    label: 'Plan',
+    labelKey: 'intervention.creation.mapTypeStandard',
     icon: 'fa-map-marked-alt' as IconName,
   },
   {
     value: 'satellite' as const,
-    label: 'Satellite',
+    labelKey: 'intervention.creation.mapTypeSatellite',
     icon: 'fa-layer-group' as IconName,
   },
   {
     value: 'hybrid' as const,
-    label: 'Hybride',
+    labelKey: 'intervention.creation.mapTypeHybrid',
     icon: 'fa-building' as IconName,
   },
   {
     value: 'terrain' as const,
-    label: 'Relief',
+    labelKey: 'intervention.creation.mapTypeTerrain',
     icon: 'fa-map-marker-alt' as IconName,
   },
 ];

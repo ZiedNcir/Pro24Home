@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal, Pressable, TextInput } from 'react-native';
 import styled from 'styled-components/native';
 
@@ -16,6 +17,7 @@ interface ClientRatingModalProps {
 }
 
 const ClientRatingModal = ({ visible, professionalName, isSubmitting = false, onClose, onSubmit }: ClientRatingModalProps) => {
+    const { t } = useTranslation();
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
 
@@ -30,33 +32,33 @@ const ClientRatingModal = ({ visible, professionalName, isSubmitting = false, on
         <Backdrop>
             <Sheet>
                 <Handle />
-                <SheetTitle>Comment s’est passée votre intervention ?</SheetTitle>
-                <SheetDescription>Votre avis nous aide à améliorer nos services et à valoriser nos professionnels.</SheetDescription>
+                <SheetTitle>{t('intervention.detail.ratingQuestion')}</SheetTitle>
+                <SheetDescription>{t('intervention.detail.ratingDescription')}</SheetDescription>
                 <ProfessionalRow>
                     <ProfessionalAvatar><SvgIcon name="fa-user" size={20} color={colors.primary} /></ProfessionalAvatar>
-                    <Text variant="bold" color="black" fontSize={16}>{professionalName || 'Votre professionnel'}</Text>
+                    <Text variant="bold" color="black" fontSize={16}>{professionalName || t('intervention.detail.rateProfessional')}</Text>
                 </ProfessionalRow>
-                <Stars accessibilityRole="radiogroup" accessibilityLabel="Notez votre intervention de 1 à 5 étoiles">
-                    {[1, 2, 3, 4, 5].map(value => <StarButton key={value} accessibilityRole="radio" accessibilityState={{ selected: rating === value }} accessibilityLabel={`${value} étoile${value > 1 ? 's' : ''}`} onPress={() => setRating(value)}>
+                <Stars accessibilityRole="radiogroup" accessibilityLabel={t('intervention.detail.ratingStars')}>
+                    {[1, 2, 3, 4, 5].map(value => <StarButton key={value} accessibilityRole="radio" accessibilityState={{ selected: rating === value }} accessibilityLabel={t(value === 1 ? 'intervention.detail.starSingular' : 'intervention.detail.starPlural', { count: value })} onPress={() => setRating(value)}>
                         <SvgIcon name="fa-star" size={32} color={value <= rating ? colors.primary : colors.gray300} />
                     </StarButton>)}
                 </Stars>
-                <RatingHint>{rating ? `${rating}/5` : 'Touchez une étoile pour noter'}</RatingHint>
+                <RatingHint>{rating ? `${rating}/5` : t('intervention.detail.ratingPrompt')}</RatingHint>
                 <CommentInput
                     value={comment}
                     onChangeText={setComment}
-                    placeholder="Un petit mot ? (optionnel)"
+                    placeholder={t('intervention.detail.commentPlaceholder')}
                     placeholderTextColor={colors.gray500}
                     multiline
                     maxLength={500}
                     textAlignVertical="top"
-                    accessibilityLabel="Commentaire facultatif"
+                    accessibilityLabel={t('intervention.detail.optionalComment')}
                 />
-                <SubmitButton disabled={!rating || isSubmitting} onPress={() => onSubmit(rating, comment.trim())} accessibilityRole="button" accessibilityLabel="Envoyer mon avis">
-                    <Text variant="bold" color={colors.white}>{isSubmitting ? 'Envoi en cours...' : 'Envoyer mon avis'}</Text>
+                <SubmitButton disabled={!rating || isSubmitting} onPress={() => onSubmit(rating, comment.trim())} accessibilityRole="button" accessibilityLabel={t('intervention.detail.sendRating')}>
+                    <Text variant="bold" color={colors.white}>{isSubmitting ? t('intervention.detail.sending') : t('intervention.detail.sendRating')}</Text>
                 </SubmitButton>
-                <LaterButton disabled={isSubmitting} onPress={onClose} accessibilityRole="button" accessibilityLabel="Noter plus tard">
-                    <Text variant="bold" color="gray600">Plus tard</Text>
+                <LaterButton disabled={isSubmitting} onPress={onClose} accessibilityRole="button" accessibilityLabel={t('intervention.detail.rateLater')}>
+                    <Text variant="bold" color="gray600">{t('intervention.detail.later')}</Text>
                 </LaterButton>
             </Sheet>
         </Backdrop>

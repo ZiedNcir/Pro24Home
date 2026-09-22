@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Image } from 'react-native';
 import styled from 'styled-components/native';
 
@@ -17,24 +18,26 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
   scheduledDate,
   onNext,
   onPrevious,
-}) => (
+}) => {
+  const { t, i18n } = useTranslation();
+  return (
   <>
-    <SectionTitle>Récapitulatif de votre demande</SectionTitle>
+    <SectionTitle>{t('intervention.creation.summary')}</SectionTitle>
     <SummaryBlock>
-      <SummaryLine title="Service" value={serviceName} />
+      <SummaryLine title={t('intervention.creation.service')} value={serviceName} />
       <SummaryLine
-        title="Détails"
-        value={description.trim() || 'Aucune description renseignée'}
+        title={t('intervention.creation.details')}
+        value={description.trim() || t('intervention.creation.noDescription')}
       />
-      <SummaryLine title="Adresse" value={address} />
+      <SummaryLine title={t('intervention.creation.address')} value={address} />
       <SummaryLine
-        title="Date souhaitée"
+        title={t('intervention.creation.desiredDate')}
         value={
           timing === 'schedule' && scheduledDate
-            ? scheduledDate.toLocaleString('fr-FR')
+            ? scheduledDate.toLocaleString(i18n.language)
             : timing === 'schedule'
-            ? 'Date choisie'
-            : 'Dès que possible'
+            ? t('intervention.creation.dateChosen')
+            : t('intervention.creation.asap')
         }
       />
     </SummaryBlock>
@@ -43,7 +46,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
       <PhotosSummary>
         <PhotosSummaryHeader>
           <Text variant="bold" color="black" fontSize={12}>
-            Photos ajoutées
+            {t('intervention.creation.photosAdded')}
           </Text>
           <Text variant="regularSmall" color="gray600">
             {photos.length}/3
@@ -63,21 +66,22 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
 
     <EstimationBox>
       <Text variant="bold" color="black" fontSize={14}>
-        Estimation du prix
+        {t('intervention.creation.priceEstimate')}
       </Text>
-      <EstimationPrice>Prix à estimer</EstimationPrice>
+      <EstimationPrice>{t('intervention.creation.priceToEstimate')}</EstimationPrice>
       <EstimationDescription>
-        Le montant sera calculé à l’étape suivante selon votre demande.
+        {t('intervention.creation.priceNextStep')}
       </EstimationDescription>
     </EstimationBox>
 
     <BottomActions
-      primaryTitle="Voir le prix moyen"
+      primaryTitle={t('intervention.creation.seeAveragePrice')}
       onPrimaryPress={onNext}
       onSecondaryPress={onPrevious}
     />
   </>
-);
+  );
+};
 
 export default SummaryStep;
 

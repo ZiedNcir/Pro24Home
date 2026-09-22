@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 import { Platform, Switch } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
@@ -19,10 +20,11 @@ import type { SelectedAddressLocation } from '@features/intervention-creation/mo
 import { colors } from '@theme';
 
 export const AddAddressScreen = () => {
+    const { t } = useTranslation();
     const [frequent, setFrequent] = useState(true);
     const [isMapFullscreen, setIsMapFullscreen] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState<SelectedAddressLocation>({
-        address: 'Adresse sélectionnée sur la carte',
+        address: t('intervention.address.preview'),
         latitude: 36.8065,
         longitude: 10.1815,
     });
@@ -42,24 +44,24 @@ export const AddAddressScreen = () => {
             paddingVertical={verticalScale(12)}
             contentContainerStyle={{ paddingBottom: verticalScale(24) }}
         >
-            <InterventionHeader title="Ajouter une adresse" showHelp={false} />
+            <InterventionHeader title={t('intervention.address.addTitle')} showHelp={false} />
 
             <Form>
-                <Label>Nom de l’emplacement (optionnel)</Label>
-                <Input placeholder="Maison secondaire" placeholderTextColor="#9A9A9A" />
+                <Label>{t('intervention.address.locationName')}</Label>
+                <Input placeholder={t('intervention.address.locationPlaceholder')} placeholderTextColor="#9A9A9A" />
 
                 <Label>Adresse</Label>
                 <InputRow>
                     <InputInner
-                        placeholder="10 Allée des Acacias, 92130 Issy-les-Moulineaux"
+                        placeholder={t('intervention.address.addressPlaceholder')}
                         placeholderTextColor="#9A9A9A"
                     />
                     <SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} />
                 </InputRow>
 
-                <Label>Complément d’adresse (optionnel)</Label>
+                <Label>{t('intervention.address.complement')}</Label>
                 <Input
-                    placeholder="Maison, Rez-de-chaussée, Code portail 2587"
+                    placeholder={t('intervention.address.complementPlaceholder')}
                     placeholderTextColor="#9A9A9A"
                 />
 
@@ -67,16 +69,16 @@ export const AddAddressScreen = () => {
                     <AddressMap initialRegion={mapRegion} region={mapRegion} scrollEnabled={false} zoomEnabled={false}>
                         <Marker coordinate={selectedLocation} pinColor={colors.primary} />
                     </AddressMap>
-                    <MapHint accessibilityRole="button" accessibilityLabel="Ouvrir la carte en plein écran" onPress={() => setIsMapFullscreen(true)}><SvgIcon name="fa-map-marked-alt" size={14} color={colors.primary} /><Text variant="bold" color="black" fontSize={11}>Ouvrir la carte</Text></MapHint>
+                    <MapHint accessibilityRole="button" accessibilityLabel={t('intervention.address.openMapFullscreen')} onPress={() => setIsMapFullscreen(true)}><SvgIcon name="fa-map-marked-alt" size={14} color={colors.primary} /><Text variant="bold" color="black" fontSize={11}>{t('intervention.address.openMap')}</Text></MapHint>
                 </MapPreview>
 
                 <SwitchRow>
                     <View>
                         <Text variant="bold" color="black" fontSize={13}>
-                            Enregistrer comme adresse fréquente
+                            {t('intervention.address.saveFrequent')}
                         </Text>
                         <SwitchDescription>
-                            Facilitez vos prochaines demandes.
+                            {t('intervention.address.frequentHint')}
                         </SwitchDescription>
                     </View>
 
@@ -93,7 +95,7 @@ export const AddAddressScreen = () => {
 
             <SaveButton onPress={() => { /* Handle save action */ }}>
                 <Text variant="bold" color="white" fontSize={14}>
-                    Enregistrer
+                    {t('common.actions.save')}
                 </Text>
             </SaveButton>
             <FullscreenMapModal
@@ -102,7 +104,7 @@ export const AddAddressScreen = () => {
                 selectedLocation={selectedLocation}
                 isLookingUpAddress={false}
                 onClose={() => setIsMapFullscreen(false)}
-                onSelectCoordinate={(latitude, longitude) => setSelectedLocation({ address: 'Adresse sélectionnée sur la carte', latitude, longitude })}
+                onSelectCoordinate={(latitude, longitude) => setSelectedLocation({ address: t('intervention.address.preview'), latitude, longitude })}
             />
         </ScreenContainer>
     );

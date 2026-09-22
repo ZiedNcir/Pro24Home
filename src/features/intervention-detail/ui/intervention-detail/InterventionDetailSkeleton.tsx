@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
@@ -6,9 +7,11 @@ import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import { colors } from '@theme';
 import { moderateScale, verticalScale } from '@utils/normalizedCss';
 
-const InterventionDetailSkeleton = () => (
+const InterventionDetailSkeleton = () => {
+    const { t } = useTranslation();
+    return (
     <ScreenContainer mode="light" scrollable paddingHorizontal={18} paddingVertical={12}>
-        <InterventionHeader title="Détail de l’intervention" showHelp={false} />
+        <InterventionHeader title={t('intervention.detail.detailTitle')} showHelp={false} />
         <StatusSkeleton />
         <TitleSkeleton />
         <SectionSkeleton>
@@ -23,7 +26,8 @@ const InterventionDetailSkeleton = () => (
         </SectionSkeleton>
         <MapSkeleton />
     </ScreenContainer>
-);
+    );
+};
 
 export default InterventionDetailSkeleton;
 

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Image, Modal, Pressable } from 'react-native';
 import styled from 'styled-components/native';
 
@@ -21,6 +22,7 @@ interface PhotoPickerRowProps {
 }
 
 const PhotoPickerRow: React.FC<PhotoPickerRowProps> = ({ photos, onAddPhoto, onRemovePhoto }) => {
+    const { t } = useTranslation();
     const [previewPhoto, setPreviewPhoto] = React.useState<InterventionPhoto | null>(null);
     const [isSourceModalVisible, setIsSourceModalVisible] = React.useState(false);
 
@@ -36,18 +38,18 @@ const PhotoPickerRow: React.FC<PhotoPickerRowProps> = ({ photos, onAddPhoto, onR
                     const photo = photos[index];
                     return photo ? (
                         <PhotoBox key={`${photo.uri}-${index}`}>
-                            <PreviewButton accessibilityRole="button" accessibilityLabel={`Ouvrir la photo ${index + 1}`} onPress={() => setPreviewPhoto(photo)}>
+                            <PreviewButton accessibilityRole="button" accessibilityLabel={t('intervention.detail.openPhoto', { count: index + 1 })} onPress={() => setPreviewPhoto(photo)}>
                                 <Photo source={{ uri: photo.uri }} resizeMode="cover" />
                             </PreviewButton>
-                            <RemoveButton accessibilityRole="button" accessibilityLabel={`Supprimer la photo ${index + 1}`} onPress={() => onRemovePhoto(index)}>
+                            <RemoveButton accessibilityRole="button" accessibilityLabel={t('intervention.detail.removePhoto', { count: index + 1 })} onPress={() => onRemovePhoto(index)}>
                                 <SvgIcon name="fa-times" size={11} color={Colors.white} />
                             </RemoveButton>
                         </PhotoBox>
                     ) : (
-                        <AddButton key={`empty-${index}`} accessibilityRole="button" accessibilityLabel={`Ajouter la photo ${index + 1}`} onPress={() => setIsSourceModalVisible(true)}>
+                        <AddButton key={`empty-${index}`} accessibilityRole="button" accessibilityLabel={t('intervention.detail.addPhotoNumber', { count: index + 1 })} onPress={() => setIsSourceModalVisible(true)}>
                             <SvgIcon name="fa-camera" size={18} color={Colors.black} />
                         <AddLabel variant="bold" color="black" fontSize={10}>
-                            Ajouter
+                            {t('intervention.creation.photoAdd')}
                         </AddLabel>
                         </AddButton>
                     );
@@ -56,7 +58,7 @@ const PhotoPickerRow: React.FC<PhotoPickerRowProps> = ({ photos, onAddPhoto, onR
 
             <Modal visible={previewPhoto !== null} transparent animationType="fade" onRequestClose={() => setPreviewPhoto(null)}>
                 <PreviewBackdrop>
-                    <PreviewCloseButton accessibilityRole="button" accessibilityLabel="Fermer la prévisualisation" onPress={() => setPreviewPhoto(null)}>
+                    <PreviewCloseButton accessibilityRole="button" accessibilityLabel={t('intervention.creation.closePhotoPreview')} onPress={() => setPreviewPhoto(null)}>
                         <SvgIcon name="fa-times" size={18} color={Colors.white} />
                     </PreviewCloseButton>
                     {previewPhoto ? <PreviewImage source={{ uri: previewPhoto.uri }} resizeMode="contain" /> : null}
@@ -68,34 +70,34 @@ const PhotoPickerRow: React.FC<PhotoPickerRowProps> = ({ photos, onAddPhoto, onR
                     <SourceModalSheet>
                         <SourceModalHandle />
                         <SourceModalHeader>
-                            <SourceModalTitle>Ajouter une photo</SourceModalTitle>
-                            <SourceCloseButton accessibilityRole="button" accessibilityLabel="Fermer le choix de photo" onPress={() => setIsSourceModalVisible(false)}>
+                            <SourceModalTitle>{t('intervention.creation.photoAdd')}</SourceModalTitle>
+                            <SourceCloseButton accessibilityRole="button" accessibilityLabel={t('intervention.creation.closePhotoPicker')} onPress={() => setIsSourceModalVisible(false)}>
                                 <SvgIcon name="fa-times" size={14} color={colors.gray600} />
                             </SourceCloseButton>
                         </SourceModalHeader>
-                        <SourceModalDescription>Sélectionnez une source pour illustrer votre panne.</SourceModalDescription>
-                        <SourceOption accessibilityRole="button" accessibilityLabel="Prendre une photo avec la caméra" onPress={() => chooseSource('camera')}>
+                        <SourceModalDescription>{t('intervention.creation.photoSourceHint')}</SourceModalDescription>
+                        <SourceOption accessibilityRole="button" accessibilityLabel={t('intervention.creation.cameraAccessibility')} onPress={() => chooseSource('camera')}>
                             <SourceIconContainer>
                                 <SvgIcon name="fa-camera" size={20} color={colors.primary} />
                             </SourceIconContainer>
                             <SourceOptionText>
-                                <SourceOptionTitle>Prendre une photo</SourceOptionTitle>
-                                <SourceOptionDescription>Utiliser la caméra de votre téléphone</SourceOptionDescription>
+                                <SourceOptionTitle>{t('intervention.creation.camera')}</SourceOptionTitle>
+                                <SourceOptionDescription>{t('intervention.creation.cameraHint')}</SourceOptionDescription>
                             </SourceOptionText>
                             <SvgIcon name="fa-chevron-right" size={14} color={colors.gray500} />
                         </SourceOption>
-                        <SourceOption accessibilityRole="button" accessibilityLabel="Choisir une photo dans la galerie" onPress={() => chooseSource('gallery')}>
+                        <SourceOption accessibilityRole="button" accessibilityLabel={t('intervention.creation.galleryAccessibility')} onPress={() => chooseSource('gallery')}>
                             <SourceIconContainer>
                                 <SvgIcon name="image" size={20} color={colors.primary} />
                             </SourceIconContainer>
                             <SourceOptionText>
-                                <SourceOptionTitle>Choisir dans la galerie</SourceOptionTitle>
-                                <SourceOptionDescription>Sélectionner une photo existante</SourceOptionDescription>
+                                <SourceOptionTitle>{t('intervention.creation.gallery')}</SourceOptionTitle>
+                                <SourceOptionDescription>{t('intervention.creation.galleryHint')}</SourceOptionDescription>
                             </SourceOptionText>
                             <SvgIcon name="fa-chevron-right" size={14} color={colors.gray500} />
                         </SourceOption>
-                        <SourceCancelButton accessibilityRole="button" accessibilityLabel="Annuler" onPress={() => setIsSourceModalVisible(false)}>
-                            <SourceCancelText>Annuler</SourceCancelText>
+                        <SourceCancelButton accessibilityRole="button" accessibilityLabel={t('common.actions.cancel')} onPress={() => setIsSourceModalVisible(false)}>
+                            <SourceCancelText>{t('common.actions.cancel')}</SourceCancelText>
                         </SourceCancelButton>
                     </SourceModalSheet>
                 </SourceModalBackdrop>

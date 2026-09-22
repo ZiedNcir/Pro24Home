@@ -1,5 +1,6 @@
 import { InterventionStatus, type Intervention } from './types';
 import { API_BASE_URL } from '@core/api/base-api';
+import i18n from '@utils/i18n';
 
 type InterventionAddressLike = Partial<NonNullable<Intervention['address']>> & {
     latitude?: number | string;
@@ -55,18 +56,18 @@ export type ProfessionalInterventionBriefItem = {
 export type InterventionFilter = 'all' | 'active' | 'completed';
 
 export const getInterventionListCopy = (isProfessional: boolean) => isProfessional
-    ? { title: 'Demandes d’intervention', empty: 'Aucune demande d’intervention pour le moment.' }
-    : { title: 'Mes interventions', empty: 'Vous n’avez pas encore d’intervention.' };
+    ? { title: i18n.t('intervention.list.professionalTitle'), empty: i18n.t('intervention.list.professionalEmpty') }
+    : { title: i18n.t('intervention.list.clientTitle'), empty: i18n.t('intervention.list.clientEmpty') };
 
 export const getInterventionDetailCopy = (isProfessional: boolean) => isProfessional
-    ? { title: 'Nouvelle intervention', section: 'Détails de la demande' }
-    : { title: 'Détail de l’intervention', section: 'Votre demande' };
+    ? { title: i18n.t('intervention.detail.newTitle'), section: i18n.t('intervention.detail.requestDetails') }
+    : { title: i18n.t('intervention.detail.detailTitle'), section: i18n.t('intervention.detail.request') };
 
 export const getProfessionalEmptyStateCopy = () => ({
-    heading: 'Aucune demande pour le moment',
-    description: 'Les nouvelles demandes apparaîtront ici dès qu’un client fera appel à vous.',
-    reassuranceTitle: 'Restez disponible pour recevoir des demandes',
-    reassuranceDescription: 'Activez vos disponibilités et vos zones d’intervention pour ne manquer aucune opportunité.',
+    heading: i18n.t('intervention.list.professionalEmptyHeading'),
+    description: i18n.t('intervention.list.professionalEmptyDescription'),
+    reassuranceTitle: i18n.t('intervention.list.stayAvailable'),
+    reassuranceDescription: i18n.t('intervention.list.stayAvailableDescription'),
 });
 
 export const getInterventionAddress = (intervention: InterventionWithApiAliases) => (
@@ -79,7 +80,10 @@ export const formatInterventionPrice = (price?: number | string | null) => {
     const numericPrice = Number(price);
     if (!Number.isFinite(numericPrice)) return null;
 
-    return `${numericPrice.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
+    return new Intl.NumberFormat(i18n.language, {
+        style: 'currency',
+        currency: 'EUR',
+    }).format(numericPrice);
 };
 
 export const getInterventionPrice = (intervention: InterventionWithApiAliases & { price?: number | string | null }) => {
@@ -118,15 +122,15 @@ export const getInterventionClientName = (client?: InterventionClientLike | null
 };
 
 export const getProfessionalInterventionBrief = (intervention: ProfessionalBriefIntervention): ProfessionalInterventionBriefItem[] => {
-    const address = getInterventionAddress(intervention)?.address?.trim() || 'Adresse non renseignée';
-    const service = intervention.service?.name?.trim() || intervention.title?.trim() || 'Service non renseigné';
-    const description = intervention.description?.trim() || 'Aucun détail complémentaire.';
+    const address = getInterventionAddress(intervention)?.address?.trim() || i18n.t('intervention.detail.addressLabel');
+    const service = intervention.service?.name?.trim() || intervention.title?.trim() || i18n.t('intervention.creation.serviceType');
+    const description = intervention.description?.trim() || i18n.t('intervention.detail.request');
 
     return [
-        { key: 'client', label: 'Client', primary: getInterventionClientName(intervention.client) || 'Client non renseigné' },
-        { key: 'location', label: 'Adresse d’intervention', primary: address },
-        { key: 'request', label: 'Détails de la demande', primary: service, secondary: description },
-        { key: 'price', label: 'Montant de l’intervention', primary: getInterventionPrice(intervention) || 'Prix à proposer' },
+        { key: 'client', label: i18n.t('intervention.detail.client'), primary: getInterventionClientName(intervention.client) || i18n.t('intervention.detail.clientUnknown') },
+        { key: 'location', label: i18n.t('intervention.detail.addressLabel'), primary: address },
+        { key: 'request', label: i18n.t('intervention.detail.requestDetails'), primary: service, secondary: description },
+        { key: 'price', label: i18n.t('intervention.detail.amount'), primary: getInterventionPrice(intervention) || i18n.t('intervention.detail.priceToPropose') },
     ];
 };
 
@@ -153,7 +157,7 @@ export const formatDistanceBetweenCoordinates = (
 ) => {
     const coordinates = [fromLatitude, fromLongitude, toLatitude, toLongitude].map(value => Number(value));
     if (coordinates.some(value => !Number.isFinite(value))) {
-        return 'Distance indisponible';
+        return i18n.t('intervention.detail.distanceUnavailable');
     }
 
     const toRadians = (value: number) => (value * Math.PI) / 180;
@@ -167,24 +171,25 @@ export const formatDistanceBetweenCoordinates = (
 
     return kilometers < 1
         ? `${Math.round(kilometers * 1000)} m`
-        : `${(Math.round(kilometers * 10) / 10).toLocaleString('fr-FR')} km`;
+        : `${(Math.round(kilometers * 10) / 10).toLocaleString(i18n.language)} km`;
 };
 
-const labels: Record<InterventionStatus, string> = {
-    [InterventionStatus.NEGOTIATION]: 'Négociation',
-    [InterventionStatus.PENDING]: 'En attente',
-    [InterventionStatus.ACCEPTED]: 'Acceptée',
-    [InterventionStatus.IN_PROGRESS]: 'En cours',
-    [InterventionStatus.COMPLETED]: 'Terminée',
-    [InterventionStatus.REJECTED]: 'Refusée',
-    [InterventionStatus.CANCELLED]: 'Annulée',
-    [InterventionStatus.CANCELED]: 'Annulée',
+const statusKeys: Record<InterventionStatus, string> = {
+    [InterventionStatus.NEGOTIATION]: 'intervention.detail.statusNegotiation',
+    [InterventionStatus.PENDING]: 'intervention.detail.statusPending',
+    [InterventionStatus.ACCEPTED]: 'intervention.detail.statusAccepted',
+    [InterventionStatus.IN_PROGRESS]: 'intervention.detail.statusInProgress',
+    [InterventionStatus.COMPLETED]: 'intervention.detail.statusCompleted',
+    [InterventionStatus.REJECTED]: 'intervention.detail.statusRejected',
+    [InterventionStatus.CANCELLED]: 'intervention.detail.statusCancelled',
+    [InterventionStatus.CANCELED]: 'intervention.detail.statusCancelled',
 };
 
 export const getInterventionStatusLabel = (status: InterventionStatus | string): string => {
     const normalizedStatus = normalizeStatus(status);
-    if (normalizedStatus === 'in_progress') return 'En cours';
-    return labels[status as InterventionStatus] || 'Inconnue';
+    if (normalizedStatus === 'in_progress') return i18n.t('intervention.detail.statusInProgress');
+    const key = statusKeys[status as InterventionStatus];
+    return key ? i18n.t(key) : i18n.t('intervention.detail.statusUnknown');
 };
 
 export const filterInterventions = (interventions: Intervention[], filter: InterventionFilter): Intervention[] => {

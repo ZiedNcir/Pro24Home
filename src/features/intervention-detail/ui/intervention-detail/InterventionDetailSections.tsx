@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, Modal, Platform, TextInput } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import styled from 'styled-components/native';
@@ -29,9 +30,14 @@ interface DetailProps {
     onOpenTracking?: () => void;
 }
 
-const formatDate = (date?: string) => date ? new Date(date).toLocaleString('fr-FR') : 'Date à confirmer';
+const formatDate = (date: string | undefined, locale: string, fallback: string) => {
+    if (!date) return fallback;
+    const parsedDate = new Date(date);
+    return Number.isNaN(parsedDate.getTime()) ? fallback : parsedDate.toLocaleString(locale);
+};
 
 export const ClientInterventionDetails = ({ intervention }: DetailProps) => {
+    const { t, i18n } = useTranslation();
     const [acceptDevis, { isLoading: isAcceptingDevis }] = useAcceptDevisMutation();
     const [reviseDevis, { isLoading: isRefusingDevis }] = useReviseDevisMutation();
     const address = getInterventionAddress(intervention);
@@ -43,33 +49,33 @@ export const ClientInterventionDetails = ({ intervention }: DetailProps) => {
     const handleAcceptDevis = async () => {
         try {
             await acceptDevis(intervention.id).unwrap();
-            Alert.alert('Prix accepté', 'Le devis a bien été accepté.');
+            Alert.alert(t('intervention.detail.accepted'), t('intervention.detail.quoteAccepted'));
         } catch (error: any) {
-            Alert.alert('Action impossible', error?.data?.message || 'Le devis n’a pas pu être accepté.');
+            Alert.alert(t('intervention.detail.actionFailed'), error?.data?.message || t('intervention.detail.quoteAcceptFailed'));
         }
     };
     const handleRefuseDevis = async () => {
         try {
             await reviseDevis(intervention.id).unwrap();
-            Alert.alert('Prix refusé', 'Le professionnel devra revoir sa proposition.');
+            Alert.alert(t('intervention.detail.rejected'), t('intervention.detail.quoteRejected'));
         } catch (error: any) {
-            Alert.alert('Action impossible', error?.data?.message || 'Le devis n’a pas pu être refusé.');
+            Alert.alert(t('intervention.detail.actionFailed'), error?.data?.message || t('intervention.detail.quoteDeclineFailed'));
         }
     };
 
     return <>
         <Section>
-            <SectionLabel>Votre demande</SectionLabel>
-            <Text variant="regularSmall" color="gray600">{intervention.description || 'Aucune description renseignée.'}</Text>
+            <SectionLabel>{t('intervention.detail.request')}</SectionLabel>
+            <Text variant="regularSmall" color="gray600">{intervention.description || t('intervention.detail.noDescription')}</Text>
         </Section>
         <Section>
-            <InfoRow><SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{address?.address || 'Adresse non renseignée'}</Text></InfoRow>
-            <InfoRow><SvgIcon name="fa-user-clock" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDate(intervention.scheduled_date || intervention.requested_date)}</Text></InfoRow>
-            {price && canRespondToDevis ? <InfoRow><SvgIcon name="fa-euro-sign" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">Prix proposé : {price}</Text></InfoRow> : null}
+            <InfoRow><SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{address?.address || t('intervention.address.unspecified')}</Text></InfoRow>
+            <InfoRow><SvgIcon name="fa-user-clock" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDate(intervention.scheduled_date || intervention.requested_date, i18n.language, t('intervention.detail.dateInvalid'))}</Text></InfoRow>
+            {price && canRespondToDevis ? <InfoRow><SvgIcon name="fa-euro-sign" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{t('intervention.detail.proposedPrice', { price })}</Text></InfoRow> : null}
         </Section>
-        {canRespondToDevis ? <DevisActions><DevisActionButton onPress={handleAcceptDevis} disabled={isAcceptingDevis || isRefusingDevis}><Text variant="bold" color={colors.white}>{isAcceptingDevis ? 'Acceptation...' : 'Accepter le prix'}</Text></DevisActionButton><DevisRefuseButton onPress={handleRefuseDevis} disabled={isAcceptingDevis || isRefusingDevis}><Text variant="bold" color={colors.danger}>{isRefusingDevis ? 'Refus...' : 'Refuser le prix'}</Text></DevisRefuseButton></DevisActions> : null}
+        {canRespondToDevis ? <DevisActions><DevisActionButton onPress={handleAcceptDevis} disabled={isAcceptingDevis || isRefusingDevis}><Text variant="bold" color={colors.white}>{isAcceptingDevis ? t('intervention.detail.accepting') : t('intervention.detail.acceptPrice')}</Text></DevisActionButton><DevisRefuseButton onPress={handleRefuseDevis} disabled={isAcceptingDevis || isRefusingDevis}><Text variant="bold" color={colors.danger}>{isRefusingDevis ? t('intervention.detail.refusing') : t('intervention.detail.refusePrice')}</Text></DevisRefuseButton></DevisActions> : null}
         {hasCoordinates ? <Section>
-            <SectionLabel>Lieu de l’intervention</SectionLabel>
+            <SectionLabel>{t('intervention.detail.place')}</SectionLabel>
             <ClientMap
                 initialRegion={{ latitude, longitude, latitudeDelta: 0.012, longitudeDelta: 0.012 }}
                 provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
@@ -78,16 +84,17 @@ export const ClientInterventionDetails = ({ intervention }: DetailProps) => {
                 rotateEnabled={false}
                 pitchEnabled={false}
                 showsCompass={false}
-                accessibilityLabel="Carte du lieu de l’intervention"
+                accessibilityLabel={t('intervention.detail.map')}
             >
                 <Marker coordinate={{ latitude, longitude }} pinColor={colors.primary} />
             </ClientMap>
         </Section> : null}
-        {intervention.professional ? <Section><SectionLabel>Professionnel assigné</SectionLabel><Text variant="regularSmall" color="gray600">{intervention.professional.first_name} {intervention.professional.last_name}</Text></Section> : null}
+        {intervention.professional ? <Section><SectionLabel>{t('intervention.detail.assignedPro')}</SectionLabel><Text variant="regularSmall" color="gray600">{intervention.professional.first_name} {intervention.professional.last_name}</Text></Section> : null}
     </>;
 };
 
 export const ProfessionalInterventionDetails = ({ intervention, professionalLatitude, professionalLongitude, isAccepting = false, isRefusing = false, onAccept, onRefuse, onOpenTracking }: DetailProps) => {
+    const { t, i18n } = useTranslation();
     const [isPriceModalVisible, setIsPriceModalVisible] = useState(false);
     const [proposedPrice, setProposedPrice] = useState('');
     const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
@@ -101,7 +108,7 @@ export const ProfessionalInterventionDetails = ({ intervention, professionalLati
     const canProposePrice = !price && shouldShowPriceProposal(intervention.price, intervention.status);
     const handleSubmitPrice = async () => {
         if (!isValidInterventionPriceInput(proposedPrice)) {
-            Alert.alert('Montant invalide', 'Saisissez un prix supérieur à 0 €.');
+            Alert.alert(t('intervention.detail.invalidAmount'), t('intervention.detail.positiveAmount'));
             return;
         }
 
@@ -109,14 +116,14 @@ export const ProfessionalInterventionDetails = ({ intervention, professionalLati
             await addDevis({ interventionId: intervention.id, price: Number(proposedPrice.trim().replace(',', '.')) }).unwrap();
             setProposedPrice('');
             setIsPriceModalVisible(false);
-            Alert.alert('Prix envoyé', 'Votre proposition a bien été envoyée au client.');
+            Alert.alert(t('intervention.detail.priceSent'), t('intervention.detail.proposalSent'));
         } catch (error: any) {
-            Alert.alert('Envoi impossible', error?.data?.message || 'Le prix n’a pas pu être envoyé.');
+            Alert.alert(t('intervention.detail.sendFailed'), error?.data?.message || t('intervention.detail.proposalFailed'));
         }
     };
 
     return <>
-        <Timeline accessibilityLabel="Résumé de l’intervention">
+        <Timeline accessibilityLabel={t('intervention.detail.summaryAccessibility')}>
             {brief.slice(0, 3).map((item, index) => <TimelineStep key={item.key}>
                 <TimelineRail>
                     <TimelineMarker><Text variant="bold" color={colors.white} fontSize={13}>{index + 1}</Text></TimelineMarker>
@@ -127,7 +134,7 @@ export const ProfessionalInterventionDetails = ({ intervention, professionalLati
                     <Text variant="regularSmall" color="black">{item.primary}</Text>
                     {item.secondary ? <TimelineSecondary variant="regularSmall" color="gray600">{item.secondary}</TimelineSecondary> : null}
                     {item.key === 'location' ? <TimelineMeta><SvgIcon name="fa-map-marked-alt" size={14} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDistanceBetweenCoordinates(professionalLatitude, professionalLongitude, Number(address?.latitude), Number(address?.longitude))}</Text></TimelineMeta> : null}
-                    {item.key === 'request' && requestedDate ? <TimelineMeta><SvgIcon name="fa-user-clock" size={14} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDate(requestedDate)}</Text></TimelineMeta> : null}
+                    {item.key === 'request' && requestedDate ? <TimelineMeta><SvgIcon name="fa-user-clock" size={14} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDate(requestedDate, i18n.language, t('intervention.detail.dateInvalid'))}</Text></TimelineMeta> : null}
                 </TimelineContent>
             </TimelineStep>)}
             <TimelineStep>
@@ -136,13 +143,13 @@ export const ProfessionalInterventionDetails = ({ intervention, professionalLati
                     <TimelineLine />
                 </TimelineRail>
                 <TimelineContent>
-                    <TimelineHeading><TimelineIcon><SvgIcon name="image" size={17} color={colors.primary} /></TimelineIcon><Text variant="bold" color="black" fontSize={15}>Photos de l’intervention</Text></TimelineHeading>
+                    <TimelineHeading><TimelineIcon><SvgIcon name="image" size={17} color={colors.primary} /></TimelineIcon><Text variant="bold" color="black" fontSize={15}>{t('intervention.detail.photos')}</Text></TimelineHeading>
                     <ImageGrid>
                         {[0, 1, 2].map(index => {
                             const uri = imageUrls[index];
 
                             return <ImageTile key={index} onPress={() => uri && setSelectedImageUrl(uri)} disabled={!uri}>
-                                {uri ? <TileImage uri={uri} borderRadius={moderateScale(10)} renderLoading={() => <ImageSkeleton />} renderError={() => <ImageFallback><SvgIcon name="image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Photo indisponible</Text></ImageFallback>} /> : <ImageFallback><SvgIcon name="image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">Aucune photo</Text></ImageFallback>}
+                                {uri ? <TileImage uri={uri} borderRadius={moderateScale(10)} renderLoading={() => <ImageSkeleton />} renderError={() => <ImageFallback><SvgIcon name="image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">{t('intervention.detail.photoUnavailable')}</Text></ImageFallback>} /> : <ImageFallback><SvgIcon name="image" size={22} color={colors.gray600} /><Text variant="regularSmall" color="gray600">{t('intervention.detail.noPhoto')}</Text></ImageFallback>}
                             </ImageTile>;
                         })}
                     </ImageGrid>
@@ -158,24 +165,24 @@ export const ProfessionalInterventionDetails = ({ intervention, professionalLati
         </Timeline>
         <Modal visible={Boolean(selectedImageUrl)} transparent animationType="fade" onRequestClose={() => setSelectedImageUrl(null)}>
             <ImagePreviewBackdrop onPress={() => setSelectedImageUrl(null)}>
-                <ImagePreviewClose onPress={() => setSelectedImageUrl(null)} accessibilityRole="button" accessibilityLabel="Fermer l’image">
+                <ImagePreviewClose onPress={() => setSelectedImageUrl(null)} accessibilityRole="button" accessibilityLabel={t('intervention.address.close')}>
                     <SvgIcon name="fa-times" size={22} color={colors.white} />
                 </ImagePreviewClose>
                 {selectedImageUrl ? <ImagePreview source={{ uri: selectedImageUrl }} resizeMode="contain" /> : null}
             </ImagePreviewBackdrop>
         </Modal>
-        {canProposePrice ? <PriceButton onPress={() => setIsPriceModalVisible(true)} accessibilityRole="button"><SvgIcon name="fa-euro-sign" size={17} color={colors.white} /><Text variant="bold" color={colors.white}>Proposer un prix</Text></PriceButton> : null}
-        {intervention.status === 'pending' ? <Actions><ActionButton disabled={isAccepting || isRefusing} onPress={onAccept}><Text variant="bold" color={colors.white}>{isAccepting ? 'Acceptation...' : 'Accepter la demande'}</Text></ActionButton><RefuseButton disabled={isAccepting || isRefusing} onPress={onRefuse}><Text variant="bold" color={colors.danger}>{isRefusing ? 'Refus...' : 'Refuser la demande'}</Text></RefuseButton></Actions> : null}
-        {shouldShowTrackingButton(intervention.status, true) ? <TrackingButton onPress={onOpenTracking} accessibilityRole="button" accessibilityLabel="Ouvrir le trajet"><SvgIcon name="fa-map-marked-alt" size={17} color={colors.white} /><Text variant="bold" color={colors.white}>Ouvrir le trajet</Text></TrackingButton> : null}
+        {canProposePrice ? <PriceButton onPress={() => setIsPriceModalVisible(true)} accessibilityRole="button"><SvgIcon name="fa-euro-sign" size={17} color={colors.white} /><Text variant="bold" color={colors.white}>{t('intervention.detail.proposePrice')}</Text></PriceButton> : null}
+        {intervention.status === 'pending' ? <Actions><ActionButton disabled={isAccepting || isRefusing} onPress={onAccept}><Text variant="bold" color={colors.white}>{isAccepting ? t('intervention.detail.accepting') : t('intervention.detail.acceptRequest')}</Text></ActionButton><RefuseButton disabled={isAccepting || isRefusing} onPress={onRefuse}><Text variant="bold" color={colors.danger}>{isRefusing ? t('intervention.detail.refusing') : t('intervention.detail.declineRequest')}</Text></RefuseButton></Actions> : null}
+        {shouldShowTrackingButton(intervention.status, true) ? <TrackingButton onPress={onOpenTracking} accessibilityRole="button" accessibilityLabel={t('intervention.detail.openRoute')}><SvgIcon name="fa-map-marked-alt" size={17} color={colors.white} /><Text variant="bold" color={colors.white}>{t('intervention.detail.openRoute')}</Text></TrackingButton> : null}
         <Modal visible={isPriceModalVisible} transparent animationType="slide" onRequestClose={() => setIsPriceModalVisible(false)}>
-            <ModalBackdrop><PriceModalCard><ModalHandle /><Text variant="bold" color="black" fontSize={18}>Proposer un prix</Text><Text variant="regularSmall" color="gray600">Indiquez le montant de votre intervention.</Text><PriceInput value={proposedPrice} onChangeText={setProposedPrice} placeholder="Ex. 75,00" placeholderTextColor={colors.gray500} keyboardType="decimal-pad" autoFocus /><PriceModalActions><CancelButton onPress={() => setIsPriceModalVisible(false)} disabled={isSubmittingPrice}><Text variant="bold" color={colors.gray700}>Annuler</Text></CancelButton><SubmitPriceButton onPress={handleSubmitPrice} disabled={isSubmittingPrice}>{isSubmittingPrice ? <ActivityIndicator color={colors.white} /> : <Text variant="bold" color={colors.white}>Envoyer</Text>}</SubmitPriceButton></PriceModalActions></PriceModalCard></ModalBackdrop>
+            <ModalBackdrop><PriceModalCard><ModalHandle /><Text variant="bold" color="black" fontSize={18}>{t('intervention.detail.proposePrice')}</Text><Text variant="regularSmall" color="gray600">{t('intervention.detail.enterPrice')}</Text><PriceInput value={proposedPrice} onChangeText={setProposedPrice} placeholder={t('intervention.detail.pricePlaceholder')} placeholderTextColor={colors.gray500} keyboardType="decimal-pad" autoFocus /><PriceModalActions><CancelButton onPress={() => setIsPriceModalVisible(false)} disabled={isSubmittingPrice}><Text variant="bold" color={colors.gray700}>{t('common.actions.cancel')}</Text></CancelButton><SubmitPriceButton onPress={handleSubmitPrice} disabled={isSubmittingPrice}>{isSubmittingPrice ? <ActivityIndicator color={colors.white} /> : <Text variant="bold" color={colors.white}>{t('ui.button.send')}</Text>}</SubmitPriceButton></PriceModalActions></PriceModalCard></ModalBackdrop>
         </Modal>
     </>;
 };
 
-export const confirmRefusal = (onConfirm: () => void) => Alert.alert('Refuser cette demande ?', 'Cette demande ne sera plus proposée dans votre liste.', [
-    { text: 'Annuler', style: 'cancel' },
-    { text: 'Refuser', style: 'destructive', onPress: onConfirm },
+export const confirmRefusal = (onConfirm: () => void, t: (key: any) => string) => Alert.alert(t('intervention.detail.declineTitle'), t('intervention.detail.declineDescription'), [
+    { text: t('common.actions.cancel'), style: 'cancel' },
+    { text: t('intervention.detail.declineRequest'), style: 'destructive', onPress: onConfirm },
 ]);
 
 const Section = styled.View`background-color: ${colors.white}; border-radius: ${moderateScale(14)}px; border-width: 1px; border-color: #eeeeee; padding: ${horizontalScale(16)}px; margin-top: ${verticalScale(16)}px;`;

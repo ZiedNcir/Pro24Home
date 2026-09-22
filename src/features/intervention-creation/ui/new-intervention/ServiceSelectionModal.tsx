@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ImageSourcePropType, Modal } from 'react-native';
 import styled from 'styled-components/native';
 
@@ -60,7 +61,9 @@ const ServiceSelectionModal: React.FC<Props> = ({
   selectedServiceId,
   onClose,
   onSelect,
-}) => (
+}) => {
+  const { t } = useTranslation();
+  return (
   <Modal
     visible={visible}
     transparent
@@ -72,12 +75,12 @@ const ServiceSelectionModal: React.FC<Props> = ({
         <Handle />
         <Header>
           <Text variant="bold" color="black" fontSize={17}>
-            Modifier le service
+            {t('intervention.creation.editService')}
           </Text>
           <CloseButton
             onPress={onClose}
             accessibilityRole="button"
-            accessibilityLabel="Fermer"
+            accessibilityLabel={t('intervention.address.close')}
           >
             <Text variant="bold" color="gray600" fontSize={18}>
               ×
@@ -89,7 +92,7 @@ const ServiceSelectionModal: React.FC<Props> = ({
           color="gray600"
           style={{ marginBottom: verticalScale(14) }}
         >
-          Sélectionnez une catégorie de services.
+          {t('intervention.creation.chooseCategory')}
         </Text>
         <List
           showsVerticalScrollIndicator={false}
@@ -101,7 +104,7 @@ const ServiceSelectionModal: React.FC<Props> = ({
               title={service.name}
               description={
                 service.description ||
-                'Choisissez ce service pour votre intervention.'
+                t('intervention.creation.chooseService')
               }
               image={getServiceImage(service)}
               selected={service.id === selectedServiceId}
@@ -112,7 +115,8 @@ const ServiceSelectionModal: React.FC<Props> = ({
       </Sheet>
     </Backdrop>
   </Modal>
-);
+  );
+};
 
 export default ServiceSelectionModal;
 

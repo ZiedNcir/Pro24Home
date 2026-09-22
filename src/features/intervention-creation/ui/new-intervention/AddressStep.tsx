@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Platform } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import styled from 'styled-components/native';
@@ -41,17 +42,17 @@ const AddressStep: React.FC<AddressStepProps> = ({
   onNext,
   onPrevious,
 }) => {
+  const { t } = useTranslation();
   const region = selectedMapRegion || DEFAULT_MAP_REGION;
   const selectedLocation = addressModal.selectedLocation;
 
   return (
     <>
-      <SectionTitle>Où doit avoir lieu l’intervention ?</SectionTitle>
+      <SectionTitle>{t('intervention.address.where')}</SectionTitle>
       <AddressIntro>
         <SvgIcon name="fa-map-marker-alt" size={18} color={colors.primary} />
         <Text variant="regularSmall" color="gray600">
-          Sélectionnez une adresse enregistrée ou recherchez votre lieu
-          d’intervention.
+          {t('intervention.address.chooseSaved')}
         </Text>
       </AddressIntro>
 
@@ -64,13 +65,13 @@ const AddressStep: React.FC<AddressStepProps> = ({
             zoomEnabled={false}
             pitchEnabled={false}
             rotateEnabled={false}
-            accessibilityLabel="Aperçu de l’adresse sélectionnée"
+            accessibilityLabel={t('intervention.address.preview')}
           >
             <Marker coordinate={region} pinColor={colors.primary} />
           </AddressMap>
           <PreviewOpenOverlay
             accessibilityRole="button"
-            accessibilityLabel="Ouvrir la carte en plein écran"
+            accessibilityLabel={t('intervention.address.openMapFullscreen')}
             onPress={onOpenMapFullscreen}
           >
             <SvgIcon
@@ -79,7 +80,7 @@ const AddressStep: React.FC<AddressStepProps> = ({
               color={colors.primary}
             />
             <Text variant="bold" color="black" fontSize={11}>
-              Ouvrir la carte
+              {t('intervention.address.openMap')}
             </Text>
           </PreviewOpenOverlay>
         </AddressMapPreview>
@@ -89,12 +90,12 @@ const AddressStep: React.FC<AddressStepProps> = ({
         <AddressLoading>
           <ActivityIndicator color={colors.primary} />
           <Text variant="regularSmall" color="gray600">
-            Chargement de vos adresses...
+            {t('intervention.address.loading')}
           </Text>
         </AddressLoading>
       ) : addresses.length > 0 ? (
         <>
-          <SmallLabel>Adresses enregistrées</SmallLabel>
+          <SmallLabel>{t('intervention.address.saved')}</SmallLabel>
           {addresses.slice(0, 4).map(address => (
             <AddressCard
               key={address.id}
@@ -108,18 +109,18 @@ const AddressStep: React.FC<AddressStepProps> = ({
         </>
       ) : (
         <EmptyAddress>
-          Vous n’avez pas encore d’adresse enregistrée.
+          {t('intervention.address.empty')}
         </EmptyAddress>
       )}
 
       <AddAddressButton
         accessibilityRole="button"
-        accessibilityLabel="Rechercher une nouvelle adresse"
+        accessibilityLabel={t('intervention.address.searchNew')}
         onPress={onOpenAddressModal}
       >
         <SvgIcon name="fa-map-marker-alt" size={14} color={colors.primary} />
         <Text variant="bold" color="primary" fontSize={13}>
-          Rechercher une nouvelle adresse
+          {t('intervention.address.searchNew')}
         </Text>
       </AddAddressButton>
 
@@ -144,7 +145,7 @@ const AddressStep: React.FC<AddressStepProps> = ({
 
       {canContinue ? (
         <BottomActions
-          primaryTitle="Continuer"
+          primaryTitle={t('common.actions.continue')}
           onPrimaryPress={onNext}
           onSecondaryPress={onPrevious}
         />

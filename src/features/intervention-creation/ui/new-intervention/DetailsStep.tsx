@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
@@ -23,6 +24,7 @@ const DetailsStep: React.FC<DetailsStepProps> = ({
   onNext,
   onPrevious,
 }) => {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
 
@@ -33,41 +35,41 @@ const DetailsStep: React.FC<DetailsStepProps> = ({
 
   return (
     <>
-      <SectionTitle>Décrivez votre problème</SectionTitle>
+      <SectionTitle>{t('intervention.creation.describeProblem')}</SectionTitle>
       <InputBox
         multiline
         value={description}
         onChangeText={onChangeDescription}
-        placeholder="Décrivez votre panne..."
+        placeholder={t('intervention.creation.problemPlaceholder')}
         placeholderTextColor={theme.colors.gray500}
         textAlignVertical="top"
       />
 
-      <SectionTitle>Ajoutez des photos (optionnel)</SectionTitle>
+      <SectionTitle>{t('intervention.creation.photosOptional')}</SectionTitle>
       <PhotoPickerRow
         photos={photos}
         onAddPhoto={onAddPhoto}
         onRemovePhoto={onRemovePhoto}
       />
 
-      <SectionTitle>Quand souhaitez-vous l’intervention ?</SectionTitle>
+      <SectionTitle>{t('intervention.creation.schedule')}</SectionTitle>
       <SelectableCard
-        title="Dès que possible"
-        description="Dans les prochaines 24h"
+        title={t('intervention.creation.asap')}
+        description={t('intervention.creation.asapDescription')}
         icon="fa-clock"
         selected={selectedTiming === 'asap'}
         onPress={() => onSelectTiming('asap')}
       />
       <SelectableCard
-        title="Choisir une date et heure"
-        description="Sélectionnez un créneau"
+        title={t('intervention.creation.chooseDate')}
+        description={t('intervention.creation.slotDescription')}
         icon="fa-calendar"
         selected={selectedTiming === 'schedule'}
         onPress={chooseScheduledTiming}
       />
 
       <BottomActions
-        primaryTitle="Continuer"
+        primaryTitle={t('common.actions.continue')}
         onPrimaryPress={onNext}
         onSecondaryPress={onPrevious}
         primaryDisabled={selectedTiming === 'schedule' && !selectedDate}

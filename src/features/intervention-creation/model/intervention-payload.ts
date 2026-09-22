@@ -1,5 +1,6 @@
 import type { CreateInterventionRequest } from '@entities/intervention/model';
 import type { InterventionPhoto } from '../ui/new-intervention/types';
+import i18n from '@utils/i18n';
 
 export interface InterventionPayloadInput {
     serviceId: number;
@@ -30,7 +31,7 @@ export const buildInterventionPayload = ({
         service_id: serviceId,
         address_id: addressId,
         title: problemTitle,
-        description: `${interventionDescription} Disponibilité : ${timing === 'schedule' ? 'date planifiée.' : 'dès que possible.'}`,
+        description: `${interventionDescription} ${i18n.t('intervention.creation.availabilityPrefix')} ${i18n.t(timing === 'schedule' ? 'intervention.creation.datePlanned' : 'intervention.creation.asSoonAsPossible')}`,
         price: 50,
         ...photoFields,
     } as CreateInterventionRequest;

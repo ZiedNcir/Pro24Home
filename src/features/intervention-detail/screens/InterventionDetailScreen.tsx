@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
@@ -25,6 +26,7 @@ import { AppStackType } from '../../../navigation/constant/core';
 import { getInterventionDetailCopy, getInterventionStatusColor, getInterventionStatusLabel, shouldShowRatingPrompt } from '@entities/intervention/model/intervention-presentation';
 
 const InterventionDetailScreen = () => {
+    const { t } = useTranslation();
     const route = useRoute<RouteProp<AppStackType, 'InterventionDetail'>>();
     const navigation = useNavigation<any>();
     const isProfessional = useSelector(selectIsProfessional);
@@ -36,7 +38,7 @@ const InterventionDetailScreen = () => {
     const [isRatingVisible, setIsRatingVisible] = useState(false);
 
     if (isLoading) return <InterventionDetailSkeleton />;
-    if (isError || !intervention) return <ScreenContainer mode="light" centered><Text variant="regularSmall" color="gray600">Impossible de charger cette intervention.</Text></ScreenContainer>;
+    if (isError || !intervention) return <ScreenContainer mode="light" centered><Text variant="regularSmall" color="gray600">{t('intervention.detail.loadFailed')}</Text></ScreenContainer>;
 
     const detailIntervention = normalizeInterventionResponse(intervention);
     const copy = getInterventionDetailCopy(isProfessional);
@@ -50,15 +52,15 @@ const InterventionDetailScreen = () => {
             // The request error is handled by the API layer.
         }
     };
-    const handleRefuse = () => confirmRefusal(() => { reviseIntervention(detailIntervention.id); });
+    const handleRefuse = () => confirmRefusal(() => { reviseIntervention(detailIntervention.id); }, t);
     const handleOpenTracking = () => navigation.navigate('ProfessionalInterventionTracking', { intervention_id: detailIntervention.id });
     const handleRatingSubmit = async (rating: number, comment: string) => {
         try {
             await addRating({ intervention_id: detailIntervention.id, rating, ...(comment ? { comment } : {}) }).unwrap();
             setIsRatingVisible(false);
-            Alert.alert('Merci pour votre avis', 'Votre note a bien été envoyée.');
+            Alert.alert(t('intervention.detail.ratingThanks'), t('intervention.detail.ratingSent'));
         } catch {
-            Alert.alert('Envoi impossible', 'Votre avis n’a pas pu être envoyé. Réessayez plus tard.');
+            Alert.alert(t('intervention.detail.sendFailed'), t('intervention.detail.ratingFailed'));
         }
     };
 
@@ -68,7 +70,7 @@ const InterventionDetailScreen = () => {
                 <InterventionHeader title={copy.title} showHelp={false} />
                 <StatusRow>
                     <StatusBadge background={getInterventionStatusColor(detailIntervention.status)}><Text variant="bold" color="success" fontSize={12}>{getInterventionStatusLabel(detailIntervention.status)}</Text></StatusBadge>
-                    {!isProfessional && shouldShowRatingPrompt(detailIntervention.status, detailIntervention.rating, false) ? <RateButton onPress={() => setIsRatingVisible(true)} accessibilityRole="button" accessibilityLabel="Noter l’intervention"><Text variant="bold" color={colors.primary} fontSize={12}>Noter l’intervention</Text><SvgIcon name="fa-star" size={14} color={colors.primary} /></RateButton> : null}
+                    {!isProfessional && shouldShowRatingPrompt(detailIntervention.status, detailIntervention.rating, false) ? <RateButton onPress={() => setIsRatingVisible(true)} accessibilityRole="button" accessibilityLabel={t('intervention.detail.rate')}><Text variant="bold" color={colors.primary} fontSize={12}>{t('intervention.detail.rate')}</Text><SvgIcon name="fa-star" size={14} color={colors.primary} /></RateButton> : null}
                 </StatusRow>
                 <Title>{detailIntervention.title}</Title>
                 {isProfessional ? <ProfessionalInterventionDetails intervention={detailIntervention} professionalLatitude={user?.professional?.latitude} professionalLongitude={user?.professional?.longitude} isAccepting={isAccepting} isRefusing={isRefusing} onAccept={handleAccept} onRefuse={handleRefuse} onOpenTracking={handleOpenTracking} /> : <ClientInterventionDetails intervention={detailIntervention} />}

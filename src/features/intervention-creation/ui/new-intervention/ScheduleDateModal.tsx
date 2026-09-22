@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Platform } from 'react-native';
 
 import { useTheme } from '@theme';
@@ -13,6 +14,7 @@ const ScheduleDateModal: React.FC<ScheduleDateModalProps> = ({
     onConfirm,
 }) => {
     const { theme, themeMode } = useTheme();
+    const { t, i18n } = useTranslation();
     const [draftDate, setDraftDate] = useState(selectedDate || new Date());
 
     useEffect(() => {
@@ -26,10 +28,10 @@ const ScheduleDateModal: React.FC<ScheduleDateModalProps> = ({
             mode="datetime"
             date={draftDate}
             minimumDate={new Date()}
-            locale="fr"
-            title="Choisir une date et une heure"
-            confirmText="Confirmer"
-            cancelText="Annuler"
+            locale={i18n.language}
+            title={t('intervention.creation.chooseDateAndTime')}
+            confirmText={t('common.actions.confirm')}
+            cancelText={t('common.actions.cancel')}
             theme={themeMode}
             buttonColor={theme.colors.primary}
             onConfirm={(date: Date) => {
