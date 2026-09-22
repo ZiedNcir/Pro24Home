@@ -38,7 +38,15 @@
                 "placeholder": "Enter password",
                 "required": "Password is required",
                 "helper": "Minimum 8 characters with uppercase, lowercase, number and special character",
+                "invalid": "Invalid password format",
+                "requirements": "Must contain: uppercase, lowercase, number, special character",
                 "minLength": "Password must be at least {{count}} characters"
+            },
+            "passwordConfirm": {
+                "label": "Confirm password",
+                "placeholder": "Re-enter your password",
+                "required": "Password confirmation is required",
+                "match": "Passwords do not match"
             },
             "confirmPassword": {
                 "label": "Confirm password",
@@ -104,6 +112,7 @@
             "error": {
                 "required": "This field is required",
                 "invalid": "This field is invalid",
+                "passwordLength": "Minimum 8 characters",
                 "length": "This field must be at least 8 characters",
                 "match": "Confirmation password does not match",
                 "invalidEmail": "Invalid email format",
@@ -119,7 +128,7 @@
             }
         },
         "steps": {
-            "information": "-your information",
+            "information": "Your information",
             "societe": "-company details"
         },
         "button": {
@@ -156,8 +165,13 @@
     },
     "common": {
         "error": "Error",
-        "ok": "OK"
+        "ok": "OK",
+        "actions": {},
+        "status": {}
     },
+    "accessibility": {},
+    "navigation": {},
+    "permissions": {},
     "services": {
         "loadFailed": "Failed to load services"
     },

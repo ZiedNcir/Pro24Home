@@ -1,13 +1,12 @@
 import i18n from 'i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
 import intervalPlural from 'i18next-intervalplural-postprocessor';
 import { initReactI18next } from 'react-i18next';
 import { getLocales } from 'react-native-localize';
 import EnglishDictionary from '../translations/en.json';
 import FrenchDictionary from '../translations/fr.json';
-import { Language } from './constant';
+import { resolveSupportedLanguage } from './locale';
 
-const defaultLanguage = Language.FR;
+const defaultLanguage = 'fr';
 
 export const resources = {
   fr: {
@@ -20,11 +19,10 @@ export const resources = {
 };
 
 i18n
-  .use(LanguageDetector)
   .use(initReactI18next)
   .use(intervalPlural)
   .init({
-    lng: getLocales()[0]?.languageCode || defaultLanguage,
+    lng: resolveSupportedLanguage(getLocales()),
     fallbackLng: defaultLanguage,
     resources,
   });
