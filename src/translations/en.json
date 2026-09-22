@@ -125,7 +125,12 @@
                 "passwordUppercase": "At least one uppercase letter",
                 "passwordLowercase": "At least one lowercase letter",
                 "passwordNumber": "At least one number",
-                "passwordSpecial": "At least one special character (@$!%*?&)"
+                "passwordSpecial": "At least one special character (@$!%*?&)",
+                "minimumLength": "At least {{count}} characters",
+                "maximumLength": "At most {{count}} characters",
+                "minimum": "At least {{count}}",
+                "maximum": "At most {{count}}",
+                "mustMatch": "Fields do not match"
             }
         },
         "steps": {
@@ -167,11 +172,28 @@
     "common": {
         "error": "Error",
         "ok": "OK",
-        "actions": {},
-        "status": {}
+        "actions": {
+            "back": "Back",
+            "confirm": "Confirm",
+            "cancel": "Cancel",
+            "save": "Save",
+            "delete": "Delete",
+            "yes": "Yes",
+            "no": "No",
+            "previous": "Previous"
+        },
+        "status": {
+            "loading": "Loading...",
+            "requestSent": "Your request has been sent successfully"
+        }
     },
-    "accessibility": {},
-    "navigation": {},
+    "accessibility": { "back": "Back" },
+    "navigation": {
+        "home": "Home",
+        "interventions": "Interventions",
+        "settings": "Settings",
+        "newIntervention": "New intervention"
+    },
     "permissions": {},
     "services": {
         "loadFailed": "Failed to load services"

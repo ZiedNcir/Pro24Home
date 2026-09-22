@@ -58,7 +58,20 @@ function scanFile(file) {
       sourceCandidate(sf, node, 'JSX text');
     } else if (ts.isJsxAttribute(node) && node.initializer) {
       const prop = node.name.getText(sf);
-      if (knownProps.has(prop) && ts.isStringLiteral(node.initializer)) sourceCandidate(sf, node.initializer, `JSX prop ${prop}`);
+      if (knownProps.has(prop)) {
+        const inspectInitializer = (child) => {
+          if (isLiteral(child)) sourceCandidate(sf, child, `JSX prop ${prop}`);
+          ts.forEachChild(child, inspectInitializer);
+        };
+        inspectInitializer(node.initializer);
+      }
+    } else if (ts.isPropertyAssignment(node) && knownProps.has(node.name.getText(sf))) {
+      const prop = node.name.getText(sf);
+      const inspectValue = (child) => {
+        if (isLiteral(child)) sourceCandidate(sf, child, `property ${prop}`);
+        ts.forEachChild(child, inspectValue);
+      };
+      inspectValue(node.initializer);
     } else if (ts.isJsxExpression(node) && node.expression && isLiteral(node.expression) && ts.isJsxAttribute(node.parent)) {
       const prop = node.parent.name.getText(sf);
       if (knownProps.has(prop)) sourceCandidate(sf, node.expression, `JSX prop ${prop}`);

@@ -4,6 +4,7 @@ import { Text, SvgIcon, CustomModal } from '@shared/ui';
 import { Button } from '@shared/ui/button/Button';
 import type { IconName } from '../icon/SvgIcon';
 import { Colors } from '@utils/constant';
+import { useTranslation } from 'react-i18next';
 import {
     horizontalScale,
     verticalScale,
@@ -71,14 +72,14 @@ const DialogModal: React.FC<DialogModalProps> = ({
     onRequestClose,
     type = 'success',
     title,
-    message = 'Votre demande a été envoyée avec succès',
+    message,
     iconName,
     iconSize = fontPixel(24),
     iconColor,
     iconBackground,
     logoIcon = 'logoMedium',
     logoSize = horizontalScale(180),
-    primaryButtonTitle = 'Ok',
+    primaryButtonTitle,
     secondaryButtonTitle,
     onPrimaryPress,
     onSecondaryPress,
@@ -93,6 +94,7 @@ const DialogModal: React.FC<DialogModalProps> = ({
     autoHideDuration,
     isLoading = false,
 }) => {
+    const { t } = useTranslation();
     useEffect(() => {
         if (visible && autoHideDuration) {
             const timer = setTimeout(() => {
@@ -216,7 +218,7 @@ const DialogModal: React.FC<DialogModalProps> = ({
                         numberOfLines={4}
                         screenWidth={WIDTH_SCREEN}
                     >
-                        {message}
+                        {message ?? t('common.status.requestSent')}
                     </MessageText>
                 </MessageContainer>
 
@@ -231,7 +233,7 @@ const DialogModal: React.FC<DialogModalProps> = ({
                         />
                     )}
                     <PrimaryButton
-                        title={primaryButtonTitle}
+                        title={primaryButtonTitle ?? t('common.ok')}
                         variant="primary"
                         onPress={handlePrimaryPress}
                         loading={isLoading}

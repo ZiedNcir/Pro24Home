@@ -1,4 +1,14 @@
 {
-  "sourceFiles": [],
+  "sourceFiles": [
+    "src/app/navigation/RootNavigator.tsx",
+    "src/shared/ui/action/BottomActions.tsx",
+    "src/shared/ui/button/ButtonGroup.tsx",
+    "src/shared/ui/form/HookFormField.tsx",
+    "src/shared/ui/navigation/BackHeader.tsx",
+    "src/shared/ui/navigation/InterventionHeader.tsx",
+    "src/shared/ui/navigation/NavigationHeader.tsx",
+    "src/shared/ui/overlay/AppSpinner.tsx",
+    "src/shared/ui/overlay/DialogModal.tsx"
+  ],
   "exceptions": []
 }

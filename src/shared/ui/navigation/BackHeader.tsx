@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import SvgIcon from '@shared/ui/icon/SvgIcon';
 import { useTheme } from '@theme';
+import { useTranslation } from 'react-i18next';
 
 export interface BackHeaderProps {
   title?: string;
@@ -12,9 +13,10 @@ export interface BackHeaderProps {
 
 export const BackHeader = ({ title, onBack, rightAction }: BackHeaderProps) => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   return (
   <View style={styles.container}>
-    <Pressable accessibilityLabel={title || 'Retour'} onPress={onBack} style={styles.back}>
+    <Pressable accessibilityLabel={title || t('accessibility.back')} onPress={onBack} style={styles.back}>
       <SvgIcon name="fa-chevron-left" size={20} color={theme.colors.primary} />
     </Pressable>
     {title ? <Text style={[styles.title, { color: theme.colors.textPrimary }]}>{title}</Text> : <View />}

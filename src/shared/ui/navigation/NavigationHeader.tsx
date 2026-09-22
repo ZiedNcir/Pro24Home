@@ -7,6 +7,7 @@ import { verticalScale } from '@utils/normalizedCss';
 import SvgIcon from '@shared/ui/icon/SvgIcon';
 import { AppStackType } from '../../../navigation/constant/core';
 import { useTheme } from '@theme';
+import { useTranslation } from 'react-i18next';
 
 type AppNavigationProp = NativeStackNavigationProp<AppStackType>;
 
@@ -25,6 +26,7 @@ const NavigationHeader: React.FC<NavigationHeaderProps> = ({
 }) => {
     const navigation = useNavigation<AppNavigationProp>();
     const { theme } = useTheme();
+    const { t } = useTranslation();
 
     const handleBackPress = () => {
         if (onBackPress) {
@@ -41,6 +43,8 @@ const NavigationHeader: React.FC<NavigationHeaderProps> = ({
                     style={[styles.backButton, { backgroundColor: theme.colors.surface }]}
                     onPress={handleBackPress}
                     testID={backButtonTestID}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('accessibility.back')}
                 >
                     <SvgIcon name="fa-chevron-left" size={verticalScale(20)} color={theme.colors.primary} />
                 </TouchableOpacity>

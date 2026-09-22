@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { View, StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
 import Button, { ButtonProps } from './Button';
+import { useTranslation } from 'react-i18next';
 
 export type ButtonGroupAlignment = 'start' | 'center' | 'end' | 'space-between';
 export type ButtonGroupLayout = 'horizontal' | 'vertical';
@@ -158,25 +159,27 @@ export const DialogButtons: FC<{
 }> = ({
     onConfirm,
     onCancel,
-    confirmText = 'Confirm',
-    cancelText = 'Cancel',
+    confirmText,
+    cancelText,
     confirmLoading = false,
     cancelLoading = false,
     confirmDisabled = false,
     cancelDisabled = false,
     reverse = false,
     layout = 'horizontal',
-}) => (
+}) => {
+    const { t } = useTranslation();
+    return (
         <ButtonGroup
             primaryButton={{
-                title: confirmText,
+                title: confirmText ?? t('common.actions.confirm'),
                 onPress: onConfirm,
                 variant: 'primary',
                 loading: confirmLoading,
                 disabled: confirmDisabled,
             }}
             secondaryButton={{
-                title: cancelText,
+                title: cancelText ?? t('common.actions.cancel'),
                 onPress: onCancel,
                 variant: 'secondary',
                 loading: cancelLoading,
@@ -187,7 +190,8 @@ export const DialogButtons: FC<{
             reverse={reverse}
             fill={true}
         />
-    );
+        );
+};
 
 // Save/Cancel buttons
 export const SaveCancelButtons: FC<{
@@ -199,10 +203,12 @@ export const SaveCancelButtons: FC<{
     cancelLoading?: boolean;
     saveDisabled?: boolean;
     cancelDisabled?: boolean;
-}> = (props) => (
+}> = (props) => {
+    const { t } = useTranslation();
+    return (
     <DialogButtons
-        confirmText={props.saveText || 'Save'}
-        cancelText={props.cancelText || 'Cancel'}
+        confirmText={props.saveText || t('common.actions.save')}
+        cancelText={props.cancelText || t('common.actions.cancel')}
         onConfirm={props.onSave}
         onCancel={props.onCancel}
         confirmLoading={props.saveLoading}
@@ -210,7 +216,8 @@ export const SaveCancelButtons: FC<{
         confirmDisabled={props.saveDisabled}
         cancelDisabled={props.cancelDisabled}
     />
-);
+    );
+};
 
 // Delete/Cancel buttons
 export const DeleteCancelButtons: FC<{
@@ -222,10 +229,12 @@ export const DeleteCancelButtons: FC<{
     cancelLoading?: boolean;
     deleteDisabled?: boolean;
     cancelDisabled?: boolean;
-}> = (props) => (
+}> = (props) => {
+    const { t } = useTranslation();
+    return (
     <ButtonGroup
         primaryButton={{
-            title: props.deleteText || 'Delete',
+            title: props.deleteText || t('common.actions.delete'),
             onPress: props.onDelete,
             variant: 'primary',
             color: 'danger',
@@ -233,7 +242,7 @@ export const DeleteCancelButtons: FC<{
             disabled: props.deleteDisabled,
         }}
         secondaryButton={{
-            title: props.cancelText || 'Cancel',
+            title: props.cancelText || t('common.actions.cancel'),
             onPress: props.onCancel,
             variant: 'secondary',
             loading: props.cancelLoading,
@@ -242,7 +251,8 @@ export const DeleteCancelButtons: FC<{
         alignment="space-between"
         fill={true}
     />
-);
+    );
+};
 
 // Yes/No buttons
 export const YesNoButtons: FC<{
@@ -254,17 +264,19 @@ export const YesNoButtons: FC<{
     noLoading?: boolean;
     yesDisabled?: boolean;
     noDisabled?: boolean;
-}> = (props) => (
+}> = (props) => {
+    const { t } = useTranslation();
+    return (
     <ButtonGroup
         primaryButton={{
-            title: props.yesText || 'Yes',
+            title: props.yesText || t('common.actions.yes'),
             onPress: props.onYes,
             variant: 'primary',
             loading: props.yesLoading,
             disabled: props.yesDisabled,
         }}
         secondaryButton={{
-            title: props.noText || 'No',
+            title: props.noText || t('common.actions.no'),
             onPress: props.onNo,
             variant: 'secondary',
             loading: props.noLoading,
@@ -273,7 +285,8 @@ export const YesNoButtons: FC<{
         alignment="space-between"
         fill={true}
     />
-);
+    );
+};
 
 // Primary with Icon button
 export const PrimaryWithActionButtons: FC<{

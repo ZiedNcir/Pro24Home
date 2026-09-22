@@ -10,6 +10,7 @@ import {
     moderateScale,
 } from '@utils/normalizedCss';
 import { useTheme } from '@theme';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     primaryTitle: string;
@@ -21,18 +22,19 @@ interface Props {
 
 const BottomActions: React.FC<Props> = ({
     primaryTitle,
-    secondaryTitle = 'Précédent',
+    secondaryTitle,
     onPrimaryPress,
     onSecondaryPress,
     primaryDisabled = false,
 }) => {
     const { theme } = useTheme();
+    const { t } = useTranslation();
     return (
         <Wrapper>
             {onSecondaryPress ? (
                 <SecondaryButton onPress={onSecondaryPress}>
                     <Text variant="bold" color="black" fontSize={13}>
-                        {secondaryTitle}
+                        {secondaryTitle ?? t('common.actions.previous')}
                     </Text>
                 </SecondaryButton>
             ) : null}

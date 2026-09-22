@@ -45,6 +45,7 @@ import {
 // Validation utils
 import { Regex } from '@utils/constant';
 import { colors } from '@theme';
+import i18n from '@utils/i18n';
 
 // Configure LayoutAnimation for Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -803,7 +804,7 @@ export function Field<T extends FieldValues>({
                             }}
                             autoFormat
                             textProps={{
-                                placeholder: rest.placeholder ?? 'Numéro de téléphone',
+                                placeholder: rest.placeholder ?? t('ui.form.phone.placeholder'),
                                 editable: !disabled && !readOnly,
                                 placeholderTextColor: theme.colors.textDisabled,
                                 underlineColorAndroid: 'transparent',
@@ -914,92 +915,92 @@ export const AnimatedField = React.memo(Field);
 // Export validation helper functions
 export const FieldValidators = {
     required: (message?: string) => ({
-        required: message || 'This field is required',
+        required: message || i18n.t('ui.form.error.required'),
     }),
 
     email: (message?: string) => ({
         pattern: {
             value: Regex.email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-            message: message || 'Invalid email format',
+            message: message || i18n.t('ui.form.error.invalidEmail'),
         },
     }),
 
     phone: (message?: string) => ({
         pattern: {
             value: /^[+]?[\d\s-]{10,}$/,
-            message: message || 'Invalid phone number',
+            message: message || i18n.t('ui.form.phone.invalid'),
         },
     }),
 
     password: (message?: string) => ({
         minLength: {
             value: 8,
-            message: message || 'Password must be at least 8 characters',
+            message: message || i18n.t('ui.form.error.passwordLength'),
         },
         validate: {
             hasUppercase: (value: string) =>
-                /[A-Z]/.test(value) || 'Must contain uppercase letter',
+                /[A-Z]/.test(value) || i18n.t('ui.form.error.passwordUppercase'),
             hasLowercase: (value: string) =>
-                /[a-z]/.test(value) || 'Must contain lowercase letter',
-            hasNumber: (value: string) => /\d/.test(value) || 'Must contain number',
+                /[a-z]/.test(value) || i18n.t('ui.form.error.passwordLowercase'),
+            hasNumber: (value: string) => /\d/.test(value) || i18n.t('ui.form.error.passwordNumber'),
             hasSpecial: (value: string) =>
                 /[!@#$%^&*(),.?":{}|<>]/.test(value) ||
-                'Must contain special character',
+                i18n.t('ui.form.error.passwordSpecial'),
         },
     }),
 
     minLength: (length: number, message?: string) => ({
         minLength: {
             value: length,
-            message: message || `Must be at least ${length} characters`,
+            message: message || i18n.t('ui.form.error.minimumLength', { count: length }),
         },
     }),
 
     maxLength: (length: number, message?: string) => ({
         maxLength: {
             value: length,
-            message: message || `Cannot exceed ${length} characters`,
+            message: message || i18n.t('ui.form.error.maximumLength', { count: length }),
         },
     }),
 
     min: (value: number, message?: string) => ({
         min: {
             value,
-            message: message || `Must be at least ${value}`,
+            message: message || i18n.t('ui.form.error.minimum', { count: value }),
         },
     }),
 
     max: (value: number, message?: string) => ({
         max: {
             value,
-            message: message || `Cannot exceed ${value}`,
+            message: message || i18n.t('ui.form.error.maximum', { count: value }),
         },
     }),
 
     numeric: (message?: string) => ({
         pattern: {
             value: /^[0-9]*$/,
-            message: message || 'Numbers only',
+            message: message || i18n.t('ui.form.error.numericOnly'),
         },
     }),
 
     alphanumeric: (message?: string) => ({
         pattern: {
             value: /^[a-zA-Z0-9]*$/,
-            message: message || 'Letters and numbers only',
+            message: message || i18n.t('ui.form.error.alphanumericOnly'),
         },
     }),
 
     url: (message?: string) => ({
         pattern: {
             value: /^https?:\/\/.+/,
-            message: message || 'Invalid URL',
+            message: message || i18n.t('ui.form.error.invalidUrl'),
         },
     }),
 
     match: (fieldName: string, message?: string) => ({
         validate: (value: string, formValues: any) =>
-            value === formValues[fieldName] || (message || 'Fields do not match'),
+            value === formValues[fieldName] || (message || i18n.t('ui.form.error.mustMatch')),
     }),
 
     customPattern: (pattern: RegExp, message: string) => ({

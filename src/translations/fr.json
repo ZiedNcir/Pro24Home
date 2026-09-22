@@ -124,7 +124,12 @@
                 "passwordUppercase": "Au moins une majuscule",
                 "passwordLowercase": "Au moins une minuscule",
                 "passwordNumber": "Au moins un chiffre",
-                "passwordSpecial": "Au moins un caractère spécial (@$!%*?&)"
+                "passwordSpecial": "Au moins un caractère spécial (@$!%*?&)",
+                "minimumLength": "Au moins {{count}} caractères",
+                "maximumLength": "Au maximum {{count}} caractères",
+                "minimum": "Au moins {{count}}",
+                "maximum": "Au maximum {{count}}",
+                "mustMatch": "Les champs ne correspondent pas"
             }
         },
         "steps": {
@@ -166,11 +171,28 @@
     "common": {
         "error": "Erreur",
         "ok": "OK",
-        "actions": {},
-        "status": {}
+        "actions": {
+            "back": "Retour",
+            "confirm": "Confirmer",
+            "cancel": "Annuler",
+            "save": "Enregistrer",
+            "delete": "Supprimer",
+            "yes": "Oui",
+            "no": "Non",
+            "previous": "Précédent"
+        },
+        "status": {
+            "loading": "Chargement...",
+            "requestSent": "Votre demande a été envoyée avec succès"
+        }
     },
-    "accessibility": {},
-    "navigation": {},
+    "accessibility": { "back": "Retour" },
+    "navigation": {
+        "home": "Accueil",
+        "interventions": "Interventions",
+        "settings": "Paramètres",
+        "newIntervention": "Nouvelle intervention"
+    },
     "permissions": {},
     "terms": {
         "welcome": "Bienvenue sur Pro24Home",

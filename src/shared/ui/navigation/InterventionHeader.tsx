@@ -7,6 +7,7 @@ import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import { horizontalScale, verticalScale, moderateScale } from '@utils/normalizedCss';
 import { useTheme } from '@theme';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     title?: string;
@@ -15,25 +16,26 @@ interface Props {
 }
 
 const InterventionHeader: React.FC<Props> = ({
-    title = 'Nouvelle intervention',
+    title,
     showHelp = true,
     onClose,
 }) => {
     const navigation = useNavigation();
     const { theme } = useTheme();
+    const { t } = useTranslation();
 
     return (
         <Header>
             <IconButton
                 onPress={onClose || (() => navigation.goBack())}
                 accessibilityRole="button"
-                accessibilityLabel="Retour"
+                accessibilityLabel={t('accessibility.back')}
             >
                 <SvgIcon name="fa-chevron-left" size={18} color={theme.colors.inputText} />
             </IconButton>
 
             <Text variant="bold" color="black" fontSize={16}>
-                {title}
+                {title ?? t('navigation.newIntervention')}
             </Text>
 
             <IconButton>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { hasCreatedAccount } from '@core/session/account-onboarding';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -48,7 +49,6 @@ import {
   PaymentTravelFeeScreen,
   PriceEstimationScreen,
 } from '@roles/client/payment-flow';
-import { PROFESSIONAL_BOTTOM_TABS } from '../../navigation/professionalNavigation';
 import { ProfessionalInterventionTrackingScreen } from '@roles/professional/intervention-tracking';
 import { createTabBarRenderer } from './createTabBarRenderer';
 import { navigationRef } from './navigation-service';
@@ -98,6 +98,7 @@ const BottomTabBar = ({
 }: BottomTabBarProps): React.JSX.Element | null => {
   const insets = useSafeAreaInsets();
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   if (state.routes[state.index]?.name === 'SettingPage') {
     return null;
@@ -109,11 +110,15 @@ const BottomTabBar = ({
     icon: IconName;
     title: string;
   }[] = isProfessional
-    ? PROFESSIONAL_BOTTOM_TABS
+    ? [
+        { route: 'Home', icon: 'fa-home', title: t('navigation.home') },
+        { route: 'ListIntervention', icon: 'fa-list', title: t('navigation.interventions') },
+        { route: 'SettingPage', icon: 'fa-cog', title: t('navigation.settings') },
+      ]
     : [
-        { route: 'Home', icon: 'fa-home', title: 'Home' },
-        { route: 'ListIntervention', icon: 'fa-list', title: 'Intervention' },
-        { route: 'SettingPage', icon: 'fa-cog', title: 'Params' },
+        { route: 'Home', icon: 'fa-home', title: t('navigation.home') },
+        { route: 'ListIntervention', icon: 'fa-list', title: t('navigation.interventions') },
+        { route: 'SettingPage', icon: 'fa-cog', title: t('navigation.settings') },
       ];
 
   return (

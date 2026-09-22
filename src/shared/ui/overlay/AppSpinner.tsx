@@ -5,6 +5,7 @@ import CustomModal from './CustomModal';
 import SvgIcon from '@shared/ui/icon/SvgIcon';
 import Text from '@shared/ui/typography/Text';
 import type { IconName } from '@shared/ui/icon/SvgIcon';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -91,8 +92,10 @@ export const Spinner: React.FC<SpinnerProps> = ({
     closeOnBackdropPress = false,
     duration = 2000,
     showLoadingText = false,
-    loadingText = 'Loading...',
+    loadingText,
 }) => {
+    const { t } = useTranslation();
+    const resolvedLoadingText = loadingText ?? t('common.status.loading');
     // Animation refs
     const rotateAnim = useRef(new Animated.Value(0)).current;
     const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -322,9 +325,9 @@ export const Spinner: React.FC<SpinnerProps> = ({
         >
             {renderSpinnerContent()}
 
-            {(message || (showLoadingText && loadingText)) && (
+            {(message || showLoadingText) && (
                 <MessageText style={messageStyle}>
-                    {message || loadingText}
+                    {message || resolvedLoadingText}
                 </MessageText>
             )}
         </SpinnerContainer>
