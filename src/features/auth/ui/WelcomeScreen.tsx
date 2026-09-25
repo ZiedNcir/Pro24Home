@@ -87,7 +87,6 @@ const Welcome: React.FC = () => {
 
   return (
     <ScreenContainer
-      mode="light"
       scrollable
       paddingHorizontal={0}
       paddingVertical={0}

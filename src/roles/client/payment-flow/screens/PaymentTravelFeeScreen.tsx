@@ -38,7 +38,6 @@ export const PaymentTravelFeeScreen = () => {
 
     return (
         <ScreenContainer
-            mode="light"
             paddingHorizontal={horizontalScale(18)}
             paddingVertical={verticalScale(12)}
         >

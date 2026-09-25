@@ -97,7 +97,7 @@ const InterventionListScreen = () => {
     );
 
     return (
-        <ScreenContainer mode="light" paddingHorizontal={horizontalScale(18)} paddingVertical={verticalScale(12)}>
+        <ScreenContainer paddingHorizontal={horizontalScale(18)} paddingVertical={verticalScale(12)}>
             <ListHeader>
                 <LogoMediumPro24Icon width={horizontalScale(112)} height={verticalScale(36)} />
                 {!isProfessional && <NewButton onPress={() => (navigation as any).navigate('NewIntervention')}>

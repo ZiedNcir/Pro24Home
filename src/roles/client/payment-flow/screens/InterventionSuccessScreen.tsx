@@ -15,7 +15,6 @@ export const InterventionSuccessScreen = () => {
     const navigation = useNavigation<any>();
     return (
         <ScreenContainer
-            mode="light"
             centered
             paddingHorizontal={horizontalScale(18)}
             paddingVertical={verticalScale(18)}

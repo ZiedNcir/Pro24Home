@@ -38,7 +38,7 @@ const InterventionDetailScreen = () => {
     const [isRatingVisible, setIsRatingVisible] = useState(false);
 
     if (isLoading) return <InterventionDetailSkeleton />;
-    if (isError || !intervention) return <ScreenContainer mode="light" centered><Text variant="regularSmall" color="gray600">{t('intervention.detail.loadFailed')}</Text></ScreenContainer>;
+    if (isError || !intervention) return <ScreenContainer centered><Text variant="regularSmall" color="gray600">{t('intervention.detail.loadFailed')}</Text></ScreenContainer>;
 
     const detailIntervention = normalizeInterventionResponse(intervention);
     const copy = getInterventionDetailCopy(isProfessional);
@@ -66,7 +66,7 @@ const InterventionDetailScreen = () => {
 
     return (
         <>
-            <ScreenContainer mode="light" scrollable paddingHorizontal={18} paddingVertical={12} contentContainerStyle={{ paddingBottom: verticalScale(30) }}>
+            <ScreenContainer scrollable paddingHorizontal={18} paddingVertical={12} contentContainerStyle={{ paddingBottom: verticalScale(30) }}>
                 <InterventionHeader title={copy.title} showHelp={false} />
                 <StatusRow>
                     <StatusBadge background={getInterventionStatusColor(detailIntervention.status)}><Text variant="bold" color="success" fontSize={12}>{getInterventionStatusLabel(detailIntervention.status)}</Text></StatusBadge>

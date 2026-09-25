@@ -10,7 +10,7 @@ import { moderateScale, verticalScale } from '@utils/normalizedCss';
 const InterventionDetailSkeleton = () => {
     const { t } = useTranslation();
     return (
-    <ScreenContainer mode="light" scrollable paddingHorizontal={18} paddingVertical={12}>
+    <ScreenContainer scrollable paddingHorizontal={18} paddingVertical={12}>
         <InterventionHeader title={t('intervention.detail.detailTitle')} showHelp={false} />
         <StatusSkeleton />
         <TitleSkeleton />

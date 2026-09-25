@@ -61,7 +61,7 @@ const ScreenContainer = React.forwardRef<View, ScreenContainerProps>(
       backgroundImage,
       useImageBackground = false,
       imageResizeMode = 'cover',
-      mode = 'light',
+      mode,
       centered = false,
       withTopSafeArea = true,
       withBottomSafeArea = false,
@@ -72,10 +72,11 @@ const ScreenContainer = React.forwardRef<View, ScreenContainerProps>(
     },
     ref,
   ) => {
-    const { theme } = useTheme();
+    const { theme, themeMode } = useTheme();
+    const resolvedMode = mode ?? themeMode;
     const resolvedBackground = backgroundColor || theme.colors.background;
     const resolvedStatusBarStyle =
-      statusBarStyle || getStatusBarStyleByMode(mode);
+      statusBarStyle || getStatusBarStyleByMode(resolvedMode);
 
     const safeAreaEdges: Edge[] = [];
 

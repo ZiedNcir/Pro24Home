@@ -104,7 +104,6 @@ export const NotificationsScreen = () => {
     if (isLoading) {
         return (
             <ScreenContainer
-                mode="light"
                 scrollable
                 useImageBackground
                 backgroundImage={require('@assets/images/background_ligth.png')}
@@ -124,7 +123,6 @@ export const NotificationsScreen = () => {
     if (error) {
         return (
             <ScreenContainer
-                mode="light"
                 scrollable
                 useImageBackground
                 backgroundImage={require('@assets/images/background_ligth.png')}
@@ -143,7 +141,6 @@ export const NotificationsScreen = () => {
 
     return (
         <ScreenContainer
-            mode="light"
             scrollable
             useImageBackground
             backgroundImage={require('@assets/images/background_ligth.png')}

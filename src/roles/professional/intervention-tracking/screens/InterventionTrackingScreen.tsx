@@ -119,8 +119,8 @@ const ProfessionalInterventionTrackingScreen = () => {
         navigationController.stopGuidance().catch(() => undefined);
     }, [navigationController]);
 
-    if (isLoading) return <ScreenContainer mode="light" centered><ActivityIndicator color={colors.primary} /></ScreenContainer>;
-    if (isError || !intervention) return <ScreenContainer mode="light" centered><Text variant="regularSmall" color="gray600">{t('professional.tracking.loadFailed')}</Text></ScreenContainer>;
+    if (isLoading) return <ScreenContainer centered><ActivityIndicator color={colors.primary} /></ScreenContainer>;
+    if (isError || !intervention) return <ScreenContainer centered><Text variant="regularSmall" color="gray600">{t('professional.tracking.loadFailed')}</Text></ScreenContainer>;
 
     const clientName = getInterventionClientName(intervention.client);
     const clientPhone = intervention.client?.phone_number;
@@ -166,7 +166,7 @@ const ProfessionalInterventionTrackingScreen = () => {
         }
     };
 
-    return <ScreenContainer mode="light" paddingHorizontal={0} paddingVertical={0}>
+    return <ScreenContainer paddingHorizontal={0} paddingVertical={0}>
         <MapWrapper>
             <NavigationView
                 style={{ flex: 1 }}

@@ -45,7 +45,6 @@ export const PriceEstimationScreen = () => {
 
     return (
         <ScreenContainer
-            mode="light"
             scrollable
             paddingHorizontal={horizontalScale(18)}
             paddingVertical={verticalScale(12)}
