@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
     Pressable,
+    StyleSheet,
     TextInput,
     TextInputProps,
     View,
@@ -791,7 +792,7 @@ export function Field<T extends FieldValues>({
                 style={[outerAnimatedStyle, inputWrapperStyle]}
             >
                 <InnerTransform style={innerAnimatedStyle}>
-                    <LeftWrapper style={{ paddingLeft: 0 }}>
+                    <LeftWrapper style={styles.phoneWrapper}>
                         <PhoneInput
                             ref={phoneInput}
                             initialValue={phoneNumber}
@@ -820,7 +821,7 @@ export function Field<T extends FieldValues>({
                                 fontSize: fontPixel(14),
                                 fontFamily: theme.typography.fonts.inter.medium,
                             }}
-                            style={{ paddingHorizontal: horizontalScale(10), width: '100%' }}
+                            style={styles.phoneInput}
                         />
                     </LeftWrapper>
 
@@ -1012,3 +1013,8 @@ export const FieldValidators = {
 };
 
 export default Field;
+
+const styles = StyleSheet.create({
+    phoneWrapper: { paddingLeft: 0 },
+    phoneInput: { paddingHorizontal: horizontalScale(10), width: '100%' },
+});

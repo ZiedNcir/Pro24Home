@@ -137,6 +137,7 @@ const ButtonWrapper = styled.View<ButtonWrapperProps>`
 `;
 
 const styles = StyleSheet.create({
+    centered: { alignItems: 'center' },
     flexButton: {
         flex: 1,
     },
@@ -305,7 +306,7 @@ export const PrimaryWithActionButtons: FC<{
 
 // Simple single button group (centered)
 export const CenteredButton: FC<ButtonProps> = (props) => (
-    <View style={{ alignItems: 'center' }}>
+    <View style={styles.centered}>
         <Button {...props} />
     </View>
 );

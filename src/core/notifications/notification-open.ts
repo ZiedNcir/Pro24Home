@@ -42,7 +42,7 @@ export const initializeNotificationOpenHandler = (): void => {
   listening = true;
   OneSignal.Notifications.addEventListener('click', (event: any) => {
     const target = parseTarget(event.notification?.additionalData);
-    if (target) void openTarget(target);
+    if (target) openTarget(target).catch(() => undefined);
     else if (navigationRef.isReady()) navigationRef.navigate('Notifications');
   });
 };
@@ -51,5 +51,5 @@ export const flushPendingNotificationOpen = (): void => {
   if (!pendingTarget) return;
   const target = pendingTarget;
   pendingTarget = null;
-  void openTarget(target);
+  openTarget(target).catch(() => undefined);
 };

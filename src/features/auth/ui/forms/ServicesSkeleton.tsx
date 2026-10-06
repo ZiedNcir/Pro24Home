@@ -1,7 +1,7 @@
 import { colors } from '@theme';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import React from 'react';
-import { Animated, View } from 'react-native';
+import { Animated, StyleSheet, View } from 'react-native';
 
 // --- Simple skeleton blocks (no deps) ---
 const SkeletonBlock = ({
@@ -65,11 +65,7 @@ const ServicesSkeleton = ({ rows = 6 }: { rows?: number }) => {
             {Array.from({ length: rows }).map((_, i) => (
                 <View
                     key={i}
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginBottom: verticalScale(12),
-                    }}
+                    style={styles.row}
                 >
                     <SkeletonBlock width={22} height={22} radius={6} />
                     <SkeletonBlock
@@ -83,3 +79,5 @@ const ServicesSkeleton = ({ rows = 6 }: { rows?: number }) => {
     );
 };
 export default ServicesSkeleton;
+
+const styles = StyleSheet.create({ row: { flexDirection: 'row', alignItems: 'center', marginBottom: verticalScale(12) } });

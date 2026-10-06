@@ -42,7 +42,7 @@ export const initializeOneSignal = (): void => {
   OneSignal.Debug.setLogLevel(LogLevel.Verbose);
   OneSignal.initialize(ONESIGNAL_APP_ID);
   OneSignal.User.pushSubscription.addEventListener('change', onPushSubscriptionChange);
-  void readSubscriptionId().then(publishSubscriptionId);
+  readSubscriptionId().then(publishSubscriptionId).catch(() => undefined);
 };
 
 export const subscribeToOneSignalSubscription = (listener: SubscriptionListener): (() => void) => {

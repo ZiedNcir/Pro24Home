@@ -47,7 +47,7 @@ const StepProgress: React.FC<Props> = ({ currentStep }) => {
                             <Text
                                 variant="notification"
                                 color={isActive ? 'primary' : 'gray600'}
-                                style={{ textAlign: 'center', marginTop: verticalScale(6) }}
+                                style={[styles.stepLabel, { marginTop: verticalScale(6) }]}
                             >
                                 {label}
                             </Text>
@@ -60,6 +60,8 @@ const StepProgress: React.FC<Props> = ({ currentStep }) => {
 };
 
 export default StepProgress;
+
+const styles = StyleSheet.create({ stepLabel: { textAlign: 'center' } });
 
 const Wrapper = styled.View`
   margin-top: ${verticalScale(14)}px;

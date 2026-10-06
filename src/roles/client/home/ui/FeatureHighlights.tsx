@@ -1,6 +1,7 @@
 // components/FeatureHighlights.tsx
 
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
@@ -49,7 +50,7 @@ const FeatureHighlights = () => {
                         color="black"
                         fontSize={12}
                         lineHeight={16}
-                        style={{ textAlign: 'center', marginTop: verticalScale(8) }}
+                        style={[styles.featureText, { marginTop: verticalScale(8) }]}
                     >
                         {t(item.titleKey)}
                     </Text>
@@ -59,7 +60,7 @@ const FeatureHighlights = () => {
                         color="gray600"
                         fontSize={11}
                         lineHeight={15}
-                        style={{ textAlign: 'center', marginTop: verticalScale(8) }}
+                        style={[styles.featureText, { marginTop: verticalScale(8) }]}
                     >
                         {t(item.descriptionKey)}
                     </Text>
@@ -72,6 +73,8 @@ const FeatureHighlights = () => {
 };
 
 export default FeatureHighlights;
+
+const styles = StyleSheet.create({ featureText: { textAlign: 'center' } });
 
 const Container = styled.View`
   flex-direction: row;

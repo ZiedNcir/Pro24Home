@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import {
     Modal,
     ModalProps,
+    StyleSheet,
     TouchableWithoutFeedback,
 } from 'react-native';
 import styled from 'styled-components/native';
@@ -138,8 +139,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
                         <ModalContent
                             position={position}
                             style={[
-                                position === 'bottom' && { borderBottomLeftRadius: 0, borderBottomRightRadius: 0 },
-                                position === 'top' && { borderTopLeftRadius: 0, borderTopRightRadius: 0 },
+                                position === 'bottom' && styles.bottomContent,
+                                position === 'top' && styles.topContent,
                                 contentStyle,
                             ]}
                         >
@@ -154,3 +155,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 
 
 export default CustomModal;
+
+const styles = StyleSheet.create({
+    bottomContent: { borderBottomLeftRadius: 0, borderBottomRightRadius: 0 },
+    topContent: { borderTopLeftRadius: 0, borderTopRightRadius: 0 },
+});

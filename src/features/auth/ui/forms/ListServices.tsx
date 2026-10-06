@@ -120,10 +120,10 @@ const ServicesSkeleton = ({ rows = 6 }: { rows?: number }) => {
             {Array.from({ length: rows }).map((_, i) => (
                 <SkeletonRowContainer key={i}>
                     <SkeletonCircle style={{ opacity }} />
-                    <View style={{ flex: 1, marginLeft: horizontalScale(12) }}>
-                        <SkeletonLine style={{ width: '60%', opacity }} />
+                    <View style={[styles.skeletonContent, { marginLeft: horizontalScale(12) }]}>
+                        <SkeletonLine style={[styles.shortSkeleton, { opacity }]} />
                         <View style={{ height: verticalScale(6) }} />
-                        <SkeletonLine style={{ width: '85%', height: 12, opacity }} />
+                        <SkeletonLine style={[styles.longSkeleton, { opacity }]} />
                     </View>
                 </SkeletonRowContainer>
             ))}
@@ -186,7 +186,7 @@ const ListeServices = ({
                 <ServiceContent>
                     <Text variant="medium" color={theme.colors.textPrimary} fontSize={theme.typography.sizes.title.small}>{item.name}</Text>
                     {item.description ? (
-                        <Text variant="regular" color={theme.colors.textSecondary} fontSize={theme.typography.sizes.headline.medium} style={{ marginTop: 2 }}>
+                        <Text variant="regular" color={theme.colors.textSecondary} fontSize={theme.typography.sizes.headline.medium} style={styles.serviceDescription}>
                             {item.description}
                         </Text>
                     ) : null}
@@ -214,6 +214,10 @@ const ListeServices = ({
 };
 
 const styles = StyleSheet.create({
+    skeletonContent: { flex: 1 },
+    shortSkeleton: { width: '60%' },
+    longSkeleton: { width: '85%', height: 12 },
+    serviceDescription: { marginTop: 2 },
     list: {
         paddingBottom: verticalScale(2),
 

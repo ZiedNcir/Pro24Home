@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
@@ -27,7 +28,7 @@ export const InterventionSuccessScreen = () => {
                 variant="bold"
                 color="black"
                 fontSize={22}
-                style={{ textAlign: 'center', marginTop: verticalScale(24) }}
+                style={[styles.centeredText, { marginTop: verticalScale(24) }]}
             >
                 {t('payment.success.title')}
             </Text>
@@ -35,7 +36,7 @@ export const InterventionSuccessScreen = () => {
             <Text
                 variant="regular"
                 color="gray600"
-                style={{ textAlign: 'center', marginTop: verticalScale(12) }}
+                style={[styles.centeredText, { marginTop: verticalScale(12) }]}
             >
                 {t('payment.success.description')}
             </Text>
@@ -100,7 +101,7 @@ const DetailRow = ({
                 {title}
             </Text>
             {subtitle ? (
-                <Text variant="regularSmall" color="gray600" style={{ marginTop: 4 }}>
+                <Text variant="regularSmall" color="gray600" style={styles.subtitle}>
                     {subtitle}
                 </Text>
             ) : null}
@@ -147,3 +148,5 @@ const PrimaryButton = styled.TouchableOpacity`
   align-items: center;
   margin-top: ${verticalScale(12)}px;
 `;
+
+const styles = StyleSheet.create({ centeredText: { textAlign: 'center' }, subtitle: { marginTop: 4 } });

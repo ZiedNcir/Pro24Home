@@ -99,7 +99,7 @@ const ScreenContainer = React.forwardRef<View, ScreenContainerProps>(
         showsVerticalScrollIndicator={false}
         bounces={false}
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={[{ flexGrow: 1 }, contentContainerStyle]}
+        contentContainerStyle={[styles.scrollContent, contentContainerStyle]}
         {...(props as ScrollViewProps)}
       >
         <ContentInner
@@ -183,6 +183,7 @@ const ContentInner = styled(View) <{
 `;
 
 const styles = StyleSheet.create({
+  scrollContent: { flexGrow: 1 },
   backgroundImage: {
     width: '100%',
     height: '100%',

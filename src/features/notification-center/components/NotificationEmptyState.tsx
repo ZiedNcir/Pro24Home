@@ -1,4 +1,5 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
@@ -23,7 +24,7 @@ const NotificationEmptyState = () => {
             <Text
                 variant="regularSmall"
                 color="gray600"
-                style={{ textAlign: 'center', marginTop: verticalScale(4) }}
+                style={[styles.description, { marginTop: verticalScale(4) }]}
             >
                 {t('notifications.emptyDescription')}
             </Text>
@@ -32,6 +33,8 @@ const NotificationEmptyState = () => {
 };
 
 export default NotificationEmptyState;
+
+const styles = StyleSheet.create({ description: { textAlign: 'center' } });
 
 const Wrapper = styled.View`
   align-items: center;

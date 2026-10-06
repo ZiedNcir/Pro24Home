@@ -7,7 +7,7 @@ import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Toast } from '@core/notifications/toast';
 import { getOneSignalSubscriptionId } from '../../../../core/notifications/oneSignalSubscription';
@@ -276,7 +276,7 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                 </StepIndicator>
 
                 <FormIntro>
-                    <Text variant="bold" color={theme.colors.textSecondary} fontSize={11} style={{ letterSpacing: 1, marginBottom: verticalScale(6) }}>{t('auth.registrationSteps.clientHeading')}</Text>
+                    <Text variant="bold" color={theme.colors.textSecondary} fontSize={11} style={styles.formHeading}>{t('auth.registrationSteps.clientHeading')}</Text>
                     <Text variant="bold" color={theme.colors.textPrimary} fontSize={18} style={{ marginBottom: verticalScale(14) }}>
                         {step === 0 ? t('ui.form.personalInfo.label') : t('ui.form.security.label')}
                     </Text>
@@ -500,3 +500,7 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
 };
 
 export default ClientForm;
+
+const styles = StyleSheet.create({
+    formHeading: { letterSpacing: 1, marginBottom: verticalScale(6) },
+});

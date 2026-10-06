@@ -1,4 +1,5 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import { Provider } from 'react-redux';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ToastProvider } from 'react-native-toast-notifications';
@@ -22,7 +23,7 @@ export const AppProviders = ({ children }: AppProvidersProps) => (
         dangerColor="#F44336"
         warningColor="#FF9800"
         normalColor="#FF6B00"
-        textStyle={{ fontFamily: 'Inter-Regular', fontSize: 14, color: '#FFFFFF' }}
+        textStyle={styles.toastText}
         offset={50}
         offsetTop={30}
         offsetBottom={40}
@@ -35,3 +36,7 @@ export const AppProviders = ({ children }: AppProvidersProps) => (
     </ThemeProvider>
   </Provider>
 );
+
+const styles = StyleSheet.create({
+  toastText: { fontFamily: 'Inter-Regular', fontSize: 14, color: '#FFFFFF' },
+});

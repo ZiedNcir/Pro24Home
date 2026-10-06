@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, Modal, PermissionsAndroid, Platform, Pressable } from 'react-native';
+import { ActivityIndicator, Alert, Modal, PermissionsAndroid, Platform, Pressable, StyleSheet } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import styled from 'styled-components/native';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
@@ -169,7 +169,7 @@ const ProfessionalInterventionTrackingScreen = () => {
     return <ScreenContainer paddingHorizontal={0} paddingVertical={0}>
         <MapWrapper>
             <NavigationView
-                style={{ flex: 1 }}
+                style={styles.navigationView}
                 navigationUIEnabledPreference={NavigationUIEnabledPreference.AUTOMATIC}
                 tripProgressBarEnabled
                 trafficPromptsEnabled
@@ -259,6 +259,8 @@ const geolocationCleanup = (watchId: number) => {
 };
 
 export default ProfessionalInterventionTrackingScreen;
+
+const styles = StyleSheet.create({ navigationView: { flex: 1 } });
 
 const MapWrapper = styled.View`flex: 1;`;
 const NavigationBanner = styled.View<{ active: boolean }>`position: absolute; top: ${verticalScale(78)}px; left: ${horizontalScale(18)}px; right: ${horizontalScale(18)}px; min-height: ${verticalScale(70)}px; padding: ${verticalScale(10)}px ${horizontalScale(12)}px; border-radius: ${moderateScale(16)}px; background-color: ${({ active }) => active ? colors.primary : colors.white}; flex-direction: row; align-items: center; elevation: 5;`;
