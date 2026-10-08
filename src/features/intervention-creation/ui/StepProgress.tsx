@@ -1,4 +1,5 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';

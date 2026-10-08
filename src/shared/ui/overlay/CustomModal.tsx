@@ -38,14 +38,14 @@ interface CustomModalProps extends Partial<ModalProps> {
 
 // Styled Components
 const Overlay = styled.Pressable<{
-    opacity: number;
-    color: string;
-    position: string;
+    $overlayOpacity: number;
+    $overlayColor: string;
+    $position: string;
 }>`
   flex: 1;
-  background-color: ${({ color, opacity }) => `rgba(${hexToRgb(color)}, ${opacity})`};
-  justify-content: ${({ position }) => {
-        switch (position) {
+  background-color: ${({ $overlayColor, $overlayOpacity }) => `rgba(${hexToRgb($overlayColor)}, ${$overlayOpacity})`};
+  justify-content: ${({ $position }) => {
+        switch ($position) {
             case 'top': return 'flex-start';
             case 'bottom': return 'flex-end';
             case 'center': return 'center';
@@ -53,24 +53,24 @@ const Overlay = styled.Pressable<{
             default: return 'center';
         }
     }};
-  align-items: ${({ position }) => position === 'fullScreen' ? 'stretch' : 'center'};
-  padding: ${({ position }) => position === 'fullScreen' ? '0px' : '20px'};
+  align-items: ${({ $position }) => $position === 'fullScreen' ? 'stretch' : 'center'};
+  padding: ${({ $position }) => $position === 'fullScreen' ? '0px' : '20px'};
 `;
 
 const ModalContent = styled.View<{
-    position: string;
+    $position: string;
 }>`
   background-color: ${({ theme }) => theme?.colors?.background || '#FFFFFF'};
-  border-radius: ${({ position }) => position === 'fullScreen' ? '0px' : '12px'};
-  width: ${({ position }) => {
-        switch (position) {
+  border-radius: ${({ $position }) => $position === 'fullScreen' ? '0px' : '12px'};
+  width: ${({ $position }) => {
+        switch ($position) {
             case 'fullScreen': return '100%';
-            case 'center': return '90%';
+            case 'center': return '100%';
             default: return '100%';
         }
     }};
-  max-width: ${({ position }) => position === 'center' ? '400px' : '100%'};
-  max-height: ${({ position }) => position === 'fullScreen' ? '100%' : '90%'};
+  max-width: ${({ $position }) => $position === 'center' ? '400px' : '100%'};
+  max-height: ${({ $position }) => $position === 'fullScreen' ? '100%' : '90%'};
   elevation: 5;
   shadow-color: #000;
   shadow-offset: 0px 2px;
@@ -130,14 +130,14 @@ const CustomModal: React.FC<CustomModalProps> = ({
                 accessible={false}
             >
                 <Overlay
-                    opacity={overlayOpacity}
-                    color={overlayColor}
-                    position={position}
+                    $overlayOpacity={overlayOpacity}
+                    $overlayColor={overlayColor}
+                    $position={position}
                     style={containerStyle}
                 >
                     <TouchableWithoutFeedback onPress={handleContentPress}>
                         <ModalContent
-                            position={position}
+                            $position={position}
                             style={[
                                 position === 'bottom' && styles.bottomContent,
                                 position === 'top' && styles.topContent,

@@ -1,12 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import { ActivityIndicator, Linking, Platform, Pressable, StyleSheet, View } from 'react-native';
+import Geolocation from '@react-native-community/geolocation';
+import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/native';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
+import { ErrorDialog, WarningDialog } from '@shared/ui/overlay/DialogModal';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
@@ -32,6 +34,12 @@ const serviceIcon = (item: Intervention): IconName => {
     return value.includes('plomb') ? 'fa-wrench' : value.includes('élect') ? 'fa-bolt' : 'fa-building';
 };
 
+type DashboardDialog = {
+    type: 'warning' | 'error';
+    title: string;
+    message: string;
+};
+
 const ProfessionalHomeDashboard = () => {
     const { t, i18n } = useTranslation();
     const navigation = useNavigation<any>();
@@ -40,22 +48,81 @@ const ProfessionalHomeDashboard = () => {
     const { data, isLoading, refetch } = useGetInterventionsQuery({ type: 'professional' });
     const { data: unreadData } = useGetUnreadNotificationCountQuery();
     const [localOnline, setLocalOnline] = useState<boolean | null>(null);
-    const [currentPosition, setCurrentPosition] = useState<Coordinates | null>(null);
+    const [dialog, setDialog] = useState<DashboardDialog | null>(null);
     const isOnline = localOnline ?? user?.professional?.online_status ?? false;
     const interventions = useMemo(() => data?.data ?? [], [data?.data]);
     const name = user?.professional?.first_name || user?.name?.split(' ')[0] || t('client.home.user');
 
     const toggleStatus = async () => {
         const next = !isOnline;
+
+        let hasLocationPermission = false;
         try {
-            if (!currentPosition) {
-                Alert.alert(t('professional.dashboard.positionUnavailable'), t('professional.dashboard.positionRequired'));
-                return;
+            if (Platform.OS === 'ios') {
+                hasLocationPermission = (await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE)) === RESULTS.GRANTED;
+            } else {
+                const [fineLocation, coarseLocation] = await Promise.all([
+                    check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION),
+                    check(PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION),
+                ]);
+                hasLocationPermission = fineLocation === RESULTS.GRANTED || coarseLocation === RESULTS.GRANTED;
             }
-            await updateStatus(buildProfessionalStatusPayload(next, currentPosition)).unwrap();
+        } catch {
+            hasLocationPermission = false;
+        }
+
+        if (!hasLocationPermission) {
+            setDialog({
+                type: 'warning',
+                title: t('professional.dashboard.locationPermissionTitle'),
+                message: t('professional.dashboard.locationPermissionMessage'),
+            });
+            return;
+        }
+
+        let coordinates: Coordinates;
+        try {
+            const position = await new Promise<Coordinates>((resolve, reject) => {
+                Geolocation.getCurrentPosition(
+                    ({ coords }) => resolve({ latitude: coords.latitude, longitude: coords.longitude }),
+                    reject,
+                    { enableHighAccuracy: true, timeout: 15_000, maximumAge: 10_000 },
+                );
+            });
+            coordinates = position;
+        } catch {
+            setDialog({
+                type: 'error',
+                title: t('professional.dashboard.positionUnavailable'),
+                message: t('professional.dashboard.positionRequired'),
+            });
+            return;
+        }
+
+        try {
+            await updateStatus(buildProfessionalStatusPayload(next, coordinates)).unwrap();
             setLocalOnline(next);
         } catch {
-            Alert.alert(t('professional.dashboard.statusUnavailable'), t('professional.dashboard.statusFailed'));
+            setDialog({
+                type: 'error',
+                title: t('professional.dashboard.statusUnavailable'),
+                message: t('professional.dashboard.statusFailed'),
+            });
+        }
+    };
+
+    const closeDialog = () => setDialog(null);
+
+    const openLocationSettings = async () => {
+        closeDialog();
+        try {
+            await Linking.openSettings();
+        } catch {
+            setDialog({
+                type: 'error',
+                title: t('professional.dashboard.statusUnavailable'),
+                message: t('professional.dashboard.locationSettingsUnavailable'),
+            });
         }
     };
 
@@ -83,6 +150,30 @@ const ProfessionalHomeDashboard = () => {
                 <StatusSwitch accessibilityRole="switch" accessibilityState={{ checked: isOnline }} onPress={toggleStatus} online={isOnline}><SwitchThumb online={isOnline} /></StatusSwitch>
             </StatusCard>
 
+            {dialog?.type === 'warning' ? (
+                <WarningDialog
+                    visible
+                    animationType="none"
+                    onRequestClose={closeDialog}
+                    title={dialog.title}
+                    message={dialog.message}
+                    primaryButtonTitle={t('professional.dashboard.openSettings')}
+                    onPrimaryPress={openLocationSettings}
+                    secondaryButtonTitle={t('professional.dashboard.cancel')}
+                    onSecondaryPress={closeDialog}
+                    showCloseButton={true}
+                />
+            ) : dialog ? (
+                <ErrorDialog
+                    visible
+                    animationType="none"
+                    onRequestClose={closeDialog}
+                    title={dialog.title}
+                    message={dialog.message}
+                    showCloseButton={true}
+                />
+            ) : null}
+
             <SectionHeading><View style={styles.sectionTitleWrap}><SvgIcon name="fa-folder-open" size={22} color={colors.primary} /><Text variant="title" color={colors.gray900} style={styles.sectionTitle}>{t('professional.dashboard.requests')}</Text></View>{interventions.length > 0 && <CountBadge><Text variant="bold" color={colors.primary}>{interventions.length}</Text></CountBadge>}</SectionHeading>
 
             {isLoading ? <Loading><ActivityIndicator color={colors.primary} /></Loading> : interventions.length === 0 ? <EmptyCard><SvgIcon name="fa-inbox" size={28} color={colors.gray500} /><Text variant="regular" color={colors.gray700}>{t('professional.dashboard.emptyRequests')}</Text></EmptyCard> : interventions.slice(0, 2).map(item => <RequestCard key={item.id} onPress={() => openIntervention(item)} accessibilityRole="button" accessibilityLabel={t('professional.dashboard.viewRequest') + ' ' + (item.title || t('professional.dashboard.request'))}>
@@ -96,17 +187,6 @@ const ProfessionalHomeDashboard = () => {
 
             {user?.documents?.some(document => document.status !== 'approved') !== false && <ProfilePrompt onPress={() => navigation.navigate('Documents')} accessibilityRole="button"><SvgIcon name="fa-shield-alt" size={25} color={colors.primary} /><View style={styles.promptCopy}><Text variant="bold" color={colors.gray900}>{t('professional.dashboard.completeProfile')}</Text><Text variant="regularSmall" color={colors.gray700}>{t('professional.dashboard.documentsPrompt')}</Text></View><SvgIcon name="fa-chevron-right" size={16} color={colors.primary} /></ProfilePrompt>}
             <Pressable onPress={refetch} accessibilityRole="button"><Text variant="regularSmall" color={colors.primary} style={styles.refresh}>{t('professional.dashboard.refresh')}</Text></Pressable>
-            <LocationMap
-                initialRegion={{ latitude: 36.8065, longitude: 10.1815, latitudeDelta: 0.1, longitudeDelta: 0.1 }}
-                provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
-                showsUserLocation
-                onUserLocationChange={event => {
-                    const coordinate = event.nativeEvent.coordinate;
-                    if (coordinate && Number.isFinite(coordinate.latitude) && Number.isFinite(coordinate.longitude)) {
-                        setCurrentPosition({ latitude: coordinate.latitude, longitude: coordinate.longitude });
-                    }
-                }}
-            />
         </ScreenContainer>
     );
 };
@@ -120,7 +200,6 @@ const StatusCard = styled.View<{ online: boolean }>`border-width: 1px; border-co
 const StatusIcon = styled.View<{ online: boolean }>`width: ${moderateScale(44)}px; height: ${moderateScale(44)}px; border-radius: ${moderateScale(23)}px; background-color: ${({ online }) => online ? colors.success : colors.gray500}; align-items: center; justify-content: center; margin-right: ${horizontalScale(12)}px;`;
 const StatusSwitch = styled(Pressable) <{ online: boolean }>`width: ${moderateScale(48)}px; height: ${moderateScale(28)}px; border-radius: ${moderateScale(16)}px; background-color: ${({ online }) => online ? colors.success : colors.gray300}; padding: ${moderateScale(3)}px; justify-content: center;`;
 const SwitchThumb = styled.View<{ online: boolean }>`width: ${moderateScale(22)}px; height: ${moderateScale(22)}px; border-radius: ${moderateScale(12)}px; background-color: ${colors.white}; align-self: ${({ online }) => online ? 'flex-end' : 'flex-start'};`;
-const LocationMap = styled(MapView)`position: absolute; width: 2px; height: 2px; opacity: 0.01;`;
 const SectionHeading = styled.View`flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: ${verticalScale(10)}px;`;
 const CountBadge = styled.View`min-width: ${moderateScale(28)}px; height: ${moderateScale(28)}px; border-radius: ${moderateScale(16)}px; background-color: #fff0e7; align-items: center; justify-content: center;`;
 const RequestCard = styled(Pressable)`border-width: 1px; border-color: ${colors.gray200}; border-radius: ${moderateScale(16)}px; padding: ${moderateScale(14)}px; margin-bottom: ${verticalScale(10)}px;`;

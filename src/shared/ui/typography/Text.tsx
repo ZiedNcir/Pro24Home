@@ -28,14 +28,14 @@ export interface TextProps extends RNTextProps, TextStyleProps {
 const DEFAULT_VARIANT: TextVariant = 'regular';
 
 const textVariants: Record<TextVariant, Required<TextStyleProps>> = {
-    title: { fontFamily: 'Poppins-SemiBold', fontWeight: '600', fontSize: 22, lineHeight: 28 },
-    header: { fontFamily: 'Poppins-Regular', fontWeight: '400', fontSize: 24, lineHeight: 32 },
-    regular: { fontFamily: 'Inter-Regular', fontWeight: '400', fontSize: 14, lineHeight: 20 },
-    regularSmall: { fontFamily: 'Inter-Regular', fontWeight: '400', fontSize: 12, lineHeight: 16 },
-    medium: { fontFamily: 'Inter-Medium', fontWeight: '500', fontSize: 16, lineHeight: 24 },
-    helper: { fontFamily: 'Inter-Regular', fontWeight: '400', fontSize: 12, lineHeight: 16 },
-    bold: { fontFamily: 'Inter-Bold', fontWeight: '700', fontSize: 16, lineHeight: 24 },
-    notification: { fontFamily: 'Inter-Medium', fontWeight: '500', fontSize: 11, lineHeight: 16 },
+    title: { fontFamily: 'Poppins-SemiBold', fontWeight: '600', fontSize: fontPixel(22), lineHeight: fontPixel(28) },
+    header: { fontFamily: 'Poppins-Regular', fontWeight: '400', fontSize: fontPixel(24), lineHeight: fontPixel(32) },
+    regular: { fontFamily: 'Inter-Regular', fontWeight: '400', fontSize: fontPixel(14), lineHeight: fontPixel(20) },
+    regularSmall: { fontFamily: 'Inter-Regular', fontWeight: '400', fontSize: fontPixel(12), lineHeight: fontPixel(16) },
+    medium: { fontFamily: 'Inter-Medium', fontWeight: '500', fontSize: fontPixel(16), lineHeight: fontPixel(24) },
+    helper: { fontFamily: 'Inter-Regular', fontWeight: '400', fontSize: fontPixel(12), lineHeight: fontPixel(16) },
+    bold: { fontFamily: 'Inter-Bold', fontWeight: '700', fontSize: fontPixel(16), lineHeight: fontPixel(24) },
+    notification: { fontFamily: 'Inter-Medium', fontWeight: '500', fontSize: fontPixel(11), lineHeight: fontPixel(16) },
 };
 
 const resolveColor = (c?: AppColor): string => {
