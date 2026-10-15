@@ -1,7 +1,13 @@
 import { UserType } from '@entities/user/model';
 import type { AuthResponse } from '@entities/user/model';
+import { PROFESSIONAL_DOCUMENTS } from '@roles/professional/documents/model/professional-documents';
 
-export type HomeRoute = 'Tabs' | 'ProfessionnelHome' | 'AccountPendingScreen';
+export type HomeRoute =
+    | 'Tabs'
+    | 'ProfessionnelHome'
+    | 'AccountPendingScreen'
+    | 'Documents'
+    | 'ProfessionalVerificationPending';
 export type AuthResponseLike = Partial<AuthResponse> & { data?: Partial<AuthResponse> };
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -9,12 +15,12 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 
 export const isInactiveAuthResponse = (response: unknown): boolean => {
     if (!isRecord(response)) return false;
-    if (response.is_active === 0 || response.is_active === '0') return true;
+    if (response.is_active === 0 || response.is_active === '0' || response.is_active === false) return true;
 
     if (isRecord(response.data)) {
-        if (response.data.is_active === 0 || response.data.is_active === '0') return true;
+        if (response.data.is_active === 0 || response.data.is_active === '0' || response.data.is_active === false) return true;
         return isRecord(response.data.data)
-            && (response.data.data.is_active === 0 || response.data.data.is_active === '0');
+            && (response.data.data.is_active === 0 || response.data.data.is_active === '0' || response.data.data.is_active === false);
     }
 
     return false;
@@ -29,7 +35,35 @@ export const getHomeRouteFromAuthResponse = (
         : response;
 
     const accountStatus = payload.is_active as unknown;
-    if (accountStatus === 0 || accountStatus === '0') return 'AccountPendingScreen';
     const userType = payload.user?.type ?? fallbackRole;
-    return userType === UserType.PROFESSIONAL ? 'ProfessionnelHome' : 'Tabs';
+    const isActive = accountStatus !== 0 && accountStatus !== '0' && accountStatus !== false;
+
+    if (userType === UserType.PROFESSIONAL) {
+        const documents = payload.user?.documents;
+        const submittedDocuments = Array.isArray(documents) ? documents : [];
+        const hasRejectedRequiredDocument = submittedDocuments.some(document =>
+            PROFESSIONAL_DOCUMENTS.some(requiredDocument => requiredDocument.name === document.name)
+                && document.status === 'rejected',
+        );
+        const hasAllRequiredDocuments = !hasRejectedRequiredDocument && PROFESSIONAL_DOCUMENTS.every(requiredDocument =>
+            submittedDocuments.some(document =>
+                document.name === requiredDocument.name && document.status !== 'rejected',
+            ),
+        );
+
+        if (!hasAllRequiredDocuments) return 'Documents';
+
+        const allDocumentsApproved = PROFESSIONAL_DOCUMENTS.every(requiredDocument =>
+            submittedDocuments.some(document =>
+                document.name === requiredDocument.name && document.status === 'approved',
+            ),
+        );
+
+        return isActive && allDocumentsApproved
+            ? 'ProfessionnelHome'
+            : 'ProfessionalVerificationPending';
+    }
+
+    if (!isActive) return 'AccountPendingScreen';
+    return 'Tabs';
 };

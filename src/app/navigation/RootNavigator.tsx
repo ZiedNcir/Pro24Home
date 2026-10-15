@@ -37,7 +37,10 @@ import { Button } from '@shared/ui/button/Button';
 import { useTheme } from '@theme';
 import { IconName } from '@shared/ui/icon';
 import { ProfileScreen } from '@roles/client/profile';
-import { DocumentsScreen as HomeProfessional } from '@roles/professional/documents';
+import {
+  DocumentsScreen as HomeProfessional,
+  ProfessionalVerificationPendingScreen,
+} from '@roles/professional/documents';
 import { ProfessionalHomeDashboard } from '@roles/professional/dashboard';
 import { NotificationsScreen } from '@features/notification-center';
 import { AddAddressScreen, SavedAddressesScreen } from '@features/address-management';
@@ -251,6 +254,10 @@ const AppNavigator: React.FC = () => {
         />
         <Stack.Screen name="ContactSupport" component={ContactSupportScreen} />
         <Stack.Screen name="Documents" component={HomeProfessional} />
+        <Stack.Screen
+          name="ProfessionalVerificationPending"
+          component={ProfessionalVerificationPendingScreen}
+        />
 
         <Stack.Screen name="AddAddress" component={AddAddressScreen} />
         <Stack.Screen name="SavedAddresses" component={SavedAddressesScreen} />

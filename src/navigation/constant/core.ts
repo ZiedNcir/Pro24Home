@@ -7,6 +7,7 @@ export type AppStackType = {
   RegisterScreen: { role?: 'client' | 'professional' };
   VerifyScreen: { email?: string | null; role: IRole | null };
   AccountPendingScreen: undefined;
+  ProfessionalVerificationPending: undefined;
   ContactSupport: undefined;
   AddAddress: undefined;
   SavedAddresses: undefined;
