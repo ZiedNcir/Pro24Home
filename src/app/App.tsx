@@ -1,3 +1,4 @@
+import { startOneSignalTokenSync } from '../core/notifications/startOneSignalTokenSync';
 import React, { useEffect } from 'react';
 import { LogBox } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
@@ -6,7 +7,6 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 
 import AuthBootstrap from './providers/AuthBootstrap';
 import RootNavigator from './navigation/RootNavigator';
-import { requestPermissions } from '../utils/permissions';
 import '../utils/i18n';
 import { AppProviders } from './providers/AppProviders';
 import { initializeOneSignal } from '../core/notifications/oneSignalSubscription';
@@ -20,8 +20,9 @@ const App = (): React.JSX.Element => {
   useEffect(() => {
     SplashScreen.hide();
     initializeOneSignal();
+    const stopTokenSync = startOneSignalTokenSync();
     initializeNotificationOpenHandler();
-    requestPermissions();
+    return stopTokenSync;
   }, []);
 
   return (

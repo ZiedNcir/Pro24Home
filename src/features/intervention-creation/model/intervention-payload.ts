@@ -36,3 +36,16 @@ export const buildInterventionPayload = ({
         ...photoFields,
     } as CreateInterventionRequest;
 };
+
+// The picker cache can be deleted by the OS. Data URIs survive in the saved payload
+// and are supported by React Native image rendering and native multipart uploads.
+export const createPersistentInterventionPhoto = (asset: {
+    base64?: string;
+    type?: string;
+    fileName?: string;
+}): InterventionPhoto => {
+    // Three attachments stay below Android AsyncStorage's per-row size limit.
+    if (!asset.base64 || asset.base64.length > 500_000) throw new Error('Photo cannot be saved');
+    const type = asset.type || 'image/jpeg';
+    return { uri: `data:${type};base64,${asset.base64}`, type, name: asset.fileName || `intervention-photo-${Date.now()}.jpg` };
+};

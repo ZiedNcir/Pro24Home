@@ -1,4 +1,4 @@
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import React from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
@@ -15,6 +15,7 @@ const SkeletonBlock = ({
     radius?: number;
     style?: any;
 }) => {
+    const { theme } = useTheme();
     const shimmer = React.useRef(new Animated.Value(0)).current;
 
     React.useEffect(() => {
@@ -50,7 +51,7 @@ const SkeletonBlock = ({
                     borderRadius: radius,
                     opacity,
                     // use your palette
-                    backgroundColor: colors.gray100,
+                    backgroundColor: theme.colors.surfaceVariant,
                 },
                 style,
             ]}

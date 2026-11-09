@@ -1,8 +1,9 @@
+import FormProgress from './FormProgress';
 import { Spinner } from '@shared/ui';
 import { Button } from '@shared/ui/button/Button';
 import Field from '@shared/ui/form/HookFormField';
 import { validateProfessionalRegistration, mapApiError, prepareRegistrationPayload } from '@features/auth/services/registration';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, useWindowDimensions } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
@@ -12,7 +13,7 @@ import styled from 'styled-components/native';
 
 
 // Import from new Redux architecture
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import type { RegisterProfessionalRequest } from '@entities/user/model';
 import type { Service } from '@entities/service/model';
@@ -22,7 +23,7 @@ import { selectAuthLoading, setError, setLoading } from '@store/slices/authSlice
 // Components
 import ListeServices from './ListServices';
 import Text from '@shared/ui/typography/Text';
-import { horizontalScale, verticalScale } from '@utils/normalizedCss';
+import { verticalScale } from '@utils/normalizedCss';
 
 import { useTheme } from '@theme';
 import { resolveSupportedLanguage } from '@utils/locale';
@@ -36,60 +37,36 @@ const Container = styled(View)`
   flex: 1;
   width: 100%;
   align-items: center;
-  padding-top: ${verticalScale(18)}px;
-  padding-bottom: ${verticalScale(28)}px;
+  padding-top: 0px;
+  padding-bottom: 0px;
 `;
 
 const StepContainer = styled(View)`
   width: 100%;
 `;
 
-const StepIndicator = styled(View)`
-  width: 100%;
-  margin-bottom: ${verticalScale(18)}px;
-`;
-
-const ProgressHeader = styled(View)`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  margin-bottom: ${verticalScale(8)}px;
-`;
-
-
-const ProgressTrack = styled(View)`
-  height: 6px;
-  overflow: hidden;
-  border-radius: 3px;
-  background-color: ${({ theme }) => theme.colors.surfaceVariant};
-`;
-
-const ProgressFill = styled(View)<{ width: string }>`
-  width: ${({ width }) => width};
-  height: 100%;
-  border-radius: 3px;
-  background-color: ${({ theme }) => theme.colors.primary};
-`;
-
 const FormIntro = styled(View)`
-  margin-bottom: ${verticalScale(20)}px;
+  width: 100%;
+  margin-bottom: 18px;
 `;
 
 
-const ButtonGroup = styled(View)`
+const ButtonGroup = styled(View)<{ $compact: boolean }>`
   flex-direction: row;
   align-items: center;
   width: 100%;
-  margin-top: ${verticalScale(20)}px;
+  margin-top: ${({ $compact }) => $compact ? 16 : 90}px;
+  padding-top: 20px;
+  border-top-width: 1px;
+  border-top-color: ${({ theme }) => theme.colors.border};
 `;
 
 
 const ScrollContainer = styled(KeyboardAwareScrollView)`
   flexGrow: 1;
   width: 100%;
-  padding-horizontal: ${horizontalScale(20)}px;
-  paddingVertical: ${verticalScale(5)}px;
+  padding-horizontal: 0px;
+  padding-vertical: 0px;
 `;
 
 const PreviousButton = styled(Button)`
@@ -99,7 +76,7 @@ const PreviousButton = styled(Button)`
 
 const NextButton = styled(Button)`
   flex: 1;
-  margin-left: ${verticalScale(10)}px;
+
 `;
 
 const SubmitButton = styled(Button)`
@@ -108,19 +85,22 @@ const SubmitButton = styled(Button)`
 
 // Types
 interface ProfessionalFormProps {
-    onSuccess?: (data: RegisterProfessionalRequest) => void;
+    onSuccess?: (data: Pick<RegisterProfessionalRequest, 'email' | 'phone_number'>) => void | Promise<void>;
+    referral?: Pick<RegisterProfessionalRequest, 'source' | 'commercial_id'>;
     onError?: (error: any) => void;
     services: Service[];
     servicesLoading?: boolean;
 
 }
 
-const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: ProfessionalFormProps) => {
+const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading, referral }: ProfessionalFormProps) => {
     const { theme } = useTheme();
+    const { width } = useWindowDimensions();
+    const [formWidth, setFormWidth] = useState(width - 36);
     const { t, i18n } = useTranslation();
     const dispatch = useAppDispatch();
     // Use the new RTK Query mutation hook
-    const [registerProfessional, { isLoading, error, isSuccess }] = useRegisterProfessionalMutation();
+    const [registerProfessional, { isLoading }] = useRegisterProfessionalMutation();
 
     // Use selector from new auth slice
     const authLoading = useAppSelector(selectAuthLoading);
@@ -129,9 +109,9 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
     const [step, setStep] = useState(0);
     const [selectedServices, setSelectedServices] = useState<number[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [submittedData, setSubmittedData] = useState<RegisterProfessionalRequest | null>(null);
+    const submittingRef = useRef(false);
 
-    const { control, handleSubmit, trigger, formState: { errors } } = useForm<RegisterProfessionalRequest>({
+    const { control, handleSubmit, trigger, setError: setFieldError, formState: { errors } } = useForm<RegisterProfessionalRequest>({
         defaultValues: {
             first_name: '',
             last_name: '',
@@ -158,57 +138,6 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
         { title: t('ui.form.security.label'), fields: ['email', 'password'] },
         { title: t('ui.form.services.label'), fields: ['services'] },
     ];
-
-    // Handle registration success
-    useEffect(() => {
-        if (isSuccess && onSuccess && submittedData) {
-            onSuccess(submittedData);
-        }
-    }, [isSuccess, onSuccess, submittedData]);
-
-    // Handle API errors
-    useEffect(() => {
-        if (error) {
-            console.error('Professional registration error:', error);
-
-            let errorMessage = t('auth.registrationFailed');
-
-            if ('data' in error && error.data) {
-                const apiError = error.data as any;
-                errorMessage = apiError?.errors || errorMessage;
-            } else if ('error' in error) {
-                errorMessage = error.error || errorMessage;
-            }
-
-            dispatch(setError(errorMessage));
-            if (errorMessage && typeof errorMessage === 'object') {
-                const field = Object.keys(errorMessage)[0];
-                if (field) {
-                    const msgArr = errorMessage[field];
-                    const msg = Array.isArray(msgArr) ? msgArr[0] : msgArr;
-
-                    console.log(`Error in field ${field}: ${msg}`);
-                    Toast.show(`${field}: ${String(msg)}`, {
-                        type: 'danger',
-                        placement: 'bottom',
-                        duration: 4000,
-                    });
-                }
-            }
-
-
-
-            if (onError) {
-                onError(error);
-            }
-
-            setIsSubmitting(false);
-        }
-
-        return () => {
-            dispatch(setError(null));
-        };
-    }, [error, t, dispatch, onError]);
 
     // Clear loading state on unmount
     useEffect(() => {
@@ -262,6 +191,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
     };
 
     const onSubmit = async (data: RegisterProfessionalRequest) => {
+        if (submittingRef.current) return;
         try {
             // Validate data before submission
             const validationErrors = validateProfessionalRegistration(data, selectedServices);
@@ -276,44 +206,45 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                 return;
             }
 
+            submittingRef.current = true;
+            dispatch(setError(null));
             setIsSubmitting(true);
             dispatch(setLoading(true));
-
-            // Store the submitted data for success callback
-            setSubmittedData(data);
 
             // Prepare the registration data with defaults
             const onesignalKey = await getOneSignalSubscriptionId();
             const registrationData = prepareRegistrationPayload(
-                data,
+                { ...data, ...referral },
                 'professional',
                 onesignalKey,
                 selectedServices
             );
 
-            console.log('Submitting professional registration:', {
-                ...registrationData,
-                password: '***HIDDEN***'
-            });
-
-            const result = await registerProfessional(registrationData as RegisterProfessionalRequest).unwrap();
-
-            console.log('Professional registration successful:', result);
+            await registerProfessional(registrationData as RegisterProfessionalRequest).unwrap();
 
             // Show success message from API response
-            const successMessage = result?.message || t('auth.registrationSuccess');
+            const successMessage = t('auth.onboarding.registrationToSignIn');
             Toast.show(successMessage, {
                 type: 'success',
                 placement: 'bottom',
                 duration: 3000,
             });
 
-            dispatch(setLoading(false));
-            setIsSubmitting(false);
+            await onSuccess?.({ email: data.email, phone_number: data.phone_number });
 
         } catch (err) {
             // Map API errors to structured format
             const apiErrors = mapApiError(err);
+            let correctionStep = steps.length;
+            apiErrors.forEach(apiError => {
+                const field = apiError.field?.split('.')[0]?.split('[')[0];
+                const fieldStep = steps.findIndex(item => item.fields.includes(field || ''));
+                if (field && fieldStep >= 0) {
+                    setFieldError(field as keyof RegisterProfessionalRequest, { type: 'server', message: apiError.message });
+                    correctionStep = Math.min(correctionStep, fieldStep);
+                }
+            });
+            if (correctionStep < steps.length) setStep(correctionStep);
             apiErrors.forEach(apiError => {
                 Toast.show(apiError.message, {
                     type: 'danger',
@@ -321,30 +252,26 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                     duration: 4000,
                 });
             });
-            console.error('Registration failed:', err);
+            dispatch(setError(apiErrors.map(item => item.message).join('\n')));
+            onError?.(err);
+        } finally {
+            submittingRef.current = false;
             dispatch(setLoading(false));
             setIsSubmitting(false);
         }
     };
 
-    const renderStepIndicator = () => (
-        <StepIndicator>
-            <ProgressHeader>
-                <Text variant="bold" color={theme.colors.textPrimary} fontSize={13} testID="professional-form-step">{t('auth.registrationSteps.counter', { current: step + 1, total: steps.length })}</Text>
-                <Text variant="regularSmall" color={theme.colors.textSecondary} style={[styles.progressLabel, { marginLeft: horizontalScale(12) }]}>{t(['auth.registrationSteps.professionalProfile', 'auth.registrationSteps.professionalActivity', 'auth.registrationSteps.professionalSecurity', 'auth.registrationSteps.professionalServices'][step]!)}</Text>
-            </ProgressHeader>
-            <ProgressTrack testID="professional-form-progress">
-                <ProgressFill width={`${((step + 1) / steps.length) * 100}%`} />
-            </ProgressTrack>
-        </StepIndicator>
-    );
+    const renderStepIndicator = () => <FormProgress
+        labels={['profile', 'company', 'security', 'services'].map(key => t(`auth.formDesign.steps.${key}`))}
+        step={step} testID="professional-form"
+        counter={t('auth.registrationSteps.counter', { current: step + 1, total: steps.length })}
+    />;
 
     const renderStepTitle = () => (
         <FormIntro>
-            <Text variant="bold" color={theme.colors.textSecondary} fontSize={11} style={styles.formHeading}>{t('auth.registrationSteps.professionalHeading')}</Text>
-            <Text variant="bold" color={theme.colors.textPrimary} fontSize={18}>{steps[step]?.title ?? ''}</Text>
-            <Text variant="regular" color={theme.colors.textSecondary} fontSize={13} lineHeight={19} style={{ marginTop: verticalScale(8) }}>
-                {t(['auth.registrationSteps.professionalProfileDescription', 'auth.registrationSteps.professionalActivityDescription', 'auth.registrationSteps.professionalSecurityDescription', 'auth.registrationSteps.professionalServicesDescription'][step]!)}
+            <Text variant="bold" color={theme.colors.textPrimary} fontSize={26} lineHeight={32}>{step === 0 ? t('auth.formDesign.profileTitle') : steps[step]?.title ?? ''}</Text>
+            <Text variant="regular" color={theme.colors.textSecondary} fontSize={14} lineHeight={20} style={styles.description}>
+                {step === 0 ? t('auth.formDesign.profileDescriptionPro') : t(['auth.registrationSteps.professionalProfileDescription', 'auth.registrationSteps.professionalActivityDescription', 'auth.registrationSteps.professionalSecurityDescription', 'auth.registrationSteps.professionalServicesDescription'][step]!)}
             </Text>
         </FormIntro>
     );
@@ -359,15 +286,12 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
             extraScrollHeight={30}
             keyboardOpeningTime={0}>
 
-            <Container>
-                {renderStepIndicator()}
+            <Container onLayout={event => { if (event.nativeEvent.layout.width > 0) setFormWidth(event.nativeEvent.layout.width); }}>
                 {renderStepTitle()}
+                {renderStepIndicator()}
 
                 {/* Step 0: Personal Information */}
-                {servicesLoading ? (
-                    <ServicesSkeleton rows={8} />
-                ) :
-                    step === 0 && (
+                {step === 0 && (
                         <StepContainer>
                             <Field<RegisterProfessionalRequest>
                                 name="first_name"
@@ -392,7 +316,6 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                                 accessoryLeft="fa-user"
                                 containerStyle={styles.field}
                                 animated
-                                shakeOnError
                             />
 
                             <Field<RegisterProfessionalRequest>
@@ -418,7 +341,6 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                                 accessoryLeft="fa-user"
                                 containerStyle={styles.field}
                                 animated
-                                shakeOnError
                             />
 
                             <Field<RegisterProfessionalRequest>
@@ -440,9 +362,9 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                                 accessoryLeft="fa-map-marker-alt"
                                 containerStyle={styles.field}
                                 animated
-                                shakeOnError
                             />
 
+                            <View style={formWidth >= 335 ? styles.contactRow : styles.contactStack}>
                             <Field<RegisterProfessionalRequest>
                                 name="postal_code"
                                 label={t('ui.form.postCode.label')}
@@ -461,9 +383,8 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                                     },
                                 }}
                                 accessoryLeft="fa-map-marker-alt"
-                                containerStyle={styles.field}
+                                containerStyle={[styles.field, formWidth >= 335 && styles.postalField]}
                                 animated
-                                shakeOnError
                             />
 
                             <Field<RegisterProfessionalRequest>
@@ -481,10 +402,10 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                                         message: t('ui.form.phone.invalid'),
                                     },
                                 }}
-                                containerStyle={styles.field}
+                                containerStyle={[styles.field, formWidth >= 335 && styles.phoneField]}
                                 animated
-                                shakeOnError
                             />
+                            </View>
                         </StepContainer>
                     )}
 
@@ -582,12 +503,12 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                 {/* Step 3: Services Selection */}
                 {step === 3 && (
                     <StepContainer>
-                        <ListeServices
+                        {servicesLoading ? <ServicesSkeleton rows={6} /> : <ListeServices
                             services={services}
                             selectedServices={selectedServices}
                             onSelect={handleServiceSelection}
-                        />
-                        {selectedServices.length === 0 && (
+                        />}
+                        {!servicesLoading && selectedServices.length === 0 && (
                             <Text variant="regular" color={theme.colors.danger} style={[styles.servicesError, { marginTop: verticalScale(10) }]}>
                                 {t('ui.form.services.required')}
                             </Text>
@@ -596,25 +517,27 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                 )}
 
                 {/* Navigation Buttons */}
-                <ButtonGroup>
+                <ButtonGroup $compact={formWidth < 335}>
                     {step > 0 && (
                         <PreviousButton
                             title={t('ui.button.previous')}
                             onPress={prevStep}
                             variant="outline"
-                            size="medium"
+                            size="large"
+                            height={48}
                             disabled={isLoading || authLoading || isSubmitting}
                         />
                     )}
 
                     {step < steps.length - 1 ? (
                             <NextButton
-                                title={t('ui.button.next')}
+                                title={t('common.actions.continue')}
                                 testID="professional-form-primary-action"
                             onPress={nextStep}
                             variant="primary"
-                            size="medium"
-                            disabled={isLoading || authLoading || isSubmitting || servicesLoading}
+                            size="large"
+                            height={48}
+                            disabled={isLoading || authLoading || isSubmitting}
                             loading={isLoading || authLoading}
                         />
                     ) : (
@@ -623,8 +546,9 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
                             testID="professional-form-primary-action"
                             onPress={handleSubmit(onSubmit)}
                             variant="primary"
-                            size="medium"
-                            disabled={isLoading || authLoading || isSubmitting || selectedServices.length === 0}
+                            size="large"
+                            height={48}
+                            disabled={isLoading || authLoading || isSubmitting || servicesLoading || selectedServices.length === 0}
                             loading={isLoading || authLoading || isSubmitting}
                             fullWidth
                         />
@@ -648,18 +572,22 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading }: Pro
 };
 
 const styles = StyleSheet.create({
+    description: { marginTop: 10 },
     progressLabel: { textAlign: 'right' },
-    formHeading: { letterSpacing: 1, marginBottom: verticalScale(6) },
+    contactRow: { flexDirection: 'row', gap: 14, alignItems: 'flex-start' },
+    contactStack: { width: '100%' },
+    postalField: { width: '36%' },
+    phoneField: { flex: 1, width: undefined },
     servicesError: { textAlign: 'center' },
     field: {
         width: '100%',
-        marginBottom: verticalScale(5),
+        marginBottom: 10,
     },
     scroll: {
         flexGrow: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingBottom: verticalScale(76),
+        paddingBottom: 0,
     },
 });
 

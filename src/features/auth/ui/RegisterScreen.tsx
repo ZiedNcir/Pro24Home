@@ -12,11 +12,12 @@ import { useTheme } from '@theme';
 
 // Components
 import { Text } from '@shared/ui';
+import { Button } from '@shared/ui/button/Button';
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 
 // Redux
 import { useAppSelector } from '@store/hooks';
-import { selectAuthLoading, selectIsAuthenticated } from '@store/slices/authSlice';
+import { selectAuthLoading } from '@store/slices/authSlice';
 
 // Screens & Forms
 import ProfessionalForm from './forms/ProfessionalForm';
@@ -30,6 +31,8 @@ type AppNavigationProp = NativeStackNavigationProp<AppStackType>;
 
 interface RouteParams {
     role?: 'client' | 'professional';
+    source?: string;
+    commercial_id?: number;
 }
 
 export const RegisterScreen = () => {
@@ -40,25 +43,14 @@ export const RegisterScreen = () => {
     const { theme, themeMode } = useTheme();
 
 
-    const params = route.params as RouteParams;
+    const params = (route.params || { role: 'client' }) as RouteParams;
 
 
     // Get authentication state
-    const isAuthenticated = useAppSelector(selectIsAuthenticated);
     const authLoading = useAppSelector(selectAuthLoading);
 
     // Get services for professional form
-    const { data: services, isLoading: servicesLoading, error: servicesError } = useGetServicesQuery({ lang: i18n.resolvedLanguage || i18n.language });
-
-    // Redirect to home if already authenticated
-    useEffect(() => {
-        if (isAuthenticated) {
-            navigation.reset({
-                index: 0,
-                routes: [{ name: 'Home' as never }],
-            });
-        }
-    }, [isAuthenticated, navigation]);
+    const { data: services, isLoading: servicesLoading, error: servicesError, refetch: refetchServices } = useGetServicesQuery({ lang: i18n.resolvedLanguage || i18n.language });
 
     // Handle services loading error
     useEffect(() => {
@@ -74,9 +66,10 @@ export const RegisterScreen = () => {
 
     const handleUserRegistrationSuccess = async (data: any) => {
         console.log('Client registration successful');
-        await markAccountCreated();
+        await markAccountCreated().catch(() => undefined);
         navigation.navigate('VerifyScreen', {
             email: data.email,
+            phone_number: data.phone_number,
             role: 'client'
         });
     };
@@ -86,37 +79,15 @@ export const RegisterScreen = () => {
         // Error is handled in the FormUser component
     };
 
-    const handleProfessionalRegistrationSuccess = async (data: any) => {
-        console.log('Professional registration successful');
-        await markAccountCreated();
-        navigation.navigate('VerifyScreen', {
-            email: data.email,
-            role: 'professional'
-        });
-    };
-
-    const handleProfessionalRegistrationError = (error: any) => {
-        console.error('Professional registration error:', error);
-        // Error is handled in the FormProfitionel component
+    const handleProfessionalRegistrationSuccess = async () => {
+        await markAccountCreated().catch(() => undefined);
+        navigation.reset({ index: 0, routes: [{ name: 'SignIn', params: { role: 'professional' } }] });
     };
 
     const navigateToSignIn = () => {
         navigation.navigate('SignIn', { role: params.role });
     };
 
-
-
-    // Get appropriate title based on role
-    const getTitle = () => {
-        if (params.role === 'client') {
-            return t('screen.creationClient') || t('screen.creation') || 'Créer votre compte client';
-        } else if (params.role === 'professional') {
-            return t('screen.creationPro') || t('screen.creation') || 'Créer votre compte professionnel';
-        }
-        return t('screen.creation') || 'Créer votre compte';
-    };
-
-    // Show loading state if services are loading for professional
 
 
     return (
@@ -131,7 +102,7 @@ export const RegisterScreen = () => {
                     style={styles.backButton}
                     onPress={() => navigation.goBack()}
                     accessibilityRole="button"
-                    accessibilityLabel="Retour"
+                    accessibilityLabel={t('accessibility.back')}
                 >
                     <Text style={[styles.backIcon, { color: theme.colors.primary }]}>‹</Text>
                 </TouchableOpacity>
@@ -139,10 +110,13 @@ export const RegisterScreen = () => {
             </View>
 
             <View style={styles.cardContainer}>
-                <View style={[styles.card, { backgroundColor: theme.colors.surface, shadowColor: theme.colors.black }]}>
-                    <Text variant="title" style={[styles.title, { color: theme.colors.textPrimary }]}>
-                        {getTitle()}
-                    </Text>
+                <View style={[styles.card, { backgroundColor: theme.colors.background, shadowColor: theme.colors.black }]}>
+
+                    {params.role === 'professional' && servicesError ? <Button
+                        title={t('auth.onboarding.retryServices')}
+                        variant="outline"
+                        onPress={() => refetchServices()}
+                    /> : null}
 
                     {/* Form based on role */}
                     {params.role === 'client' ? (
@@ -155,18 +129,19 @@ export const RegisterScreen = () => {
                             services={services?.data || []}
                             servicesLoading={servicesLoading}
                             onSuccess={handleProfessionalRegistrationSuccess}
-                            onError={handleProfessionalRegistrationError}
+                            referral={{ source: params.source, commercial_id: params.commercial_id }}
 
                         />
                     )}
 
                     {/* Link to sign in */}
                     <TouchableOpacity
-                        style={[styles.bottomText, { marginBottom: Math.max(insets.bottom - verticalScale(25)) }]}
+                        style={[styles.bottomText, { paddingBottom: Math.max(insets.bottom, 20) }]}
                         onPress={navigateToSignIn}
+                        accessibilityRole="button"
                         disabled={authLoading}>
-                        <Text variant="medium" color={theme.colors.textSecondary}>{t('terms.client') || 'Déjà inscrit ?'} </Text>
-                        <Text variant="medium" color={theme.colors.primary}>
+                        <Text variant="regular" fontSize={13} lineHeight={20} color={theme.colors.textSecondary}>{t('auth.formDesign.loginPrompt')} </Text>
+                        <Text variant="bold" fontSize={13} lineHeight={20} color={theme.colors.primary} style={styles.loginLink}>
                             {t('terms.loginAccount') || 'Se connecter'}
                         </Text>
                     </TouchableOpacity>
@@ -196,7 +171,6 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
     backIcon: {
-        color: '#123D79',
         fontFamily: 'Inter-Regular',
         fontSize: 34,
         lineHeight: 34,
@@ -207,18 +181,18 @@ const styles = StyleSheet.create({
     },
     cardContainer: {
         width: '100%',
-        paddingHorizontal: horizontalScale(18),
+        paddingHorizontal: 18,
     },
     card: {
         width: '100%',
-        borderRadius: 28,
-        paddingHorizontal: horizontalScale(24),
-        paddingTop: verticalScale(28),
-        paddingBottom: verticalScale(30),
+        borderRadius: 0,
+        paddingHorizontal: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
         shadowOffset: { width: 0, height: verticalScale(8) },
-        shadowOpacity: 0.06,
+        shadowOpacity: 0,
         shadowRadius: 16,
-        elevation: 4,
+        elevation: 0,
         alignItems: 'center',
         alignSelf: 'center',
     },
@@ -228,10 +202,14 @@ const styles = StyleSheet.create({
         lineHeight: 34,
         marginBottom: verticalScale(12),
     },
+    loginLink: { textDecorationLine: 'underline' },
     bottomText: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        alignSelf: 'flex-end',
-        marginRight: verticalScale(15),
+        alignSelf: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: 44,
+        paddingTop: 14,
     },
 });

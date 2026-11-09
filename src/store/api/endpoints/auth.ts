@@ -1,3 +1,8 @@
+import { normalizeAuthResponse } from '../utils/authResponse';
+import { acceptApiResponse } from '../../../core/api/status';
+import { isUnverifiedAccount } from '../../../entities/user/model/account-status';
+import { prepareFormData } from '../../../utils/api.helpers';
+import type { RootState } from '../..';
 import {
     ApiResponse,
     AuthResponse,
@@ -21,11 +26,14 @@ export const authApiEndpoints = api.injectEndpoints({
                 url: '/api/login',
                 method: 'POST',
                 body: credentials,
+                validateStatus: acceptApiResponse,
             }),
+            transformResponse: normalizeAuthResponse,
             invalidatesTags: ['Auth'],
             async onQueryStarted(_, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
+                    if ((isUnverifiedAccount(data) && data.user?.type !== UserType.PROFESSIONAL) || !data.user?.id || typeof data.access_token !== 'string' || !data.access_token.trim()) return;
                     // Dispatch setCredentials action with the response data
                     dispatch({
                         type: 'auth/setCredentials',
@@ -38,9 +46,8 @@ export const authApiEndpoints = api.injectEndpoints({
                         },
                     });
 
-                } catch (error) {
-                    // Handle error in the component or use setError
-                    console.error('Login failed:', error);
+                } catch {
+                    // The sign-in screen handles rejected and inactive-account responses.
                 }
             },
         }),
@@ -76,35 +83,16 @@ export const authApiEndpoints = api.injectEndpoints({
             },
         }),
 
-        // Register professional endpoint
+        // Registration remains unauthenticated until verification and sign-in.
         registerProfessional: builder.mutation<AuthResponse, RegisterProfessionalRequest>({
             query: (userData) => ({
                 url: '/api/register-professional',
                 method: 'POST',
-                body: userData,
+                body: prepareFormData(userData as unknown as Record<string, unknown>),
+                validateStatus: acceptApiResponse,
             }),
+            extraOptions: { maxRetries: 0 },
             invalidatesTags: ['Auth'],
-            async onQueryStarted(_, { dispatch, queryFulfilled }) {
-                try {
-                    const { data } = await queryFulfilled;
-                    // Only dispatch setCredentials if we have user data
-                    if (data.user) {
-                        // Dispatch setCredentials after successful registration
-                        dispatch({
-                            type: 'auth/setCredentials',
-                            payload: {
-                                user: { ...data.user, type: UserType.PROFESSIONAL },
-                                token: data.access_token,
-                            },
-                        });
-
-                    } else {
-                        console.warn('Professional registration response missing user data:', data);
-                    }
-                } catch (error) {
-                    console.error('Professional registration failed:', error);
-                }
-            },
         }),
 
         // Logout endpoint
@@ -132,8 +120,10 @@ export const authApiEndpoints = api.injectEndpoints({
             query: (verificationData) => ({
                 url: '/api/register-verification',
                 method: 'POST',
-                body: verificationData,
+                body: prepareFormData(verificationData as unknown as Record<string, unknown>),
+                validateStatus: acceptApiResponse,
             }),
+            extraOptions: { maxRetries: 0 },
             invalidatesTags: ['Auth'],
             async onQueryStarted(_, { dispatch, queryFulfilled }) {
                 try {
@@ -156,8 +146,10 @@ export const authApiEndpoints = api.injectEndpoints({
             query: (emailData) => ({
                 url: '/api/resend-verification',
                 method: 'POST',
-                body: emailData,
+                body: prepareFormData(emailData),
+                validateStatus: acceptApiResponse,
             }),
+            extraOptions: { maxRetries: 0 },
         }),
 
         // Forgot password endpoint
@@ -194,12 +186,16 @@ export const authApiEndpoints = api.injectEndpoints({
 
         // Get current user profile
         getProfile: builder.query<ApiResponse<User>, void>({
-            query: () => '/api/profile',
+            query: () => ({ url: '/api/profile', method: 'GET', validateStatus: acceptApiResponse }),
             providesTags: ['User'],
-            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+            async onQueryStarted(_, { dispatch, getState, queryFulfilled }) {
+                const session = (getState() as RootState).auth;
+                const userId = session.user?.id;
+                const token = session.token;
                 try {
                     const { data } = await queryFulfilled;
-                    if (data.data) {
+                    const current = (getState() as RootState).auth;
+                    if (data.data && current.user?.id === userId && current.token === token && data.data.id === userId) {
                         // Update user profile in store
                         dispatch({
                             type: 'auth/updateUserProfile',
@@ -239,14 +235,20 @@ export const authApiEndpoints = api.injectEndpoints({
         // Update notification token (OneSignal)
         updateNotificationToken: builder.mutation<ApiResponse<void>, { onesignal_key: string }>({
             query: (tokenData) => ({
-                url: '/api/profile/notification-token',
-                method: 'PUT',
-                body: tokenData,
+                url: '/api/update-oneSignal_id',
+                method: 'POST',
+                body: prepareFormData(tokenData),
             }),
-            async onQueryStarted({ onesignal_key }, { dispatch, queryFulfilled }) {
+            extraOptions: { maxRetries: 0 },
+            async onQueryStarted({ onesignal_key }, { dispatch, getState, queryFulfilled }) {
+                const session = (getState() as RootState).auth;
+                const userId = session.user?.id;
+                const token = session.token;
                 try {
-                    await queryFulfilled;
-                    // Update notification token in store
+                    const { data } = await queryFulfilled;
+                    const current = (getState() as RootState).auth;
+                    if (data?.success === false || current.user?.id !== userId || current.token !== token) return;
+                    // Only persist acknowledgment for the account that sent the request.
                     dispatch({
                         type: 'auth/updateNotificationToken',
                         payload: onesignal_key,

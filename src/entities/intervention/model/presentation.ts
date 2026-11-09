@@ -1,6 +1,7 @@
 import { InterventionStatus, type Intervention } from './types';
 import { API_BASE_URL } from '@core/api/base-api';
 import i18n from '@utils/i18n';
+import type { ThemeColors } from '@theme';
 
 type InterventionAddressLike = Partial<NonNullable<Intervention['address']>> & {
     latitude?: number | string;
@@ -175,6 +176,7 @@ export const formatDistanceBetweenCoordinates = (
 };
 
 const statusKeys: Record<InterventionStatus, string> = {
+    [InterventionStatus.NO_PROFESSIONAL]: 'intervention.detail.statusNoProfessional',
     [InterventionStatus.NEGOTIATION]: 'intervention.detail.statusNegotiation',
     [InterventionStatus.PENDING]: 'intervention.detail.statusPending',
     [InterventionStatus.ACCEPTED]: 'intervention.detail.statusAccepted',
@@ -194,16 +196,29 @@ export const getInterventionStatusLabel = (status: InterventionStatus | string):
 
 export const filterInterventions = (interventions: Intervention[], filter: InterventionFilter): Intervention[] => {
     const finishedStatuses = ['completed', 'canceled', 'cancelled', 'rejected'];
-    const activeStatuses = ['negotiation', 'pending', 'accepted', 'in_progress'];
+    const activeStatuses = ['no_professional', 'negotiation', 'pending', 'accepted', 'in_progress'];
     if (filter === 'completed') return interventions.filter(item => finishedStatuses.includes(normalizeStatus(item.status) || ''));
     if (filter === 'active') return interventions.filter(item => activeStatuses.includes(normalizeStatus(item.status) || ''));
     return interventions;
 };
 
-export const getInterventionStatusColor = (status: InterventionStatus | string): string => {
+export const getInterventionStatusColor = (
+    status: InterventionStatus | string,
+    palette: Pick<ThemeColors, 'successLight' | 'dangerLight' | 'warningLight'>,
+): string => {
     const normalizedStatus = normalizeStatus(status);
-    if (normalizedStatus === 'completed') return '#DDF5E5';
-    if (['canceled', 'cancelled', 'rejected'].includes(normalizedStatus || '')) return '#FDE6E3';
-    if (normalizedStatus === 'negotiation') return '#FFF0D6';
-    return '#DDF5E5';
+    if (normalizedStatus === 'completed') return palette.successLight;
+    if (['canceled', 'cancelled', 'rejected'].includes(normalizedStatus || '')) return palette.dangerLight;
+    if (['negotiation', 'no_professional'].includes(normalizedStatus || '')) return palette.warningLight;
+    return palette.successLight;
+};
+
+export const getInterventionStatusTextColor = (
+    status: InterventionStatus | string,
+    palette: Pick<ThemeColors, 'success' | 'danger' | 'warning'>,
+): string => {
+    const normalizedStatus = normalizeStatus(status);
+    if (['canceled', 'cancelled', 'rejected'].includes(normalizedStatus || '')) return palette.danger;
+    if (['negotiation', 'no_professional'].includes(normalizedStatus || '')) return palette.warning;
+    return palette.success;
 };

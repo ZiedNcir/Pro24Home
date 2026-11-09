@@ -1,4 +1,11 @@
-import React from 'react';
+import { Button } from '@shared/ui/button/Button';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { logout, selectUser } from '@store/slices/authSlice';
+import { useLogoutMutation } from '@features/auth/api/auth.api';
+import { useGetProfileQuery } from '@entities/user/api/user.api';
+import { api } from '@store/api/baseApi';
+import { getHomeRouteFromAuthResponse } from '../../../../navigation/authNavigation';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -16,8 +23,34 @@ const ProfessionalVerificationPendingScreen = () => {
     const { theme, themeMode } = useTheme();
     const navigation = useNavigation<any>();
 
-    const handleLogout = () => {
-        navigation.reset({ index: 0, routes: [{ name: 'Welcome' }] });
+    const dispatch = useAppDispatch();
+    const user = useAppSelector(selectUser);
+    const { data, isFetching, isError, refetch } = useGetProfileQuery(undefined, { skip: !user, refetchOnMountOrArgChange: true });
+    const [logoutRequest, { isLoading: isLoggingOut }] = useLogoutMutation();
+
+    useEffect(() => {
+        if (!user) {
+            navigation.reset({ index: 0, routes: [{ name: 'SignIn', params: { role: 'professional' } }] });
+            return;
+        }
+        if (isFetching || isError || !data?.data || data.data.id !== user.id || data.success === false) return;
+        const profile = data.data;
+        // Entry into this screen follows a confirmed submission. Server decisions
+        // must remain usable even when local phone storage is unavailable.
+        const destination = getHomeRouteFromAuthResponse({ user: profile }, 'professional', true);
+        if (destination !== 'ProfessionalVerificationPending') navigation.reset({ index: 0, routes: [{ name: destination }] });
+    }, [data, isFetching, isError, navigation, user]);
+
+    const handleLogout = async () => {
+        try {
+            await logoutRequest().unwrap();
+        } catch {
+            // Always close the local session even when the server is unreachable.
+        } finally {
+            dispatch(logout());
+            dispatch(api.util.resetApiState());
+            navigation.reset({ index: 0, routes: [{ name: 'SignIn', params: { role: 'professional' } }] });
+        }
     };
 
     return (
@@ -55,7 +88,13 @@ const ProfessionalVerificationPendingScreen = () => {
                 </View>
             </InfoCard>
 
-            <LogoutButton accessibilityRole="button" onPress={handleLogout}>
+            <View style={styles.refresh}>
+                {isError ? <Text variant="regularSmall" color={theme.colors.danger}>{t('auth.onboarding.profileRefreshFailed')}</Text> : null}
+                <Button title={t('auth.onboarding.checkDossier')} variant="outline" leftIcon="fa-sync-alt"
+                    onPress={() => { refetch().unwrap().catch(() => undefined); }} loading={isFetching}
+                    disabled={isFetching || isLoggingOut || !user} fullWidth />
+            </View>
+            <LogoutButton accessibilityRole="button" onPress={handleLogout} disabled={isLoggingOut}>
                 <SvgIcon name="fa-sign-out-alt" size={18} color={theme.colors.primary} />
                 <Text variant="bold" color={theme.colors.primary}>
                     {t('professional.verificationPending.logout')}
@@ -75,6 +114,7 @@ const styles = StyleSheet.create({
     title: { textAlign: 'center', maxWidth: horizontalScale(320), alignSelf: 'center' },
     description: { textAlign: 'center', lineHeight: 22, marginTop: verticalScale(12), maxWidth: horizontalScale(330), alignSelf: 'center' },
     infoCopy: { flex: 1, gap: verticalScale(4) },
+    refresh: { marginTop: verticalScale(24), gap: verticalScale(12) },
 });
 
 export default ProfessionalVerificationPendingScreen;

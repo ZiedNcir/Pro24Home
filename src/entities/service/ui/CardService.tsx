@@ -21,6 +21,7 @@ export interface ICardServiceProps extends TouchableOpacityProps {
     image: ImageSourcePropType;
     onClick?: () => void;
     selected?: boolean;
+    layout?: 'grid' | 'row';
 }
 
 const CardService: React.FC<ICardServiceProps> = ({
@@ -29,9 +30,34 @@ const CardService: React.FC<ICardServiceProps> = ({
     image,
     onClick,
     selected = false,
+    layout = 'grid',
     ...props
 }) => {
     const { theme } = useTheme();
+    if (layout === 'row') {
+        return (
+            <RowCard
+                accessibilityRole="button"
+                accessibilityLabel={[title, description].filter(Boolean).join(', ')}
+                accessibilityState={{ selected, disabled: !!props.disabled }}
+                selected={selected}
+                activeOpacity={0.86}
+                onPress={onClick}
+                {...props}
+            >
+                <Thumbnail source={image} resizeMode="cover" />
+                <RowCopy>
+                    <Text variant="bold" fontSize={16} lineHeight={21}>{title}</Text>
+                    {description ? (
+                        <Text variant="regularSmall" color={theme.colors.textSecondary} fontSize={13} lineHeight={18}>
+                            {description}
+                        </Text>
+                    ) : null}
+                </RowCopy>
+                <SvgIcon name="fa-chevron-right" size={14} color={theme.colors.primary} />
+            </RowCard>
+        );
+    }
     return (
         <Container selected={selected} activeOpacity={0.86} onPress={onClick} {...props}>
             <ImageBox>
@@ -45,7 +71,7 @@ const CardService: React.FC<ICardServiceProps> = ({
             {description ? (
                 <Text
                     variant="regularSmall"
-                    color={theme.colors.gray600}
+                    color={theme.colors.textSecondary}
                     fontSize={14}
                     style={{ marginTop: verticalScale(3) }}
                 >
@@ -53,9 +79,11 @@ const CardService: React.FC<ICardServiceProps> = ({
                 </Text>
             ) : null}
 
-            <ArrowButton>
-                <SvgIcon name="fa-chevron-right" size={14} color={theme.colors.primary} />
-            </ArrowButton>
+            <ArrowRow>
+                <ArrowButton>
+                    <SvgIcon name="fa-chevron-right" size={14} color={theme.colors.primary} />
+                </ArrowButton>
+            </ArrowRow>
         </Container>
     );
 };
@@ -94,15 +122,43 @@ const ServiceImage = styled(Image)`
   height: 88%;
 `;
 
+const ArrowRow = styled.View`
+  align-items: flex-end;
+  margin-top: auto;
+  padding-top: ${verticalScale(6)}px;
+`;
+
 const ArrowButton = styled.View`
-  position: absolute;
-  right:0px;
-  bottom: ${verticalScale(10)}px;
-  right: ${horizontalScale(14)}px;
   width: ${horizontalScale(34)}px;
   height: ${horizontalScale(34)}px;
   border-radius: ${horizontalScale(17)}px;
   background-color: ${({ theme }) => theme.colors.primaryLighter};
   justify-content: center;
   align-items: center;
+`;
+
+const RowCard = styled.TouchableOpacity<{ selected: boolean }>`
+  width: 100%;
+  min-height: 86px;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 11px;
+  padding-right: 15px;
+  border-radius: 14px;
+  border-width: 1px;
+  border-color: ${({ selected, theme }) => selected ? theme.colors.primary : theme.colors.border};
+  background-color: ${({ selected, theme }) => selected ? theme.colors.primaryLighter : theme.colors.surface};
+`;
+
+const Thumbnail = styled(Image)`
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+`;
+
+const RowCopy = styled.View`
+  flex: 1;
+  min-width: 0px;
+  gap: 4px;
 `;

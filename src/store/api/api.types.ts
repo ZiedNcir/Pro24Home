@@ -235,7 +235,7 @@ export interface LoginRequest {
 
 export interface VerificationRequest {
     code: string;
-    email: string;
+    email?: string;
     phone_number: string;
 }
 
@@ -328,6 +328,7 @@ export interface Address {
 
 // Intervention Types
 export enum InterventionStatus {
+    NO_PROFESSIONAL = 'no_professional',
     NEGOTIATION = 'negotiation',
     PENDING = 'pending',
     ACCEPTED = 'accepted',
@@ -468,6 +469,7 @@ export interface CreateRatingRequest {
 // Notification Types
 export interface Notification {
     id: string;
+    intervention_id?: number;
     user_id?: number;
     user_type?: UserType;
     title: string;

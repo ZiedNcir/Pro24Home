@@ -15,9 +15,12 @@ import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import { AppStackType } from '../../../../navigation/constant/core';
 import { useGetInterventionPriceQuery } from '@entities/payment/api/payment.api';
+import { useTheme } from '@theme';
 
 export const PriceEstimationScreen = () => {
     const { t } = useTranslation();
+    const { theme } = useTheme();
+    const colors = theme.colors;
     const navigation = useNavigation();
     const route = useRoute<RouteProp<AppStackType, 'PriceEstimation'>>();
     const [checkWithProfessional, setCheckWithProfessional] = useState(false);
@@ -40,6 +43,7 @@ export const PriceEstimationScreen = () => {
         (navigation as any).navigate('PaymentTravelFee', {
             intervention,
             checkPriceWithProfessional: checkWithProfessional,
+            snapshot: route.params.snapshot,
         });
     };
 
@@ -54,14 +58,14 @@ export const PriceEstimationScreen = () => {
 
             <PriceBox>
                 <PriceIcon>
-                    <SvgIcon name="fa-euro-sign" size={18} color="#FF6B00" />
+                    <SvgIcon name="fa-euro-sign" size={18} color={colors.primary} />
                 </PriceIcon>
                 <PriceContent>
                     <Text variant="bold" color="black" fontSize={13}>
                         {t('payment.estimate.average')}
                     </Text>
                     {isPriceLoading ? (
-                        <ActivityIndicator color="#FF6B00" />
+                        <ActivityIndicator color={colors.primary} />
                     ) : (
                         <Text variant="bold" color="black" fontSize={24}>{priceLabel}</Text>
                     )}
@@ -79,7 +83,7 @@ export const PriceEstimationScreen = () => {
                 activeOpacity={0.85}
             >
                 <OptionIcon>
-                    <SvgIcon name="fa-user-check" size={18} color="#FF6B00" />
+                    <SvgIcon name="fa-user-check" size={18} color={colors.primary} />
                 </OptionIcon>
                 <OptionContent>
                     <Text variant="bold" color="black" fontSize={13}>
@@ -129,9 +133,9 @@ export const PriceEstimationScreen = () => {
 
 
 const PriceBox = styled.View`
-  background-color: #f8fffb;
+  background-color: ${({ theme }) => theme.colors.successLight};
   border-width: 1px;
-  border-color: #dff5e8;
+  border-color: ${({ theme }) => theme.colors.border};
   border-radius: 16px;
   padding: ${horizontalScale(16)}px;
   flex-direction: row;
@@ -144,7 +148,7 @@ const PriceIcon = styled.View`
   width: ${horizontalScale(42)}px;
   height: ${horizontalScale(42)}px;
   border-radius: ${horizontalScale(21)}px;
-  background-color: #fff1e8;
+  background-color: ${({ theme }) => theme.colors.primaryLighter};
   align-items: center;
   justify-content: center;
   margin-right: ${horizontalScale(12)}px;
@@ -166,14 +170,14 @@ const FooterNote = styled(Text).attrs({
     variant: 'regularSmall',
     color: 'gray600',
 })`
-  background-color: #f7f7f7;
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
   padding: ${horizontalScale(14)}px;
   border-radius: 12px;
 `;
 
 const FactorsCard = styled.View`
   border-radius: 14px;
-  background-color: #fffaf7;
+  background-color: ${({ theme }) => theme.colors.surface};
   padding: ${horizontalScale(2)}px ${horizontalScale(12)}px ${horizontalScale(12)}px;
 `;
 
@@ -181,8 +185,8 @@ const ProfessionalOption = styled.TouchableOpacity<{ selected: boolean }>`
   min-height: ${verticalScale(70)}px;
   border-radius: 14px;
   border-width: 1px;
-  border-color: ${({ selected }) => (selected ? '#FF6B00' : '#E5E5E5')};
-  background-color: ${({ selected }) => (selected ? '#FFF5EF' : '#FFFFFF')};
+  border-color: ${({ selected, theme }) => selected ? theme.colors.primary : theme.colors.border};
+  background-color: ${({ selected, theme }) => selected ? theme.colors.primaryLighter : theme.colors.surface};
   padding: ${horizontalScale(12)}px;
   flex-direction: row;
   align-items: center;
@@ -192,7 +196,7 @@ const OptionIcon = styled.View`
   width: ${horizontalScale(36)}px;
   height: ${horizontalScale(36)}px;
   border-radius: 18px;
-  background-color: #fff1e8;
+  background-color: ${({ theme }) => theme.colors.primaryLighter};
   align-items: center;
   justify-content: center;
 `;
@@ -207,6 +211,6 @@ const Radio = styled.View<{ selected: boolean }>`
   height: ${horizontalScale(20)}px;
   border-radius: ${horizontalScale(10)}px;
   border-width: 1px;
-  border-color: ${({ selected }) => (selected ? '#FF6B00' : '#D5D5D5')};
-  background-color: ${({ selected }) => (selected ? '#FF6B00' : 'transparent')};
+  border-color: ${({ selected, theme }) => selected ? theme.colors.primary : theme.colors.border};
+  background-color: ${({ selected, theme }) => selected ? theme.colors.primary : 'transparent'};
 `;

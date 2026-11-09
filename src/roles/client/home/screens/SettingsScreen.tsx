@@ -5,12 +5,12 @@ import styled from 'styled-components/native';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@shared/ui/typography/Text';
+import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { SvgIcon, type IconName } from '@shared/ui/icon';
 import { useTheme } from '@theme';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { logout, selectUser } from '@store/slices/authSlice';
 import { useLogoutMutation } from '@features/auth/api/auth.api';
-import { colors } from '@theme';
 import {
   horizontalScale,
   moderateScale,
@@ -120,7 +120,7 @@ const ClientSettingsScreen = ({
                 false: theme.colors.border,
                 true: theme.colors.primary,
               }}
-              thumbColor={theme.colors.white}
+          thumbColor={theme.colors.white}
             />
           }
         />
@@ -183,31 +183,34 @@ const ClientSettingsScreen = ({
         disabled={isLoggingOut}
         activeOpacity={0.75}
       >
-        <RowIcon background="#fff0f0">
-          <SvgIcon name="fa-sign-out-alt" size={18} color="#D92D20" />
+        <RowIcon background={theme.colors.dangerLight}>
+          <SvgIcon name="fa-sign-out-alt" size={18} color={theme.colors.danger} />
         </RowIcon>
         <RowContent>
-          <Text variant="bold" color="#D92D20" fontSize={14}>
+          <Text variant="bold" color={theme.colors.danger} fontSize={14}>
             {t('client.settings.logout')}
           </Text>
-          <Text variant="regularSmall" color="gray600">
+          <Text variant="regularSmall" color={theme.colors.textSecondary}>
             {isLoggingOut
               ? t('client.settings.logoutPending')
               : t('client.settings.logoutDescription')}
           </Text>
         </RowContent>
         {isLoggingOut ? (
-          <ActivityIndicator color="#D92D20" />
+          <ActivityIndicator color={theme.colors.danger} />
         ) : (
-          <SvgIcon name="fa-chevron-right" size={14} color="#D92D20" />
+          <SvgIcon name="fa-chevron-right" size={14} color={theme.colors.danger} />
         )}
       </LogoutRow>
 
       <Brand>
-        Pro24
-        <Text variant="bold" color={colors.primary}>
-          Home
-        </Text>
+        <LogoMediumPro24Icon
+          width={moderateScale(126)}
+          height={moderateScale(48)}
+          accessible
+          accessibilityRole="image"
+          accessibilityLabel="Pro24Home"
+        />
       </Brand>
 
       <SettingsModal type={activeModal} onClose={closeModal} />
@@ -232,30 +235,37 @@ const SettingsRow = ({
   accessory,
   onPress,
 }: SettingsRowProps) => (
+  <SettingsRowContent icon={icon} title={title} description={description} value={value} accessory={accessory} onPress={onPress} />
+);
+
+const SettingsRowContent = ({ icon, title, description, value, accessory, onPress }: SettingsRowProps) => {
+  const { theme } = useTheme();
+  return (
   <Row onPress={onPress} disabled={!onPress} activeOpacity={0.75}>
     <RowIcon>
-      <SvgIcon name={icon} size={18} color={colors.primary} />
+      <SvgIcon name={icon} size={18} color={theme.colors.primary} />
     </RowIcon>
     <RowContent>
-      <Text variant="bold" color="black" fontSize={14}>
+      <Text variant="bold" color={theme.colors.textPrimary} fontSize={14}>
         {title}
       </Text>
-      <Text variant="regularSmall" color="gray600">
+      <Text variant="regularSmall" color={theme.colors.textSecondary}>
         {description}
       </Text>
     </RowContent>
     {accessory || (
       <>
         {value ? (
-          <Text variant="regular" color="gray700">
+          <Text variant="regular" color={theme.colors.gray700}>
             {value}
           </Text>
         ) : null}
-        <SvgIcon name="fa-chevron-right" size={14} color={colors.gray700} />
+        <SvgIcon name="fa-chevron-right" size={14} color={theme.colors.gray700} />
       </>
     )}
   </Row>
-);
+  );
+};
 
 const SettingsModal = ({
   type,
@@ -265,6 +275,7 @@ const SettingsModal = ({
   onClose: () => void;
 }) => {
   const { t } = useTranslation();
+  const { theme } = useTheme();
   const title =
     type === 'faq'
       ? t('client.settings.help')
@@ -282,7 +293,7 @@ const SettingsModal = ({
         <ModalSheet>
           <ModalHandle />
           <ModalHeader>
-            <Text variant="bold" color="black" fontSize={17}>
+            <Text variant="bold" color={theme.colors.textPrimary} fontSize={17}>
               {title}
             </Text>
             <CloseButton onPress={onClose}>
@@ -293,11 +304,11 @@ const SettingsModal = ({
           </ModalHeader>
           {type === 'faq' ? (
             <ModalText>
-              <Text variant="bold" color="black">
+              <Text variant="bold" color={theme.colors.textPrimary}>
                 {t('client.settings.faqTracking')}
               </Text>
               {'\n'}{t('client.settings.faqTrackingAnswer')}{'\n\n'}
-              <Text variant="bold" color="black">
+              <Text variant="bold" color={theme.colors.textPrimary}>
                 {t('client.settings.faqPrice')}
               </Text>
               {'\n'}{t('client.settings.faqPriceAnswer')}
@@ -339,7 +350,7 @@ const SectionLabel = styled(Text).attrs({
 `;
 const SectionCard = styled.View`
   border-width: 1px;
-  border-color: #eeeeee;
+  border-color: ${({ theme }) => theme.colors.border};
   border-radius: ${moderateScale(16)}px;
   background-color: ${({ theme }) => theme.colors.surface};
   padding-horizontal: ${horizontalScale(12)}px;
@@ -349,13 +360,13 @@ const Row = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   border-bottom-width: 1px;
-  border-bottom-color: #eeeeee;
+  border-bottom-color: ${({ theme }) => theme.colors.borderLight};
 `;
 const RowIcon = styled.View<{ background?: string }>`
   width: ${horizontalScale(38)}px;
   height: ${horizontalScale(38)}px;
   border-radius: ${moderateScale(12)}px;
-  background-color: ${({ background }) => background || '#fff5ef'};
+  background-color: ${({ background, theme }) => background || theme.colors.primaryLighter};
   justify-content: center;
   align-items: center;
   margin-right: ${horizontalScale(12)}px;
@@ -368,24 +379,20 @@ const LogoutRow = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   border-width: 1px;
-  border-color: #ffd6d2;
+  border-color: ${({ theme }) => theme.colors.dangerLight};
   border-radius: ${moderateScale(16)}px;
   background-color: ${({ theme }) => theme.colors.surface};
   padding-horizontal: ${horizontalScale(12)}px;
   margin-top: ${verticalScale(24)}px;
 `;
-const Brand = styled(Text).attrs({
-  variant: 'bold',
-  color: 'black',
-  fontSize: 18,
-})`
+const Brand = styled.View`
   align-self: center;
   margin-top: ${verticalScale(34)}px;
 `;
 const ModalBackdrop = styled.View`
   flex: 1;
   justify-content: flex-end;
-  background-color: rgba(0, 0, 0, 0.42);
+  background-color: ${({ theme }) => theme.colors.backdrop};
 `;
 const ModalSheet = styled.View`
   padding: ${verticalScale(14)}px ${horizontalScale(18)}px
@@ -398,7 +405,7 @@ const ModalHandle = styled.View`
   width: ${horizontalScale(42)}px;
   height: ${verticalScale(4)}px;
   border-radius: 2px;
-  background-color: #d9d9d9;
+  background-color: ${({ theme }) => theme.colors.gray300};
   align-self: center;
   margin-bottom: ${verticalScale(14)}px;
 `;
@@ -412,7 +419,7 @@ const CloseButton = styled.TouchableOpacity`
   width: ${horizontalScale(34)}px;
   height: ${horizontalScale(34)}px;
   border-radius: 17px;
-  background-color: #f5f5f5;
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
   justify-content: center;
   align-items: center;
 `;

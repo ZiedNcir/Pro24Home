@@ -4,7 +4,6 @@ import { Image } from 'react-native';
 import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
-import { colors } from '@theme';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import BottomActions from '@shared/ui/action/BottomActions';
 import type { SummaryStepProps } from './types';
@@ -95,15 +94,15 @@ const SectionTitle = styled(Text).attrs({
 `;
 
 const SummaryBlock = styled.View`
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
   border-radius: 14px;
   border-width: 1px;
-  border-color: ${colors.borderLight};
+  border-color: ${({ theme }) => theme.colors.borderLight};
   padding: ${horizontalScale(14)}px;
 `;
 
 const EstimationBox = styled.View`
-  background-color: ${colors.primaryLighter};
+  background-color: ${({ theme }) => theme.colors.primaryLighter};
   border-radius: 14px;
   padding: ${horizontalScale(14)}px;
   margin-top: ${verticalScale(14)}px;
@@ -128,9 +127,9 @@ const PhotosSummary = styled.View`
   margin-top: ${verticalScale(14)}px;
   padding: ${horizontalScale(14)}px;
   border-radius: 14px;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
   border-width: 1px;
-  border-color: ${colors.borderLight};
+  border-color: ${({ theme }) => theme.colors.borderLight};
 `;
 
 const PhotosSummaryHeader = styled.View`
@@ -149,7 +148,7 @@ const SummaryPhoto = styled(Image)`
   width: ${horizontalScale(72)}px;
   height: ${horizontalScale(72)}px;
   border-radius: 12px;
-  background-color: ${colors.gray200};
+  background-color: ${({ theme }) => theme.colors.gray200};
 `;
 
 const SummaryLine = ({ title, value }: { title: string; value: string }) => (

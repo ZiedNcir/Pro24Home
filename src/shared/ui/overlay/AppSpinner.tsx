@@ -6,6 +6,7 @@ import SvgIcon from '@shared/ui/icon/SvgIcon';
 import Text from '@shared/ui/typography/Text';
 import type { IconName } from '@shared/ui/icon/SvgIcon';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '@theme';
 
 
 
@@ -82,9 +83,9 @@ export const Spinner: React.FC<SpinnerProps> = ({
     visible,
     onRequestClose,
     size = 80,
-    color = '#007AFF',
+    color,
     animationType = 'rotate',
-    backdropColor = 'rgba(0, 0, 0, 0.7)',
+    backdropColor,
     showBackdrop = true,
     iconName = 'LogoMediumPro24Icon',
     message,
@@ -94,6 +95,9 @@ export const Spinner: React.FC<SpinnerProps> = ({
     showLoadingText = false,
     loadingText,
 }) => {
+    const { theme } = useTheme();
+    const resolvedColor = color ?? theme.colors.primary;
+    const resolvedBackdropColor = backdropColor ?? theme.colors.overlay;
     const { t } = useTranslation();
     const resolvedLoadingText = loadingText ?? t('common.status.loading');
     // Animation refs
@@ -268,7 +272,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
                         {dotAnims.map((anim, index) => (
                             <Dot
                                 key={`dot-${index}`}
-                                color={color}
+                                color={resolvedColor}
                                 size={dotSize}
                                 style={{
                                     transform: [
@@ -310,7 +314,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
                             <SvgIcon
                                 name={iconName as IconName}
                                 size={size}
-                                color={color}
+                                color={resolvedColor}
                             />
                         </Animated.View>
                     </IconContainer>
@@ -321,7 +325,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
     const modalContent = (
         <SpinnerContainer
             showBackdrop={showBackdrop}
-            backdropColor={backdropColor}
+            backdropColor={resolvedBackdropColor}
         >
             {renderSpinnerContent()}
 
@@ -340,7 +344,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
                 onRequestClose={onRequestClose}
                 closeOnOverlayClick={closeOnBackdropPress}
                 overlayOpacity={0.35}
-                overlayColor="#000000"
+                overlayColor={theme.colors.black}
                 position="center"
                 animationType="fade"
                 preventKeyboardDismiss={true}
@@ -359,12 +363,15 @@ export const SimpleSpinner: React.FC<SpinnerProps> = ({
     visible,
     onRequestClose,
     size = 80,
-    color = '#007AFF',
-    backdropColor = 'rgba(0, 0, 0, 0.7)',
+    color,
+    backdropColor,
     showBackdrop = true,
     iconName = 'logo',
     message,
 }) => {
+    const { theme } = useTheme();
+    const resolvedColor = color ?? theme.colors.primary;
+    const resolvedBackdropColor = backdropColor ?? theme.colors.overlay;
     const rotateAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
@@ -398,10 +405,10 @@ export const SimpleSpinner: React.FC<SpinnerProps> = ({
     const content = (
         <View style={[
             styles.container,
-            showBackdrop && { backgroundColor: backdropColor }
+            showBackdrop && { backgroundColor: resolvedBackdropColor }
         ]}>
             <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
-                <SvgIcon name={iconName as IconName} size={size} color={color} />
+                <SvgIcon name={iconName as IconName} size={size} color={resolvedColor} />
             </Animated.View>
             {message && <Text style={styles.messageText}>{message}</Text>}
         </View>

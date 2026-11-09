@@ -12,7 +12,7 @@ import {
     verticalScale,
     moderateScale,
 } from '@utils/normalizedCss';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 
 const features = [
     {
@@ -39,11 +39,12 @@ const features = [
 
 const FeatureHighlights = () => {
     const { t } = useTranslation();
+    const { theme } = useTheme();
     return (
         <Container>
             {features.map((item, index) => (
                 <FeatureItem key={item.titleKey}>
-                    <SvgIcon name={item.icon as IconProps['name']} size={24} color={colors.primary} />
+                    <SvgIcon name={item.icon as IconProps['name']} size={24} color={theme.colors.primary} />
 
                     <Text
                         variant="bold"
@@ -79,14 +80,14 @@ const styles = StyleSheet.create({ featureText: { textAlign: 'center' } });
 const Container = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  background-color: rgba(255, 255, 255, 0.96);
+  background-color: ${({ theme }) => theme.colors.surface};
   border-radius: ${moderateScale(22)}px;
   border-width: 1px;
-  border-color: #f1e4dc;
+  border-color: ${({ theme }) => theme.colors.borderLight};
   padding-vertical: ${verticalScale(18)}px;
   padding-horizontal: ${horizontalScale(10)}px;
 
-  shadow-color: #000;
+  shadow-color: ${({ theme }) => theme.colors.black};
   shadow-offset: 0px ${verticalScale(6)}px;
   shadow-opacity: 0.04;
   shadow-radius: ${moderateScale(12)}px;
@@ -106,5 +107,5 @@ const Divider = styled.View`
   top: ${verticalScale(8)}px;
   bottom: ${verticalScale(8)}px;
   width: 1px;
-  background-color: #f0ddd4;
+  background-color: ${({ theme }) => theme.colors.borderLight};
 `;

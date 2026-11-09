@@ -57,7 +57,7 @@ export const ForgetPassword = () => {
       </View>
 
       <View style={styles.cardContainer}>
-        <View style={[styles.card, { backgroundColor: theme.colors.surface, shadowColor: theme.colors.black }]}>
+        <View style={[styles.card, { backgroundColor: theme.colors.background, shadowColor: theme.colors.black }]}>
           <Text variant="title" style={[styles.title, { color: theme.colors.textPrimary }]}>{t('auth.forgot.title')}</Text>
           <Text variant="regular" color={theme.colors.textSecondary} style={styles.description}>
             {t('auth.forgot.description')}
@@ -98,7 +98,7 @@ export const ForgetPassword = () => {
                 disabled={isLoading}
                 loading={isLoading}
               />
-              <TouchableOpacity style={styles.signInLink} onPress={() => navigation.goBack()} disabled={isLoading}>
+              <TouchableOpacity accessibilityRole="button" style={styles.signInLink} onPress={() => navigation.goBack()} disabled={isLoading}>
                 <Text variant="medium" color={theme.colors.primary}>{t('auth.forgot.backToLogin')}</Text>
               </TouchableOpacity>
             </>
@@ -138,27 +138,27 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     width: '100%',
-    paddingHorizontal: horizontalScale(18),
-    marginTop: verticalScale(30)
+    paddingHorizontal: 18,
+    marginTop: 20
   },
   card: {
     width: '100%',
-    borderRadius: moderateScale(28),
-    paddingHorizontal: horizontalScale(24),
-    paddingTop: verticalScale(32),
+    borderRadius: 0,
+    paddingHorizontal: 0,
+    paddingTop: 0,
     paddingBottom: verticalScale(30),
     shadowOffset: { width: 0, height: verticalScale(8) },
-    shadowOpacity: 0.06, shadowRadius: moderateScale(16),
-    elevation: 4
+    shadowOpacity: 0, shadowRadius: moderateScale(16),
+    elevation: 0
   },
   title: {
-    textAlign: 'center',
-    fontSize: moderateScale(28),
-    lineHeight: moderateScale(34),
+    textAlign: 'left',
+    fontSize: 26,
+    lineHeight: 32,
     marginBottom: verticalScale(12)
   },
   description: {
-    textAlign: 'center',
+    textAlign: 'left',
     fontSize: moderateScale(14),
     lineHeight: moderateScale(22),
     marginBottom: verticalScale(24)
@@ -168,6 +168,8 @@ const styles = StyleSheet.create({
   },
   signInLink: {
     alignSelf: 'center',
+    minHeight: 44,
+    justifyContent: 'center',
     marginTop: verticalScale(22)
   },
   successState: {
@@ -178,7 +180,7 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   successText: {
-    textAlign: 'center',
+    textAlign: 'left',
     lineHeight: moderateScale(22),
     marginBottom: verticalScale(8)
   },

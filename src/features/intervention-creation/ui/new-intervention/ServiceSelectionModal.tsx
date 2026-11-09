@@ -9,7 +9,6 @@ import {
   moderateScale,
   verticalScale,
 } from '@utils/normalizedCss';
-import { colors } from '@theme';
 import CardService from '@entities/service/ui/CardService';
 import type { Service } from '../../../../store/api/api.types';
 
@@ -123,7 +122,7 @@ export default ServiceSelectionModal;
 const Backdrop = styled.View`
   flex: 1;
   justify-content: flex-end;
-  background-color: ${colors.overlay};
+  background-color: ${({ theme }) => theme.colors.overlay};
 `;
 
 const Sheet = styled.View`
@@ -132,14 +131,14 @@ const Sheet = styled.View`
     ${verticalScale(24)}px;
   border-top-left-radius: ${moderateScale(24)}px;
   border-top-right-radius: ${moderateScale(24)}px;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
 `;
 
 const Handle = styled.View`
   width: ${horizontalScale(42)}px;
   height: ${verticalScale(4)}px;
   border-radius: ${moderateScale(2)}px;
-  background-color: ${colors.gray300};
+  background-color: ${({ theme }) => theme.colors.gray300};
   align-self: center;
   margin-bottom: ${verticalScale(14)}px;
 `;
@@ -155,7 +154,7 @@ const CloseButton = styled.TouchableOpacity`
   width: ${horizontalScale(34)}px;
   height: ${horizontalScale(34)}px;
   border-radius: ${horizontalScale(17)}px;
-  background-color: ${colors.gray100};
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
   align-items: center;
   justify-content: center;
 `;

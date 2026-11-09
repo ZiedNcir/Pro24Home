@@ -60,7 +60,7 @@ const Overlay = styled.Pressable<{
 const ModalContent = styled.View<{
     $position: string;
 }>`
-  background-color: ${({ theme }) => theme?.colors?.background || '#FFFFFF'};
+  background-color: ${({ theme }) => theme?.colors?.surface || theme?.colors?.background || '#FFFFFF'};
   border-radius: ${({ $position }) => $position === 'fullScreen' ? '0px' : '12px'};
   width: ${({ $position }) => {
         switch ($position) {
@@ -72,7 +72,7 @@ const ModalContent = styled.View<{
   max-width: ${({ $position }) => $position === 'center' ? '400px' : '100%'};
   max-height: ${({ $position }) => $position === 'fullScreen' ? '100%' : '90%'};
   elevation: 5;
-  shadow-color: #000;
+  shadow-color: ${({ theme }) => theme?.colors?.black || '#000'};
   shadow-offset: 0px 2px;
   shadow-opacity: 0.25;
   shadow-radius: 3.84px;

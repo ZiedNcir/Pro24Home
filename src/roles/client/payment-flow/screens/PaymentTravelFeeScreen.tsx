@@ -1,5 +1,10 @@
+import { useFindProfessionalsByAddressMutation } from '@store/api/endpoints/client';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectUser } from '@store/slices/authSlice';
+import { localInterventionsApi, useGetLocalInterventionsQuery } from '@entities/intervention/api/local-interventions.api';
+import { LocalInterventionStorageError, submitInterventionRequest } from '@entities/intervention/model/local-interventions';
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
@@ -9,7 +14,7 @@ import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import { horizontalScale, verticalScale, moderateScale } from '@utils/normalizedCss';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 import { useNavigation } from '@react-navigation/core';
 import { useRoute, type RouteProp } from '@react-navigation/native';
 import { Toast } from '@core/notifications/toast';
@@ -18,21 +23,55 @@ import { AppStackType } from '../../../../navigation/constant/core';
 
 export const PaymentTravelFeeScreen = () => {
     const { t } = useTranslation();
+    const { theme } = useTheme();
+    const colors = theme.colors;
     const [selectedCard, setSelectedCard] = useState('main');
     const navigation = useNavigation();
     const route = useRoute<RouteProp<AppStackType, 'PaymentTravelFee'>>();
     const [addIntervention, { isLoading }] = useAddInterventionMutation();
+    const user = useSelector(selectUser);
+    const dispatch = useDispatch();
+    const localQuery = useGetLocalInterventionsQuery(user?.id ?? 0, { skip: !user });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const submitting = useRef(false);
+    const recordId = useRef(route.params.localInterventionId || `local-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+    const createdAt = useRef(new Date().toISOString());
+    const [findProfessionals] = useFindProfessionalsByAddressMutation();
     const checkPriceWithProfessional = route.params?.checkPriceWithProfessional;
 
     const handlePayment = async () => {
+        if (!user || submitting.current) return;
+        submitting.current = true;
+        setIsSubmitting(true);
         try {
-            await addIntervention(route.params.intervention).unwrap();
-            (navigation as any).navigate('InterventionSuccess');
+            const existing = localQuery.currentData?.find(item => item.id === recordId.current);
+            const result = await submitInterventionRequest({
+                userId: user.id,
+                record: existing || {
+                    id: recordId.current,
+                    createdAt: createdAt.current,
+                    payload: route.params.intervention,
+                    snapshot: route.params.snapshot || { serviceName: route.params.intervention.title },
+                    checkPriceWithProfessional,
+                },
+                findProfessionals: location => findProfessionals(location).unwrap(),
+                submit: payload => addIntervention(payload).unwrap(),
+            });
+            dispatch(localInterventionsApi.util.invalidateTags([{ type: 'LocalInterventions', id: user.id }]));
+            if (result === 'unavailable') {
+                Toast.show(t('intervention.local.saved'), { type: 'warning', placement: 'bottom' });
+                (navigation as any).replace('InterventionDetail', { intervention_id: 0, localInterventionId: recordId.current });
+            } else {
+                (navigation as any).navigate('InterventionSuccess');
+            }
         } catch (error: any) {
-            Toast.show(error?.data?.message || error?.message || t('payment.travel.failed'), {
+            Toast.show(error instanceof LocalInterventionStorageError ? t('intervention.local.saveFailed') : error?.data?.message || error?.message || t('payment.travel.failed'), {
                 type: 'danger',
                 placement: 'bottom',
             });
+        } finally {
+            submitting.current = false;
+            setIsSubmitting(false);
         }
     };
 
@@ -111,8 +150,8 @@ export const PaymentTravelFeeScreen = () => {
 
             <Spacer />
 
-            <PayButton onPress={handlePayment} disabled={isLoading}>
-                {isLoading ? <ActivityIndicator color={colors.white} /> : <Text variant="bold" color="white" fontSize={14}>{t('payment.travel.payAmount', { amount: '20 €' })}</Text>}
+            <PayButton onPress={handlePayment} disabled={isLoading || isSubmitting}>
+                {isLoading || isSubmitting ? <ActivityIndicator color={colors.textInverse} /> : <Text variant="bold" color="white" fontSize={14}>{t('payment.travel.payAmount', { amount: '20 €' })}</Text>}
             </PayButton>
         </ScreenContainer>
     );
@@ -124,25 +163,25 @@ const HeroIcon = styled.View`
   width: ${horizontalScale(82)}px;
   height: ${horizontalScale(82)}px;
   border-radius: ${horizontalScale(41)}px;
-  background-color: #fff1e8;
+  background-color: ${({ theme }) => theme.colors.primaryLighter};
   justify-content: center;
   align-items: center;
   margin-top: ${verticalScale(30)}px;
 `;
 
-const Title = styled(Text).attrs({
+const Title = styled(Text).attrs(({ theme }) => ({
     variant: 'bold',
-    color: 'black',
+    color: theme.colors.textPrimary,
     fontSize: 17,
-})`
+}))`
   text-align: center;
   margin-top: ${verticalScale(20)}px;
 `;
 
-const Description = styled(Text).attrs({
+const Description = styled(Text).attrs(({ theme }) => ({
     variant: 'regularSmall',
-    color: 'gray600',
-})`
+    color: theme.colors.textSecondary,
+}))`
   text-align: center;
   margin-top: ${verticalScale(12)}px;
   line-height: 18px;
@@ -152,13 +191,13 @@ const FeeCard = styled.View`
   height: ${verticalScale(66)}px;
   border-radius: ${moderateScale(14)}px;
   border-width: 1px;
-  border-color: #e5e5e5;
+  border-color: ${({ theme }) => theme.colors.border};
   margin-top: ${verticalScale(24)}px;
   padding-horizontal: ${horizontalScale(16)}px;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
 `;
 
 const ProfessionalNote = styled.View`
@@ -168,7 +207,7 @@ const ProfessionalNote = styled.View`
   margin-top: ${verticalScale(14)}px;
   padding: ${horizontalScale(12)}px;
   border-radius: 12px;
-  background-color: #fff1e8;
+  background-color: ${({ theme }) => theme.colors.primaryLighter};
 `;
 
 const SecureRow = styled.View`
@@ -178,11 +217,11 @@ const SecureRow = styled.View`
   margin-top: ${verticalScale(12)}px;
 `;
 
-const SectionLabel = styled(Text).attrs({
+const SectionLabel = styled(Text).attrs(({ theme }) => ({
     variant: 'bold',
-    color: 'black',
+    color: theme.colors.textPrimary,
     fontSize: 13,
-})`
+}))`
   margin-top: ${verticalScale(24)}px;
   margin-bottom: ${verticalScale(10)}px;
 `;
@@ -191,8 +230,8 @@ const PaymentOption = styled.TouchableOpacity<{ selected: boolean }>`
   min-height: ${verticalScale(56)}px;
   border-radius: 12px;
   border-width: 1px;
-  border-color: ${({ selected }) => (selected ? colors.primary : '#E5E5E5')};
-  background-color: ${colors.white};
+  border-color: ${({ selected, theme }) => (selected ? theme.colors.primary : theme.colors.border)};
+  background-color: ${({ selected, theme }) => (selected ? theme.colors.primaryLighter : theme.colors.surface)};
   padding-horizontal: ${horizontalScale(14)}px;
   flex-direction: row;
   align-items: center;
@@ -209,8 +248,8 @@ const Radio = styled.View<{ selected: boolean }>`
   height: ${horizontalScale(18)}px;
   border-radius: ${horizontalScale(9)}px;
   border-width: 1px;
-  border-color: ${({ selected }) => (selected ? colors.primary : '#D5D5D5')};
-  background-color: ${({ selected }) => (selected ? colors.primary : 'transparent')};
+  border-color: ${({ selected, theme }) => (selected ? theme.colors.primary : theme.colors.border)};
+  background-color: ${({ selected, theme }) => (selected ? theme.colors.primary : 'transparent')};
 `;
 
 const Spacer = styled.View`
@@ -220,7 +259,7 @@ const Spacer = styled.View`
 const PayButton = styled.TouchableOpacity<{ disabled?: boolean }>`
   height: ${verticalScale(52)}px;
   border-radius: 12px;
-  background-color: ${colors.primary};
+  background-color: ${({ theme }) => theme.colors.primary};
   justify-content: center;
   align-items: center;
   opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};

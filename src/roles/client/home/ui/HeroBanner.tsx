@@ -12,20 +12,22 @@ import {
     verticalScale,
     moderateScale,
 } from '@utils/normalizedCss';
-import { colors } from '@theme';
+// The illustration has a light background in both app themes.
+const bannerInk = '#212121';
+const bannerAccent = '#9A3900';
 
 const HeroBanner = () => {
     const { t } = useTranslation();
     return (
         <Card>
             <Content>
-                <Text variant="bold" color={colors.primary} fontSize={22} >
+                <Text variant="bold" color={bannerAccent} fontSize={22} >
                     {t('client.home.heroTitle')}
                 </Text>
 
                 <Text
                     variant="regular"
-                    color="black"
+                    color={bannerInk}
                     fontSize={16}
                     style={{ marginTop: verticalScale(10) }}
                 >
@@ -42,14 +44,14 @@ const HeroBanner = () => {
 
             <FeatureRow>
                 <FeatureItem>
-                    <SvgIcon name="fa-clock" size={16} color={colors.primary} />
-                    <Text variant="medium" color="black" fontSize={13}>
+                    <SvgIcon name="fa-clock" size={16} color={bannerAccent} />
+                    <Text variant="medium" color={bannerInk} fontSize={13}>
                         {t('client.home.fast')}
                     </Text>
                 </FeatureItem>
                 <FeatureItem>
-                    <SvgIcon name="fa-shield-alt" size={16} color={colors.primary} />
-                    <Text variant="medium" color="black" fontSize={13}>
+                    <SvgIcon name="fa-shield-alt" size={16} color={bannerAccent} />
+                    <Text variant="medium" color={bannerInk} fontSize={13}>
                         {t('client.home.verified')}
                     </Text>
                 </FeatureItem>
@@ -63,11 +65,11 @@ export default HeroBanner;
 const Card = styled.View`
   min-height: ${verticalScale(200)}px;
   border-radius: ${moderateScale(10)}px;
-  background-color: rgba(255, 255, 255, 0.96);
+  background-color: #FFF3E8;
   border-width: 1px;
-  border-color: #f1e4dc;
+  border-color: ${({ theme }) => theme.colors.borderLight};
   overflow: hidden;
-  shadow-color: #000;
+  shadow-color: ${({ theme }) => theme.colors.black};
   shadow-offset: 0px ${verticalScale(8)}px;
   shadow-opacity: 0.06;
   shadow-radius: ${moderateScale(16)}px;
@@ -90,10 +92,11 @@ const HeroImage = styled(Image)`
 
 const FeatureRow = styled.View`
   flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
   gap: ${horizontalScale(5)}px;
   align-self: flex-start;
-  padding-left: ${horizontalScale(15)}px;
+  padding: 0px ${horizontalScale(15)}px ${verticalScale(12)}px;
 `;
 
 const FeatureItem = styled.View`

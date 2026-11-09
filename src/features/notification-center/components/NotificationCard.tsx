@@ -1,11 +1,11 @@
 import React from 'react';
 import { ImageSourcePropType } from 'react-native';
 import styled from 'styled-components/native';
+import { useTheme } from '@theme';
 
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon, IconName } from '@shared/ui/icon';
 import { horizontalScale, verticalScale, moderateScale } from '@utils/normalizedCss';
-import { colors } from '@theme';
 
 export interface NotificationItem {
     id: string;
@@ -26,15 +26,16 @@ interface Props {
     onPress?: (id: string) => void;
 }
 
-const getAccentColor = (item: NotificationItem) => {
-    if (item.color === 'success') return colors.success;
+const getAccentColor = (item: NotificationItem, palette: ReturnType<typeof useTheme>['theme']['colors']) => {
+    if (item.color === 'success') return palette.success;
     if (item.color === 'purple') return '#9B6BFF';
     if (item.color === 'blue') return '#1DA1F2';
-    return colors.primary;
+    return palette.primary;
 };
 
 const NotificationCard: React.FC<Props> = ({ item, compact, isLast, onDelete, onPress }) => {
-    const accent = getAccentColor(item);
+    const { theme } = useTheme();
+    const accent = getAccentColor(item, theme.colors);
 
 
     return (
@@ -47,13 +48,13 @@ const NotificationCard: React.FC<Props> = ({ item, compact, isLast, onDelete, on
             </IconCircle>
 
             <Content>
-                <Text variant="bold" color="black" fontSize={15} lineHeight={20}>
+                <Text variant="bold" color={theme.colors.textPrimary} fontSize={15} lineHeight={20}>
                     {item.title}
                 </Text>
 
                 <Text
                     variant="regular"
-                    color="black"
+                    color={theme.colors.textPrimary}
                     fontSize={13}
                     lineHeight={19}
                     style={{ marginTop: verticalScale(3) }}
@@ -74,10 +75,10 @@ const NotificationCard: React.FC<Props> = ({ item, compact, isLast, onDelete, on
             <ActionsContainer>
                 {onDelete && (
                     <DeleteIcon onPress={() => onDelete(item.id)}>
-                        <SvgIcon name="fa-trash" size={16} color={colors.danger} />
+                        <SvgIcon name="fa-trash" size={16} color={theme.colors.danger} />
                     </DeleteIcon>
                 )}
-                <SvgIcon name="fa-chevron-right" size={16} color={colors.primary} />
+                <SvgIcon name="fa-chevron-right" size={16} color={theme.colors.primary} />
 
             </ActionsContainer>
         </Card>
@@ -93,16 +94,17 @@ const Card = styled.TouchableOpacity<{
     isLast?: boolean;
 }>`
   min-height: ${verticalScale(100)}px;
-  background-color: ${({ compact }) =>
-        compact ? 'transparent' : 'rgba(255,255,255,0.96)'};
+  background-color: ${({ compact, theme }) =>
+        compact ? 'transparent' : theme.colors.surface};
   border-radius: ${({ compact }) => (compact ? 0 : moderateScale(22))}px;
   border-width: ${({ unread, compact }) => (unread && !compact ? 2 : 0)}px;
-  border-color: ${colors.primary};
+  border-color: ${({ theme }) => theme.colors.primary};
   padding: ${horizontalScale(13)}px;
   flex-direction: row;
   align-items: center;
   border-bottom-width: ${({ compact, isLast }) =>
         compact || !isLast ? 1 : 0}px;
+  border-bottom-color: ${({ theme }) => theme.colors.borderLight};
 
   elevation: ${({ compact }) => (compact ? 0 : 3)};
 `;
@@ -113,7 +115,7 @@ const UnreadDot = styled.View`
   width: ${horizontalScale(14)}px;
   height: ${horizontalScale(14)}px;
   border-radius: ${horizontalScale(7)}px;
-  background-color: ${colors.primary};
+  background-color: ${({ theme }) => theme.colors.primary};
 `;
 
 const IconCircle = styled.View<{ color: string }>`
@@ -140,5 +142,5 @@ const ActionsContainer = styled.View`
 const DeleteIcon = styled.TouchableOpacity`
   padding: ${horizontalScale(4)}px;
   border-radius: ${moderateScale(4)}px;
-  background-color: ${colors.gray100 || '#f5f5f5'};
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
 `;

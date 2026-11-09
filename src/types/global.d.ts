@@ -128,4 +128,3 @@ export declare global {
 export type AppLanguage = 'fr' | 'en' | 'ar';
 
 // Theme types
-export type AppTheme = 'light' | 'dark' | 'system';

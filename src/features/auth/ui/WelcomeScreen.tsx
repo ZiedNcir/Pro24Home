@@ -4,7 +4,7 @@ import { Animated, Pressable } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation, NavigationProp } from '@react-navigation/core';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 import { fontPixel, horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import Text from '@shared/ui/typography/Text';
 import { Spinner } from '@shared/ui/overlay/AppSpinner';
@@ -47,6 +47,8 @@ const tutorialSteps: TutorialStep[] = [
 
 const Welcome: React.FC = () => {
   const { t } = useTranslation();
+  const { theme } = useTheme();
+  const colors = theme.colors;
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const insets = useSafeAreaInsets();
   const [loading, setLoading] = useState(false);
@@ -121,7 +123,7 @@ const Welcome: React.FC = () => {
             </HeroFrame>
 
             <BottomContent paddingBottom={Math.max(insets.bottom + verticalScale(8), verticalScale(18))}>
-              <Title>{activeTitle}</Title>
+              <Title variant="bold">{activeTitle}</Title>
               <Description>{activeDescription}</Description>
 
               <PrimaryAction
@@ -131,7 +133,7 @@ const Welcome: React.FC = () => {
                 accessibilityRole="button"
                 accessibilityLabel={activeActionLabel}
               >
-                <ActionLabel>{activeActionLabel}</ActionLabel>
+                <ActionLabel variant="bold">{activeActionLabel}</ActionLabel>
               </PrimaryAction>
 
               <ProgressRow
@@ -163,7 +165,7 @@ const Welcome: React.FC = () => {
                 accessibilityLabel={t('auth.welcome.login')}
                 hitSlop={8}
               >
-                <LoginHint>{t('auth.welcome.loginPrompt')} <LoginLink>{t('auth.welcome.login')}</LoginLink></LoginHint>
+                <LoginHint>{t('auth.welcome.loginPrompt')} <LoginLink variant="bold">{t('auth.welcome.login')}</LoginLink></LoginHint>
               </LoginButton>
             </BottomContent>
           </AnimatedStepContent>
@@ -184,7 +186,7 @@ const Welcome: React.FC = () => {
 const Page = styled.View`
   flex: 1;
   min-height: 100%;
-  background-color: #fbfcfe;
+  background-color: ${({ theme }) => theme.colors.background};
 `;
 
 const TopBar = styled.View<{ paddingTop: number }>`
@@ -210,7 +212,7 @@ const SkipButton = styled.TouchableOpacity`
 `;
 
 const SkipLabel = styled(Text)`
-  color: #60738f;
+  color: ${({ theme }) => theme.colors.textSecondary};
   font-family: 'Inter-Medium';
   font-size: ${fontPixel(13)}px;
 `;
@@ -225,7 +227,7 @@ const AnimatedStepContent = styled(Animated.View)`
 `;
 
 const Eyebrow = styled(Text)`
-  color: #60738f;
+  color: ${({ theme }) => theme.colors.textSecondary};
   font-family: 'Inter-Bold';
   font-size: ${fontPixel(10)}px;
   letter-spacing: 1.1px;
@@ -239,8 +241,8 @@ const HeroFrame = styled.View`
   height: ${verticalScale(320)}px;
   overflow: hidden;
   border-radius: ${moderateScale(28)}px;
-  background-color: #eaf3fb;
-  shadow-color: #163e70;
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
+  shadow-color: ${({ theme }) => theme.colors.black};
   shadow-offset: 0px 8px;
   shadow-opacity: 0.12;
   shadow-radius: 18px;
@@ -255,13 +257,13 @@ const HeroImage = styled.Image`
 const BottomContent = styled.View<{ paddingBottom: number }>`
   flex: 1;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   padding-bottom: ${({ paddingBottom }) => paddingBottom}px;
-  padding-top: ${verticalScale(16)}px;
+  padding-top: ${verticalScale(24)}px;
 `;
 
 const Title = styled(Text)`
-  color: #123d79;
+  color: ${({ theme }) => theme.colors.textPrimary};
   font-family: 'Inter-Bold';
   font-size: ${fontPixel(28)}px;
   line-height: ${fontPixel(34)}px;
@@ -270,7 +272,7 @@ const Title = styled(Text)`
 
 const Description = styled(Text)`
   max-width: ${horizontalScale(330)}px;
-  color: #60738f;
+  color: ${({ theme }) => theme.colors.textSecondary};
   font-family: 'Inter-Regular';
   font-size: ${fontPixel(15)}px;
   line-height: ${fontPixel(21)}px;
@@ -284,9 +286,9 @@ const PrimaryAction = styled.TouchableOpacity`
   min-height: ${verticalScale(56)}px;
   align-items: center;
   justify-content: center;
-  background-color: #c75100;
+  background-color: ${({ theme }) => theme.colors.primary};
   border-radius: ${moderateScale(16)}px;
-  shadow-color: #c75100;
+  shadow-color: ${({ theme }) => theme.colors.primary};
   shadow-offset: 0px 6px;
   shadow-opacity: 0.22;
   shadow-radius: 12px;
@@ -294,7 +296,7 @@ const PrimaryAction = styled.TouchableOpacity`
 `;
 
 const ActionLabel = styled(Text)`
-  color: #ffffff;
+  color: ${({ theme }) => theme.colors.textInverse};
   font-family: 'Inter-Bold';
   font-size: ${fontPixel(16)}px;
 `;
@@ -310,11 +312,11 @@ const ProgressDot = styled.View<{ active?: boolean }>`
   width: ${({ active }) => horizontalScale(active ? 20 : 7)}px;
   height: ${verticalScale(7)}px;
   border-radius: ${moderateScale(8)}px;
-  background-color: ${({ active }) => (active ? '#f47b20' : '#c6d8ed')};
+  background-color: ${({ active, theme }) => active ? theme.colors.primary : theme.colors.border};
 `;
 
 const LoginHint = styled(Text)`
-  color: #60738f;
+  color: ${({ theme }) => theme.colors.textSecondary};
   font-family: 'Inter-Regular';
   font-size: ${fontPixel(12)}px;
   text-align: center;
@@ -327,7 +329,7 @@ const LoginButton = styled(Pressable)`
 `;
 
 const LoginLink = styled(Text)`
-  color: #123d79;
+  color: ${({ theme }) => theme.colors.textPrimary};
   font-family: 'Inter-Bold';
 `;
 

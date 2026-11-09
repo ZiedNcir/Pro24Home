@@ -3,58 +3,21 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
-import { SvgIcon } from '@shared/ui/icon';
-import { horizontalScale, verticalScale } from '@utils/normalizedCss';
-import { useNavigation } from '@react-navigation/native';
-import { useTheme } from '@theme';
+import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
+import { verticalScale } from '@utils/normalizedCss';
 
 const NotificationHeader = () => {
-    const navigation = useNavigation();
-    const { theme } = useTheme();
     const { t } = useTranslation();
-    const appGoBack = () => {
-        navigation.goBack();
-    }
 
-    return (
-        <Header>
-            <BackButton onPress={appGoBack}>
-                <SvgIcon name="fa-chevron-left" size={22} color={theme.colors.primary} />
-            </BackButton>
-
-            <TitleBlock>
-                <Text variant="bold" color="black" fontSize={28} lineHeight={34}>
-                    {t('client.settings.notifications')}
-                </Text>
-                <Text variant="regular" color="gray600" fontSize={14}>
-                    {t('notifications.subtitle')}
-                </Text>
-            </TitleBlock>
-
-
-        </Header>
-    );
+    return <>
+        <InterventionHeader title={t('client.settings.notifications')} showHelp={false} />
+        <Subtitle>{t('notifications.subtitle')}</Subtitle>
+    </>;
 };
 
 export default NotificationHeader;
 
-const Header = styled.View`
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: ${verticalScale(22)}px;
-`;
-
-const BackButton = styled.TouchableOpacity`
-  width: ${horizontalScale(52)}px;
-  height: ${horizontalScale(52)}px;
-  border-radius: ${horizontalScale(18)}px;
-  background-color: ${({ theme }) => theme.colors.surface};
-  justify-content: center;
-  align-items: center;
-  margin-right: ${horizontalScale(14)}px;
-  elevation: 3;
-`;
-
-const TitleBlock = styled.View`
-  flex: 1;
+const Subtitle = styled(Text).attrs({ variant: 'regular', color: 'gray600' })`
+  margin-top: ${verticalScale(4)}px;
+  margin-bottom: ${verticalScale(18)}px;
 `;

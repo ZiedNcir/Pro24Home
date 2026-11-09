@@ -4,10 +4,10 @@ import { Modal, Platform } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
+import { useTheme } from '@theme';
 
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon, type IconName } from '@shared/ui/icon';
-import { colors } from '@theme';
 import {
   horizontalScale,
   moderateScale,
@@ -46,6 +46,8 @@ const MapModalContent: React.FC<FullscreenMapModalProps> = ({
   onSearchAddress,
 }) => {
   const { t } = useTranslation();
+  const { theme } = useTheme();
+  const colors = theme.colors;
   const [mapType, setMapType] = useState<
     'standard' | 'satellite' | 'hybrid' | 'terrain'
   >('standard');
@@ -125,7 +127,7 @@ const MapModalContent: React.FC<FullscreenMapModalProps> = ({
               <SvgIcon
                 name={type.icon}
                 size={16}
-                color={mapType === type.value ? colors.white : colors.black}
+                color={mapType === type.value ? colors.textInverse : colors.textPrimary}
               />
             </MapTypeButton>
           ))}
@@ -137,14 +139,14 @@ const MapModalContent: React.FC<FullscreenMapModalProps> = ({
             accessibilityLabel={t('intervention.creation.zoomIn')}
             onPress={() => zoomMap(0.5)}
           >
-            <SvgIcon name="fa-plus" size={17} color={colors.black} />
+            <SvgIcon name="fa-plus" size={17} color={colors.textPrimary} />
           </MapControlButton>
           <MapControlButton
             accessibilityRole="button"
             accessibilityLabel={t('intervention.creation.zoomOut')}
             onPress={() => zoomMap(2)}
           >
-            <SvgIcon name="fa-minus" size={17} color={colors.black} />
+            <SvgIcon name="fa-minus" size={17} color={colors.textPrimary} />
           </MapControlButton>
         </MapControls>
 
@@ -184,8 +186,8 @@ const MapModalContent: React.FC<FullscreenMapModalProps> = ({
             onPress={onClose}
             disabled={!selectedLocation || isLookingUpAddress}
           >
-            <SvgIcon name="fa-check" size={16} color={colors.white} />
-            <Text variant="bold" color="white" fontSize={14}>
+            <SvgIcon name="fa-check" size={16} color={colors.textInverse} />
+            <Text variant="bold" color={colors.textInverse} fontSize={14}>
               {t('intervention.creation.validateAddress')}
             </Text>
           </MapConfirmButton>
@@ -199,7 +201,7 @@ export default FullscreenMapModal;
 
 const FullscreenMapContainer = styled.View`
   flex: 1;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.background};
 `;
 
 const FullscreenMap = styled(MapView).attrs({
@@ -238,9 +240,9 @@ const FullscreenMapHeader = styled.View<{ topInset: number }>`
   right: 0;
   padding: 0 ${horizontalScale(12)}px;
   border-width: 1px;
-  border-color: ${colors.borderLight};
+  border-color: ${({ theme }) => theme.colors.borderLight};
   border-radius: ${moderateScale(14)}px;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
   elevation: 4;
   z-index: 10;
 `;
@@ -259,10 +261,10 @@ const MapTypeButton = styled.TouchableOpacity<{ active: boolean }>`
   border-radius: ${horizontalScale(23)}px;
   justify-content: center;
   align-items: center;
-  background-color: ${({ active }) => (active ? colors.primary : colors.white)};
+  background-color: ${({ active, theme }) => (active ? theme.colors.primary : theme.colors.surface)};
   border-width: 1px;
-  border-color: ${({ active }) =>
-    active ? colors.primary : colors.borderLight};
+  border-color: ${({ active, theme }) =>
+    active ? theme.colors.primary : theme.colors.borderLight};
   elevation: 4;
 `;
 
@@ -281,7 +283,7 @@ const MapControlButton = styled.TouchableOpacity`
   border-radius: ${horizontalScale(21)}px;
   justify-content: center;
   align-items: center;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
   elevation: 3;
 `;
 
@@ -291,7 +293,7 @@ const FooterHandle = styled.View`
   border-radius: ${moderateScale(2)}px;
   align-self: center;
   margin-bottom: ${verticalScale(14)}px;
-  background-color: ${colors.gray400};
+  background-color: ${({ theme }) => theme.colors.gray400};
 `;
 
 const FooterLabel = styled(Text).attrs({
@@ -316,7 +318,7 @@ const SelectedAddressIcon = styled.View`
   justify-content: center;
   align-items: center;
   margin-right: ${horizontalScale(10)}px;
-  background-color: ${colors.primaryLighter};
+  background-color: ${({ theme }) => theme.colors.primaryLighter};
 `;
 
 const SelectedAddressText = styled(Text).attrs({
@@ -334,7 +336,7 @@ const FullscreenMapFooter = styled.View`
   bottom: ${verticalScale(22)}px;
   padding: ${verticalScale(14)}px;
   border-radius: ${moderateScale(16)}px;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
   elevation: 4;
 `;
 
@@ -344,7 +346,7 @@ const MapConfirmButton = styled.TouchableOpacity<{ disabled?: boolean }>`
   gap: ${horizontalScale(8)}px;
   margin-top: ${verticalScale(12)}px;
   border-radius: ${moderateScale(12)}px;
-  background-color: ${colors.primary};
+  background-color: ${({ theme }) => theme.colors.primary};
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
   justify-content: center;
   align-items: center;
@@ -357,7 +359,7 @@ const SearchAddressButton = styled.TouchableOpacity`
   justify-content: center;
   gap: ${horizontalScale(8)}px;
   border-width: 1px;
-  border-color: ${colors.border};
+  border-color: ${({ theme }) => theme.colors.border};
   border-radius: ${moderateScale(12)}px;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
 `;

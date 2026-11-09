@@ -4,7 +4,6 @@ import styled from 'styled-components/native';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
-import { colors } from '@theme';
 import { moderateScale, verticalScale } from '@utils/normalizedCss';
 
 const InterventionDetailSkeleton = () => {
@@ -35,7 +34,7 @@ const SkeletonBlock = styled.View<{ width?: string; height?: number }>`
   width: ${({ width = '100%' }) => width};
   height: ${({ height = 12 }) => height}px;
   border-radius: ${moderateScale(7)}px;
-  background-color: #e9e9e9;
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
 `;
 
 const StatusSkeleton = styled(SkeletonBlock).attrs({ width: '28%', height: 30 })`
@@ -51,8 +50,8 @@ const SectionSkeleton = styled.View`
   margin-top: ${verticalScale(16)}px;
   border-radius: ${moderateScale(14)}px;
   border-width: 1px;
-  border-color: #eeeeee;
-  background-color: ${colors.white};
+  border-color: ${({ theme }) => theme.colors.border};
+  background-color: ${({ theme }) => theme.colors.surface};
   gap: ${verticalScale(10)}px;
 `;
 

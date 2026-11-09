@@ -5,9 +5,9 @@ import { Image, Modal, Pressable } from 'react-native';
 import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
+import PhotoSourceModal from '@shared/ui/image/PhotoSourceModal';
 import { SvgIcon } from '@shared/ui/icon';
-import { Colors } from '@utils/constant';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 import {
     horizontalScale,
     verticalScale,
@@ -23,13 +23,11 @@ interface PhotoPickerRowProps {
 
 const PhotoPickerRow: React.FC<PhotoPickerRowProps> = ({ photos, onAddPhoto, onRemovePhoto }) => {
     const { t } = useTranslation();
+    const { theme } = useTheme();
+    const colors = theme.colors;
     const [previewPhoto, setPreviewPhoto] = React.useState<InterventionPhoto | null>(null);
     const [isSourceModalVisible, setIsSourceModalVisible] = React.useState(false);
 
-    const chooseSource = (source: 'camera' | 'gallery') => {
-        setIsSourceModalVisible(false);
-        onAddPhoto(source);
-    };
 
     return (
         <>
@@ -42,12 +40,12 @@ const PhotoPickerRow: React.FC<PhotoPickerRowProps> = ({ photos, onAddPhoto, onR
                                 <Photo source={{ uri: photo.uri }} resizeMode="cover" />
                             </PreviewButton>
                             <RemoveButton accessibilityRole="button" accessibilityLabel={t('intervention.detail.removePhoto', { count: index + 1 })} onPress={() => onRemovePhoto(index)}>
-                                <SvgIcon name="fa-times" size={11} color={Colors.white} />
+                                <SvgIcon name="fa-times" size={11} color={colors.textInverse} />
                             </RemoveButton>
                         </PhotoBox>
                     ) : (
                         <AddButton key={`empty-${index}`} accessibilityRole="button" accessibilityLabel={t('intervention.detail.addPhotoNumber', { count: index + 1 })} onPress={() => setIsSourceModalVisible(true)}>
-                            <SvgIcon name="fa-camera" size={18} color={Colors.black} />
+                            <SvgIcon name="fa-camera" size={18} color={colors.textPrimary} />
                         <AddLabel variant="bold" color="black" fontSize={10}>
                             {t('intervention.creation.photoAdd')}
                         </AddLabel>
@@ -59,49 +57,17 @@ const PhotoPickerRow: React.FC<PhotoPickerRowProps> = ({ photos, onAddPhoto, onR
             <Modal visible={previewPhoto !== null} transparent animationType="fade" onRequestClose={() => setPreviewPhoto(null)}>
                 <PreviewBackdrop>
                     <PreviewCloseButton accessibilityRole="button" accessibilityLabel={t('intervention.creation.closePhotoPreview')} onPress={() => setPreviewPhoto(null)}>
-                        <SvgIcon name="fa-times" size={18} color={Colors.white} />
+                        <SvgIcon name="fa-times" size={18} color={colors.textInverse} />
                     </PreviewCloseButton>
                     {previewPhoto ? <PreviewImage source={{ uri: previewPhoto.uri }} resizeMode="contain" /> : null}
                 </PreviewBackdrop>
             </Modal>
 
-            <Modal visible={isSourceModalVisible} transparent animationType="slide" onRequestClose={() => setIsSourceModalVisible(false)}>
-                <SourceModalBackdrop>
-                    <SourceModalSheet>
-                        <SourceModalHandle />
-                        <SourceModalHeader>
-                            <SourceModalTitle>{t('intervention.creation.photoAdd')}</SourceModalTitle>
-                            <SourceCloseButton accessibilityRole="button" accessibilityLabel={t('intervention.creation.closePhotoPicker')} onPress={() => setIsSourceModalVisible(false)}>
-                                <SvgIcon name="fa-times" size={14} color={colors.gray600} />
-                            </SourceCloseButton>
-                        </SourceModalHeader>
-                        <SourceModalDescription>{t('intervention.creation.photoSourceHint')}</SourceModalDescription>
-                        <SourceOption accessibilityRole="button" accessibilityLabel={t('intervention.creation.cameraAccessibility')} onPress={() => chooseSource('camera')}>
-                            <SourceIconContainer>
-                                <SvgIcon name="fa-camera" size={20} color={colors.primary} />
-                            </SourceIconContainer>
-                            <SourceOptionText>
-                                <SourceOptionTitle>{t('intervention.creation.camera')}</SourceOptionTitle>
-                                <SourceOptionDescription>{t('intervention.creation.cameraHint')}</SourceOptionDescription>
-                            </SourceOptionText>
-                            <SvgIcon name="fa-chevron-right" size={14} color={colors.gray500} />
-                        </SourceOption>
-                        <SourceOption accessibilityRole="button" accessibilityLabel={t('intervention.creation.galleryAccessibility')} onPress={() => chooseSource('gallery')}>
-                            <SourceIconContainer>
-                                <SvgIcon name="image" size={20} color={colors.primary} />
-                            </SourceIconContainer>
-                            <SourceOptionText>
-                                <SourceOptionTitle>{t('intervention.creation.gallery')}</SourceOptionTitle>
-                                <SourceOptionDescription>{t('intervention.creation.galleryHint')}</SourceOptionDescription>
-                            </SourceOptionText>
-                            <SvgIcon name="fa-chevron-right" size={14} color={colors.gray500} />
-                        </SourceOption>
-                        <SourceCancelButton accessibilityRole="button" accessibilityLabel={t('common.actions.cancel')} onPress={() => setIsSourceModalVisible(false)}>
-                            <SourceCancelText>{t('common.actions.cancel')}</SourceCancelText>
-                        </SourceCancelButton>
-                    </SourceModalSheet>
-                </SourceModalBackdrop>
-            </Modal>
+            <PhotoSourceModal
+                visible={isSourceModalVisible}
+                onClose={() => setIsSourceModalVisible(false)}
+                onSelect={onAddPhoto}
+            />
         </>
     );
 };
@@ -119,7 +85,7 @@ const PhotoBox = styled.View`
   height: ${horizontalScale(88)}px;
   border-radius: ${moderateScale(14)}px;
   overflow: hidden;
-  background-color: #eeeeee;
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
 `;
 
 const RemoveButton = styled(Pressable)`
@@ -129,7 +95,7 @@ const RemoveButton = styled(Pressable)`
   width: ${horizontalScale(22)}px;
   height: ${horizontalScale(22)}px;
   border-radius: ${horizontalScale(11)}px;
-  background-color: rgba(0, 0, 0, 0.65);
+  background-color: ${({ theme }) => theme.colors.overlay};
   justify-content: center;
   align-items: center;
 `;
@@ -149,9 +115,9 @@ const AddButton = styled.TouchableOpacity`
   height: ${horizontalScale(88)}px;
   border-radius: ${moderateScale(14)}px;
   border-width: 1.5px;
-  border-color: #cfcfcf;
+  border-color: ${({ theme }) => theme.colors.border};
   border-style: dashed;
-  background-color: #fafafa;
+  background-color: ${({ theme }) => theme.colors.surface};
   justify-content: center;
   align-items: center;
 `;
@@ -184,78 +150,3 @@ const PreviewCloseButton = styled(Pressable)`
   justify-content: center;
   align-items: center;
 `;
-
-const SourceModalBackdrop = styled.View`
-  flex: 1;
-  justify-content: flex-end;
-  background-color: rgba(0, 0, 0, 0.42);
-`;
-
-const SourceModalSheet = styled.View`
-  padding: ${verticalScale(12)}px ${horizontalScale(18)}px ${verticalScale(22)}px;
-  border-top-left-radius: ${moderateScale(22)}px;
-  border-top-right-radius: ${moderateScale(22)}px;
-  background-color: ${Colors.white};
-`;
-
-const SourceModalHandle = styled.View`
-  width: ${horizontalScale(42)}px;
-  height: ${verticalScale(4)}px;
-  border-radius: ${moderateScale(2)}px;
-  margin-bottom: ${verticalScale(12)}px;
-  align-self: center;
-  background-color: #d9d9d9;
-`;
-
-const SourceModalHeader = styled.View`
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const SourceModalTitle = styled(Text).attrs({ variant: 'bold', color: 'black', fontSize: 17 })``;
-const SourceCloseButton = styled(Pressable)`
-  width: ${horizontalScale(34)}px;
-  height: ${horizontalScale(34)}px;
-  border-radius: ${horizontalScale(17)}px;
-  justify-content: center;
-  align-items: center;
-  background-color: #f5f5f5;
-`;
-const SourceModalDescription = styled(Text).attrs({ variant: 'regularSmall', color: 'gray600' })`
-  margin-top: ${verticalScale(4)}px;
-  margin-bottom: ${verticalScale(14)}px;
-`;
-const SourceOption = styled(Pressable)`
-  flex-direction: row;
-  align-items: center;
-  min-height: ${verticalScale(66)}px;
-  padding: ${verticalScale(10)}px ${horizontalScale(12)}px;
-  margin-bottom: ${verticalScale(10)}px;
-  border-radius: ${moderateScale(14)}px;
-  background-color: #fff6ef;
-`;
-const SourceIconContainer = styled.View`
-  width: ${horizontalScale(40)}px;
-  height: ${horizontalScale(40)}px;
-  border-radius: ${horizontalScale(20)}px;
-  justify-content: center;
-  align-items: center;
-  background-color: ${Colors.white};
-`;
-const SourceOptionText = styled.View`
-  flex: 1;
-  margin-left: ${horizontalScale(12)}px;
-`;
-const SourceOptionTitle = styled(Text).attrs({ variant: 'bold', color: 'black', fontSize: 13 })``;
-const SourceOptionDescription = styled(Text).attrs({ variant: 'regularSmall', color: 'gray600' })``;
-const SourceCancelButton = styled(Pressable)`
-  height: ${verticalScale(46)}px;
-  border-radius: ${moderateScale(12)}px;
-  border-width: 1px;
-  border-color: #e5e5e5;
-  justify-content: center;
-  align-items: center;
-  background-color: ${Colors.white};
-`;
-const SourceCancelText = styled(Text).attrs({ variant: 'bold', color: 'black', fontSize: 13 })``;

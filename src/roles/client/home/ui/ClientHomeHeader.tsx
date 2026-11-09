@@ -8,11 +8,12 @@ import styled from 'styled-components/native';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 import { selectUser } from '@store/slices/authSlice';
 
 const ClientHomeHeader = () => {
     const { t } = useTranslation();
+    const { theme } = useTheme();
     const user = useSelector(selectUser);
     const displayName = user?.client
         ? `${user.client.first_name} ${user.client.last_name}`.trim()
@@ -21,11 +22,11 @@ const ClientHomeHeader = () => {
         <Container>
             <Left>
                 <LocationRow>
-                    <SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} />
+                    <SvgIcon name="fa-map-marker-alt" size={16} color={theme.colors.primary} />
                     <Text variant="medium" color="black">
                         {t('client.home.myLocation')}
                     </Text>
-                    <SvgIcon name="fa-chevron-down" size={12} color={colors.gray600} />
+                    <SvgIcon name="fa-chevron-down" size={12} color={theme.colors.gray600} />
                 </LocationRow>
 
                 <Title>
@@ -46,7 +47,7 @@ const ClientHomeHeader = () => {
             </Left>
 
             <Bell>
-                <SvgIcon name="fa-bell" size={22} color={colors.black} />
+                <SvgIcon name="fa-bell" size={22} color={theme.colors.textPrimary} />
                 <Badge>
                     <Text variant="notification" color="white">
                         2
@@ -93,7 +94,7 @@ const Badge = styled.View`
   position: absolute;
   top: 4px;
   right: 2px;
-  background-color: ${colors.primary};
+  background-color: ${({ theme }) => theme.colors.primary};
   width: 20px;
   height: 20px;
   border-radius: 10px;

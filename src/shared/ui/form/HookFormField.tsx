@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
     Pressable,
+    Image,
     StyleSheet,
     TextInput,
     TextInputProps,
@@ -45,7 +46,6 @@ import {
 
 // Validation utils
 import { Regex } from '@utils/constant';
-import { colors } from '@theme';
 import i18n from '@utils/i18n';
 
 // Configure LayoutAnimation for Android
@@ -64,7 +64,9 @@ export interface FieldProps<T extends FieldValues> extends TextInputProps {
     helperText?: string;
     validate?: (value: string) => true | string;
     required?: boolean;
+    showRequiredIndicator?: boolean;
     password?: boolean;
+    enforcePasswordPolicy?: boolean;
     defaultValue?: string;
     regex?: RegExp;
     regexMessage?: string;
@@ -131,14 +133,15 @@ export interface FieldProps<T extends FieldValues> extends TextInputProps {
 
 const FieldWrapper = styled(View)`
   width: 100%;
-  padding-top: ${({ theme }) => theme.spacing.sm}px;
+  padding-top: 0px;
+  margin-bottom: 16px;
 `;
 
 const LabelWrapper = styled(View)`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${({ theme }) => theme.spacing.xs}px;
+  margin-bottom: 8px;
 `;
 
 // IMPORTANT: Label opacity is animated -> must be an Animated component.
@@ -146,8 +149,9 @@ const LabelWrapper = styled(View)`
 const AnimatedAppText = Animated.createAnimatedComponent(Text);
 
 const AnimatedLabel = styled(AnimatedAppText) <{ error?: boolean }>`
-  color: ${({ theme, error }) =>
-        error ? theme.colors.danger : theme.colors.textPrimary};
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font-size: 14px;
+  line-height: 20px;
 `;
 
 const CharacterCount = styled(Text) <{ exceeded?: boolean }>`
@@ -170,19 +174,19 @@ const OuterWrapper = styled(Animated.View) <{
     disabled?: boolean;
 }>`
   background-color: ${({ theme, disabled }) =>
-        disabled ? theme.colors.primaryDark : theme.colors.white};
+        disabled ? theme.colors.surfaceVariant : theme.colors.surface};
 
-  border-width: 1.5px;
+  border-width: 1px;
   border-style: solid;
 
-  border-radius: ${({ theme }) => theme.borderRadius.md}px;
-  height: ${({ multiline }) =>
-        multiline ? `${verticalScale(80)}px` : `${verticalScale(40)}px`};
+  border-radius: 10px;
+  min-height: 48px;
+  height: ${({ multiline }) => multiline ? "104px" : "48px"};
 
   opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
 
   /* keep elevation tied to focus (non-animated boolean). */
-  ${({ theme, focus }) => (focus ? theme.elevation.xs : '')};
+
 `;
 
 // Inner content keeps original row layout
@@ -197,14 +201,14 @@ const LeftWrapper = styled(View)`
   flex-direction: row;
   align-items: center;
   flex: 1;
-  padding-left: ${({ theme }) => theme.spacing.xs}px;
+  padding-horizontal: 12px;
 `;
 
 const Input = styled(TextInput) <{ readOnly?: boolean; disabled?: boolean }>`
   flex: 1;
-  font-size: ${({ theme }) => fontPixel(theme.typography.sizes.label.large)}px;
+  font-size: 15px;
   font-family: ${({ theme }) => theme.typography.fonts.inter.medium};
-  letter-spacing: 0.5px;
+  letter-spacing: 0px;
   color: ${({ theme, readOnly, disabled }) =>
         readOnly || disabled ? theme.colors.textDisabled : theme.colors.inputText};
   padding-vertical: 0;
@@ -217,9 +221,10 @@ const Input = styled(TextInput) <{ readOnly?: boolean; disabled?: boolean }>`
 
 const HelperText = styled(Animated.Text) <{ error?: boolean }>`
   padding-top: ${({ theme }) => theme.spacing.xs}px;
-  padding-horizontal: ${({ theme }) => theme.spacing.xs}px;
-  font-size: ${({ theme }) => fontPixel(theme.typography.sizes.label.large)}px;
-  font-family: ${({ theme }) => theme.typography.fonts.poppins.regular};
+  padding-horizontal: 0px;
+  font-size: 12px;
+  line-height: 17px;
+  font-family: Inter-Regular;
   color: ${({ theme, error }) =>
         error ? theme.colors.danger : theme.colors.textSecondary};
 `;
@@ -247,6 +252,8 @@ const CodeCell = styled(Text)`
 `;
 
 const IconButton = styled(Pressable)`
+  min-width: 44px;
+  min-height: 44px;
   padding-horizontal: ${({ theme }) => theme.spacing.xs}px;
   justify-content: center;
   align-items: center;
@@ -258,16 +265,15 @@ const RightTextButton = styled(Pressable)`
   justify-content: center;
 `;
 
-const ErrorIcon = styled(View)`
-  margin-right: ${({ theme }) => theme.spacing.xs}px;
-`;
 
 export function Field<T extends FieldValues>({
     control,
     name,
     password,
+    enforcePasswordPolicy = true,
     helperText,
     required,
+    showRequiredIndicator = true,
     label,
     date,
     defaultDate,
@@ -289,8 +295,8 @@ export function Field<T extends FieldValues>({
     containerStyle,
     inputWrapperStyle,
     animated = true,
-    shakeOnError = true,
-    pulseOnFocus = true,
+    shakeOnError = false,
+    pulseOnFocus = false,
 
     // New props
     email = false,
@@ -382,7 +388,7 @@ export function Field<T extends FieldValues>({
             };
         }
 
-        if (password) {
+        if (password && enforcePasswordPolicy) {
             rules.minLength = {
                 value: 8,
                 message: t('ui.form.error.passwordLength'),
@@ -617,18 +623,18 @@ export function Field<T extends FieldValues>({
 
         const labelOpacity = focusAnimation.interpolate({
             inputRange: [0, 1],
-            outputRange: [0.8, 1],
+            outputRange: [1, 1],
         });
 
         return (
             <LabelWrapper>
                 <AnimatedLabel
-                    variant="medium"
+                    variant="bold"
                     error={fieldState.invalid}
                     style={{ opacity: labelOpacity }}
                 >
                     {label}
-                    {required && <Text color="danger"> *</Text>}
+                    {required && showRequiredIndicator && <Text variant="bold" fontSize={14} color={theme.colors.textPrimary}> *</Text>}
                 </AnimatedLabel>
 
                 {showCharacterCount && maxCharacters ? (
@@ -645,7 +651,7 @@ export function Field<T extends FieldValues>({
         if (!text) return null;
 
         return (
-            <HelperText error={!!fieldState.error} style={{ opacity: helperOpacity }}>
+            <HelperText error={!!fieldState.error} accessibilityRole={fieldState.error ? 'alert' : undefined} accessibilityLiveRegion="polite" style={{ opacity: helperOpacity }}>
                 {text}
             </HelperText>
         );
@@ -694,8 +700,8 @@ export function Field<T extends FieldValues>({
                         {accessoryLeft ? (
                             <SvgIcon
                                 name={accessoryLeft}
-                                size={15}
-                                color={disabled ? colors.gray200 : colors.gray700}
+                                size={17}
+                                color={disabled ? theme.colors.gray200 : theme.colors.gray700}
                                 style={{ marginRight: horizontalScale(8) }}
                             />
                         ) : null}
@@ -711,6 +717,7 @@ export function Field<T extends FieldValues>({
                             <Input
                                 {...rest}
                                 ref={inputRef}
+                                accessibilityLabel={rest.accessibilityLabel || label || rest.placeholder}
                                 value={`${field.value ?? ''}`}
                                 editable={!disabled && !readOnly}
                                 readOnly={readOnly}
@@ -719,18 +726,13 @@ export function Field<T extends FieldValues>({
                                 onChangeText={handleChangeText}
                                 onFocus={handleFocus}
                                 onBlur={handleBlur}
-                                placeholderTextColor={theme.colors.textDisabled}
+                                placeholderTextColor={theme.colors.textSecondary}
                                 multiline={multiline}
-                                maxLength={maxCharacters}
+                                maxLength={maxCharacters ?? rest.maxLength}
                             />
                         )}
                     </LeftWrapper>
 
-                    {fieldState.error ? (
-                        <ErrorIcon>
-                            <SvgIcon name="fa-exclamation-circle" size={18} color="danger" />
-                        </ErrorIcon>
-                    ) : null}
 
                     {password ? (
                         <IconButton
@@ -744,18 +746,20 @@ export function Field<T extends FieldValues>({
                                 }
                             }}
                             disabled={disabled}
+                            accessibilityRole="button"
+                            accessibilityLabel={t(securePassword ? 'auth.formDesign.showPassword' : 'auth.formDesign.hidePassword')}
                         >
                             <SvgIcon
                                 name={securePassword ? 'fa-eye' : 'fa-eye-slash'}
                                 size={24}
                                 color={
                                     disabled
-                                        ? colors.gray200
+                                        ? theme.colors.gray200
                                         : fieldState.invalid
                                             ? theme.colors.danger
                                             : focus
                                                 ? theme.colors.primary
-                                                : colors.gray700
+                                                : theme.colors.gray700
                                 }
                             />
                         </IconButton>
@@ -763,7 +767,7 @@ export function Field<T extends FieldValues>({
                         <SvgIcon
                             name={accessoryRight}
                             size={10}
-                            color={colors.black}
+                            color={theme.colors.inputText}
                             style={{ marginHorizontal: horizontalScale(6) }}
                         />
                     ) : rightText ? (
@@ -804,10 +808,15 @@ export function Field<T extends FieldValues>({
                                 handleChangeText(text);
                             }}
                             autoFormat
+                            renderFlag={({ imageSource }) => <View style={styles.countryFlag}>
+                                <Image source={imageSource} style={styles.flagImage} />
+                                <SvgIcon name="fa-chevron-down" size={9} color={theme.colors.textSecondary} />
+                            </View>}
                             textProps={{
                                 placeholder: rest.placeholder ?? t('ui.form.phone.placeholder'),
                                 editable: !disabled && !readOnly,
-                                placeholderTextColor: theme.colors.textDisabled,
+                                placeholderTextColor: theme.colors.textSecondary,
+                                accessibilityLabel: label,
                                 underlineColorAndroid: 'transparent',
                                 onFocus: handleFocus,
                                 onBlur: handleBlur,
@@ -825,11 +834,6 @@ export function Field<T extends FieldValues>({
                         />
                     </LeftWrapper>
 
-                    {fieldState.error ? (
-                        <ErrorIcon>
-                            <SvgIcon name="fa-exclamation-circle" size={18} color="danger" />
-                        </ErrorIcon>
-                    ) : null}
 
                     <CountryPicker
                         countryCode={phoneCountryCode}
@@ -855,10 +859,10 @@ export function Field<T extends FieldValues>({
                         withFlagButton={false}
                         withFilter
                         theme={{
-                            backgroundColor: theme.colors.white,
+                            backgroundColor: theme.colors.surface,
                             primaryColor: theme.colors.primary,
                             primaryColorVariant: theme.colors.primaryDark,
-                            onBackgroundTextColor: theme.colors.inputText,
+                            onBackgroundTextColor: theme.colors.textPrimary,
                         }}
                     />
                 </InnerTransform>
@@ -1015,6 +1019,8 @@ export const FieldValidators = {
 export default Field;
 
 const styles = StyleSheet.create({
+    countryFlag: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+    flagImage: { width: 22, height: 16, borderRadius: 2 },
     phoneWrapper: { paddingLeft: 0 },
     phoneInput: { paddingHorizontal: horizontalScale(10), width: '100%' },
 });

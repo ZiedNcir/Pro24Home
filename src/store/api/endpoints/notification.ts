@@ -1,3 +1,4 @@
+import { getNotificationInterventionId } from '../../../core/notifications/notification-target';
 // src/store/api/endpoints/notification.ts
 import { api } from '../baseApi';
 import {
@@ -14,6 +15,7 @@ const normalizeNotificationsResponse = (response: unknown): PaginatedResponse<No
         data: raw.map((item: any) => ({
             id: String(item.id),
             user_id: item.notifiable_id,
+            intervention_id: getNotificationInterventionId(item),
             title: item.data?.title || 'Notification',
             message: item.data?.message || '',
             type: item.type || 'system',

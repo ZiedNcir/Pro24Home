@@ -37,3 +37,17 @@ describe('buildInterventionPayload', () => {
         expect(payload.image_3).toBeUndefined();
     });
 });
+
+describe('persistent intervention photos', () => {
+    it('keeps the image bytes rather than a temporary picker path', () => {
+        const { createPersistentInterventionPhoto } = require('../src/features/intervention-creation/model/intervention-payload');
+        expect(createPersistentInterventionPhoto({ base64: 'YWJj', type: 'image/jpeg', fileName: 'photo.jpg' })).toEqual({
+            uri: 'data:image/jpeg;base64,YWJj', type: 'image/jpeg', name: 'photo.jpg',
+        });
+    });
+    it('rejects missing bytes and oversized photos rather than storing a temporary path', () => {
+        const { createPersistentInterventionPhoto } = require('../src/features/intervention-creation/model/intervention-payload');
+        expect(() => createPersistentInterventionPhoto({ uri: 'file:///cache/photo.jpg' })).toThrow();
+        expect(() => createPersistentInterventionPhoto({ base64: 'A'.repeat(500001) })).toThrow();
+    });
+});

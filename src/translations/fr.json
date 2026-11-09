@@ -62,7 +62,7 @@
             },
             "address": {
                 "label": "Adresse",
-                "placeholder": "Entrez votre adresse complète",
+                "placeholder": "Numéro et rue",
                 "required": "L'adresse est requise",
                 "minLength": "L'adresse doit contenir au moins 5 caractères"
             },
@@ -157,6 +157,18 @@
         }
     },
     "auth": {
+        "onboarding": {
+            "registrationToSignIn": "Votre compte professionnel a été créé. Connectez-vous pour envoyer vos documents.",
+            "uploadStateFailed": "L’état des documents n’a pas pu être enregistré sur ce téléphone. Réessayez avec le bouton Continuer.",
+            "retryServices": "Recharger les services",
+            "phoneRequired": "Indiquez le numéro de téléphone utilisé lors de l’inscription.",
+            "emailRequired": "L’adresse email est nécessaire pour renvoyer le code. Revenez à la connexion.",
+            "documentApproved": "Validé",
+            "documentsSubmitted": "documents envoyés",
+            "profileRefreshFailed": "Impossible d’actualiser le dossier. Réessayez.",
+            "uploadRefreshFailed": "Le document a été envoyé, mais le dossier n’a pas pu être actualisé. Réessayez l’actualisation avant de le renvoyer.",
+            "checkDossier": "Vérifier mon dossier"
+        },
         "registering": "Inscription en cours...",
         "registrationFailed": "Échec de l'inscription. Veuillez réessayer.",
         "loginFailed": "Échec de connection. Veuillez réessayer.",
@@ -229,6 +241,28 @@
             "professionalActivityDescription": "Ajoutez les informations de votre activité professionnelle.",
             "professionalSecurityDescription": "Créez vos identifiants pour accéder à votre espace.",
             "professionalServicesDescription": "Choisissez les services que vous proposez."
+        },
+        "formDesign": {
+            "profileTitle": "Vos informations",
+            "profileDescriptionPro": "Renseignez vos informations pour créer votre compte professionnel.",
+            "profileDescriptionClient": "Renseignez vos coordonnées pour créer votre compte.",
+            "showPassword": "Afficher le mot de passe",
+            "hidePassword": "Masquer le mot de passe",
+            "steps": {
+                "profile": "Profil",
+                "company": "Entreprise",
+                "security": "Sécurité",
+                "services": "Métiers"
+            },
+            "loginPrompt": "Déjà inscrit ?"
+        },
+        "signInDesign": {
+            "title": "Heureux de vous revoir",
+            "subtitle": "Connectez-vous à votre espace Pro24Home.",
+            "emailLabel": "Adresse email",
+            "emailPlaceholder": "vous@exemple.fr",
+            "newAccount": "Nouveau sur Pro24Home ?",
+            "createAccount": "Créer un compte"
         }
     },
     "common": {
@@ -242,15 +276,17 @@
             "delete": "Supprimer",
             "yes": "Oui",
             "no": "Non",
-            "previous": "Précédent"
-            ,"continue": "Continuer"
+            "previous": "Précédent",
+            "continue": "Continuer"
         },
         "status": {
             "loading": "Chargement...",
             "requestSent": "Votre demande a été envoyée avec succès"
         }
     },
-    "accessibility": { "back": "Retour" },
+    "accessibility": {
+        "back": "Retour"
+    },
     "navigation": {
         "home": "Accueil",
         "interventions": "Interventions",
@@ -258,7 +294,30 @@
         "newIntervention": "Nouvelle intervention"
     },
     "intervention": {
+        "local": {
+            "delete": "Supprimer l’intervention",
+            "deleteTitle": "Supprimer cette intervention ?",
+            "deleteDescription": "Cette demande enregistrée sera supprimée de ce téléphone.",
+            "deleteFailed": "Impossible de supprimer l’intervention. Réessayez.",
+            "unavailableDescription": "Aucun professionnel n’est disponible pour le moment. Votre demande est enregistrée et prête à être reprise.",
+            "savedTitle": "Demande enregistrée",
+            "addressDetails": "Informations complémentaires",
+            "photoNumber": "Photo {{number}} de votre demande",
+            "nextStep": "Reprendre votre demande",
+            "retryHint": "La disponibilité d’un professionnel sera vérifiée avant de poursuivre.",
+            "viewDetails": "Voir les détails",
+            "photoFailed": "Cette photo ne peut pas être conservée. Choisissez une image plus petite.",
+            "pay": "Payer",
+            "saved": "Aucun professionnel disponible. Votre demande est enregistrée dans Mes interventions.",
+            "explanation": "Votre demande est conservée sur ce téléphone. Appuyez sur Payer pour réessayer lorsqu’un professionnel sera disponible.",
+            "loadFailed": "Impossible de charger les demandes enregistrées. Appuyez pour réessayer.",
+            "saveFailed": "Impossible d’enregistrer votre demande sur ce téléphone. Réessayez avant de quitter cet écran."
+        },
         "list": {
+            "emptyCompletedTitle": "Aucune intervention terminée",
+            "emptyCompletedDescription": "Vos interventions terminées apparaîtront ici.",
+            "emptyActiveTitle": "Aucune intervention en cours",
+            "emptyActiveDescription": "Vos interventions en cours apparaîtront ici.",
             "professionalTitle": "Demandes d’intervention",
             "clientTitle": "Mes interventions",
             "professionalEmpty": "Aucune demande d’intervention pour le moment.",
@@ -268,8 +327,8 @@
             "new": "Nouvelle intervention",
             "create": "Créer une intervention",
             "ready": "Professionnel prêt à recevoir des demandes",
-            "refresh": "Actualiser les demandes"
-            ,"all": "Toutes",
+            "refresh": "Actualiser les demandes",
+            "all": "Toutes",
             "dateTbd": "Date à confirmer",
             "fallbackTitle": "Intervention",
             "fallbackAddress": "Adresse sélectionnée",
@@ -315,8 +374,8 @@
             "where": "Où doit avoir lieu l’intervention ?",
             "chooseSaved": "Sélectionnez une adresse enregistrée ou recherchez votre lieu d’intervention.",
             "saved": "Adresses enregistrées",
-            "searchNew": "Rechercher une nouvelle adresse"
-            ,"notFound": "Adresse introuvable.",
+            "searchNew": "Rechercher une nouvelle adresse",
+            "notFound": "Adresse introuvable.",
             "searchUnavailable": "La recherche d’adresse est indisponible.",
             "close": "Fermer",
             "selectedOnMap": "Adresse sélectionnée sur la carte"
@@ -436,6 +495,7 @@
             "declineTitle": "Refuser cette demande ?",
             "declineDescription": "Cette demande ne sera plus proposée dans votre liste.",
             "statusNegotiation": "Négociation",
+            "statusNoProfessional": "Aucun professionnel disponible",
             "statusPending": "En attente",
             "statusAccepted": "Acceptée",
             "statusInProgress": "En cours",
@@ -585,6 +645,10 @@
             "firstNameRequired": "Le prénom est obligatoire.",
             "lastNameRequired": "Le nom est obligatoire.",
             "addressRequired": "L’adresse principale est obligatoire.",
+            "photoSourceHint": "Prenez une photo ou choisissez une image dans votre galerie.",
+            "photoUpdateSuccess": "Photo de profil enregistrée sur ce téléphone.",
+            "photoUpdateFailed": "Impossible de mettre à jour la photo de profil. Réessayez.",
+            "photoLoadFailed": "Impossible de charger votre photo de profil.",
             "editPhoto": "Modifier la photo de profil",
             "role": "Client Pro24Home",
             "intro": "Gérez vos informations personnelles et comment nous vous contactons.",
@@ -622,8 +686,8 @@
             "card": "Carte bancaire",
             "sampleCard": "Visa **** 4242",
             "otherCard": "Autre carte",
-            "payAmount": "Payer {{amount}}"
-            ,"failed": "Le paiement n’a pas pu être finalisé."
+            "payAmount": "Payer {{amount}}",
+            "failed": "Le paiement n’a pas pu être finalisé."
         },
         "estimate": {
             "title": "Estimation du prix",
@@ -640,8 +704,8 @@
             "time": "Temps d’intervention",
             "timeDescription": "La durée peut faire varier le coût.",
             "disclaimer": "Le prix affiché est indicatif. Le montant final sera confirmé par le professionnel après son diagnostic sur place.",
-            "defaultRange": "{{min}} € – {{max}} €"
-            ,"understood": "Compris"
+            "defaultRange": "{{min}} € – {{max}} €",
+            "understood": "Compris"
         }
     },
     "permissions": {},
@@ -649,31 +713,102 @@
         "welcome": "Bienvenue sur Pro24Home",
         "notClient": "Pas encore membre ?",
         "createAccount": "Créer votre compte",
-        "forgetPassword": "Mot de passe oublier ?",
+        "forgetPassword": "Mot de passe oublié ?",
         "client": "Déjà membre ?",
         "loginAccount": "Se connecter",
         "labelCode": "Veuillez entrez le code de validation reçu par SMS",
         "privacy": "Politique de confidentialité"
     },
     "notifications": {
-        "all": "Toutes", "unread": "Non lues", "requests": "Demandes", "promos": "Promotions",
-        "loading": "Chargement des notifications...", "loadError": "Erreur lors du chargement des notifications",
-        "today": "Aujourd’hui", "week": "Cette semaine", "older": "Plus anciennes",
-        "emptyTitle": "Vous êtes à jour !", "emptyDescription": "Aucune nouvelle notification pour le moment.",
+        "interventionUnavailable": "L’intervention associée à cette notification est indisponible.",
+        "all": "Toutes",
+        "unread": "Non lues",
+        "requests": "Demandes",
+        "promos": "Promotions",
+        "loading": "Chargement des notifications...",
+        "loadError": "Erreur lors du chargement des notifications",
+        "today": "Aujourd’hui",
+        "week": "Cette semaine",
+        "older": "Plus anciennes",
+        "emptyTitle": "Vous êtes à jour !",
+        "emptyDescription": "Aucune nouvelle notification pour le moment.",
         "subtitle": "Restez informé de tout ce qui compte."
     },
-    "address": { "default": "Par défaut" },
+    "address": {
+        "default": "Par défaut"
+    },
     "professional": {
         "dashboard": {
-            "greeting": "Bonjour, {{name}}", "subtitle": "Voici votre activité du jour.", "online": "Vous êtes en ligne", "offline": "Vous êtes hors ligne",
-            "onlineDescription": "Vous recevez des demandes d’intervention.", "offlineDescription": "Activez votre statut pour recevoir des demandes.",
-            "requests": "Nouvelles demandes", "emptyRequests": "Aucune nouvelle demande pour le moment.", "viewRequest": "Voir la demande", "request": "la demande", "intervention": "Intervention", "address": "Adresse à consulter", "dateFallback": "Date à confirmer",
-            "today": "Aujourd’hui", "received": "Demandes reçues", "activeServices": "Services actifs", "rating": "Note moyenne", "completeProfile": "Complétez votre profil", "documentsPrompt": "Finalisez vos documents pour recevoir plus de demandes.", "refresh": "Actualiser les demandes",
-            "positionUnavailable": "Position indisponible", "positionRequired": "Attendez que votre position soit détectée, puis réessayez.", "locationPermissionTitle": "Autorisation de localisation requise", "locationPermissionMessage": "Pour passer en ligne, autorisez Pro24Home à accéder à votre position pendant l’utilisation de l’application dans les réglages.", "openSettings": "Ouvrir les réglages", "cancel": "Plus tard", "locationSettingsUnavailable": "Impossible d’ouvrir les réglages de l’application.", "statusUnavailable": "Statut indisponible", "statusFailed": "Votre statut n’a pas pu être mis à jour."
+            "greeting": "Bonjour, {{name}}",
+            "subtitle": "Voici votre activité du jour.",
+            "online": "Vous êtes en ligne",
+            "offline": "Vous êtes hors ligne",
+            "onlineDescription": "Vous recevez des demandes d’intervention.",
+            "offlineDescription": "Activez votre statut pour recevoir des demandes.",
+            "requests": "Nouvelles demandes",
+            "emptyRequests": "Aucune nouvelle demande pour le moment.",
+            "viewRequest": "Voir la demande",
+            "request": "la demande",
+            "intervention": "Intervention",
+            "address": "Adresse à consulter",
+            "dateFallback": "Date à confirmer",
+            "today": "Aujourd’hui",
+            "received": "Demandes reçues",
+            "activeServices": "Services actifs",
+            "rating": "Note moyenne",
+            "completeProfile": "Complétez votre profil",
+            "documentsPrompt": "Finalisez vos documents pour recevoir plus de demandes.",
+            "refresh": "Actualiser les demandes",
+            "positionUnavailable": "Position indisponible",
+            "positionRequired": "Attendez que votre position soit détectée, puis réessayez.",
+            "locationPermissionTitle": "Autorisation de localisation requise",
+            "locationPermissionMessage": "Pour passer en ligne, autorisez Pro24Home à accéder à votre position pendant l’utilisation de l’application dans les réglages.",
+            "openSettings": "Ouvrir les réglages",
+            "cancel": "Plus tard",
+            "locationSettingsUnavailable": "Impossible d’ouvrir les réglages de l’application.",
+            "statusUnavailable": "Statut indisponible",
+            "statusFailed": "Votre statut n’a pas pu être mis à jour."
         },
         "documents": {
-            "identityFront": "Pièce d’identité recto", "identityFrontDescription": "Carte nationale ou titre de séjour", "identityBack": "Pièce d’identité verso", "identityBackDescription": "Le verso de votre pièce d’identité", "proofAddress": "Justificatif de domicile", "proofAddressDescription": "Facture ou attestation de moins de 3 mois", "kbis": "Extrait Kbis", "kbisDescription": "Document officiel de votre entreprise", "rib": "Relevé d’identité bancaire", "ribDescription": "Pour recevoir vos paiements",
-            "fileTooLarge": "Fichier trop volumineux", "fileTooLargeDescription": "Choisissez un fichier de 5 Mo maximum.", "verificationTitle": "Vérification du profil", "verificationDescription": "Ajoutez vos documents pour que notre équipe puisse valider votre compte professionnel.", "uploadSuccess": "Document envoyé pour vérification.", "uploadFailed": "Impossible d’envoyer ce document.", "openFailed": "Impossible d’ouvrir vos fichiers.", "cameraUnavailable": "La caméra n’est pas disponible.", "back": "Retour", "help": "Aide", "stepInfo": "Informations", "stepDocuments": "Documents", "stepValidation": "Validation", "step": "Étape 2 sur 3", "subtitle": "Ajoutez vos documents pour vérifier votre identité.", "fix": "À corriger", "pending": "En attente", "inProgress": "En cours", "uploading": "Envoi en cours…", "addFile": "Ajoutez votre fichier", "chooseOption": "Choisissez une option ci-dessous", "chooseFile": "Choisir un fichier", "takePhoto": "Prendre une photo", "fileFormats": "PDF, JPG ou PNG • 5 Mo maximum", "remaining": "Documents restants", "secureTitle": "Vos données sont 100 % sécurisées", "secureDescription": "Vos documents sont chiffrés et utilisés uniquement pour la vérification.", "validated": "documents validés", "continue": "Continuer"
+            "identityFront": "Pièce d’identité recto",
+            "identityFrontDescription": "Carte nationale ou titre de séjour",
+            "identityBack": "Pièce d’identité verso",
+            "identityBackDescription": "Le verso de votre pièce d’identité",
+            "proofAddress": "Justificatif de domicile",
+            "proofAddressDescription": "Facture ou attestation de moins de 3 mois",
+            "kbis": "Extrait Kbis",
+            "kbisDescription": "Document officiel de votre entreprise",
+            "rib": "Relevé d’identité bancaire",
+            "ribDescription": "Pour recevoir vos paiements",
+            "fileTooLarge": "Fichier trop volumineux",
+            "fileTooLargeDescription": "Choisissez un fichier de 5 Mo maximum.",
+            "verificationTitle": "Vérification du profil",
+            "verificationDescription": "Ajoutez vos documents pour que notre équipe puisse valider votre compte professionnel.",
+            "uploadSuccess": "Document envoyé pour vérification.",
+            "uploadFailed": "Impossible d’envoyer ce document.",
+            "openFailed": "Impossible d’ouvrir vos fichiers.",
+            "cameraUnavailable": "La caméra n’est pas disponible.",
+            "back": "Retour",
+            "help": "Aide",
+            "stepInfo": "Informations",
+            "stepDocuments": "Documents",
+            "stepValidation": "Validation",
+            "step": "Étape 2 sur 3",
+            "subtitle": "Ajoutez vos documents pour vérifier votre identité.",
+            "fix": "À corriger",
+            "pending": "En attente",
+            "inProgress": "En cours",
+            "uploading": "Envoi en cours…",
+            "addFile": "Ajoutez votre fichier",
+            "chooseOption": "Choisissez une option ci-dessous",
+            "chooseFile": "Choisir un fichier",
+            "takePhoto": "Prendre une photo",
+            "fileFormats": "PDF, JPG ou PNG • 5 Mo maximum",
+            "remaining": "Documents restants",
+            "secureTitle": "Vos données sont 100 % sécurisées",
+            "secureDescription": "Vos documents sont chiffrés et utilisés uniquement pour la vérification.",
+            "validated": "documents validés",
+            "continue": "Continuer"
         },
         "verificationPending": {
             "title": "Votre compte est en cours de vérification",
@@ -683,7 +818,80 @@
             "logout": "Se déconnecter"
         },
         "tracking": {
-            "distanceUnavailable": "Distance indisponible", "active": "Navigation active", "activeSubtitle": "Suivez l’itinéraire dans Pro24Home", "ready": "Prêt à partir ?", "readySubtitle": "Itinéraire vers le client", "inProgress": "Intervention en cours", "reject": "Refuser l’intervention", "complete": "Terminer l’intervention", "destination": "Destination client", "navigationTitle": "Navigation Pro24Home", "loadFailed": "Impossible de charger le trajet.", "invalidAddress": "Adresse du client invalide", "termsRequired": "Les conditions de navigation doivent être acceptées.", "routeUnavailable": "Itinéraire indisponible ({{status}}).", "navigationUnavailable": "Navigation indisponible. Vérifiez la connexion et réessayez.", "navigationRetry": "Navigation indisponible. Réessayez.", "updateFailed": "Mise à jour impossible", "statusFailed": "Le statut n’a pas pu être mis à jour.", "interventionStatusFailed": "Le statut de l’intervention n’a pas pu être mis à jour.", "voice": "Activer ou couper le guidage vocal", "recenterRoute": "Recentrer sur le trajet", "recenterPosition": "Recentrer sur ma position", "showRoute": "Afficher le trajet complet", "back": "Retour", "toClient": "Trajet vers le client", "distance": "Distance", "eta": "ETA", "arrived": "Je suis arrivé", "updating": "Mise à jour...", "start": "Démarrer le trajet", "atClient": "INTERVENTION CHEZ", "client": "Client", "clientAddress": "Adresse du client", "enableLocation": "Activez la localisation pour suivre votre trajet en temps réel.", "retry": "Réessayer", "arrivalEstimate": "Arrivée estimée", "updateIntervention": "Mettre à jour l’intervention", "chooseStatus": "Choisissez l’état actuel de l’intervention.", "cancel": "Annuler"
+            "distanceUnavailable": "Distance indisponible",
+            "active": "Navigation active",
+            "activeSubtitle": "Suivez l’itinéraire dans Pro24Home",
+            "ready": "Prêt à partir ?",
+            "readySubtitle": "Itinéraire vers le client",
+            "inProgress": "Intervention en cours",
+            "reject": "Refuser l’intervention",
+            "complete": "Terminer l’intervention",
+            "destination": "Destination client",
+            "navigationTitle": "Navigation Pro24Home",
+            "loadFailed": "Impossible de charger le trajet.",
+            "invalidAddress": "Adresse du client invalide",
+            "termsRequired": "Les conditions de navigation doivent être acceptées.",
+            "routeUnavailable": "Itinéraire indisponible ({{status}}).",
+            "navigationUnavailable": "Navigation indisponible. Vérifiez la connexion et réessayez.",
+            "navigationRetry": "Navigation indisponible. Réessayez.",
+            "updateFailed": "Mise à jour impossible",
+            "statusFailed": "Le statut n’a pas pu être mis à jour.",
+            "interventionStatusFailed": "Le statut de l’intervention n’a pas pu être mis à jour.",
+            "voice": "Activer ou couper le guidage vocal",
+            "recenterRoute": "Recentrer sur le trajet",
+            "recenterPosition": "Recentrer sur ma position",
+            "showRoute": "Afficher le trajet complet",
+            "back": "Retour",
+            "toClient": "Trajet vers le client",
+            "distance": "Distance",
+            "eta": "ETA",
+            "arrived": "Je suis arrivé",
+            "updating": "Mise à jour...",
+            "start": "Démarrer le trajet",
+            "atClient": "INTERVENTION CHEZ",
+            "client": "Client",
+            "clientAddress": "Adresse du client",
+            "enableLocation": "Activez la localisation pour suivre votre trajet en temps réel.",
+            "retry": "Réessayer",
+            "arrivalEstimate": "Arrivée estimée",
+            "updateIntervention": "Mettre à jour l’intervention",
+            "chooseStatus": "Choisissez l’état actuel de l’intervention.",
+            "cancel": "Annuler"
+        },
+        "documentDesign": {
+            "title": "Mes documents",
+            "progress": "{{sent}} sur {{total}} documents envoyés",
+            "identitySent": "Identité recto et verso envoyés",
+            "sentCount_one": "{{count}} document envoyé",
+            "sentCount_other": "{{count}} documents envoyés",
+            "titles": {
+                "identity_front": "Ajoutez le recto de votre pièce d’identité",
+                "identity_back": "Ajoutez le verso de votre pièce d’identité",
+                "proof_of_address": "Ajoutez votre justificatif\nde domicile",
+                "kbis": "Ajoutez votre extrait KBIS",
+                "rib": "Ajoutez votre RIB"
+            },
+            "descriptions": {
+                "identity_front": "Une photo nette de votre pièce d’identité en cours de validité.",
+                "identity_back": "Le verso de votre pièce d’identité, entièrement visible et lisible.",
+                "proof_of_address": "Un document récent et lisible avec votre nom et votre adresse.",
+                "kbis": "Un extrait récent et lisible permettant d’identifier votre entreprise.",
+                "rib": "Un relevé d’identité bancaire lisible au nom de votre entreprise."
+            },
+            "selectDocument": "Sélectionnez votre document",
+            "replaceRejected": "Cette pièce a été refusée. Ajoutez un nouveau document lisible.",
+            "completeTitle": "Votre dossier est complet",
+            "completeDescription": "Vos documents ont été envoyés. Vous pouvez suivre la vérification de votre compte.",
+            "allSent": "Toutes les pièces ont été envoyées",
+            "followDossier": "Suivre mon dossier",
+            "next": "Ensuite",
+            "reviewHint": "Après la dernière pièce, votre dossier passera en vérification.",
+            "savedHint": "Votre progression est enregistrée automatiquement.",
+            "sentCount": "{{count}} documents envoyés",
+            "names": {
+                "rib": "RIB",
+                "kbis": "Extrait KBIS"
+            }
         }
     },
     "services": {

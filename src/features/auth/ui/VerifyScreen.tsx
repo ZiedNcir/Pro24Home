@@ -1,3 +1,4 @@
+import { buildPhoneVerificationRequest } from '../model/phone-verification';
 import { Text } from '@shared/ui';
 import { Button } from '@shared/ui/button/Button';
 import Field from '@shared/ui/form/HookFormField';
@@ -8,7 +9,7 @@ import { IRole } from '@utils/constant';
 import useKeyboardOverlay from '@utils/kayboard';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useTranslation } from 'react-i18next';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { Toast } from '@core/notifications/toast';
 import styled from 'styled-components/native';
@@ -22,7 +23,8 @@ import { useVerifyAccountMutation, useResendVerificationMutation } from '@featur
 type AppNavigationProp = NativeStackNavigationProp<AppStackType>;
 
 interface RouteParams {
-    email: string;
+    email?: string | null;
+    phone_number?: string;
     role: IRole;
 }
 
@@ -76,15 +78,17 @@ export const VerifyAccountScreen = () => {
     const { t } = useTranslation();
     const route = useRoute();
     const navigation = useNavigation<AppNavigationProp>();
-    const params = route.params as RouteParams;
+    const params = (route.params || { role: 'client' }) as RouteParams;
 
     const { Overlay } = useKeyboardOverlay();
     const { handleSubmit, control, getValues } = useForm({
         defaultValues: {
             code: '',
-            email: params.email,
+            email: params.email || '',
+            phone_number: params.phone_number || '',
         },
     });
+    const requestBusy = useRef(false);
     const [_resending, setResending] = useState(false);
     const [_verifying, setVerifying] = useState(false);
     const [timer, setTimer] = useState(5 * 60);
@@ -107,11 +111,13 @@ export const VerifyAccountScreen = () => {
     }, [timer]);
 
     const doVerification = async () => {
+        if (requestBusy.current) return;
+        requestBusy.current = true;
         try {
             setVerifying(true);
             const code = getValues('code');
 
-            if (!code || code.length < 4) {
+            if (!/^\d{6}$/.test(code.trim())) {
                 Toast.show(t('ui.form.code.invalid') || 'Invalid code', {
                     type: 'warning',
                     placement: 'bottom',
@@ -121,11 +127,12 @@ export const VerifyAccountScreen = () => {
                 return;
             }
 
-            const result = await verifyAccount({
-                code,
-                email: params.email,
-                phone_number: ''
-            }).unwrap();
+            const phone = getValues('phone_number');
+            if (!phone.trim()) {
+                Toast.show(t('auth.onboarding.phoneRequired'), { type: 'danger', placement: 'bottom' });
+                return;
+            }
+            const result = await verifyAccount(buildPhoneVerificationRequest(code, phone)).unwrap();
 
             // Show success message
             const successMessage = result?.message || t('auth.verificationSuccess') || 'Email verified successfully';
@@ -136,20 +143,7 @@ export const VerifyAccountScreen = () => {
             });
 
 
-            // Navigate based on user role
-            setTimeout(() => {
-                if (params.role === 'client') {
-                    navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'SignIn', params: { role: 'client' } }],
-                    });
-                } else {
-                    navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'SignIn', params: { role: 'professional' } }],
-                    });
-                }
-            }, 2000);
+            navigation.reset({ index: 0, routes: [{ name: 'SignIn', params: { role: params.role || 'client' } }] });
 
         } catch (error: any) {
             console.error('Verification error:', error);
@@ -168,16 +162,19 @@ export const VerifyAccountScreen = () => {
                 duration: 4000,
             });
         } finally {
+            requestBusy.current = false;
             setVerifying(false);
         }
     };
 
     const resendCode = async () => {
         // Don't allow resend if timer is still running
-        if (timer > 0) {
+        if (timer > 0 || requestBusy.current) return;
+        if (!params.email?.trim()) {
+            Toast.show(t('auth.onboarding.emailRequired'), { type: 'danger', placement: 'bottom' });
             return;
         }
-
+        requestBusy.current = true;
         try {
             setResending(true);
 
@@ -185,6 +182,7 @@ export const VerifyAccountScreen = () => {
                 email: params.email,
             }).unwrap();
 
+            setTimer(300);
             const successMessage = result?.message || t('auth.codeSent') || 'Verification code sent to your email';
             Toast.show(successMessage, {
                 type: 'success',
@@ -214,6 +212,7 @@ export const VerifyAccountScreen = () => {
                 duration: 4000,
             });
         } finally {
+            requestBusy.current = false;
             setResending(false);
         }
     };
@@ -248,6 +247,15 @@ export const VerifyAccountScreen = () => {
                     {t('terms.labelCode')}
                 </DescriptionText>
 
+                {!params.phone_number ? <Field
+                    name="phone_number"
+                    required
+                    control={control}
+                    label={t('ui.form.phone.label')}
+                    placeholder={t('ui.form.phone.placeholder')}
+                    keyboardType="phone-pad"
+                /> : null}
+
                 <Field
                     name="code"
                     required
@@ -275,9 +283,7 @@ export const VerifyAccountScreen = () => {
                         <Spinner
                             visible={true}
                             animationType='dots'
-                            onRequestClose={function (): void {
-                                throw new Error('Function not implemented.');
-                            }}
+                            onRequestClose={() => undefined}
                         />
                     </LoaderContainer>
                 )}

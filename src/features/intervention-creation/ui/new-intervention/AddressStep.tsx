@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Platform } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import styled from 'styled-components/native';
+import { useTheme } from '@theme';
 
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
-import { colors } from '@theme';
 import {
   horizontalScale,
   moderateScale,
@@ -43,6 +43,8 @@ const AddressStep: React.FC<AddressStepProps> = ({
   onPrevious,
 }) => {
   const { t } = useTranslation();
+  const { theme } = useTheme();
+  const colors = theme.colors;
   const region = selectedMapRegion || DEFAULT_MAP_REGION;
   const selectedLocation = addressModal.selectedLocation;
 
@@ -170,7 +172,7 @@ const AddressIntro = styled.View`
   gap: ${horizontalScale(8)}px;
   padding: ${verticalScale(12)}px;
   border-radius: ${moderateScale(12)}px;
-  background-color: ${colors.warningLight};
+  background-color: ${({ theme }) => theme.colors.warningLight};
   margin-bottom: ${verticalScale(16)}px;
 `;
 const AddressLoading = styled.View`
@@ -184,7 +186,7 @@ const AddressMapPreview = styled.View`
   overflow: hidden;
   border-radius: ${moderateScale(16)}px;
   margin-bottom: ${verticalScale(16)}px;
-  background-color: ${colors.surfaceVariant};
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
 `;
 const AddressMap = styled(MapView).attrs({
   provider: Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined,
@@ -200,7 +202,7 @@ const PreviewOpenOverlay = styled.TouchableOpacity`
   gap: ${horizontalScale(6)}px;
   padding: ${verticalScale(8)}px ${horizontalScale(10)}px;
   border-radius: ${moderateScale(10)}px;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
 `;
 const EmptyAddress = styled(Text).attrs({
   variant: 'regularSmall',
@@ -208,7 +210,7 @@ const EmptyAddress = styled(Text).attrs({
 })`
   padding: ${verticalScale(14)}px;
   border-radius: ${moderateScale(12)}px;
-  background-color: ${colors.gray100};
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
 `;
 const SmallLabel = styled(Text).attrs({
   variant: 'bold',
@@ -221,7 +223,7 @@ const AddAddressButton = styled.TouchableOpacity`
   height: ${verticalScale(48)}px;
   border-radius: 12px;
   border-width: 1px;
-  border-color: ${colors.primary};
+  border-color: ${({ theme }) => theme.colors.primary};
   flex-direction: row;
   justify-content: center;
   align-items: center;

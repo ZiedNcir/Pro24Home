@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { Pressable, PressableProps } from 'react-native';
 import styled from 'styled-components/native';
-import { Colors } from '@utils/constant';
+import { useTheme } from '@theme';
 import { fontPixel, horizontalScale, verticalScale, moderateScale } from '@utils/normalizedCss';
 import Text from '@shared/ui/typography/Text';
 import { Spinner } from '@shared/ui/overlay/AppSpinner';
@@ -133,6 +133,7 @@ const getButtonColors = (
     variant: ButtonVariant,
     pressed: boolean,
     disabled: boolean,
+    palette: ReturnType<typeof useTheme>['theme']['colors'],
     ghost?: boolean,
     customColors?: {
         color?: string;
@@ -143,62 +144,62 @@ const getButtonColors = (
 ) => {
     if (disabled) {
         return {
-            backgroundColor: Colors.gray,
-            textColor: Colors.black,
-            borderColor: Colors.gray,
-            iconColor: Colors.black,
+            backgroundColor: palette.surfaceVariant,
+            textColor: palette.textDisabled,
+            borderColor: palette.border,
+            iconColor: palette.textDisabled,
         };
     }
 
     const baseColors = {
         primary: {
-            backgroundColor: Colors.orange,
-            textColor: Colors.white,
-            borderColor: Colors.orange,
-            iconColor: Colors.white,
-            pressedBackground: '#E5563D',
+            backgroundColor: palette.primary,
+            textColor: palette.textInverse,
+            borderColor: palette.primary,
+            iconColor: palette.textInverse,
+            pressedBackground: palette.primaryDark,
         },
         secondary: {
-            backgroundColor: Colors.white,
-            textColor: Colors.orange,
-            borderColor: Colors.orange,
-            iconColor: Colors.orange,
-            pressedBackground: '#F5F5F5',
+            backgroundColor: palette.surface,
+            textColor: palette.primary,
+            borderColor: palette.primary,
+            iconColor: palette.primary,
+            pressedBackground: palette.surfaceVariant,
         },
         outline: {
             backgroundColor: 'transparent',
-            textColor: Colors.orange,
-            borderColor: Colors.orange,
-            iconColor: Colors.orange,
-            pressedBackground: 'rgba(245, 95, 66, 0.1)',
+            textColor: palette.primary,
+            borderColor: palette.primary,
+            iconColor: palette.primary,
+            pressedBackground: palette.primaryLighter,
         },
         ghost: {
             backgroundColor: 'transparent',
-            textColor: Colors.orange,
+            textColor: palette.primary,
             borderColor: 'transparent',
-            iconColor: Colors.orange,
-            pressedBackground: 'rgba(245, 95, 66, 0.1)',
+            iconColor: palette.primary,
+            pressedBackground: palette.primaryLighter,
         },
         danger: {
-            backgroundColor: Colors.danger,
-            textColor: Colors.white,
-            borderColor: Colors.danger,
-            iconColor: Colors.white,
-            pressedBackground: '#E62C38',
+            backgroundColor: palette.danger,
+            textColor: palette.textInverse,
+            borderColor: palette.danger,
+            iconColor: palette.textInverse,
+            pressedBackground: palette.dangerLight,
         },
         warning: {
-            backgroundColor: Colors.warning,
-            textColor: Colors.white,
-            borderColor: Colors.warning,
-            iconColor: Colors.white,
-            pressedBackground: '#E58120',
+            backgroundColor: palette.warning,
+            textColor: palette.textInverse,
+            borderColor: palette.warning,
+            iconColor: palette.textInverse,
+            pressedBackground: palette.warningLight,
         },
         positive: {
-            backgroundColor: Colors.positive,
-            textColor: Colors.white,
-            borderColor: Colors.positive,
-            iconColor: Colors.white,
-            pressedBackground: '#3BC99A',
+            backgroundColor: palette.success,
+            textColor: palette.textInverse,
+            borderColor: palette.success,
+            iconColor: palette.textInverse,
+            pressedBackground: palette.successLight,
         },
     };
 
@@ -215,9 +216,9 @@ const getButtonColors = (
 
     // Handle ghost variant for primary color
     if (ghost && variant === 'primary') {
-        colors.backgroundColor = pressed ? 'rgba(245, 95, 66, 0.2)' : 'transparent';
-        colors.textColor = Colors.orange;
-        colors.iconColor = Colors.orange;
+        colors.backgroundColor = pressed ? palette.primaryLighter : 'transparent';
+        colors.textColor = palette.primary;
+        colors.iconColor = palette.primary;
         colors.borderColor = 'transparent';
     }
 
@@ -401,6 +402,7 @@ export const Button: FC<ButtonProps> = ({
     style,
     ...rest
 }) => {
+    const { theme } = useTheme();
     const [pressed, setPressed] = useState(false);
     const isIconType = type === 'icon';
 
@@ -409,6 +411,7 @@ export const Button: FC<ButtonProps> = ({
         variant,
         pressed,
         disabled,
+        theme.colors,
         ghost,
         { color, backgroundColor, borderColor, textColor }
     );
@@ -485,6 +488,7 @@ export const Button: FC<ButtonProps> = ({
                 {(title || subtitle || loadingText) && (
                     <TextContainer>
                         <TitleText
+                            variant="bold"
                             size={size}
                             type={type}
                             textColor={buttonColors.textColor}

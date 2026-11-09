@@ -1,62 +1,52 @@
+import { isUnverifiedAccount } from '@entities/user/model/account-status';
 import { UserType } from '@entities/user/model';
 import type { AuthResponse } from '@entities/user/model';
-import { PROFESSIONAL_DOCUMENTS } from '@roles/professional/documents/model/professional-documents';
+import { PROFESSIONAL_DOCUMENTS, getDocumentForType, getDocumentSubmissionProgress } from '@roles/professional/documents/model/professional-documents';
 
 export type HomeRoute =
     | 'Tabs'
     | 'ProfessionnelHome'
     | 'AccountPendingScreen'
     | 'Documents'
-    | 'ProfessionalVerificationPending';
+    | 'ProfessionalVerificationPending'
+    | 'VerifyScreen';
 export type AuthResponseLike = Partial<AuthResponse> & { data?: Partial<AuthResponse> };
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
     typeof value === 'object' && value !== null;
 
 export const isInactiveAuthResponse = (response: unknown): boolean => {
-    if (!isRecord(response)) return false;
-    if (response.is_active === 0 || response.is_active === '0' || response.is_active === false) return true;
-
-    if (isRecord(response.data)) {
-        if (response.data.is_active === 0 || response.data.is_active === '0' || response.data.is_active === false) return true;
-        return isRecord(response.data.data)
-            && (response.data.data.is_active === 0 || response.data.data.is_active === '0' || response.data.data.is_active === false);
+    let payload = response;
+    for (let depth = 0; depth < 4 && isRecord(payload); depth++) {
+        const status = payload.is_active ?? (isRecord(payload.user) ? payload.user.is_active : undefined);
+        if (status === 0 || status === '0' || status === false) return true;
+        payload = payload.data;
     }
-
     return false;
 };
 
 export const getHomeRouteFromAuthResponse = (
     response: AuthResponseLike,
     fallbackRole: 'client' | 'professional' = 'client',
+    documentsUploadFinished = false,
 ): HomeRoute => {
     const payload = response.data && typeof response.data === 'object'
         ? { ...response, ...response.data }
         : response;
 
-    const accountStatus = payload.is_active as unknown;
+    const accountStatus = (payload.is_active ?? payload.user?.is_active) as unknown;
     const userType = payload.user?.type ?? fallbackRole;
     const isActive = accountStatus !== 0 && accountStatus !== '0' && accountStatus !== false;
 
     if (userType === UserType.PROFESSIONAL) {
         const documents = payload.user?.documents;
         const submittedDocuments = Array.isArray(documents) ? documents : [];
-        const hasRejectedRequiredDocument = submittedDocuments.some(document =>
-            PROFESSIONAL_DOCUMENTS.some(requiredDocument => requiredDocument.name === document.name)
-                && document.status === 'rejected',
-        );
-        const hasAllRequiredDocuments = !hasRejectedRequiredDocument && PROFESSIONAL_DOCUMENTS.every(requiredDocument =>
-            submittedDocuments.some(document =>
-                document.name === requiredDocument.name && document.status !== 'rejected',
-            ),
-        );
-
-        if (!hasAllRequiredDocuments) return 'Documents';
-
+        const hasRejectedDocument = PROFESSIONAL_DOCUMENTS.some(required => getDocumentForType(submittedDocuments, required.name)?.status === 'rejected');
+        if (hasRejectedDocument) return 'Documents';
+        if (payload.user && (accountStatus === true || accountStatus === 1 || accountStatus === '1')) return 'ProfessionnelHome';
+        if (!documentsUploadFinished && !getDocumentSubmissionProgress(submittedDocuments).canContinue) return 'Documents';
         const allDocumentsApproved = PROFESSIONAL_DOCUMENTS.every(requiredDocument =>
-            submittedDocuments.some(document =>
-                document.name === requiredDocument.name && document.status === 'approved',
-            ),
+            getDocumentForType(submittedDocuments, requiredDocument.name)?.status === 'approved',
         );
 
         return isActive && allDocumentsApproved
@@ -64,6 +54,7 @@ export const getHomeRouteFromAuthResponse = (
             : 'ProfessionalVerificationPending';
     }
 
+    if (isUnverifiedAccount(payload)) return 'VerifyScreen';
     if (!isActive) return 'AccountPendingScreen';
     return 'Tabs';
 };

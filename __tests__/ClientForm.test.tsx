@@ -43,7 +43,7 @@ jest.mock('@features/auth/services/registration', () => ({
   prepareRegistrationPayload: (data: unknown) => data,
 }));
 
-jest.mock('@store/api/endpoints/auth', () => ({
+jest.mock('@features/auth/api/auth.api', () => ({
   useRegisterClientMutation: () => [jest.fn(() => ({ unwrap: async () => ({}) })), { isLoading: false, error: null, isSuccess: false }],
 }));
 
@@ -73,8 +73,8 @@ describe('ClientForm visual flow', () => {
       await Promise.resolve();
     });
 
-    expect(renderer.root.findByProps({ testID: 'client-form-step' }).props.children.join('')).toContain('1');
+    expect(renderer.root.findByProps({ testID: 'client-form-step' }).props.accessibilityValue).toMatchObject({ now: 1, max: 2 });
     expect(renderer.root.findByProps({ testID: 'client-form-progress' })).toBeTruthy();
-    expect(renderer.root.findByProps({ testID: 'client-form-primary-action' }).findByType(require('react-native').Text).props.children).toBe('ui.button.next');
+    expect(renderer.root.findByProps({ testID: 'client-form-primary-action' }).findByType(require('react-native').Text).props.children).toBe('common.actions.continue');
   });
 });

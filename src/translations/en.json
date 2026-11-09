@@ -3,7 +3,7 @@
         "creation": "Create your account",
         "creationClient": "Create your client account",
         "creationPro": "Create your professional account",
-        "connexion": "Connection",
+        "connexion": "Sign in",
         "verifyAccount": "Validate your account",
         "identityVerification": "Identity verification",
         "findPro": "What service do you need ?"
@@ -73,7 +73,7 @@
             },
             "address": {
                 "label": "Address",
-                "placeholder": "Enter your full address",
+                "placeholder": "Street address",
                 "required": "Address is required",
                 "minLength": "Address must be at least 5 characters"
             },
@@ -121,7 +121,6 @@
                 "numericOnly": "Numbers only",
                 "alphanumericOnly": "Letters and numbers only",
                 "noNumbers": "Must not contain numbers",
-                "passwordLength": "Minimum 8 characters",
                 "passwordUppercase": "At least one uppercase letter",
                 "passwordLowercase": "At least one lowercase letter",
                 "passwordNumber": "At least one number",
@@ -158,6 +157,18 @@
         }
     },
     "auth": {
+        "onboarding": {
+            "registrationToSignIn": "Your professional account has been created. Sign in to upload your documents.",
+            "uploadStateFailed": "Document progress could not be saved on this phone. Please retry using Continue.",
+            "retryServices": "Reload services",
+            "phoneRequired": "Enter the phone number used during registration.",
+            "emailRequired": "Your email address is needed to resend the code. Return to sign-in.",
+            "documentApproved": "Approved",
+            "documentsSubmitted": "documents submitted",
+            "profileRefreshFailed": "Could not refresh your application. Please try again.",
+            "uploadRefreshFailed": "Your document was uploaded, but the application could not be refreshed. Try refreshing before uploading it again.",
+            "checkDossier": "Check my application"
+        },
         "registering": "Registering...",
         "registrationFailed": "Registration failed. Please try again.",
         "loginFailed": "Login failed. Please try again.",
@@ -230,6 +241,28 @@
             "professionalActivityDescription": "Add information about your professional activity.",
             "professionalSecurityDescription": "Create your sign-in details to access your account.",
             "professionalServicesDescription": "Choose the services you offer."
+        },
+        "formDesign": {
+            "profileTitle": "Your information",
+            "profileDescriptionPro": "Enter your details to create your professional account.",
+            "profileDescriptionClient": "Enter your details to create your account.",
+            "showPassword": "Show password",
+            "hidePassword": "Hide password",
+            "steps": {
+                "profile": "Profile",
+                "company": "Company",
+                "security": "Security",
+                "services": "Services"
+            },
+            "loginPrompt": "Already have an account?"
+        },
+        "signInDesign": {
+            "title": "Welcome back",
+            "subtitle": "Sign in to your Pro24Home account.",
+            "emailLabel": "Email address",
+            "emailPlaceholder": "you@example.com",
+            "newAccount": "New to Pro24Home?",
+            "createAccount": "Create an account"
         }
     },
     "common": {
@@ -243,15 +276,17 @@
             "delete": "Delete",
             "yes": "Yes",
             "no": "No",
-            "previous": "Previous"
-            ,"continue": "Continue"
+            "previous": "Previous",
+            "continue": "Continue"
         },
         "status": {
             "loading": "Loading...",
             "requestSent": "Your request has been sent successfully"
         }
     },
-    "accessibility": { "back": "Back" },
+    "accessibility": {
+        "back": "Back"
+    },
     "navigation": {
         "home": "Home",
         "interventions": "Interventions",
@@ -259,7 +294,30 @@
         "newIntervention": "New intervention"
     },
     "intervention": {
+        "local": {
+            "delete": "Delete intervention",
+            "deleteTitle": "Delete this intervention?",
+            "deleteDescription": "This saved request will be removed from this phone.",
+            "deleteFailed": "Could not delete the intervention. Try again.",
+            "unavailableDescription": "No professional is available right now. Your request is saved and ready to resume.",
+            "savedTitle": "Request saved",
+            "addressDetails": "Additional information",
+            "photoNumber": "Request photo {{number}}",
+            "nextStep": "Resume your request",
+            "retryHint": "Professional availability will be checked before continuing.",
+            "viewDetails": "View details",
+            "photoFailed": "This photo could not be saved. Choose a smaller image.",
+            "pay": "Pay",
+            "saved": "No professional available. Your request is saved in My interventions.",
+            "explanation": "Your request is saved on this phone. Tap Pay to try again when a professional is available.",
+            "loadFailed": "Could not load saved requests. Tap to retry.",
+            "saveFailed": "Could not save your request on this phone. Please retry before leaving this screen."
+        },
         "list": {
+            "emptyCompletedTitle": "No completed interventions",
+            "emptyCompletedDescription": "Your completed interventions will appear here.",
+            "emptyActiveTitle": "No interventions in progress",
+            "emptyActiveDescription": "Your ongoing interventions will appear here.",
             "professionalTitle": "Service requests",
             "clientTitle": "My interventions",
             "professionalEmpty": "There are no new requests at the moment.",
@@ -269,8 +327,8 @@
             "new": "New intervention",
             "create": "Create an intervention",
             "ready": "Professional ready to receive requests",
-            "refresh": "Refresh requests"
-            ,"all": "All",
+            "refresh": "Refresh requests",
+            "all": "All",
             "dateTbd": "Date to be confirmed",
             "fallbackTitle": "Intervention",
             "fallbackAddress": "Selected address",
@@ -316,8 +374,8 @@
             "where": "Where should the work take place?",
             "chooseSaved": "Select a saved address or search for a location.",
             "saved": "Saved addresses",
-            "searchNew": "Search for a new address"
-            ,"notFound": "Address not found.",
+            "searchNew": "Search for a new address",
+            "notFound": "Address not found.",
             "searchUnavailable": "Address search is unavailable.",
             "close": "Close",
             "selectedOnMap": "Address selected on the map"
@@ -437,6 +495,7 @@
             "declineTitle": "Decline this request?",
             "declineDescription": "This request will no longer appear in your list.",
             "statusNegotiation": "Negotiation",
+            "statusNoProfessional": "No professional available",
             "statusPending": "Pending",
             "statusAccepted": "Accepted",
             "statusInProgress": "In progress",
@@ -586,6 +645,10 @@
             "firstNameRequired": "First name is required.",
             "lastNameRequired": "Last name is required.",
             "addressRequired": "Main address is required.",
+            "photoSourceHint": "Take a photo or choose an image from your gallery.",
+            "photoUpdateSuccess": "Profile photo saved on this phone.",
+            "photoUpdateFailed": "Could not update your profile photo. Please try again.",
+            "photoLoadFailed": "Could not load your profile photo.",
             "editPhoto": "Edit profile photo",
             "role": "Pro24Home client",
             "intro": "Manage your personal information and how we contact you.",
@@ -623,8 +686,8 @@
             "card": "Bank card",
             "sampleCard": "Visa **** 4242",
             "otherCard": "Another card",
-            "payAmount": "Pay {{amount}}"
-            ,"failed": "The payment could not be completed."
+            "payAmount": "Pay {{amount}}",
+            "failed": "The payment could not be completed."
         },
         "estimate": {
             "title": "Price estimate",
@@ -641,30 +704,101 @@
             "time": "Time required",
             "timeDescription": "The duration may affect the cost.",
             "disclaimer": "The displayed price is indicative. The professional will confirm the final amount after an on-site diagnosis.",
-            "defaultRange": "{{min}} € – {{max}} €"
-            ,"understood": "Understood"
+            "defaultRange": "{{min}} € – {{max}} €",
+            "understood": "Understood"
         }
     },
     "permissions": {},
     "notifications": {
-        "all": "All", "unread": "Unread", "requests": "Requests", "promos": "Promotions",
-        "loading": "Loading notifications...", "loadError": "Could not load notifications",
-        "today": "Today", "week": "This week", "older": "Older",
-        "emptyTitle": "You’re all caught up!", "emptyDescription": "No new notifications at the moment.",
+        "interventionUnavailable": "The intervention linked to this notification is unavailable.",
+        "all": "All",
+        "unread": "Unread",
+        "requests": "Requests",
+        "promos": "Promotions",
+        "loading": "Loading notifications...",
+        "loadError": "Could not load notifications",
+        "today": "Today",
+        "week": "This week",
+        "older": "Older",
+        "emptyTitle": "You’re all caught up!",
+        "emptyDescription": "No new notifications at the moment.",
         "subtitle": "Stay informed about what matters."
     },
-    "address": { "default": "Default" },
+    "address": {
+        "default": "Default"
+    },
     "professional": {
         "dashboard": {
-            "greeting": "Hello, {{name}}", "subtitle": "Here is your activity today.", "online": "You’re online", "offline": "You’re offline",
-            "onlineDescription": "You’re receiving intervention requests.", "offlineDescription": "Turn on your status to receive requests.",
-            "requests": "New requests", "emptyRequests": "No new requests at the moment.", "viewRequest": "View request", "request": "request", "intervention": "Intervention", "address": "Address to check", "dateFallback": "Date to be confirmed",
-            "today": "Today", "received": "Requests received", "activeServices": "Active services", "rating": "Average rating", "completeProfile": "Complete your profile", "documentsPrompt": "Finish your documents to receive more requests.", "refresh": "Refresh requests",
-            "positionUnavailable": "Position unavailable", "positionRequired": "Wait for your position to be detected, then try again.", "locationPermissionTitle": "Location permission required", "locationPermissionMessage": "To go online, allow Pro24Home to access your location while using the app in Settings.", "openSettings": "Open Settings", "cancel": "Not now", "locationSettingsUnavailable": "Could not open the app settings.", "statusUnavailable": "Status unavailable", "statusFailed": "Your status could not be updated."
+            "greeting": "Hello, {{name}}",
+            "subtitle": "Here is your activity today.",
+            "online": "You’re online",
+            "offline": "You’re offline",
+            "onlineDescription": "You’re receiving intervention requests.",
+            "offlineDescription": "Turn on your status to receive requests.",
+            "requests": "New requests",
+            "emptyRequests": "No new requests at the moment.",
+            "viewRequest": "View request",
+            "request": "request",
+            "intervention": "Intervention",
+            "address": "Address to check",
+            "dateFallback": "Date to be confirmed",
+            "today": "Today",
+            "received": "Requests received",
+            "activeServices": "Active services",
+            "rating": "Average rating",
+            "completeProfile": "Complete your profile",
+            "documentsPrompt": "Finish your documents to receive more requests.",
+            "refresh": "Refresh requests",
+            "positionUnavailable": "Position unavailable",
+            "positionRequired": "Wait for your position to be detected, then try again.",
+            "locationPermissionTitle": "Location permission required",
+            "locationPermissionMessage": "To go online, allow Pro24Home to access your location while using the app in Settings.",
+            "openSettings": "Open Settings",
+            "cancel": "Not now",
+            "locationSettingsUnavailable": "Could not open the app settings.",
+            "statusUnavailable": "Status unavailable",
+            "statusFailed": "Your status could not be updated."
         },
         "documents": {
-            "identityFront": "ID document, front", "identityFrontDescription": "National ID card or residence permit", "identityBack": "ID document, back", "identityBackDescription": "The back of your ID document", "proofAddress": "Proof of address", "proofAddressDescription": "Bill or certificate issued within the last 3 months", "kbis": "Company registration extract", "kbisDescription": "Official company document", "rib": "Bank details", "ribDescription": "To receive your payments",
-            "fileTooLarge": "File too large", "fileTooLargeDescription": "Choose a file no larger than 5 MB.", "verificationTitle": "Profile verification", "verificationDescription": "Add your documents so our team can verify your professional account.", "uploadSuccess": "Document sent for review.", "uploadFailed": "Could not send this document.", "openFailed": "Could not open your files.", "cameraUnavailable": "The camera is unavailable.", "back": "Back", "help": "Help", "stepInfo": "Information", "stepDocuments": "Documents", "stepValidation": "Review", "step": "Step 2 of 3", "subtitle": "Add your documents to verify your identity.", "fix": "Needs correction", "pending": "Pending", "inProgress": "In progress", "uploading": "Uploading…", "addFile": "Add your file", "chooseOption": "Choose an option below", "chooseFile": "Choose a file", "takePhoto": "Take a photo", "fileFormats": "PDF, JPG or PNG • 5 MB maximum", "remaining": "Remaining documents", "secureTitle": "Your data is 100% secure", "secureDescription": "Your documents are encrypted and used only for verification.", "validated": "documents approved", "continue": "Continue"
+            "identityFront": "ID document, front",
+            "identityFrontDescription": "National ID card or residence permit",
+            "identityBack": "ID document, back",
+            "identityBackDescription": "The back of your ID document",
+            "proofAddress": "Proof of address",
+            "proofAddressDescription": "Bill or certificate issued within the last 3 months",
+            "kbis": "Company registration extract",
+            "kbisDescription": "Official company document",
+            "rib": "Bank details",
+            "ribDescription": "To receive your payments",
+            "fileTooLarge": "File too large",
+            "fileTooLargeDescription": "Choose a file no larger than 5 MB.",
+            "verificationTitle": "Profile verification",
+            "verificationDescription": "Add your documents so our team can verify your professional account.",
+            "uploadSuccess": "Document sent for review.",
+            "uploadFailed": "Could not send this document.",
+            "openFailed": "Could not open your files.",
+            "cameraUnavailable": "The camera is unavailable.",
+            "back": "Back",
+            "help": "Help",
+            "stepInfo": "Information",
+            "stepDocuments": "Documents",
+            "stepValidation": "Review",
+            "step": "Step 2 of 3",
+            "subtitle": "Add your documents to verify your identity.",
+            "fix": "Needs correction",
+            "pending": "Pending",
+            "inProgress": "In progress",
+            "uploading": "Uploading…",
+            "addFile": "Add your file",
+            "chooseOption": "Choose an option below",
+            "chooseFile": "Choose a file",
+            "takePhoto": "Take a photo",
+            "fileFormats": "PDF, JPG or PNG • 5 MB maximum",
+            "remaining": "Remaining documents",
+            "secureTitle": "Your data is 100% secure",
+            "secureDescription": "Your documents are encrypted and used only for verification.",
+            "validated": "documents approved",
+            "continue": "Continue"
         },
         "verificationPending": {
             "title": "Your account is being reviewed",
@@ -674,7 +808,80 @@
             "logout": "Sign out"
         },
         "tracking": {
-            "distanceUnavailable": "Distance unavailable", "active": "Navigation active", "activeSubtitle": "Follow your route in Pro24Home", "ready": "Ready to go?", "readySubtitle": "Route to the client", "inProgress": "Intervention in progress", "reject": "Reject intervention", "complete": "Complete intervention", "destination": "Client destination", "navigationTitle": "Pro24Home navigation", "loadFailed": "Could not load the route.", "invalidAddress": "Invalid client address", "termsRequired": "Navigation terms must be accepted.", "routeUnavailable": "Route unavailable ({{status}}).", "navigationUnavailable": "Navigation unavailable. Check your connection and try again.", "navigationRetry": "Navigation unavailable. Try again.", "updateFailed": "Update failed", "statusFailed": "The status could not be updated.", "interventionStatusFailed": "The intervention status could not be updated.", "voice": "Turn voice guidance on or off", "recenterRoute": "Recenter on route", "recenterPosition": "Recenter on my position", "showRoute": "Show the full route", "back": "Back", "toClient": "Route to the client", "distance": "Distance", "eta": "ETA", "arrived": "I’ve arrived", "updating": "Updating...", "start": "Start route", "atClient": "INTERVENTION AT", "client": "Client", "clientAddress": "Client address", "enableLocation": "Enable location to follow your route in real time.", "retry": "Try again", "arrivalEstimate": "Estimated arrival", "updateIntervention": "Update intervention", "chooseStatus": "Choose the current intervention status.", "cancel": "Cancel"
+            "distanceUnavailable": "Distance unavailable",
+            "active": "Navigation active",
+            "activeSubtitle": "Follow your route in Pro24Home",
+            "ready": "Ready to go?",
+            "readySubtitle": "Route to the client",
+            "inProgress": "Intervention in progress",
+            "reject": "Reject intervention",
+            "complete": "Complete intervention",
+            "destination": "Client destination",
+            "navigationTitle": "Pro24Home navigation",
+            "loadFailed": "Could not load the route.",
+            "invalidAddress": "Invalid client address",
+            "termsRequired": "Navigation terms must be accepted.",
+            "routeUnavailable": "Route unavailable ({{status}}).",
+            "navigationUnavailable": "Navigation unavailable. Check your connection and try again.",
+            "navigationRetry": "Navigation unavailable. Try again.",
+            "updateFailed": "Update failed",
+            "statusFailed": "The status could not be updated.",
+            "interventionStatusFailed": "The intervention status could not be updated.",
+            "voice": "Turn voice guidance on or off",
+            "recenterRoute": "Recenter on route",
+            "recenterPosition": "Recenter on my position",
+            "showRoute": "Show the full route",
+            "back": "Back",
+            "toClient": "Route to the client",
+            "distance": "Distance",
+            "eta": "ETA",
+            "arrived": "I’ve arrived",
+            "updating": "Updating...",
+            "start": "Start route",
+            "atClient": "INTERVENTION AT",
+            "client": "Client",
+            "clientAddress": "Client address",
+            "enableLocation": "Enable location to follow your route in real time.",
+            "retry": "Try again",
+            "arrivalEstimate": "Estimated arrival",
+            "updateIntervention": "Update intervention",
+            "chooseStatus": "Choose the current intervention status.",
+            "cancel": "Cancel"
+        },
+        "documentDesign": {
+            "title": "My documents",
+            "progress": "{{sent}} of {{total}} documents submitted",
+            "identitySent": "ID front and back submitted",
+            "sentCount_one": "{{count}} document submitted",
+            "sentCount_other": "{{count}} documents submitted",
+            "titles": {
+                "identity_front": "Add the front of your ID",
+                "identity_back": "Add the back of your ID",
+                "proof_of_address": "Add your proof of address",
+                "kbis": "Add your company registration",
+                "rib": "Add your bank details"
+            },
+            "descriptions": {
+                "identity_front": "A clear photo of your valid identity document.",
+                "identity_back": "The back of your identity document, fully visible and legible.",
+                "proof_of_address": "A recent, legible document showing your name and address.",
+                "kbis": "A recent, legible document identifying your company.",
+                "rib": "Legible bank details in your company’s name."
+            },
+            "selectDocument": "Select your document",
+            "replaceRejected": "This document was rejected. Add a new legible document.",
+            "completeTitle": "Your application is complete",
+            "completeDescription": "Your documents have been submitted. You can follow your account review.",
+            "allSent": "All documents submitted",
+            "followDossier": "Follow my application",
+            "next": "Next",
+            "reviewHint": "After the last document, your application will be reviewed.",
+            "savedHint": "Your progress is saved automatically.",
+            "sentCount": "{{count}} documents submitted",
+            "names": {
+                "rib": "Bank details",
+                "kbis": "Company registration"
+            }
         }
     },
     "services": {
@@ -686,7 +893,7 @@
         "welcome": "Welcome To Pro24Home",
         "notClient": "Not yet a member ?",
         "createAccount": "Create your account",
-        "forgetPassword": "Forget your password ? ",
+        "forgetPassword": "Forgot your password?",
         "client": "Already a member?",
         "loginAccount": "Sign In",
         "labelCode": "Please enter the validation code received by SMS",

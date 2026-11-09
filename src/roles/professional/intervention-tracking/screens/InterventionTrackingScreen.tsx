@@ -16,7 +16,7 @@ import { TaskRemovedBehavior } from '@googlemaps/react-native-navigation-sdk/src
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useGetInterventionQuery } from '@entities/intervention/api/intervention.api';
 import { useUpdateStatusMutation, useUpdateInterventionStatusMutation } from '@roles/professional/availability/api/availability.api';
@@ -28,6 +28,8 @@ type Coordinates = { latitude: number; longitude: number };
 
 const ProfessionalInterventionTrackingScreen = () => {
     const { t } = useTranslation();
+    const { theme } = useTheme();
+    const colors = theme.colors;
     const route = useRoute<RouteProp<AppStackType, 'ProfessionalInterventionTracking'>>();
     const navigation = useNavigation<any>();
     const lastStatusUpdate = useRef(0);
@@ -178,11 +180,11 @@ const ProfessionalInterventionTrackingScreen = () => {
             />
             <NavigationBanner active={isTripStarted}>
                 <NavigationIcon active={isTripStarted}>
-                    <SvgIcon name="fa-chevron-up" size={19} color={isTripStarted ? colors.primary : colors.white} />
+                    <SvgIcon name="fa-chevron-up" size={19} color={isTripStarted ? colors.textInverse : colors.primary} />
                 </NavigationIcon>
                 <NavigationCopy>
-                    <Text variant="bold" color={isTripStarted ? colors.white : colors.black} fontSize={17}>{t(navigationBannerCopy.titleKey)}</Text>
-                    <Text variant="regularSmall" color={isTripStarted ? colors.white : colors.gray700}>{t(navigationBannerCopy.subtitleKey)}</Text>
+                    <Text variant="bold" color={isTripStarted ? colors.textInverse : colors.textPrimary} fontSize={17}>{t(navigationBannerCopy.titleKey)}</Text>
+                    <Text variant="regularSmall" color={isTripStarted ? colors.textInverse : colors.textSecondary}>{t(navigationBannerCopy.subtitleKey)}</Text>
                 </NavigationCopy>
             </NavigationBanner>
             <MapTools>
@@ -194,17 +196,17 @@ const ProfessionalInterventionTrackingScreen = () => {
                     <SvgIcon name="fa-bell" size={17} color={voiceGuidance ? colors.primary : colors.gray500} />
                 </MapControlButton>
                 <MapControlButton accessibilityRole="button" accessibilityLabel={t('professional.tracking.recenterRoute')} onPress={() => undefined}>
-                    <SvgIcon name="fa-layer-group" size={17} color={colors.black} />
+                    <SvgIcon name="fa-layer-group" size={17} color={colors.textPrimary} />
                 </MapControlButton>
                 <MapControlButton accessibilityRole="button" accessibilityLabel={t('professional.tracking.recenterPosition')} onPress={() => undefined} disabled={!professionalPosition}>
                     <SvgIcon name="fa-crosshairs" size={17} color={professionalPosition ? colors.primary : colors.gray400} />
                 </MapControlButton>
                 <MapControlButton accessibilityRole="button" accessibilityLabel={t('professional.tracking.showRoute')} onPress={() => undefined} disabled={!destination}>
-                    <SvgIcon name="fa-map-marked-alt" size={17} color={colors.black} />
+                    <SvgIcon name="fa-map-marked-alt" size={17} color={colors.textPrimary} />
                 </MapControlButton>
             </MapTools>
             <TopBar>
-                <BackButton accessibilityRole="button" accessibilityLabel={t('professional.tracking.back')} onPress={() => navigation.goBack()}><SvgIcon name="arrow-left" size={18} color={colors.black} /></BackButton>
+                <BackButton accessibilityRole="button" accessibilityLabel={t('professional.tracking.back')} onPress={() => navigation.goBack()}><SvgIcon name="arrow-left" size={18} color={colors.textPrimary} /></BackButton>
                 {!isTripStarted ? <TopTitle>{t('professional.tracking.toClient')}</TopTitle> : <MapSpacer />}
                 <MapSpacer />
             </TopBar>
@@ -215,7 +217,7 @@ const ProfessionalInterventionTrackingScreen = () => {
                         <StatsDivider />
                         <CompactStat><SvgIcon name="fa-clock" size={15} color={colors.primary} /><CompactStatCopy><CompactValue>{eta !== null ? `${eta} min` : '—'}</CompactValue><CompactLabel>{t('professional.tracking.eta')}</CompactLabel></CompactStatCopy></CompactStat>
                     </CompactStats>
-                    <ArrivedButton disabled={isUpdatingStatus} onPress={() => setIsArrivalActionsVisible(true)}><Text variant="bold" color={colors.white}>{isUpdatingStatus ? t('professional.tracking.updating') : t('professional.tracking.arrived')}</Text></ArrivedButton>
+                    <ArrivedButton disabled={isUpdatingStatus} onPress={() => setIsArrivalActionsVisible(true)}><Text variant="bold" color={colors.textInverse}>{isUpdatingStatus ? t('professional.tracking.updating') : t('professional.tracking.arrived')}</Text></ArrivedButton>
                 </CompactPanel> : <>
                     <CardEyebrow>{t('professional.tracking.atClient')}</CardEyebrow>
                     <Row><Avatar><SvgIcon name="fa-user" size={17} color={colors.primary} /></Avatar><ClientInfo><Text variant="bold" color="black" fontSize={17}>{clientName || t('professional.tracking.client')}</Text>{clientPhone ? <Text variant="regularSmall" color="gray600">{clientPhone}</Text> : null}</ClientInfo></Row>
@@ -228,7 +230,7 @@ const ProfessionalInterventionTrackingScreen = () => {
                         {eta !== null ? <RouteStat><SvgIcon name="fa-clock" size={15} color={colors.primary} /><RouteStatText>{eta} min<StatCaption>{t('professional.tracking.arrivalEstimate')}</StatCaption></RouteStatText></RouteStat> : null}
                     </RouteStats>
                     <ProgressTrack><ProgressFill /></ProgressTrack>
-                    <ArrivedButton disabled={isUpdatingStatus} onPress={handleTripAction}><Text variant="bold" color={colors.white}>{isUpdatingStatus ? t('professional.tracking.updating') : t('professional.tracking.start')}</Text></ArrivedButton>
+                    <ArrivedButton disabled={isUpdatingStatus} onPress={handleTripAction}><Text variant="bold" color={colors.textInverse}>{isUpdatingStatus ? t('professional.tracking.updating') : t('professional.tracking.start')}</Text></ArrivedButton>
                 </>}
             </InfoCard>
             <Modal visible={isArrivalActionsVisible} transparent animationType="slide" onRequestClose={() => setIsArrivalActionsVisible(false)}>
@@ -263,16 +265,16 @@ export default ProfessionalInterventionTrackingScreen;
 const styles = StyleSheet.create({ navigationView: { flex: 1 } });
 
 const MapWrapper = styled.View`flex: 1;`;
-const NavigationBanner = styled.View<{ active: boolean }>`position: absolute; top: ${verticalScale(78)}px; left: ${horizontalScale(18)}px; right: ${horizontalScale(18)}px; min-height: ${verticalScale(70)}px; padding: ${verticalScale(10)}px ${horizontalScale(12)}px; border-radius: ${moderateScale(16)}px; background-color: ${({ active }) => active ? colors.primary : colors.white}; flex-direction: row; align-items: center; elevation: 5;`;
-const NavigationIcon = styled.View<{ active: boolean }>`width: ${horizontalScale(48)}px; height: ${horizontalScale(48)}px; border-radius: ${horizontalScale(12)}px; background-color: ${({ active }) => active ? colors.white : colors.primary}; align-items: center; justify-content: center;`;
+const NavigationBanner = styled.View<{ active: boolean }>`position: absolute; top: ${verticalScale(78)}px; left: ${horizontalScale(18)}px; right: ${horizontalScale(18)}px; min-height: ${verticalScale(70)}px; padding: ${verticalScale(10)}px ${horizontalScale(12)}px; border-radius: ${moderateScale(16)}px; background-color: ${({ active, theme }) => active ? theme.colors.primary : theme.colors.surface}; flex-direction: row; align-items: center; elevation: 5;`;
+const NavigationIcon = styled.View<{ active: boolean }>`width: ${horizontalScale(48)}px; height: ${horizontalScale(48)}px; border-radius: ${horizontalScale(12)}px; background-color: ${({ active, theme }) => active ? theme.colors.surface : theme.colors.primary}; align-items: center; justify-content: center;`;
 const NavigationCopy = styled.View`margin-left: ${horizontalScale(12)}px; flex: 1;`;
 const MapTools = styled.View`position: absolute; top: ${verticalScale(160)}px; right: ${horizontalScale(18)}px; gap: ${verticalScale(10)}px;`;
-const MapControlButton = styled.TouchableOpacity<{ active?: boolean }>`width: ${horizontalScale(44)}px; height: ${horizontalScale(44)}px; border-radius: ${horizontalScale(22)}px; background-color: ${({ active }) => active ? colors.primary : colors.white}; align-items: center; justify-content: center; elevation: 4; opacity: ${({ disabled }) => disabled ? 0.55 : 1};`;
+const MapControlButton = styled.TouchableOpacity<{ active?: boolean }>`width: ${horizontalScale(44)}px; height: ${horizontalScale(44)}px; border-radius: ${horizontalScale(22)}px; background-color: ${({ active, theme }) => active ? theme.colors.primary : theme.colors.surface}; align-items: center; justify-content: center; elevation: 4; opacity: ${({ disabled }) => disabled ? 0.55 : 1};`;
 const TopBar = styled.View`position: absolute; top: ${verticalScale(18)}px; left: ${horizontalScale(18)}px; right: ${horizontalScale(18)}px; flex-direction: row; align-items: center; justify-content: space-between;`;
-const BackButton = styled.TouchableOpacity`width: ${horizontalScale(42)}px; height: ${horizontalScale(42)}px; border-radius: ${horizontalScale(21)}px; background-color: ${colors.white}; align-items: center; justify-content: center; elevation: 4;`;
-const TopTitle = styled(Text).attrs({ variant: 'bold', color: 'black', fontSize: 15 })`background-color: ${colors.white}; padding: ${verticalScale(10)}px ${horizontalScale(16)}px; border-radius: ${moderateScale(18)}px;`;
+const BackButton = styled.TouchableOpacity`width: ${horizontalScale(42)}px; height: ${horizontalScale(42)}px; border-radius: ${horizontalScale(21)}px; background-color: ${({ theme }) => theme.colors.surface}; align-items: center; justify-content: center; elevation: 4;`;
+const TopTitle = styled(Text).attrs({ variant: 'bold', color: 'textPrimary', fontSize: 15 })`background-color: ${({ theme }) => theme.colors.surface}; padding: ${verticalScale(10)}px ${horizontalScale(16)}px; border-radius: ${moderateScale(18)}px;`;
 const MapSpacer = styled.View`width: ${horizontalScale(42)}px; height: ${horizontalScale(42)}px;`;
-const InfoCard = styled.View<{ compact?: boolean }>`position: absolute; left: ${horizontalScale(18)}px; right: ${horizontalScale(18)}px; bottom: ${verticalScale(22)}px; padding: ${({ compact }) => compact ? `${verticalScale(12)}px ${horizontalScale(14)}px` : `${verticalScale(16)}px`}; border-radius: ${moderateScale(18)}px; background-color: ${colors.white}; elevation: 6;`;
+const InfoCard = styled.View<{ compact?: boolean }>`position: absolute; left: ${horizontalScale(18)}px; right: ${horizontalScale(18)}px; bottom: ${verticalScale(22)}px; padding: ${({ compact }) => compact ? `${verticalScale(12)}px ${horizontalScale(14)}px` : `${verticalScale(16)}px`}; border-radius: ${moderateScale(18)}px; background-color: ${({ theme }) => theme.colors.surface}; elevation: 6;`;
 const CompactPanel = styled.View``;
 const CompactStats = styled.View`flex-direction: row; align-items: center; justify-content: center;`;
 const CompactStat = styled.View`flex: 1; flex-direction: row; align-items: center; justify-content: center; gap: ${horizontalScale(7)}px;`;
@@ -281,7 +283,7 @@ const CompactValue = styled(Text).attrs({ variant: 'bold', color: 'gray700', fon
 const CompactLabel = styled(Text).attrs({ variant: 'regularSmall', color: 'gray600', fontSize: 10 })``;
 const CardEyebrow = styled(Text).attrs({ variant: 'bold', color: 'gray600', fontSize: 11 })`letter-spacing: 1px; margin-bottom: ${verticalScale(10)}px;`;
 const Row = styled.View`flex-direction: row; align-items: center;`;
-const Avatar = styled.View`width: ${horizontalScale(40)}px; height: ${horizontalScale(40)}px; border-radius: ${horizontalScale(20)}px; background-color: #fff1e8; align-items: center; justify-content: center;`;
+const Avatar = styled.View`width: ${horizontalScale(40)}px; height: ${horizontalScale(40)}px; border-radius: ${horizontalScale(20)}px; background-color: ${({ theme }) => theme.colors.primaryLighter}; align-items: center; justify-content: center;`;
 const ClientInfo = styled.View`margin-left: ${horizontalScale(10)}px;`;
 const DestinationText = styled.View`flex-direction: row; align-items: center; margin-top: ${verticalScale(14)}px; gap: ${horizontalScale(10)}px;`;
 const WarningText = styled(Text).attrs({ variant: 'regularSmall', color: 'danger' })`margin-top: ${verticalScale(10)}px;`;
@@ -291,15 +293,15 @@ const RouteStats = styled.View`flex-direction: row; align-items: center; margin-
 const RouteStat = styled.View`flex-direction: row; align-items: center; gap: ${horizontalScale(6)}px;`;
 const RouteStatText = styled(Text).attrs({ variant: 'bold', color: 'gray700', fontSize: 16 })``;
 const StatCaption = styled(Text).attrs({ variant: 'regularSmall', color: 'gray600', fontSize: 10 })`display: block; margin-top: ${verticalScale(2)}px;`;
-const StatsDivider = styled.View`height: ${verticalScale(34)}px; width: 1px; background-color: ${colors.gray200}; margin: 0 ${horizontalScale(18)}px;`;
-const ProgressTrack = styled.View`height: ${verticalScale(5)}px; border-radius: ${verticalScale(3)}px; background-color: ${colors.gray200}; margin-top: ${verticalScale(16)}px; overflow: hidden;`;
-const ProgressFill = styled.View`height: 100%; width: 35%; border-radius: ${verticalScale(3)}px; background-color: ${colors.primary};`;
-const ArrivedButton = styled.TouchableOpacity`height: ${verticalScale(48)}px; margin-top: ${verticalScale(14)}px; border-radius: ${moderateScale(12)}px; background-color: ${colors.primary}; align-items: center; justify-content: center;`;
-const StatusModalBackdrop = styled.View`flex: 1; justify-content: flex-end; background-color: ${colors.backdrop};`;
-const StatusModalCard = styled.View`background-color: ${colors.white}; border-top-left-radius: ${moderateScale(24)}px; border-top-right-radius: ${moderateScale(24)}px; padding: ${verticalScale(14)}px ${horizontalScale(18)}px ${verticalScale(24)}px;`;
-const StatusModalHandle = styled.View`width: ${horizontalScale(42)}px; height: ${verticalScale(4)}px; border-radius: ${verticalScale(2)}px; background-color: ${colors.gray300}; align-self: center; margin-bottom: ${verticalScale(18)}px;`;
+const StatsDivider = styled.View`height: ${verticalScale(34)}px; width: 1px; background-color: ${({ theme }) => theme.colors.gray200}; margin: 0 ${horizontalScale(18)}px;`;
+const ProgressTrack = styled.View`height: ${verticalScale(5)}px; border-radius: ${verticalScale(3)}px; background-color: ${({ theme }) => theme.colors.gray200}; margin-top: ${verticalScale(16)}px; overflow: hidden;`;
+const ProgressFill = styled.View`height: 100%; width: 35%; border-radius: ${verticalScale(3)}px; background-color: ${({ theme }) => theme.colors.primary};`;
+const ArrivedButton = styled.TouchableOpacity`height: ${verticalScale(48)}px; margin-top: ${verticalScale(14)}px; border-radius: ${moderateScale(12)}px; background-color: ${({ theme }) => theme.colors.primary}; align-items: center; justify-content: center;`;
+const StatusModalBackdrop = styled.View`flex: 1; justify-content: flex-end; background-color: ${({ theme }) => theme.colors.backdrop};`;
+const StatusModalCard = styled.View`background-color: ${({ theme }) => theme.colors.surface}; border-top-left-radius: ${moderateScale(24)}px; border-top-right-radius: ${moderateScale(24)}px; padding: ${verticalScale(14)}px ${horizontalScale(18)}px ${verticalScale(24)}px;`;
+const StatusModalHandle = styled.View`width: ${horizontalScale(42)}px; height: ${verticalScale(4)}px; border-radius: ${verticalScale(2)}px; background-color: ${({ theme }) => theme.colors.gray300}; align-self: center; margin-bottom: ${verticalScale(18)}px;`;
 const StatusModalDescription = styled(Text).attrs({ variant: 'regularSmall', color: 'gray600' })`margin-top: ${verticalScale(6)}px; margin-bottom: ${verticalScale(16)}px;`;
-const StatusActionList = styled.View`border-top-width: 1px; border-top-color: ${colors.gray200};`;
-const StatusAction = styled(Pressable)`min-height: ${verticalScale(58)}px; flex-direction: row; align-items: center; border-bottom-width: 1px; border-bottom-color: ${colors.gray200}; gap: ${horizontalScale(12)}px;`;
-const StatusActionIcon = styled.View`width: ${horizontalScale(36)}px; height: ${horizontalScale(36)}px; border-radius: ${horizontalScale(18)}px; background-color: ${colors.primaryLighter}; align-items: center; justify-content: center;`;
+const StatusActionList = styled.View`border-top-width: 1px; border-top-color: ${({ theme }) => theme.colors.gray200};`;
+const StatusAction = styled(Pressable)`min-height: ${verticalScale(58)}px; flex-direction: row; align-items: center; border-bottom-width: 1px; border-bottom-color: ${({ theme }) => theme.colors.gray200}; gap: ${horizontalScale(12)}px;`;
+const StatusActionIcon = styled.View`width: ${horizontalScale(36)}px; height: ${horizontalScale(36)}px; border-radius: ${horizontalScale(18)}px; background-color: ${({ theme }) => theme.colors.primaryLighter}; align-items: center; justify-content: center;`;
 const CancelAction = styled(Pressable)`height: ${verticalScale(48)}px; align-items: center; justify-content: center; margin-top: ${verticalScale(8)}px;`;

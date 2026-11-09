@@ -9,7 +9,7 @@ import { SvgIcon } from '@shared/ui/icon';
 import AppImage from '@shared/ui/image/AppImage';
 import type { Intervention } from '@entities/intervention/model';
 import { useAddDevisMutation, useAcceptDevisMutation, useReviseDevisMutation } from '@entities/quote/api/quote.api';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { formatDistanceBetweenCoordinates, getInterventionAddress, getInterventionImageUrls, getInterventionPrice, getProfessionalInterventionBrief, isValidInterventionPriceInput, shouldShowClientDevisActions, shouldShowPriceProposal, shouldShowTrackingButton } from '@entities/intervention/model/intervention-presentation';
 
@@ -36,8 +36,10 @@ const formatDate = (date: string | undefined, locale: string, fallback: string) 
     return Number.isNaN(parsedDate.getTime()) ? fallback : parsedDate.toLocaleString(locale);
 };
 
-export const ClientInterventionDetails = ({ intervention }: DetailProps) => {
+export const ClientInterventionDetails = ({ intervention, addressDetails = [] }: DetailProps & { addressDetails?: string[] }) => {
     const { t, i18n } = useTranslation();
+    const { theme } = useTheme();
+    const colors = theme.colors;
     const [acceptDevis, { isLoading: isAcceptingDevis }] = useAcceptDevisMutation();
     const [reviseDevis, { isLoading: isRefusingDevis }] = useReviseDevisMutation();
     const address = getInterventionAddress(intervention);
@@ -70,6 +72,10 @@ export const ClientInterventionDetails = ({ intervention }: DetailProps) => {
         </Section>
         <Section>
             <InfoRow><SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{address?.address || t('intervention.address.unspecified')}</Text></InfoRow>
+            {addressDetails.length > 0 ? <>
+                <SectionLabel>{t('intervention.local.addressDetails')}</SectionLabel>
+                {addressDetails.map(value => <Text key={value} variant="regularSmall" color="gray600">{value}</Text>)}
+            </> : null}
             <InfoRow><SvgIcon name="fa-user-clock" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDate(intervention.scheduled_date || intervention.requested_date, i18n.language, t('intervention.detail.dateInvalid'))}</Text></InfoRow>
             {price && canRespondToDevis ? <InfoRow><SvgIcon name="fa-euro-sign" size={16} color={colors.primary} /><Text variant="regularSmall" color="gray600">{t('intervention.detail.proposedPrice', { price })}</Text></InfoRow> : null}
         </Section>
@@ -95,6 +101,8 @@ export const ClientInterventionDetails = ({ intervention }: DetailProps) => {
 
 export const ProfessionalInterventionDetails = ({ intervention, professionalLatitude, professionalLongitude, isAccepting = false, isRefusing = false, onAccept, onRefuse, onOpenTracking }: DetailProps) => {
     const { t, i18n } = useTranslation();
+    const { theme } = useTheme();
+    const colors = theme.colors;
     const [isPriceModalVisible, setIsPriceModalVisible] = useState(false);
     const [proposedPrice, setProposedPrice] = useState('');
     const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
@@ -185,21 +193,21 @@ export const confirmRefusal = (onConfirm: () => void, t: (key: any) => string) =
     { text: t('intervention.detail.declineRequest'), style: 'destructive', onPress: onConfirm },
 ]);
 
-const Section = styled.View`background-color: ${colors.white}; border-radius: ${moderateScale(14)}px; border-width: 1px; border-color: #eeeeee; padding: ${horizontalScale(16)}px; margin-top: ${verticalScale(16)}px;`;
+const Section = styled.View`background-color: ${({ theme }) => theme.colors.white}; border-radius: ${moderateScale(14)}px; border-width: 1px; border-color: ${({ theme }) => theme.colors.border}; padding: ${horizontalScale(16)}px; margin-top: ${verticalScale(16)}px;`;
 const SectionLabel = styled(Text).attrs({ variant: 'bold', color: 'black', fontSize: 13 })`margin-bottom: ${verticalScale(10)}px;`;
 const InfoRow = styled.View`flex-direction: row; align-items: center; gap: ${horizontalScale(10)}px; margin-bottom: ${verticalScale(12)}px;`;
 const Actions = styled.View`margin-top: ${verticalScale(20)}px; gap: ${verticalScale(10)}px;`;
 const DevisActions = styled.View`flex-direction: row; gap: ${horizontalScale(10)}px; margin-top: ${verticalScale(16)}px;`;
-const DevisActionButton = styled.TouchableOpacity`flex: 1; min-height: ${verticalScale(48)}px; border-radius: ${moderateScale(13)}px; background-color: ${colors.primary}; align-items: center; justify-content: center; padding: 0 ${horizontalScale(8)}px;`;
-const DevisRefuseButton = styled.TouchableOpacity`flex: 1; min-height: ${verticalScale(48)}px; border-radius: ${moderateScale(13)}px; border-width: 1px; border-color: ${colors.danger}; align-items: center; justify-content: center; padding: 0 ${horizontalScale(8)}px;`;
-const ActionButton = styled.TouchableOpacity`height: ${verticalScale(52)}px; border-radius: ${moderateScale(14)}px; background-color: ${colors.primary}; align-items: center; justify-content: center;`;
-const TrackingButton = styled.TouchableOpacity`height: ${verticalScale(52)}px; margin-top: ${verticalScale(12)}px; border-radius: ${moderateScale(14)}px; background-color: ${colors.primary}; flex-direction: row; gap: ${horizontalScale(8)}px; align-items: center; justify-content: center;`;
-const PriceButton = styled.TouchableOpacity`height: ${verticalScale(48)}px; margin-top: ${verticalScale(4)}px; border-radius: ${moderateScale(14)}px; background-color: ${colors.primary}; flex-direction: row; gap: ${horizontalScale(8)}px; align-items: center; justify-content: center;`;
-const RefuseButton = styled.TouchableOpacity`height: ${verticalScale(52)}px; border-radius: ${moderateScale(14)}px; border-width: 1px; border-color: ${colors.danger}; align-items: center; justify-content: center;`;
+const DevisActionButton = styled.TouchableOpacity`flex: 1; min-height: ${verticalScale(48)}px; border-radius: ${moderateScale(13)}px; background-color: ${({ theme }) => theme.colors.primary}; align-items: center; justify-content: center; padding: 0 ${horizontalScale(8)}px;`;
+const DevisRefuseButton = styled.TouchableOpacity`flex: 1; min-height: ${verticalScale(48)}px; border-radius: ${moderateScale(13)}px; border-width: 1px; border-color: ${({ theme }) => theme.colors.danger}; align-items: center; justify-content: center; padding: 0 ${horizontalScale(8)}px;`;
+const ActionButton = styled.TouchableOpacity`height: ${verticalScale(52)}px; border-radius: ${moderateScale(14)}px; background-color: ${({ theme }) => theme.colors.primary}; align-items: center; justify-content: center;`;
+const TrackingButton = styled.TouchableOpacity`height: ${verticalScale(52)}px; margin-top: ${verticalScale(12)}px; border-radius: ${moderateScale(14)}px; background-color: ${({ theme }) => theme.colors.primary}; flex-direction: row; gap: ${horizontalScale(8)}px; align-items: center; justify-content: center;`;
+const PriceButton = styled.TouchableOpacity`height: ${verticalScale(48)}px; margin-top: ${verticalScale(4)}px; border-radius: ${moderateScale(14)}px; background-color: ${({ theme }) => theme.colors.primary}; flex-direction: row; gap: ${horizontalScale(8)}px; align-items: center; justify-content: center;`;
+const RefuseButton = styled.TouchableOpacity`height: ${verticalScale(52)}px; border-radius: ${moderateScale(14)}px; border-width: 1px; border-color: ${({ theme }) => theme.colors.danger}; align-items: center; justify-content: center;`;
 const ImageGrid = styled.View`flex-direction: row; gap: ${horizontalScale(8)}px;`;
-const ImageTile = styled.TouchableOpacity`flex: 1; height: ${verticalScale(92)}px; overflow: hidden; border-radius: ${moderateScale(10)}px; background-color: #f5f5f5;`;
+const ImageTile = styled.TouchableOpacity`flex: 1; height: ${verticalScale(92)}px; overflow: hidden; border-radius: ${moderateScale(10)}px; background-color: ${({ theme }) => theme.colors.surfaceVariant};`;
 const ImageFallback = styled.View`flex: 1; align-items: center; justify-content: center; gap: ${verticalScale(4)}px; padding: ${horizontalScale(4)}px;`;
-const ImageSkeleton = styled.View`width: 100%; height: 100%; background-color: ${colors.gray200};`;
+const ImageSkeleton = styled.View`width: 100%; height: 100%; background-color: ${({ theme }) => theme.colors.gray200};`;
 const TileImage = styled(AppImage)`width: 100%; height: 100%;`;
 const ImagePreviewBackdrop = styled.Pressable`flex: 1; background-color: rgba(0, 0, 0, 0.94); justify-content: center; align-items: center; padding: ${horizontalScale(16)}px;`;
 const ImagePreview = styled.Image`width: 100%; height: 82%;`;
@@ -207,18 +215,18 @@ const ImagePreviewClose = styled.TouchableOpacity`position: absolute; top: ${ver
 const Timeline = styled.View`margin-top: ${verticalScale(18)}px; padding: ${verticalScale(4)}px 0;`;
 const TimelineStep = styled.View`flex-direction: row; min-height: ${verticalScale(92)}px;`;
 const TimelineRail = styled.View`width: ${horizontalScale(48)}px; align-items: center;`;
-const TimelineMarker = styled.View`width: ${moderateScale(32)}px; height: ${moderateScale(32)}px; border-radius: ${moderateScale(16)}px; background-color: ${colors.primary}; align-items: center; justify-content: center;`;
-const TimelineLine = styled.View`width: ${moderateScale(2)}px; flex: 1; margin: ${verticalScale(4)}px 0; background-color: ${colors.primary};`;
-const TimelineContent = styled.View`flex: 1; padding-bottom: ${verticalScale(18)}px; border-bottom-width: 1px; border-bottom-color: ${colors.gray200}; margin-bottom: ${verticalScale(14)}px;`;
+const TimelineMarker = styled.View`width: ${moderateScale(32)}px; height: ${moderateScale(32)}px; border-radius: ${moderateScale(16)}px; background-color: ${({ theme }) => theme.colors.primary}; align-items: center; justify-content: center;`;
+const TimelineLine = styled.View`width: ${moderateScale(2)}px; flex: 1; margin: ${verticalScale(4)}px 0; background-color: ${({ theme }) => theme.colors.primary};`;
+const TimelineContent = styled.View`flex: 1; padding-bottom: ${verticalScale(18)}px; border-bottom-width: 1px; border-bottom-color: ${({ theme }) => theme.colors.gray200}; margin-bottom: ${verticalScale(14)}px;`;
 const TimelineHeading = styled.View`flex-direction: row; align-items: center; gap: ${horizontalScale(9)}px; margin-bottom: ${verticalScale(8)}px;`;
-const TimelineIcon = styled.View`width: ${moderateScale(30)}px; height: ${moderateScale(30)}px; border-radius: ${moderateScale(15)}px; background-color: ${colors.primaryLighter}; align-items: center; justify-content: center;`;
+const TimelineIcon = styled.View`width: ${moderateScale(30)}px; height: ${moderateScale(30)}px; border-radius: ${moderateScale(15)}px; background-color: ${({ theme }) => theme.colors.primaryLighter}; align-items: center; justify-content: center;`;
 const TimelineSecondary = styled(Text)`margin-top: ${verticalScale(4)}px;`;
 const TimelineMeta = styled.View`flex-direction: row; align-items: center; gap: ${horizontalScale(7)}px; margin-top: ${verticalScale(9)}px;`;
 const ClientMap = styled(MapView)`height: ${verticalScale(190)}px; border-radius: ${moderateScale(12)}px; overflow: hidden;`;
 const ModalBackdrop = styled.View`flex: 1; justify-content: flex-end; background-color: rgba(0, 0, 0, 0.42);`;
-const PriceModalCard = styled.View`background-color: ${colors.white}; border-top-left-radius: ${moderateScale(24)}px; border-top-right-radius: ${moderateScale(24)}px; padding: ${verticalScale(14)}px ${horizontalScale(18)}px ${verticalScale(24)}px;`;
-const ModalHandle = styled.View`width: ${horizontalScale(42)}px; height: ${verticalScale(4)}px; border-radius: ${verticalScale(2)}px; background-color: ${colors.gray300}; align-self: center; margin-bottom: ${verticalScale(18)}px;`;
-const PriceInput = styled(TextInput)`height: ${verticalScale(52)}px; margin-top: ${verticalScale(18)}px; border-width: 1px; border-color: ${colors.gray300}; border-radius: ${moderateScale(12)}px; padding: 0 ${horizontalScale(14)}px; color: ${colors.black}; font-size: 16px;`;
+const PriceModalCard = styled.View`background-color: ${({ theme }) => theme.colors.white}; border-top-left-radius: ${moderateScale(24)}px; border-top-right-radius: ${moderateScale(24)}px; padding: ${verticalScale(14)}px ${horizontalScale(18)}px ${verticalScale(24)}px;`;
+const ModalHandle = styled.View`width: ${horizontalScale(42)}px; height: ${verticalScale(4)}px; border-radius: ${verticalScale(2)}px; background-color: ${({ theme }) => theme.colors.gray300}; align-self: center; margin-bottom: ${verticalScale(18)}px;`;
+const PriceInput = styled(TextInput)`height: ${verticalScale(52)}px; margin-top: ${verticalScale(18)}px; border-width: 1px; border-color: ${({ theme }) => theme.colors.gray300}; border-radius: ${moderateScale(12)}px; padding: 0 ${horizontalScale(14)}px; color: ${({ theme }) => theme.colors.black}; font-size: 16px;`;
 const PriceModalActions = styled.View`flex-direction: row; gap: ${horizontalScale(10)}px; margin-top: ${verticalScale(18)}px;`;
-const CancelButton = styled.TouchableOpacity`flex: 1; height: ${verticalScale(50)}px; border-radius: ${moderateScale(13)}px; border-width: 1px; border-color: ${colors.gray300}; align-items: center; justify-content: center;`;
-const SubmitPriceButton = styled.TouchableOpacity`flex: 1; height: ${verticalScale(50)}px; border-radius: ${moderateScale(13)}px; background-color: ${colors.primary}; align-items: center; justify-content: center;`;
+const CancelButton = styled.TouchableOpacity`flex: 1; height: ${verticalScale(50)}px; border-radius: ${moderateScale(13)}px; border-width: 1px; border-color: ${({ theme }) => theme.colors.gray300}; align-items: center; justify-content: center;`;
+const SubmitPriceButton = styled.TouchableOpacity`flex: 1; height: ${verticalScale(50)}px; border-radius: ${moderateScale(13)}px; background-color: ${({ theme }) => theme.colors.primary}; align-items: center; justify-content: center;`;

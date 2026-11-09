@@ -17,10 +17,12 @@ import {
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import FullscreenMapModal from '@features/intervention-creation/ui/new-intervention/FullscreenMapModal';
 import type { SelectedAddressLocation } from '@features/intervention-creation/model/google-place-address';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 
 export const AddAddressScreen = () => {
     const { t } = useTranslation();
+    const { theme } = useTheme();
+    const colors = theme.colors;
     const [frequent, setFrequent] = useState(true);
     const [isMapFullscreen, setIsMapFullscreen] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState<SelectedAddressLocation>({
@@ -47,13 +49,13 @@ export const AddAddressScreen = () => {
 
             <Form>
                 <Label>{t('intervention.address.locationName')}</Label>
-                <Input placeholder={t('intervention.address.locationPlaceholder')} placeholderTextColor="#9A9A9A" />
+                <Input placeholder={t('intervention.address.locationPlaceholder')} placeholderTextColor={colors.gray500} />
 
                 <Label>Adresse</Label>
                 <InputRow>
                     <InputInner
                         placeholder={t('intervention.address.addressPlaceholder')}
-                        placeholderTextColor="#9A9A9A"
+                        placeholderTextColor={colors.gray500}
                     />
                     <SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} />
                 </InputRow>
@@ -61,7 +63,7 @@ export const AddAddressScreen = () => {
                 <Label>{t('intervention.address.complement')}</Label>
                 <Input
                     placeholder={t('intervention.address.complementPlaceholder')}
-                    placeholderTextColor="#9A9A9A"
+                    placeholderTextColor={colors.gray500}
                 />
 
                 <MapPreview>
@@ -84,8 +86,8 @@ export const AddAddressScreen = () => {
                     <Switch
                         value={frequent}
                         onValueChange={setFrequent}
-                        trackColor={{ true: colors.success, false: '#E5E5E5' }}
-                        thumbColor={colors.white}
+                        trackColor={{ true: colors.success, false: colors.gray300 }}
+                        thumbColor={colors.surface}
                     />
                 </SwitchRow>
             </Form>
@@ -129,18 +131,18 @@ const Input = styled.TextInput`
   min-height: ${verticalScale(48)}px;
   border-radius: ${moderateScale(12)}px;
   border-width: 1px;
-  border-color: #e5e5e5;
-  background-color: ${colors.white};
+  border-color: ${({ theme }) => theme.colors.border};
+  background-color: ${({ theme }) => theme.colors.surface};
   padding-horizontal: ${horizontalScale(14)}px;
-  color: ${colors.black};
+  color: ${({ theme }) => theme.colors.inputText};
 `;
 
 const InputRow = styled.View`
   min-height: ${verticalScale(48)}px;
   border-radius: ${moderateScale(12)}px;
   border-width: 1px;
-  border-color: #e5e5e5;
-  background-color: ${colors.white};
+  border-color: ${({ theme }) => theme.colors.border};
+  background-color: ${({ theme }) => theme.colors.surface};
   padding-horizontal: ${horizontalScale(14)}px;
   flex-direction: row;
   align-items: center;
@@ -148,14 +150,14 @@ const InputRow = styled.View`
 
 const InputInner = styled.TextInput`
   flex: 1;
-  color: ${colors.black};
+  color: ${({ theme }) => theme.colors.inputText};
 `;
 
 const MapPreview = styled.View`
   height: ${verticalScale(140)}px;
   border-radius: ${moderateScale(14)}px;
   border-width: 2px;
-  border-color: ${colors.danger};
+  border-color: ${({ theme }) => theme.colors.danger};
   overflow: hidden;
   margin-top: ${verticalScale(18)}px;
 `;
@@ -173,7 +175,7 @@ const MapHint = styled.TouchableOpacity`
   gap: ${horizontalScale(6)}px;
   padding: ${verticalScale(8)}px ${horizontalScale(10)}px;
   border-radius: ${moderateScale(10)}px;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
 `;
 
 const SwitchRow = styled.View`
@@ -194,7 +196,7 @@ const Spacer = styled.View`
 const SaveButton = styled.TouchableOpacity`
   height: ${verticalScale(52)}px;
   border-radius: ${moderateScale(12)}px;
-  background-color: ${colors.primary};
+  background-color: ${({ theme }) => theme.colors.primary};
   justify-content: center;
   align-items: center;
   margin-top: ${verticalScale(24)}px;

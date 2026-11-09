@@ -1,3 +1,4 @@
+import { requestCameraPermission } from '@utils/permissions';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
@@ -23,11 +24,11 @@ import { canContinueAddressSelection, formatAddressForSummary } from '../model/a
 import { mapGooglePlaceToAddress, type SelectedAddressLocation } from '../model/google-place-address';
 import { reverseGeocode as fetchAddressFromCoordinates } from '@core/maps/google-geocoding-client';
 import { lookupPlace as fetchGooglePlaceDetails } from '@core/maps/google-places-client';
-import { buildInterventionPayload } from '../model/intervention-payload';
+import { buildInterventionPayload, createPersistentInterventionPhoto } from '../model/intervention-payload';
 import type { InterventionPhoto } from '../ui/new-intervention/types';
 
 export const NewInterventionScreen = () => {
-    const { i18n } = useTranslation();
+    const { t, i18n } = useTranslation();
     const route = useRoute<RouteProp<AppStackType, 'NewIntervention'>>();
     const navigation = useNavigation();
     const { data: servicesResponse, isLoading: servicesLoading } = useGetServicesQuery({ lang: i18n.resolvedLanguage || i18n.language });
@@ -98,21 +99,19 @@ export const NewInterventionScreen = () => {
     };
 
     const addPhoto = async (source: 'camera' | 'gallery') => {
-        const picker = source === 'camera' ? launchCamera : launchImageLibrary;
-        const result = await picker({ mediaType: 'photo', selectionLimit: 1, quality: 0.8, ...(source === 'camera' ? { cameraType: 'back', saveToPhotos: false } : {}) });
-        if (result.didCancel) return;
-        if (result.errorCode) {
-            Toast.show(result.errorMessage || 'Impossible d’ajouter cette photo.', { type: 'danger', placement: 'bottom' });
-            return;
+        try {
+            if (source === 'camera' && !await requestCameraPermission()) throw new Error('Camera access denied');
+            const picker = source === 'camera' ? launchCamera : launchImageLibrary;
+            const result = await picker({ mediaType: 'photo', selectionLimit: 1, quality: 0.7, maxWidth: 1024, maxHeight: 1024, includeBase64: true, ...(source === 'camera' ? { cameraType: 'back', saveToPhotos: false } : {}) });
+            if (result.didCancel) return;
+            if (result.errorCode) throw new Error(result.errorMessage || result.errorCode);
+            const asset = result.assets?.[0];
+            if (!asset) return;
+            const photo = createPersistentInterventionPhoto(asset);
+            setPhotos(current => [...current, photo].slice(0, 3));
+        } catch {
+            Toast.show(t('intervention.local.photoFailed'), { type: 'danger', placement: 'bottom' });
         }
-        const asset = result.assets?.[0];
-        const uri = asset?.uri;
-        if (!uri) return;
-        setPhotos(current => [...current, {
-            uri,
-            type: asset.type || 'image/jpeg',
-            name: asset.fileName || `intervention-photo-${Date.now()}.jpg`,
-        }].slice(0, 3));
     };
 
     const closeAddressModal = () => {
@@ -266,6 +265,11 @@ export const NewInterventionScreen = () => {
                     onNext={() => {
                         if (!selectedService?.id || !selectedAddressRecord?.id || !selectedProblemRecord) return;
                         (navigation as any).navigate('PriceEstimation', {
+                            snapshot: {
+                                serviceName: selectedService.name,
+                                address: selectedAddressRecord,
+                                scheduledDate: selectedTiming === 'schedule' ? selectedDate?.toISOString() : undefined,
+                            },
                             intervention: buildInterventionPayload({
                                 serviceId: selectedService.id,
                                 addressId: selectedAddressRecord.id,

@@ -29,7 +29,7 @@ const AccountTypeScreen: React.FC = () => {
 
         <Content>
           <Eyebrow>{t('auth.accountType.eyebrow')}</Eyebrow>
-          <Title>{t('auth.accountType.title')}</Title>
+          <Title variant="bold">{t('auth.accountType.title')}</Title>
           <Description>{t('auth.accountType.description')}</Description>
 
           <RoleCard
@@ -40,7 +40,7 @@ const AccountTypeScreen: React.FC = () => {
           >
             <IconCircle background={theme.colors.surfaceVariant}><IconText color={theme.colors.primary}>⌂</IconText></IconCircle>
             <RoleCopy>
-              <RoleTitle>{t('auth.accountType.client')}</RoleTitle>
+              <RoleTitle variant="bold">{t('auth.accountType.client')}</RoleTitle>
               <RoleDescription>{t('auth.accountType.clientDescription')}</RoleDescription>
             </RoleCopy>
             <Arrow>›</Arrow>
@@ -55,7 +55,7 @@ const AccountTypeScreen: React.FC = () => {
           >
             <IconCircle background={theme.colors.surfaceVariant}><IconText color={theme.colors.success}>✓</IconText></IconCircle>
             <RoleCopy>
-              <RoleTitle>{t('auth.accountType.professional')}</RoleTitle>
+              <RoleTitle variant="bold">{t('auth.accountType.professional')}</RoleTitle>
               <RoleDescription>{t('auth.accountType.professionalDescription')}</RoleDescription>
             </RoleCopy>
             <Arrow>›</Arrow>

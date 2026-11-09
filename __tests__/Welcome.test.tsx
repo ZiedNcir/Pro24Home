@@ -1,6 +1,8 @@
 import React from 'react';
 import { Animated, Image, View } from 'react-native';
 import ReactTestRenderer, { ReactTestInstance } from 'react-test-renderer';
+import i18n from '../src/utils/i18n';
+import { ThemeProvider } from '../src/theme';
 import Welcome from '../src/features/auth/ui/WelcomeScreen';
 
 const mockNavigate = jest.fn();
@@ -80,7 +82,7 @@ const expectStep = (
     min: 1,
     max: 3,
     now: step,
-    text: `Étape ${step} sur 3`,
+    text: `ÉTAPE ${step} SUR 3`,
   });
 
   for (let index = 1; index <= 3; index += 1) {
@@ -99,6 +101,7 @@ describe('Welcome onboarding tutorial', () => {
   let setValueSpy: jest.SpyInstance;
 
   beforeEach(() => {
+    i18n.changeLanguage('fr');
     jest.useFakeTimers();
     mockNavigate.mockReset();
 
@@ -126,7 +129,7 @@ describe('Welcome onboarding tutorial', () => {
     let renderer: ReactTestRenderer.ReactTestRenderer;
 
     await ReactTestRenderer.act(() => {
-      renderer = ReactTestRenderer.create(<Welcome />);
+      renderer = ReactTestRenderer.create(<ThemeProvider><Welcome /></ThemeProvider>);
     });
 
     const primaryAction = renderer!.root.findAll(
@@ -145,7 +148,7 @@ describe('Welcome onboarding tutorial', () => {
     let renderer: ReactTestRenderer.ReactTestRenderer;
 
     await ReactTestRenderer.act(() => {
-      renderer = ReactTestRenderer.create(<Welcome />);
+      renderer = ReactTestRenderer.create(<ThemeProvider><Welcome /></ThemeProvider>);
     });
 
     const root = renderer!.root;
@@ -199,7 +202,7 @@ describe('Welcome onboarding tutorial', () => {
     let renderer: ReactTestRenderer.ReactTestRenderer;
 
     await ReactTestRenderer.act(() => {
-      renderer = ReactTestRenderer.create(<Welcome />);
+      renderer = ReactTestRenderer.create(<ThemeProvider><Welcome /></ThemeProvider>);
     });
 
     const root = renderer!.root;

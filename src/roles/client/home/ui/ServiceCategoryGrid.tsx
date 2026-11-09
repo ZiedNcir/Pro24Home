@@ -50,10 +50,11 @@ const ServiceCategoryGrid = () => {
                 <Text variant="bold">{t('client.home.categories')}</Text>
             </Header>
 
-            <Grid>
+            <ServiceList>
                 {services.map(item => (
                     <CardService
                         key={item.id}
+                        layout="row"
                         title={t(item.titleKey)}
                         image={item.image}
                         description={t(item.descriptionKey)}
@@ -65,7 +66,7 @@ const ServiceCategoryGrid = () => {
                         }
                     />
                 ))}
-            </Grid>
+            </ServiceList>
         </Wrapper>
     );
 };
@@ -80,8 +81,6 @@ const Header = styled.View`
   margin-bottom: ${verticalScale(12)}px;
 `;
 
-const Grid = styled.View`
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
+const ServiceList = styled.View`
+  gap: 8px;
 `;

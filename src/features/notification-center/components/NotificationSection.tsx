@@ -58,7 +58,7 @@ const List = styled.View`
 `;
 
 const GroupCard = styled.View`
-  background-color: rgba(255, 255, 255, 0.96);
+  background-color: ${({ theme }) => theme.colors.surface};
   border-radius: 22px;
   overflow: hidden;
   elevation: 3;

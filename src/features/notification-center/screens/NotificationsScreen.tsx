@@ -1,8 +1,9 @@
+import { Toast } from '@core/notifications/toast';
+import { getNotificationInterventionId } from '@core/notifications/notification-target';
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import NotificationHeader from '../components/NotificationHeader';
@@ -12,17 +13,13 @@ import NotificationEmptyState from '../components/NotificationEmptyState';
 
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import { useGetNotificationsQuery, useReadNotificationMutation } from '@entities/notification/api/notification.api';
-import { useLazyGetInterventionsQuery } from '@entities/intervention/api/intervention.api';
 import { transformNotificationToItem, groupNotificationsByTime } from '@utils/notificationHelpers';
-import { selectUser } from '@store/slices/authSlice';
 
 export const NotificationsScreen = () => {
     const { t } = useTranslation();
     const { data: notificationsResponse, isLoading, error } = useGetNotificationsQuery({});
     const [readNotification] = useReadNotificationMutation();
-    const [getInterventions] = useLazyGetInterventionsQuery();
     const navigation = useNavigation<any>();
-    const user = useSelector(selectUser);
     const [activeFilter, setActiveFilter] = useState('all');
 
     const transformedNotifications = useMemo(() => {
@@ -36,10 +33,6 @@ export const NotificationsScreen = () => {
         switch (activeFilter) {
             case 'unread':
                 return notificationsResponse.data.filter(notification => !notification.read);
-            case 'requests':
-                return notificationsResponse.data.filter(notification => notification.type.endsWith('NewMessageNotification') || notification.type === 'intervention');
-            case 'promos':
-                return notificationsResponse.data.filter(notification => notification.type === 'system');
             case 'all':
             default:
                 return notificationsResponse.data;
@@ -60,14 +53,10 @@ export const NotificationsScreen = () => {
 
         const all = notificationsResponse.data.length;
         const unread = notificationsResponse.data.filter(n => !n.read).length;
-        const requests = notificationsResponse.data.filter(n => n.type === 'intervention').length;
-        const promos = notificationsResponse.data.filter(n => n.type === 'system').length;
 
         return [
             { key: 'all', label: t('notifications.all'), icon: 'fa-bell', count: all },
             { key: 'unread', label: t('notifications.unread'), icon: 'fa-envelope-open-text', count: unread },
-            { key: 'requests', label: t('notifications.requests'), icon: 'fa-file-alt', count: requests },
-            { key: 'promos', label: t('notifications.promos'), icon: 'fa-tag', count: promos },
         ];
     }, [notificationsResponse, t]);
 
@@ -79,25 +68,14 @@ export const NotificationsScreen = () => {
         }
     };
 
-    const handleOpenNotification = async (id: string) => {
+    const handleOpenNotification = (id: string) => {
         const notification = notificationsResponse?.data.find(item => item.id === id);
-        await handleDeleteNotification(id);
-
-        const candidate = notification?.data?.intervention_id;
-        const interventionId = typeof candidate === 'number' ? candidate : Number(candidate);
-        if (Number.isFinite(interventionId) && interventionId > 0) {
+        handleDeleteNotification(id);
+        const interventionId = getNotificationInterventionId(notification);
+        if (interventionId !== undefined) {
             navigation.navigate('InterventionDetail', { intervention_id: interventionId });
-            return;
-        }
-
-        try {
-            const response = await getInterventions({ type: user?.type === 'professional' ? 'professional' : 'client' }).unwrap();
-            const latestIntervention = response.data?.[0];
-            if (latestIntervention) {
-                navigation.navigate('InterventionDetail', { intervention_id: latestIntervention.id });
-            }
-        } catch (err) {
-            console.error('Failed to load the latest intervention:', err);
+        } else {
+            Toast.show(t('notifications.interventionUnavailable'), { type: 'warning', placement: 'bottom' });
         }
     };
 
@@ -105,11 +83,9 @@ export const NotificationsScreen = () => {
         return (
             <ScreenContainer
                 scrollable
-                useImageBackground
-                backgroundImage={require('@assets/images/background_ligth.png')}
-                imageResizeMode="cover"
+
                 paddingHorizontal={horizontalScale(18)}
-                paddingVertical={verticalScale(18)}
+                paddingVertical={verticalScale(14)}
                 contentContainerStyle={{ paddingBottom: verticalScale(110) }}
             >
                 <NotificationHeader />
@@ -124,11 +100,9 @@ export const NotificationsScreen = () => {
         return (
             <ScreenContainer
                 scrollable
-                useImageBackground
-                backgroundImage={require('@assets/images/background_ligth.png')}
-                imageResizeMode="cover"
+
                 paddingHorizontal={horizontalScale(18)}
-                paddingVertical={verticalScale(18)}
+                paddingVertical={verticalScale(14)}
                 contentContainerStyle={{ paddingBottom: verticalScale(110) }}
             >
                 <NotificationHeader />
@@ -142,11 +116,9 @@ export const NotificationsScreen = () => {
     return (
         <ScreenContainer
             scrollable
-            useImageBackground
-            backgroundImage={require('@assets/images/background_ligth.png')}
-            imageResizeMode="cover"
+
             paddingHorizontal={horizontalScale(18)}
-            paddingVertical={verticalScale(18)}
+            paddingVertical={verticalScale(14)}
             contentContainerStyle={{ paddingBottom: verticalScale(110) }}
         >
             <NotificationHeader />
@@ -183,13 +155,13 @@ const Content = styled.View`
 const LoadingText = styled.Text`
   text-align: center;
   font-size: 16px;
-  color: #666;
+  color: ${({ theme }) => theme.colors.textSecondary};
   margin-top: ${verticalScale(40)}px;
 `;
 
 const ErrorText = styled.Text`
   text-align: center;
   font-size: 16px;
-  color: #ff4444;
+  color: ${({ theme }) => theme.colors.danger};
   margin-top: ${verticalScale(40)}px;
 `;

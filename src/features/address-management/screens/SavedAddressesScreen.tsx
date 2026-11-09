@@ -25,7 +25,7 @@ import {
   mapGooglePlaceToAddress,
   type SelectedAddressLocation,
 } from '@features/intervention-creation/model/google-place-address';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 import {
   horizontalScale,
   moderateScale,
@@ -40,6 +40,8 @@ const toCoordinate = (value: number | string | undefined, fallback: number) => {
 
 const SavedAddressesScreen = () => {
   const { t } = useTranslation();
+  const { theme } = useTheme();
+  const colors = theme.colors;
   const navigation = useNavigation<any>();
   const {
     data: addresses = [],
@@ -367,7 +369,10 @@ const AddressItem = ({
   onSelect: () => void;
   onEdit: () => void;
   onDelete: () => void;
-}) => (
+}) => {
+  const { theme } = useTheme();
+  const colors = theme.colors;
+  return (
   <AddressCard selected={selected} onPress={onSelect} activeOpacity={0.85}>
     <AddressIcon>
       <SvgIcon name="fa-home" size={17} color={colors.primary} />
@@ -406,7 +411,8 @@ const AddressItem = ({
       <SvgIcon name="fa-check-circle" size={18} color={colors.primary} />
     ) : null}
   </AddressCard>
-);
+  );
+};
 
 export default SavedAddressesScreen;
 
@@ -414,7 +420,7 @@ const LoadingBox = styled.View`
   margin-top: ${verticalScale(18)}px;
   padding: ${verticalScale(18)}px;
   border-radius: ${moderateScale(14)}px;
-  background-color: ${colors.warningLight};
+  background-color: ${({ theme }) => theme.colors.warningLight};
   align-items: center;
 `;
 const MapCard = styled.TouchableOpacity`
@@ -423,7 +429,7 @@ const MapCard = styled.TouchableOpacity`
   overflow: hidden;
   border-radius: ${moderateScale(18)}px;
   border-width: 1px;
-  border-color: ${colors.primaryLighter};
+  border-color: ${({ theme }) => theme.colors.primaryLighter};
 `;
 const AddressMap = styled(MapView).attrs({
   provider: Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined,
@@ -440,7 +446,7 @@ const MapCallout = styled.View`
   gap: ${horizontalScale(6)}px;
   padding: ${verticalScale(9)}px ${horizontalScale(11)}px;
   border-radius: ${moderateScale(10)}px;
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.surface};
 `;
 const OpenMap = styled.View`
   position: absolute;
@@ -451,7 +457,7 @@ const OpenMap = styled.View`
   gap: ${horizontalScale(6)}px;
   padding: ${verticalScale(8)}px ${horizontalScale(10)}px;
   border-radius: ${moderateScale(10)}px;
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.surface};
 `;
 const SectionTitle = styled(Text).attrs({
   variant: 'bold',
@@ -466,7 +472,7 @@ const EmptyState = styled.View`
   padding: ${verticalScale(24)}px;
   align-items: center;
   border-radius: ${moderateScale(16)}px;
-  background-color: ${colors.gray50};
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
 `;
 const AddressCard = styled.TouchableOpacity<{ selected: boolean }>`
   min-height: ${verticalScale(76)}px;
@@ -476,16 +482,16 @@ const AddressCard = styled.TouchableOpacity<{ selected: boolean }>`
   align-items: center;
   border-radius: ${moderateScale(16)}px;
   border-width: 1.5px;
-  border-color: ${({ selected }) =>
-    selected ? colors.primary : colors.borderLight};
-  background-color: ${({ selected }) =>
-    selected ? colors.warningLight : colors.white};
+  border-color: ${({ selected, theme }) =>
+    selected ? theme.colors.primary : theme.colors.borderLight};
+  background-color: ${({ selected, theme }) =>
+    selected ? theme.colors.warningLight : theme.colors.surface};
 `;
 const AddressIcon = styled.View`
   width: ${horizontalScale(36)}px;
   height: ${horizontalScale(36)}px;
   border-radius: ${moderateScale(12)}px;
-  background-color: ${colors.primaryLighter};
+  background-color: ${({ theme }) => theme.colors.primaryLighter};
   justify-content: center;
   align-items: center;
   margin-right: ${horizontalScale(10)}px;
@@ -501,7 +507,7 @@ const AddressTitleRow = styled.View`
 const DefaultBadge = styled.View`
   padding: ${verticalScale(3)}px ${horizontalScale(6)}px;
   border-radius: ${moderateScale(6)}px;
-  background-color: ${colors.primaryLighter};
+  background-color: ${({ theme }) => theme.colors.primaryLighter};
 `;
 const ActionColumn = styled.View`
   flex-direction: row;
@@ -515,7 +521,7 @@ const AddButton = styled.TouchableOpacity`
   height: ${verticalScale(54)}px;
   margin-top: ${verticalScale(12)}px;
   border-radius: ${moderateScale(14)}px;
-  background-color: ${colors.primary};
+  background-color: ${({ theme }) => theme.colors.primary};
   flex-direction: row;
   align-items: center;
   justify-content: center;
@@ -526,14 +532,14 @@ const ConfirmationBackdrop = styled.View`
   justify-content: center;
   align-items: center;
   padding: ${horizontalScale(24)}px;
-  background-color: ${colors.overlay};
+  background-color: ${({ theme }) => theme.colors.overlay};
 `;
 const ConfirmationModal = styled.View`
   width: 100%;
   padding: ${verticalScale(24)}px ${horizontalScale(20)}px
     ${verticalScale(18)}px;
   border-radius: ${moderateScale(22)}px;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
 `;
 const ConfirmationIcon = styled.View`
   width: ${horizontalScale(48)}px;
@@ -543,7 +549,7 @@ const ConfirmationIcon = styled.View`
   align-self: center;
   align-items: center;
   justify-content: center;
-  background-color: ${colors.dangerLight};
+  background-color: ${({ theme }) => theme.colors.dangerLight};
 `;
 const ConfirmationTitle = styled(Text)`
   text-align: center;
@@ -564,8 +570,8 @@ const CancelButton = styled.TouchableOpacity`
   justify-content: center;
   border-radius: ${moderateScale(12)}px;
   border-width: 1px;
-  border-color: ${colors.borderLight};
-  background-color: ${colors.white};
+  border-color: ${({ theme }) => theme.colors.borderLight};
+  background-color: ${({ theme }) => theme.colors.surface};
 `;
 const DeleteButton = styled.TouchableOpacity`
   flex: 1;
@@ -573,5 +579,5 @@ const DeleteButton = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
   border-radius: ${moderateScale(12)}px;
-  background-color: ${colors.danger};
+  background-color: ${({ theme }) => theme.colors.danger};
 `;

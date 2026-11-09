@@ -1,13 +1,14 @@
+import FormProgress from './FormProgress';
 import { Button } from '@shared/ui/button/Button';
 import Field, { FieldValidators } from '@shared/ui/form/HookFormField';
 import { validateClientRegistration, mapApiError, prepareRegistrationPayload } from '@features/auth/services/registration';
 import { Spinner } from '@shared/ui/overlay/AppSpinner';
 import Text from '@shared/ui/typography/Text';
-import { horizontalScale, verticalScale } from '@utils/normalizedCss';
+import { horizontalScale } from '@utils/normalizedCss';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Toast } from '@core/notifications/toast';
 import { getOneSignalSubscriptionId } from '../../../../core/notifications/oneSignalSubscription';
@@ -24,57 +25,34 @@ interface ClientFormProps {
     onSuccess?: (data: RegisterClientRequest) => void;
     onError?: (error: any) => void;
 }
-const StepIndicator = styled(View)`
-  margin-bottom: ${verticalScale(16)}px;
-`;
-
-const ProgressHeader = styled(View)`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: ${verticalScale(8)}px;
-`;
-
-
-const ProgressTrack = styled(View)`
-  height: 6px;
-  overflow: hidden;
-  border-radius: 3px;
-  background-color: ${({ theme }) => theme.colors.surfaceVariant};
-`;
-
-const ProgressFill = styled(View) <{ complete: boolean }>`
-  width: ${({ complete }) => (complete ? '100%' : '50%')};
-  height: 100%;
-  border-radius: 3px;
-  background-color: ${({ theme }) => theme.colors.primary};
-`;
-
 const StyledKeyboardAwareScrollView = styled(KeyboardAwareScrollView)`
   flex: 1;
-  padding-horizontal: ${horizontalScale(10)}px;
+  padding-horizontal: 0px;
 `;
 
 const FormContainer = styled(View)`
   width: 100%;
-  padding: ${verticalScale(3)}px ${horizontalScale(4)}px ${verticalScale(10)}px;
+  padding: 0px;
 `;
 
 const FormIntro = styled(View)`
-  margin-bottom: ${verticalScale(20)}px;
+  margin-bottom: 18px;
 `;
 
 
 const fieldStyle = {
-    marginBottom: verticalScale(5),
+    marginBottom: 10,
     width: '100%',
 };
 
-const ButtonGroup = styled(View)`
+const ButtonGroup = styled(View)<{ $compact: boolean }>`
   flex-direction: row;
   align-items: center;
   gap: ${horizontalScale(10)}px;
-  margin-top: ${verticalScale(20)}px;
+  margin-top: ${({ $compact }) => $compact ? 16 : 40}px;
+  padding-top: 20px;
+  border-top-width: 1px;
+  border-top-color: ${({ theme }) => theme.colors.border};
 `;
 
 const PreviousButtonWrapper = styled(View)`
@@ -91,6 +69,8 @@ const SubmitButtonWrapper = styled(View)`
 
 const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
     const { theme } = useTheme();
+    const { width } = useWindowDimensions();
+    const [formWidth, setFormWidth] = useState(width - 36);
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
     // Use the new RTK Query mutation hook
@@ -264,26 +244,17 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
             keyboardOpeningTime={0}
             enableResetScrollToCoords={false}>
 
-            <FormContainer>
-                <StepIndicator>
-                    <ProgressHeader>
-                        <Text variant="bold" color={theme.colors.textPrimary} fontSize={13} testID="client-form-step">{t('auth.registrationSteps.counter', { current: step + 1, total: steps.length })}</Text>
-                        <Text variant="regularSmall" color={theme.colors.textSecondary}>{t(step === 0 ? 'auth.registrationSteps.clientProfile' : 'auth.registrationSteps.clientSecurity')}</Text>
-                    </ProgressHeader>
-                    <ProgressTrack testID="client-form-progress">
-                        <ProgressFill complete={step === steps.length - 1} />
-                    </ProgressTrack>
-                </StepIndicator>
-
+            <FormContainer onLayout={event => { if (event.nativeEvent.layout.width > 0) setFormWidth(event.nativeEvent.layout.width); }}>
                 <FormIntro>
-                    <Text variant="bold" color={theme.colors.textSecondary} fontSize={11} style={styles.formHeading}>{t('auth.registrationSteps.clientHeading')}</Text>
-                    <Text variant="bold" color={theme.colors.textPrimary} fontSize={18} style={{ marginBottom: verticalScale(14) }}>
-                        {step === 0 ? t('ui.form.personalInfo.label') : t('ui.form.security.label')}
+                    <Text variant="bold" color={theme.colors.textPrimary} fontSize={26} lineHeight={32}>
+                        {step === 0 ? t('auth.formDesign.profileTitle') : t('ui.form.security.label')}
                     </Text>
-                    <Text variant="regular" color={theme.colors.textSecondary} fontSize={13} lineHeight={19}>
-                        {t(step === 0 ? 'auth.registrationSteps.clientProfileDescription' : 'auth.registrationSteps.clientSecurityDescription')}
+                    <Text variant="regular" color={theme.colors.textSecondary} fontSize={14} lineHeight={20} style={styles.description}>
+                        {t(step === 0 ? 'auth.formDesign.profileDescriptionClient' : 'auth.registrationSteps.clientSecurityDescription')}
                     </Text>
                 </FormIntro>
+                <FormProgress labels={['profile', 'security'].map(key => t(`auth.formDesign.steps.${key}`))}
+                    step={step} testID="client-form" counter={t('auth.registrationSteps.counter', { current: step + 1, total: steps.length })} />
 
                 {step === 0 && (
                     <>
@@ -310,7 +281,6 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                             accessoryLeft="fa-user"
                             containerStyle={fieldStyle}
                             animated
-                            shakeOnError
                         />
 
                         <Field<RegisterClientRequest>
@@ -336,7 +306,6 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                             accessoryLeft="fa-user"
                             containerStyle={fieldStyle}
                             animated
-                            shakeOnError
                         />
 
                         <Field<RegisterClientRequest>
@@ -358,9 +327,9 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                             accessoryLeft="fa-map-marker-alt"
                             containerStyle={fieldStyle}
                             animated
-                            shakeOnError
                         />
 
+                        <View style={formWidth >= 335 ? styles.contactRow : styles.contactStack}>
                         <Field<RegisterClientRequest>
                             name="postal_code"
                             label={t('ui.form.postCode.label')}
@@ -379,9 +348,8 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                                 },
                             }}
                             accessoryLeft="fa-map-marker-alt"
-                            containerStyle={fieldStyle}
+                            containerStyle={[fieldStyle, formWidth >= 335 && styles.postalField]}
                             animated
-                            shakeOnError
                         />
 
                         <Field<RegisterClientRequest>
@@ -399,10 +367,10 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                                     message: t('ui.form.phone.invalid'),
                                 },
                             }}
-                            containerStyle={fieldStyle}
+                            containerStyle={[fieldStyle, formWidth >= 335 && styles.phoneField]}
                             animated
-                            shakeOnError
                         />
+                        </View>
                     </>
                 )}
 
@@ -420,7 +388,7 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                             keyboardType="email-address"
                             returnKeyType="next"
                             rules={FieldValidators.required(t('ui.form.email.required'))}
-                            accessoryLeft="fa-exclamation-circle"
+                            accessoryLeft="fa-envelope-open-text"
                             containerStyle={fieldStyle}
                         />
 
@@ -442,14 +410,15 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                     </>
                 )}
 
-                <ButtonGroup>
+                <ButtonGroup $compact={formWidth < 335}>
                     {step > 0 && (
                         <PreviousButtonWrapper>
                             <Button
                                 title={t('ui.button.previous')}
                                 onPress={prevStep}
                                 variant="outline"
-                                size="medium"
+                                size="large"
+                                height={48}
                                 disabled={isLoading || authLoading}
                             />
                         </PreviousButtonWrapper>
@@ -458,11 +427,12 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                     {step === 0 ? (
                         <NextButtonWrapper>
                             <Button
-                                title={t('ui.button.next')}
+                                title={t('common.actions.continue')}
                                 testID="client-form-primary-action"
                                 onPress={nextStep}
                                 variant="primary"
-                                size="medium"
+                                size="large"
+                                height={48}
                                 disabled={isLoading || authLoading || !isValid}
                                 loading={isLoading || authLoading}
                                 fullWidth
@@ -475,7 +445,8 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                                 testID="client-form-primary-action"
                                 onPress={handleSubmit(onSubmit)}
                                 variant="primary"
-                                size="medium"
+                                size="large"
+                                height={48}
                                 disabled={isLoading || authLoading}
                                 loading={isLoading || authLoading}
                                 fullWidth
@@ -490,7 +461,7 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                         visible={true}
                         animationType='dots'
                         onRequestClose={function (): void {
-                            throw new Error('Function not implemented.');
+                            // Registration cannot be dismissed while the server responds.
                         }}
                     />
                 )}
@@ -502,5 +473,9 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
 export default ClientForm;
 
 const styles = StyleSheet.create({
-    formHeading: { letterSpacing: 1, marginBottom: verticalScale(6) },
+    description: { marginTop: 10 },
+    contactRow: { flexDirection: 'row', gap: 14, alignItems: 'flex-start' },
+    contactStack: { width: '100%' },
+    postalField: { width: '36%' },
+    phoneField: { flex: 1, width: undefined },
 });

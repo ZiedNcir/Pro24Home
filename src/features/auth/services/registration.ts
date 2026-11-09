@@ -115,6 +115,8 @@ export const mapApiError = (apiError: any): RegistrationError[] => {
           });
         });
       });
+    } else if (typeof errorData.message === 'string' && errorData.message.trim()) {
+      errors.push({ message: errorData.message, type: 'api' });
     } else if (typeof errorData.errors === 'string') {
       errors.push({
         message: errorData.errors,

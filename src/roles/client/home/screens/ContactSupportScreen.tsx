@@ -11,13 +11,15 @@ import Field from '@shared/ui/form/HookFormField';
 import { SvgIcon } from '@shared/ui/icon';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { isSupportFormValid, SUPPORT_TOPICS } from '@roles/client/home/model/contactSupport';
 
 type SupportFormValues = { message: string };
 
 const ContactSupportScreen = () => {
+    const { theme } = useTheme();
+    const colors = theme.colors;
     const { t } = useTranslation();
     const navigation = useNavigation<any>();
     const { control, handleSubmit } = useForm<SupportFormValues>({ defaultValues: { message: '' } });
@@ -36,11 +38,11 @@ const ContactSupportScreen = () => {
 
     if (submitted) {
         return (
-            <ScreenContainer paddingHorizontal={horizontalScale(18)} paddingVertical={verticalScale(14)} backgroundColor={colors.white}>
+            <ScreenContainer paddingHorizontal={horizontalScale(18)} paddingVertical={verticalScale(14)} backgroundColor={theme.colors.background}>
                 <BrandRow><LogoMediumPro24Icon width={moderateScale(126)} height={moderateScale(40)} /></BrandRow>
                 <InterventionHeader title={t('client.support.title')} showHelp={false} onClose={() => navigation.goBack()} />
                 <SuccessState>
-                    <SuccessIcon><SvgIcon name="fa-check" size={28} color={colors.white} /></SuccessIcon>
+                    <SuccessIcon><SvgIcon name="fa-check" size={28} color={colors.textInverse} /></SuccessIcon>
                     <Text variant="title" color={colors.gray900} style={styles.center}>{t('client.support.sentTitle')}</Text>
                     <Text variant="regular" color={colors.gray700} style={[styles.center, styles.successDescription]}>{t('client.support.sentDescription')}</Text>
                     <BackButton onPress={() => navigation.goBack()} accessibilityRole="button"><Text variant="bold" color={colors.primary}>{t('client.support.backSettings')}</Text></BackButton>
@@ -50,7 +52,7 @@ const ContactSupportScreen = () => {
     }
 
     return (
-        <ScreenContainer scrollable paddingHorizontal={horizontalScale(18)} paddingVertical={verticalScale(14)} backgroundColor={colors.white} contentContainerStyle={{ paddingBottom: verticalScale(24) }}>
+        <ScreenContainer scrollable paddingHorizontal={horizontalScale(18)} paddingVertical={verticalScale(14)} backgroundColor={theme.colors.background} contentContainerStyle={{ paddingBottom: verticalScale(24) }}>
             <BrandRow><LogoMediumPro24Icon width={moderateScale(126)} height={moderateScale(40)} /></BrandRow>
             <InterventionHeader title={t('client.support.title')} showHelp={false} onClose={() => navigation.goBack()} />
 
@@ -59,7 +61,7 @@ const ContactSupportScreen = () => {
 
             <Label>{t('client.support.subjectLabel')} <Required>*</Required></Label>
             <TopicButton onPress={() => setTopicModalVisible(true)} accessibilityRole="button">
-                <TopicIcon><SvgIcon name={topic.icon} size={19} color={colors.white} /></TopicIcon>
+                <TopicIcon><SvgIcon name={topic.icon} size={19} color={colors.textInverse} /></TopicIcon>
                 <Text variant="regular" color={colors.gray900} style={styles.flex}>{t(topic.labelKey)}</Text>
                 <SvgIcon name="fa-chevron-down" size={15} color={colors.gray700} />
             </TopicButton>
@@ -84,32 +86,32 @@ const ContactSupportScreen = () => {
                 <SvgIcon name="fa-chevron-right" size={15} color={colors.gray700} />
             </AttachmentButton>
 
-            <SubmitButton onPress={submitRequest} accessibilityRole="button"><Text variant="bold" color={colors.white}>{t('client.support.send')}</Text></SubmitButton>
+            <SubmitButton onPress={submitRequest} accessibilityRole="button"><Text variant="bold" color={colors.textInverse}>{t('client.support.send')}</Text></SubmitButton>
             <PrivacyNote><SvgIcon name="fa-shield-alt" size={20} color={colors.primary} /><View style={styles.flex}><Text variant="bold" color={colors.gray900}>{t('client.support.secure')}</Text><Text variant="regularSmall" color="gray600" style={styles.noteText}>{t('client.support.privacy')}</Text></View></PrivacyNote>
 
             <Modal visible={topicModalVisible} transparent animationType="slide" onRequestClose={() => setTopicModalVisible(false)}>
-                <ModalBackdrop><TopicSheet><ModalHandle /><Text variant="bold" color={colors.gray900} fontSize={18}>{t('client.support.chooseSubject')}</Text>{SUPPORT_TOPICS.map(item => <TopicOption key={item.key} onPress={() => { setTopic(item); setTopicModalVisible(false); }}><TopicIcon><SvgIcon name={item.icon} size={18} color={colors.white} /></TopicIcon><Text variant="regular" color={colors.gray900} style={styles.flex}>{t(item.labelKey)}</Text>{topic.key === item.key && <SvgIcon name="fa-check" size={17} color={colors.primary} />}</TopicOption>)}</TopicSheet></ModalBackdrop>
+                <ModalBackdrop><TopicSheet><ModalHandle /><Text variant="bold" color={colors.gray900} fontSize={18}>{t('client.support.chooseSubject')}</Text>{SUPPORT_TOPICS.map(item => <TopicOption key={item.key} onPress={() => { setTopic(item); setTopicModalVisible(false); }}><TopicIcon><SvgIcon name={item.icon} size={18} color={colors.textInverse} /></TopicIcon><Text variant="regular" color={colors.gray900} style={styles.flex}>{t(item.labelKey)}</Text>{topic.key === item.key && <SvgIcon name="fa-check" size={17} color={colors.primary} />}</TopicOption>)}</TopicSheet></ModalBackdrop>
             </Modal>
         </ScreenContainer>
     );
 };
 
 const BrandRow = styled.View`align-items: center; margin-bottom: ${verticalScale(8)}px;`;
-const Label = styled(Text).attrs({ variant: 'bold', color: 'black', fontSize: 15 })`margin-top: ${verticalScale(22)}px; margin-bottom: ${verticalScale(8)}px;`;
-const Required = styled.Text`color: ${colors.primary};`;
-const Optional = styled.Text`font-family: Inter-Regular; font-weight: 400; color: ${colors.gray600};`;
-const TopicButton = styled(Pressable)`min-height: ${verticalScale(56)}px; border-width: 1px; border-color: ${colors.gray300}; border-radius: ${moderateScale(12)}px; padding: ${verticalScale(8)}px ${horizontalScale(12)}px; flex-direction: row; align-items: center; gap: ${horizontalScale(12)}px;`;
-const TopicIcon = styled.View`width: ${moderateScale(38)}px; height: ${moderateScale(38)}px; border-radius: ${moderateScale(20)}px; background-color: ${colors.primary}; justify-content: center; align-items: center;`;
-const AttachmentButton = styled(Pressable)`min-height: ${verticalScale(68)}px; border-width: 1px; border-style: dashed; border-color: ${colors.gray300}; border-radius: ${moderateScale(12)}px; padding: ${verticalScale(10)}px ${horizontalScale(12)}px; flex-direction: row; align-items: center; gap: ${horizontalScale(10)}px;`;
-const AttachmentIcon = styled.View`width: ${moderateScale(38)}px; height: ${moderateScale(38)}px; border-radius: ${moderateScale(19)}px; background-color: #fff5ef; justify-content: center; align-items: center;`;
-const SubmitButton = styled(Pressable)`height: ${verticalScale(56)}px; margin-top: ${verticalScale(22)}px; border-radius: ${moderateScale(14)}px; background-color: ${colors.primary}; justify-content: center; align-items: center;`;
-const PrivacyNote = styled.View`margin-top: ${verticalScale(18)}px; padding: ${verticalScale(14)}px; border-radius: ${moderateScale(14)}px; background-color: #fff8f3; flex-direction: row; gap: ${horizontalScale(12)}px;`;
-const ModalBackdrop = styled.View`flex: 1; justify-content: flex-end; background-color: rgba(0, 0, 0, 0.42);`;
-const TopicSheet = styled.View`padding: ${verticalScale(14)}px ${horizontalScale(18)}px ${verticalScale(26)}px; border-top-left-radius: ${moderateScale(24)}px; border-top-right-radius: ${moderateScale(24)}px; background-color: ${colors.white};`;
-const ModalHandle = styled.View`width: ${horizontalScale(42)}px; height: ${verticalScale(4)}px; border-radius: 2px; background-color: ${colors.gray300}; align-self: center; margin-bottom: ${verticalScale(18)}px;`;
-const TopicOption = styled(Pressable)`min-height: ${verticalScale(58)}px; flex-direction: row; align-items: center; gap: ${horizontalScale(12)}px; border-bottom-width: 1px; border-bottom-color: ${colors.gray200};`;
+const Label = styled(Text).attrs(({ theme }) => ({ variant: 'bold', color: theme.colors.textPrimary, fontSize: 15 }))`margin-top: ${verticalScale(22)}px; margin-bottom: ${verticalScale(8)}px;`;
+const Required = styled.Text`color: ${({ theme }) => theme.colors.primary};`;
+const Optional = styled.Text`font-family: Inter-Regular; font-weight: 400; color: ${({ theme }) => theme.colors.gray600};`;
+const TopicButton = styled(Pressable)`min-height: ${verticalScale(56)}px; border-width: 1px; border-color: ${({ theme }) => theme.colors.gray300}; border-radius: ${moderateScale(12)}px; padding: ${verticalScale(8)}px ${horizontalScale(12)}px; flex-direction: row; align-items: center; gap: ${horizontalScale(12)}px;`;
+const TopicIcon = styled.View`width: ${moderateScale(38)}px; height: ${moderateScale(38)}px; border-radius: ${moderateScale(20)}px; background-color: ${({ theme }) => theme.colors.primary}; justify-content: center; align-items: center;`;
+const AttachmentButton = styled(Pressable)`min-height: ${verticalScale(68)}px; border-width: 1px; border-style: dashed; border-color: ${({ theme }) => theme.colors.gray300}; border-radius: ${moderateScale(12)}px; padding: ${verticalScale(10)}px ${horizontalScale(12)}px; flex-direction: row; align-items: center; gap: ${horizontalScale(10)}px;`;
+const AttachmentIcon = styled.View`width: ${moderateScale(38)}px; height: ${moderateScale(38)}px; border-radius: ${moderateScale(19)}px; background-color: ${({ theme }) => theme.colors.primaryLighter}; justify-content: center; align-items: center;`;
+const SubmitButton = styled(Pressable)`height: ${verticalScale(56)}px; margin-top: ${verticalScale(22)}px; border-radius: ${moderateScale(14)}px; background-color: ${({ theme }) => theme.colors.primary}; justify-content: center; align-items: center;`;
+const PrivacyNote = styled.View`margin-top: ${verticalScale(18)}px; padding: ${verticalScale(14)}px; border-radius: ${moderateScale(14)}px; background-color: ${({ theme }) => theme.colors.primaryLighter}; flex-direction: row; gap: ${horizontalScale(12)}px;`;
+const ModalBackdrop = styled.View`flex: 1; justify-content: flex-end; background-color: ${({ theme }) => theme.colors.backdrop};`;
+const TopicSheet = styled.View`padding: ${verticalScale(14)}px ${horizontalScale(18)}px ${verticalScale(26)}px; border-top-left-radius: ${moderateScale(24)}px; border-top-right-radius: ${moderateScale(24)}px; background-color: ${({ theme }) => theme.colors.surface};`;
+const ModalHandle = styled.View`width: ${horizontalScale(42)}px; height: ${verticalScale(4)}px; border-radius: 2px; background-color: ${({ theme }) => theme.colors.gray300}; align-self: center; margin-bottom: ${verticalScale(18)}px;`;
+const TopicOption = styled(Pressable)`min-height: ${verticalScale(58)}px; flex-direction: row; align-items: center; gap: ${horizontalScale(12)}px; border-bottom-width: 1px; border-bottom-color: ${({ theme }) => theme.colors.gray200};`;
 const SuccessState = styled.View`flex: 1; align-items: center; justify-content: center; padding: ${verticalScale(24)}px;`;
-const SuccessIcon = styled.View`width: ${moderateScale(64)}px; height: ${moderateScale(64)}px; border-radius: ${moderateScale(32)}px; background-color: ${colors.success}; align-items: center; justify-content: center; margin-bottom: ${verticalScale(18)}px;`;
+const SuccessIcon = styled.View`width: ${moderateScale(64)}px; height: ${moderateScale(64)}px; border-radius: ${moderateScale(32)}px; background-color: ${({ theme }) => theme.colors.success}; align-items: center; justify-content: center; margin-bottom: ${verticalScale(18)}px;`;
 const BackButton = styled(Pressable)`margin-top: ${verticalScale(28)}px; padding: ${verticalScale(12)}px;`;
 
 const styles = StyleSheet.create({

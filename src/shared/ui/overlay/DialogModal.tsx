@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
-import { Text, SvgIcon, CustomModal } from '@shared/ui';
+import Text from '../typography/Text';
+import { SvgIcon } from '../icon';
+import CustomModal from './CustomModal';
 import { Button } from '@shared/ui/button/Button';
 import type { IconName } from '../icon/SvgIcon';
-import { Colors } from '@utils/constant';
+import { useTheme } from '@theme';
 import { useTranslation } from 'react-i18next';
 import {
     horizontalScale,
@@ -96,6 +97,8 @@ const DialogModal: React.FC<DialogModalProps> = ({
     isLoading = false,
 }) => {
     const { t } = useTranslation();
+    const { theme } = useTheme();
+    const colors = theme.colors;
     useEffect(() => {
         if (visible && autoHideDuration) {
             const timer = setTimeout(() => {
@@ -112,33 +115,33 @@ const DialogModal: React.FC<DialogModalProps> = ({
         const configs = {
             success: {
                 icon: iconName || 'fa-check-circle',
-                iconColor: iconColor || Colors.positive,
-                iconBackground: iconBackground || Colors.positiveLight,
-                titleColor: Colors.positive,
+                iconColor: iconColor || colors.success,
+                iconBackground: iconBackground || colors.successLight,
+                titleColor: colors.success,
             },
             error: {
                 icon: iconName || 'fa-exclamation-circle',
-                iconColor: iconColor || Colors.danger,
-                iconBackground: iconBackground || Colors.dangerLight,
-                titleColor: Colors.danger,
+                iconColor: iconColor || colors.danger,
+                iconBackground: iconBackground || colors.dangerLight,
+                titleColor: colors.danger,
             },
             warning: {
                 icon: iconName || 'fa-exclamation-circle',
-                iconColor: iconColor || Colors.warning,
-                iconBackground: iconBackground || Colors.warningLight,
-                titleColor: Colors.warning,
+                iconColor: iconColor || colors.warning,
+                iconBackground: iconBackground || colors.warningLight,
+                titleColor: colors.warning,
             },
             info: {
                 icon: iconName || 'fa-info',
-                iconColor: iconColor || Colors.orange,
-                iconBackground: iconBackground || Colors.orangeLight,
-                titleColor: Colors.orange,
+                iconColor: iconColor || colors.primary,
+                iconBackground: iconBackground || colors.primaryLighter,
+                titleColor: colors.primary,
             },
             custom: {
                 icon: iconName || 'fa-info',
-                iconColor: iconColor || Colors.positive,
-                iconBackground: iconBackground || Colors.positiveLight,
-                titleColor: Colors.positive,
+                iconColor: iconColor || colors.success,
+                iconBackground: iconBackground || colors.successLight,
+                titleColor: colors.success,
             },
         };
 
@@ -170,12 +173,12 @@ const DialogModal: React.FC<DialogModalProps> = ({
             position={position}
             closeOnOverlayClick={closeOnOverlayClick}
             overlayOpacity={overlayOpacity}
-            overlayColor={Colors.overlay || Colors.black}
-            contentStyle={styles.modalContent}
+            overlayColor={colors.overlay}
+            contentStyle={[styles.modalContent, { backgroundColor: colors.surface }]}
             onShow={onShow}
         >
             <ModalContainer
-                style={styles.modalSurface}
+                style={[styles.modalSurface, { backgroundColor: colors.surface, shadowColor: colors.black }]}
                 width={Math.min(width, maxWidth, WIDTH_SCREEN - horizontalScale(40))}
             >
                 {showCloseButton && (
@@ -183,7 +186,7 @@ const DialogModal: React.FC<DialogModalProps> = ({
                         <SvgIcon
                             name="delete"
                             size={fontPixel(20)}
-                            color={Colors.text.secondary}
+                            color={colors.textSecondary}
                         />
                     </CloseButton>
                 )}
@@ -253,12 +256,12 @@ const ModalContainer = styled.View<{
 }>`
   width: ${({ width }) => width}px;
   max-width: 100%;
-  background-color: ${Colors.background.paper || Colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
   border-radius: ${moderateScale(16)}px;
   padding: ${verticalScale(24)}px ${horizontalScale(20)}px;
   align-items: center;
   elevation: 8;
-  shadow-color: ${Colors.shadow || Colors.black};
+  shadow-color: ${({ theme }) => theme.colors.black};
   shadow-offset: 0px ${verticalScale(4)}px;
   shadow-opacity: 0.3;
   shadow-radius: ${moderateScale(5)}px;
@@ -310,7 +313,7 @@ const MessageContainer = styled.View`
 
 const MessageText = styled(Text) <{ screenWidth: number }>`
   text-align: center;
-  color: ${Colors.text.primary || Colors.black};
+  color: ${({ theme }) => theme.colors.textPrimary};
   line-height: ${fontPixel(22)}px;
   font-size: ${fontPixel(16)}px;
   padding-horizontal: ${({ screenWidth }) => screenWidth * 0.02}px;
@@ -355,10 +358,9 @@ export const InfoDialog = (props: Omit<DialogModalProps, 'type'>) => (
 
 export default DialogModal;
 
-const styles = StyleSheet.create({
+const styles = {
     modalSurface: {
         alignSelf: 'center',
-        backgroundColor: Colors.background.paper || Colors.white,
         opacity: 1,
     },
     modalContent: {
@@ -370,4 +372,4 @@ const styles = StyleSheet.create({
         shadowRadius: 0,
         width: '100%',
     },
-});
+} as const;

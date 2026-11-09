@@ -6,12 +6,13 @@ import { useSelector } from 'react-redux';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
-import { colors } from '@theme';
+import { useTheme } from '@theme';
 import { useNavigation } from '@react-navigation/native';
 import { selectAuthLoading, selectUser } from '@store/slices/authSlice';
 
 const HeaderLocation = () => {
     const { t } = useTranslation();
+    const { theme } = useTheme();
     const navigation = useNavigation();
     const user = useSelector(selectUser);
     const isLoading = useSelector(selectAuthLoading);
@@ -28,17 +29,17 @@ const HeaderLocation = () => {
         <Container>
             <TopRow>
                 <LocationRow>
-                    <SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} />
+                    <SvgIcon name="fa-map-marker-alt" size={16} color={theme.colors.primary} />
                     <Text variant="medium" color="primary" fontSize={13}>
                         {t('client.home.myLocation')}
                     </Text>
-                    <SvgIcon name="fa-chevron-down" size={11} color={colors.primary} />
+                    <SvgIcon name="fa-chevron-down" size={11} color={theme.colors.primary} />
                 </LocationRow>
 
                 <Actions>
 
                     <IconButton onPress={() => navigation.navigate('Notifications' as never)}>
-                        <SvgIcon name="fa-bell" size={20} color={colors.black} />
+                        <SvgIcon name="fa-bell" size={20} color={theme.colors.textPrimary} />
                         <Badge>
                             <Text variant="notification" color="white" fontWeight="700">
                                 2
@@ -99,10 +100,10 @@ const IconButton = styled.TouchableOpacity`
   width: ${horizontalScale(42)}px;
   height: ${horizontalScale(42)}px;
   border-radius: ${horizontalScale(21)}px;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: ${({ theme }) => theme.colors.surface};
   justify-content: center;
   align-items: center;
-  shadow-color: #000;
+  shadow-color: ${({ theme }) => theme.colors.black};
   shadow-offset: 0px 4px;
   shadow-opacity: 0.06;
   shadow-radius: 10px;
@@ -116,7 +117,7 @@ const Badge = styled.View`
   width: ${horizontalScale(22)}px;
   height: ${horizontalScale(22)}px;
   border-radius: ${horizontalScale(11)}px;
-  background-color: ${colors.primary};
+  background-color: ${({ theme }) => theme.colors.primary};
   justify-content: center;
   align-items: center;
 `;

@@ -12,10 +12,10 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import { Toast } from '@core/notifications/toast';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import styled from 'styled-components/native';
+import { useTheme } from '@theme';
 
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
-import { colors } from '@theme';
 import {
   horizontalScale,
   moderateScale,
@@ -44,6 +44,30 @@ const AddressModal: React.FC<AddressModalProps> = ({
   onSave,
 }) => {
   const { t } = useTranslation();
+  const { theme } = useTheme();
+  const colors = theme.colors;
+  const googlePlacesStyles = {
+    container: { flex: 0 },
+    textInput: {
+      height: verticalScale(44),
+      borderRadius: moderateScale(10),
+      borderWidth: 1,
+      borderColor: colors.borderLight,
+      backgroundColor: colors.surface,
+      color: colors.inputText,
+      paddingHorizontal: horizontalScale(12),
+      fontSize: 13,
+    },
+    listView: {
+      borderWidth: 1,
+      borderColor: colors.borderLight,
+      borderRadius: moderateScale(10),
+      marginTop: verticalScale(4),
+      backgroundColor: colors.surface,
+    },
+    row: { padding: horizontalScale(12) },
+    description: { color: colors.textPrimary, fontSize: 13 },
+  };
   return (
   <Modal
     visible={visible}
@@ -218,7 +242,7 @@ export default AddressModal;
 
 const ModalBackdrop = styled.View`
   flex: 1;
-  background-color: ${colors.overlay};
+  background-color: ${({ theme }) => theme.colors.overlay};
 `;
 const ModalKeyboardAvoider = styled(KeyboardAvoidingView)`
   flex: 1;
@@ -229,14 +253,14 @@ const NewAddressPanel = styled.View`
     ${verticalScale(20)}px;
   border-top-left-radius: ${moderateScale(22)}px;
   border-top-right-radius: ${moderateScale(22)}px;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
   max-height: 88%;
 `;
 const ModalHandle = styled.View`
   width: ${horizontalScale(42)}px;
   height: ${verticalScale(4)}px;
   border-radius: ${moderateScale(2)}px;
-  background-color: ${colors.gray300};
+  background-color: ${({ theme }) => theme.colors.gray300};
   align-self: center;
   margin-bottom: ${verticalScale(12)}px;
 `;
@@ -245,18 +269,18 @@ const ModalHeader = styled.View`
   align-items: center;
   justify-content: space-between;
 `;
-const PanelTitle = styled(Text).attrs({
+const PanelTitle = styled(Text).attrs(({ theme }) => ({
   variant: 'bold',
-  color: 'black',
+  color: theme.colors.textPrimary,
   fontSize: 13,
-})`
+}))`
   margin-bottom: ${verticalScale(10)}px;
 `;
 const ModalCloseButton = styled.TouchableOpacity`
   width: ${horizontalScale(34)}px;
   height: ${horizontalScale(34)}px;
   border-radius: ${horizontalScale(17)}px;
-  background-color: ${colors.gray100};
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
   justify-content: center;
   align-items: center;
 `;
@@ -270,7 +294,7 @@ const SelectedPlace = styled.View`
   padding: ${verticalScale(10)}px;
   margin-top: ${verticalScale(8)}px;
   border-radius: ${moderateScale(10)}px;
-  background-color: ${colors.successLight};
+  background-color: ${({ theme }) => theme.colors.successLight};
 `;
 const AddressMapPreview = styled.View`
   height: ${verticalScale(150)}px;
@@ -278,8 +302,8 @@ const AddressMapPreview = styled.View`
   border-radius: ${moderateScale(16)}px;
   margin-top: ${verticalScale(12)}px;
   border-width: 2px;
-  border-color: ${colors.danger};
-  background-color: ${colors.surfaceVariant};
+  border-color: ${({ theme }) => theme.colors.danger};
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
 `;
 const AddressMap = styled(MapView).attrs({
   provider: Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined,
@@ -295,7 +319,7 @@ const PreviewOpenOverlay = styled.TouchableOpacity`
   gap: ${horizontalScale(6)}px;
   padding: ${verticalScale(8)}px ${horizontalScale(10)}px;
   border-radius: ${moderateScale(10)}px;
-  background-color: ${colors.white};
+  background-color: ${({ theme }) => theme.colors.surface};
 `;
 const AddressMarker = Marker;
 const AddressLoading = styled.View`
@@ -308,10 +332,10 @@ const CompactInput = styled.TextInput`
   min-height: ${verticalScale(44)}px;
   border-radius: ${moderateScale(10)}px;
   border-width: 1px;
-  border-color: ${colors.borderLight};
-  background-color: ${colors.white};
+  border-color: ${({ theme }) => theme.colors.borderLight};
+  background-color: ${({ theme }) => theme.colors.surface};
   padding-horizontal: ${horizontalScale(12)}px;
-  color: ${colors.black};
+  color: ${({ theme }) => theme.colors.inputText};
   margin-top: ${verticalScale(8)}px;
 `;
 const PanelActions = styled.View`
@@ -324,7 +348,7 @@ const CancelButton = styled.TouchableOpacity`
   height: ${verticalScale(46)}px;
   border-radius: ${moderateScale(10)}px;
   border-width: 1px;
-  border-color: ${colors.borderLight};
+  border-color: ${({ theme }) => theme.colors.borderLight};
   justify-content: center;
   align-items: center;
 `;
@@ -332,30 +356,8 @@ const SaveAddressButton = styled.TouchableOpacity<{ disabled?: boolean }>`
   flex: 1.4;
   height: ${verticalScale(46)}px;
   border-radius: ${moderateScale(10)}px;
-  background-color: ${colors.primary};
+  background-color: ${({ theme }) => theme.colors.primary};
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
   justify-content: center;
   align-items: center;
 `;
-const googlePlacesStyles = {
-  container: { flex: 0 },
-  textInput: {
-    height: verticalScale(44),
-    borderRadius: moderateScale(10),
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-    backgroundColor: colors.white,
-    color: colors.black,
-    paddingHorizontal: horizontalScale(12),
-    fontSize: 13,
-  },
-  listView: {
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-    borderRadius: moderateScale(10),
-    marginTop: verticalScale(4),
-    backgroundColor: colors.white,
-  },
-  row: { padding: horizontalScale(12) },
-  description: { color: colors.black, fontSize: 13 },
-};

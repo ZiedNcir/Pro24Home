@@ -1,23 +1,26 @@
+import type { InterventionSnapshot } from '@entities/intervention/model/local-interventions';
 import { IRole } from '@utils/constant';
 import type { CreateInterventionRequest } from '@entities/intervention/model';
 
 export type AppStackType = {
   SignIn: { role?: 'client' | 'professional' };
   Profile: undefined;
-  RegisterScreen: { role?: 'client' | 'professional' };
-  VerifyScreen: { email?: string | null; role: IRole | null };
+  RegisterScreen: { role?: 'client' | 'professional'; source?: string; commercial_id?: number };
+  VerifyScreen: { email?: string | null; phone_number?: string; role: IRole | null };
   AccountPendingScreen: undefined;
   ProfessionalVerificationPending: undefined;
   ContactSupport: undefined;
   AddAddress: undefined;
   SavedAddresses: undefined;
-  PriceEstimation: { intervention: CreateInterventionRequest };
+  PriceEstimation: { intervention: CreateInterventionRequest; snapshot?: InterventionSnapshot };
   PaymentTravelFee: {
     intervention: CreateInterventionRequest;
     checkPriceWithProfessional?: boolean;
+    snapshot?: InterventionSnapshot;
+    localInterventionId?: string;
   };
   InterventionSuccess: undefined;
-  InterventionDetail: { intervention_id: number };
+  InterventionDetail: { intervention_id: number; localInterventionId?: string };
   ProfessionalInterventionTracking: { intervention_id: number };
   NewIntervention: { service_id?: number; service_name?: string } | undefined;
 
