@@ -36,9 +36,9 @@ export const hexToRgba = (hex: string, opacity: number) => {
 export const darkenColor = (hex: string, percent: number) => {
     const num = parseInt(hex.replace('#', ''), 16);
     const amt = Math.round(2.55 * percent);
-    const R = (num >> 16) - amt;
-    const G = ((num >> 8) & 0x00FF) - amt;
-    const B = (num & 0x0000FF) - amt;
+    const R = (Math.floor(num / 0x10000) % 0x100) - amt;
+    const G = (Math.floor(num / 0x100) % 0x100) - amt;
+    const B = (num % 0x100) - amt;
 
     return `#${(
         0x1000000 +
@@ -53,9 +53,9 @@ export const darkenColor = (hex: string, percent: number) => {
 export const lightenColor = (hex: string, percent: number) => {
     const num = parseInt(hex.replace('#', ''), 16);
     const amt = Math.round(2.55 * percent);
-    const R = (num >> 16) + amt;
-    const G = ((num >> 8) & 0x00FF) + amt;
-    const B = (num & 0x0000FF) + amt;
+    const R = (Math.floor(num / 0x10000) % 0x100) + amt;
+    const G = (Math.floor(num / 0x100) % 0x100) + amt;
+    const B = (num % 0x100) + amt;
 
     return `#${(
         0x1000000 +

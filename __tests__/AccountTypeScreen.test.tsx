@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactTestRenderer, { act } from 'react-test-renderer';
-import AccountTypeScreen from '../src/screens/Auth/AccountTypeScreen';
-import { ThemeProvider } from '../src/theme/ThemeProvider';
+import AccountTypeScreen from '../src/features/auth/ui/AccountTypeScreen';
+import { ThemeProvider } from '@theme';
 
 const themedScreen = <ThemeProvider><AccountTypeScreen /></ThemeProvider>;
 
@@ -12,18 +12,17 @@ jest.mock('@react-navigation/native', () => ({
   useNavigation: () => ({ navigate: mockNavigate, goBack: mockGoBack }),
 }));
 
-jest.mock('@components/index', () => {
+jest.mock('@shared/ui/layout/ScreenContainer', () => {
   const ReactModule = jest.requireActual<typeof React>('react');
   const { View: NativeView } = jest.requireActual<typeof import('react-native')>('react-native');
   return {
-    ScreenContainer: ({ children, ...props }: React.ComponentProps<typeof NativeView>) =>
+    __esModule: true,
+    default: ({ children, ...props }: React.ComponentProps<typeof NativeView>) =>
       ReactModule.createElement(NativeView, { ...props, testID: 'screen-container' }, children),
-    Text: ({ children, ...props }: React.ComponentProps<typeof NativeView>) =>
-      ReactModule.createElement(NativeView, props, children),
   };
 });
 
-jest.mock('@components/Text', () => {
+jest.mock('@shared/ui/typography/Text', () => {
   const ReactModule = jest.requireActual<typeof React>('react');
   const { Text: NativeText } = jest.requireActual<typeof import('react-native')>('react-native');
   return {

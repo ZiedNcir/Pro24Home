@@ -1,4 +1,4 @@
-import { getServicePannes } from '../src/screens/Intervention/utils/servicePannes';
+import { getServicePannes } from '../src/features/intervention-creation/model/service-pannes';
 
 describe('getServicePannes', () => {
     it('maps the selected service children into panne choices', () => {

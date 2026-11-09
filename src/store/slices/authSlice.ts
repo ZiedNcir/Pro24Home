@@ -1,9 +1,8 @@
 // src/store/slices/auth.slice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { User, Client, Professional } from '../api/api.types';
 
-interface AuthState {
+export interface AuthState {
     user: User | null;
     token: string | null;
     refreshToken: string | null;
@@ -66,19 +65,6 @@ const authSlice = createSlice({
             expiryDate.setDate(expiryDate.getDate() + expiryDays);
             state.sessionExpiresAt = expiryDate.toISOString();
 
-            // Save to AsyncStorage
-            const storageItems: [string, string][] = [
-                ['auth_token', action.payload.token],
-                ['user', JSON.stringify(action.payload.user)],
-                ['last_login_at', state.lastLoginAt],
-                ['session_expires_at', state.sessionExpiresAt],
-            ];
-
-            if (action.payload.refreshToken) {
-                storageItems.push(['refresh_token', action.payload.refreshToken]);
-            }
-
-            AsyncStorage.multiSet(storageItems).catch(console.error);
         },
 
         // Logout user
@@ -91,14 +77,6 @@ const authSlice = createSlice({
                 onboardingCompleted: state.onboardingCompleted,
             });
 
-            // Clear AsyncStorage (except onboarding and biometric)
-            AsyncStorage.multiRemove([
-                'auth_token',
-                'refresh_token',
-                'user',
-                'last_login_at',
-                'session_expires_at',
-            ]).catch(console.error);
         },
 
         // Restore session from storage
@@ -134,7 +112,6 @@ const authSlice = createSlice({
         ) => {
             if (state.user) {
                 state.user = { ...state.user, ...action.payload } as User;
-                AsyncStorage.setItem('user', JSON.stringify(state.user)).catch(console.error);
             }
         },
 
@@ -146,9 +123,7 @@ const authSlice = createSlice({
             state.token = action.payload.token;
             if (action.payload.refreshToken) {
                 state.refreshToken = action.payload.refreshToken;
-                AsyncStorage.setItem('refresh_token', action.payload.refreshToken).catch(console.error);
             }
-            AsyncStorage.setItem('auth_token', action.payload.token).catch(console.error);
         },
 
         // Clear tokens (for refresh token failure)
@@ -156,7 +131,6 @@ const authSlice = createSlice({
             state.token = null;
             state.refreshToken = null;
             state.isAuthenticated = false;
-            AsyncStorage.multiRemove(['auth_token', 'refresh_token']).catch(console.error);
         },
 
         // Set loading state
@@ -172,16 +146,11 @@ const authSlice = createSlice({
         // Complete onboarding
         completeOnboarding: (state) => {
             state.onboardingCompleted = true;
-            AsyncStorage.setItem('onboarding_completed', 'true').catch(console.error);
         },
 
         // Toggle biometric auth
         toggleBiometricAuth: (state) => {
             state.biometricEnabled = !state.biometricEnabled;
-            AsyncStorage.setItem(
-                'biometric_enabled',
-                state.biometricEnabled ? 'true' : 'false'
-            ).catch(console.error);
         },
 
         // Extend session
@@ -191,7 +160,6 @@ const authSlice = createSlice({
                 const hoursToAdd = action.payload || 2;
                 expiryDate.setHours(expiryDate.getHours() + hoursToAdd);
                 state.sessionExpiresAt = expiryDate.toISOString();
-                AsyncStorage.setItem('session_expires_at', state.sessionExpiresAt).catch(console.error);
             }
         },
 
@@ -199,7 +167,6 @@ const authSlice = createSlice({
         updateNotificationToken: (state, action: PayloadAction<string>) => {
             if (state.user) {
                 state.user.onesignal_key = action.payload;
-                AsyncStorage.setItem('user', JSON.stringify(state.user)).catch(console.error);
             }
         },
     },

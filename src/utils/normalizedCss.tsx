@@ -1,6 +1,6 @@
-import {Dimensions, Platform, PixelRatio} from 'react-native';
+import { Dimensions, Platform, PixelRatio } from 'react-native';
 
-const {width, height} = Dimensions.get('screen');
+const { width, height } = Dimensions.get('screen');
 const [shortDimension, longDimension] =
   width < height ? [width, height] : [height, width];
 
@@ -20,12 +20,7 @@ const moderateScale = (size: number, factor = 0.5) =>
   size + (horizontalScale(size) - size) * factor;
 
 const fontPixel = (size: number) => {
-  const newSize = size * (width / guidelineBaseWidth);
-  if (Platform.OS === 'ios') {
-    return Math.round(PixelRatio.roundToNearestPixel(newSize));
-  } else {
-    return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2;
-  }
+  return PixelRatio.roundToNearestPixel(size);
 };
 
 const isIphoneXorAbove = () => {

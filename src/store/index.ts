@@ -3,17 +3,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { api } from './api/baseApi';
 import authReducer from './slices/authSlice';
-import userReducer from './slices/user.slice';
 import uiReducer from './slices/ui.slice';
-import interventionsReducer from './slices/intervention.slice';
+import { sessionPersistenceMiddleware } from '../app/store/session-persistence';
 
 export const store = configureStore({
     reducer: {
         [api.reducerPath]: api.reducer,
         auth: authReducer,
-        user: userReducer,
         ui: uiReducer,
-        interventions: interventionsReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
@@ -30,7 +27,7 @@ export const store = configureStore({
                 // Ignore these paths in the state
                 ignoredPaths: ['items.dates'],
             },
-        }).concat(api.middleware),
+        }).prepend(sessionPersistenceMiddleware.middleware).concat(api.middleware),
 });
 
 // Optional, but required for refetchOnFocus/refetchOnReconnect behaviors

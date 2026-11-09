@@ -24,7 +24,7 @@ export const clientEndpoints = api.injectEndpoints({
             query: (data) => ({
                 url: '/api/client/update-profil',
                 method: 'POST',
-                body: prepareFormData(data),
+                body: prepareFormData(data as unknown as Record<string, unknown>),
             }),
             invalidatesTags: ['User'],
         }),
@@ -47,7 +47,7 @@ export const clientEndpoints = api.injectEndpoints({
             query: (data) => ({
                 url: '/api/client/address',
                 method: 'POST',
-                body: prepareFormData(data),
+                body: prepareFormData(data as unknown as Record<string, unknown>),
             }),
             invalidatesTags: ['Addresses'],
         }),
@@ -102,7 +102,7 @@ export const clientEndpoints = api.injectEndpoints({
             query: (data) => ({
                 url: '/api/client/rating',
                 method: 'POST',
-                body: prepareFormData(data),
+                body: prepareFormData(data as unknown as Record<string, unknown>),
             }),
             invalidatesTags: ['Ratings', 'Interventions'],
         }),

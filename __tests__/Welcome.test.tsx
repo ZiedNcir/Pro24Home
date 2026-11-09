@@ -1,7 +1,9 @@
 import React from 'react';
 import { Animated, Image, View } from 'react-native';
 import ReactTestRenderer, { ReactTestInstance } from 'react-test-renderer';
-import Welcome from '../src/screens/Welcome';
+import i18n from '../src/utils/i18n';
+import { ThemeProvider } from '../src/theme';
+import Welcome from '../src/features/auth/ui/WelcomeScreen';
 
 const mockNavigate = jest.fn();
 
@@ -13,19 +15,20 @@ jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 44, right: 0, bottom: 34, left: 0 }),
 }));
 
-jest.mock('@components/index', () => {
+jest.mock('@shared/ui/layout/ScreenContainer', () => {
   const ReactModule = jest.requireActual<typeof React>('react');
   const { View: NativeView } = jest.requireActual<typeof import('react-native')>('react-native');
 
   return {
-    ScreenContainer: ({ children, ...props }: React.ComponentProps<typeof View>) =>
+    __esModule: true,
+    default: ({ children, ...props }: React.ComponentProps<typeof View>) =>
       ReactModule.createElement(NativeView, { ...props, testID: 'screen-container' }, children),
   };
 });
 
-jest.mock('@components/Modal/AppSpinner', () => ({ Spinner: () => null }));
+jest.mock('@shared/ui/overlay/AppSpinner', () => ({ Spinner: () => null }));
 
-jest.mock('@components/Text', () => {
+jest.mock('@shared/ui/typography/Text', () => {
   const ReactModule = jest.requireActual<typeof React>('react');
   const { Text: NativeText } = jest.requireActual<typeof import('react-native')>('react-native');
 
@@ -79,7 +82,7 @@ const expectStep = (
     min: 1,
     max: 3,
     now: step,
-    text: `Étape ${step} sur 3`,
+    text: `ÉTAPE ${step} SUR 3`,
   });
 
   for (let index = 1; index <= 3; index += 1) {
@@ -98,6 +101,7 @@ describe('Welcome onboarding tutorial', () => {
   let setValueSpy: jest.SpyInstance;
 
   beforeEach(() => {
+    i18n.changeLanguage('fr');
     jest.useFakeTimers();
     mockNavigate.mockReset();
 
@@ -125,7 +129,7 @@ describe('Welcome onboarding tutorial', () => {
     let renderer: ReactTestRenderer.ReactTestRenderer;
 
     await ReactTestRenderer.act(() => {
-      renderer = ReactTestRenderer.create(<Welcome />);
+      renderer = ReactTestRenderer.create(<ThemeProvider><Welcome /></ThemeProvider>);
     });
 
     const primaryAction = renderer!.root.findAll(
@@ -144,7 +148,7 @@ describe('Welcome onboarding tutorial', () => {
     let renderer: ReactTestRenderer.ReactTestRenderer;
 
     await ReactTestRenderer.act(() => {
-      renderer = ReactTestRenderer.create(<Welcome />);
+      renderer = ReactTestRenderer.create(<ThemeProvider><Welcome /></ThemeProvider>);
     });
 
     const root = renderer!.root;
@@ -198,7 +202,7 @@ describe('Welcome onboarding tutorial', () => {
     let renderer: ReactTestRenderer.ReactTestRenderer;
 
     await ReactTestRenderer.act(() => {
-      renderer = ReactTestRenderer.create(<Welcome />);
+      renderer = ReactTestRenderer.create(<ThemeProvider><Welcome /></ThemeProvider>);
     });
 
     const root = renderer!.root;

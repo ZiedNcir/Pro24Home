@@ -1,3 +1,4 @@
+import { acceptApiResponse } from '../../../core/api/status';
 // src/store/api/endpoints/pro.ts
 import { api } from '../baseApi';
 import {
@@ -31,8 +32,10 @@ export const professionalEndpoints = api.injectEndpoints({
                     url: '/api/professional/upload-document',
                     method: 'POST',
                     body: formData,
+                    validateStatus: acceptApiResponse,
                 };
             },
+            extraOptions: { maxRetries: 0 },
             invalidatesTags: ['Documents', 'User'],
         }),
 

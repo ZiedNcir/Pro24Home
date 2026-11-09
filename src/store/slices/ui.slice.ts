@@ -1,11 +1,9 @@
 // src/store/slices/ui.slice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { AppTheme, AppLanguage } from '../../types/global';
+import type { AppLanguage } from '../../types/global';
 
 interface UIState {
-    theme: AppTheme;
     language: AppLanguage;
-    isDarkMode: boolean;
     isRTL: boolean;
     isLoading: boolean;
     loadingText: string | null;
@@ -58,9 +56,7 @@ interface UIState {
 }
 
 const initialState: UIState = {
-    theme: 'system',
     language: 'fr',
-    isDarkMode: false,
     isRTL: false,
     isLoading: false,
     loadingText: null,
@@ -116,18 +112,6 @@ const uiSlice = createSlice({
     name: 'ui',
     initialState,
     reducers: {
-        setTheme: (state, action: PayloadAction<AppTheme>) => {
-            state.theme = action.payload;
-            state.isDarkMode = action.payload === 'dark' ||
-                (action.payload === 'system' &&
-                    window.matchMedia('(prefers-color-scheme: dark)').matches);
-        },
-
-        toggleTheme: (state) => {
-            state.theme = state.theme === 'light' ? 'dark' : 'light';
-            state.isDarkMode = state.theme === 'dark';
-        },
-
         setLanguage: (state, action: PayloadAction<AppLanguage>) => {
             state.language = action.payload;
             state.isRTL = action.payload === 'ar';
@@ -332,7 +316,7 @@ const uiSlice = createSlice({
         // Network-aware actions
         queueAction: (
             state,
-            action: PayloadAction<{ type: string; payload: any; timestamp: number }>
+            _action: PayloadAction<{ type: string; payload: any; timestamp: number }>
         ) => {
             // This would typically be handled by a middleware
             // but we can store queued actions in state
@@ -341,15 +325,13 @@ const uiSlice = createSlice({
             }
         },
 
-        retryQueuedActions: (state) => {
+        retryQueuedActions: (_state) => {
             // Process queued actions when back online
         },
     },
 });
 
 export const {
-    setTheme,
-    toggleTheme,
     setLanguage,
     setLoading,
     showToast,
@@ -383,8 +365,6 @@ export const {
 } = uiSlice.actions;
 
 // Selectors
-export const selectTheme = (state: { ui: UIState }) => state.ui.theme;
-export const selectIsDarkMode = (state: { ui: UIState }) => state.ui.isDarkMode;
 export const selectLanguage = (state: { ui: UIState }) => state.ui.language;
 export const selectIsRTL = (state: { ui: UIState }) => state.ui.isRTL;
 export const selectIsLoading = (state: { ui: UIState }) => state.ui.isLoading;

@@ -1,0 +1,578 @@
+import { requestCameraPermission } from '@utils/permissions';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import PhotoSourceModal, { type PhotoSource } from '@shared/ui/image/PhotoSourceModal';
+import { createProfilePhoto, readProfilePhoto, saveProfilePhoto } from '@entities/user/model/profile-photo';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ActivityIndicator, Animated, Image } from 'react-native';
+import styled from 'styled-components/native';
+import { Toast } from '@core/notifications/toast';
+
+import ScreenContainer from '@shared/ui/layout/ScreenContainer';
+import Text from '@shared/ui/typography/Text';
+import { SvgIcon } from '@shared/ui/icon';
+import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
+import { useTheme } from '@theme';
+import { useAppSelector } from '@store/hooks';
+import { selectUser } from '@store/slices/authSlice';
+import { useUpdateClientProfileMutation } from '@entities/user/api/user.api';
+import {
+    horizontalScale,
+    moderateScale,
+    verticalScale,
+} from '@utils/normalizedCss';
+
+const ProfileScreen = () => {
+    const { t } = useTranslation();
+    const { theme, themeMode } = useTheme();
+    const user = useAppSelector(selectUser);
+    const [updateClientProfile, { isLoading }] = useUpdateClientProfileMutation();
+    const [photo, setPhoto] = useState<{ userId: number; uri: string } | null>(null);
+    const [isPhotoSourceVisible, setIsPhotoSourceVisible] = useState(false);
+    const [isUpdatingPhoto, setIsUpdatingPhoto] = useState(false);
+    const photoBusy = useRef(false);
+    const photoOwner = useRef(user?.id);
+    photoOwner.current = user?.id;
+    const mounted = useRef(true);
+    useEffect(() => {
+        mounted.current = true;
+        return () => { mounted.current = false; };
+    }, []);
+    useEffect(() => {
+        let active = true;
+        const ownerId = user?.id;
+        setIsPhotoSourceVisible(false);
+        if (ownerId !== undefined) {
+            readProfilePhoto(ownerId).then(uri => {
+                if (active) setPhoto(uri ? { userId: ownerId, uri } : null);
+            }).catch(() => {
+                if (active) Toast.show(t('client.profile.photoLoadFailed'), { type: 'danger', placement: 'bottom' });
+            });
+        }
+        return () => { active = false; };
+    }, [user?.id, t]);
+
+    const updatePhoto = async (source: PhotoSource) => {
+        const ownerId = user?.id;
+        if (ownerId === undefined || photoBusy.current) return;
+        photoBusy.current = true;
+        setIsUpdatingPhoto(true);
+        try {
+            if (source === 'camera' && !await requestCameraPermission()) throw new Error('Camera access denied');
+            const picker = source === 'camera' ? launchCamera : launchImageLibrary;
+            const result = await picker({
+                mediaType: 'photo', selectionLimit: 1, quality: 0.8,
+                maxWidth: 512, maxHeight: 512, includeBase64: true,
+                ...(source === 'camera' ? { cameraType: 'front', saveToPhotos: false } : {}),
+            });
+            if (result.didCancel) return;
+            if (result.errorCode) throw new Error(result.errorMessage || t('client.profile.photoUpdateFailed'));
+            const asset = result.assets?.[0];
+            if (!asset || photoOwner.current !== ownerId || !mounted.current) return;
+            const uri = createProfilePhoto(asset);
+            await saveProfilePhoto(ownerId, uri);
+            if (photoOwner.current === ownerId && mounted.current) {
+                setPhoto({ userId: ownerId, uri });
+                Toast.show(t('client.profile.photoUpdateSuccess'), { type: 'success', placement: 'bottom' });
+            }
+        } catch {
+            if (photoOwner.current === ownerId && mounted.current) {
+                Toast.show(t('client.profile.photoUpdateFailed'), { type: 'danger', placement: 'bottom' });
+            }
+        } finally {
+            photoBusy.current = false;
+            if (mounted.current) setIsUpdatingPhoto(false);
+        }
+    };
+
+    const [firstName, setFirstName] = useState(user?.client?.first_name || '');
+    const [lastName, setLastName] = useState(user?.client?.last_name || '');
+    const [email, setEmail] = useState(user?.email || '');
+    const [phone, setPhone] = useState(user?.phone_number || '');
+    const [address, setAddress] = useState(user?.address?.[0]?.address || '');
+    const [errors, setErrors] = useState<Record<string, string>>({});
+    const [isEditing, setIsEditing] = useState(false);
+    const editButtonScale = useState(() => new Animated.Value(1))[0];
+    const [savedValues, setSavedValues] = useState({
+        firstName: user?.client?.first_name || '',
+        lastName: user?.client?.last_name || '',
+        address: user?.address?.[0]?.address || '',
+    });
+
+    useEffect(() => {
+        setFirstName(user?.client?.first_name || '');
+        setLastName(user?.client?.last_name || '');
+        setEmail(user?.email || '');
+        setPhone(user?.phone_number || '');
+        setAddress(user?.address?.[0]?.address || '');
+        setSavedValues({
+            firstName: user?.client?.first_name || '',
+            lastName: user?.client?.last_name || '',
+            address: user?.address?.[0]?.address || '',
+        });
+    }, [user]);
+
+    const displayName = useMemo(
+        () =>
+            `${firstName} ${lastName}`.trim() ||
+            user?.name ||
+            t('client.profile.defaultName'),
+        [firstName, lastName, user?.name, t],
+    );
+
+    const saveProfile = async () => {
+        const nextErrors: Record<string, string> = {};
+        if (!firstName.trim())
+            nextErrors.firstName = t('client.profile.firstNameRequired');
+        if (!lastName.trim())
+            nextErrors.lastName = t('client.profile.lastNameRequired');
+        if (!address.trim())
+            nextErrors.address = t('client.profile.addressRequired');
+
+        setErrors(nextErrors);
+        if (Object.keys(nextErrors).length > 0) return;
+
+        const normalizedValues = {
+            firstName: firstName.trim(),
+            lastName: lastName.trim(),
+            address: address.trim(),
+        };
+        const changedFields: {
+            first_name?: string;
+            last_name?: string;
+            address?: string;
+        } = {};
+
+        if (normalizedValues.firstName !== savedValues.firstName.trim())
+            changedFields.first_name = normalizedValues.firstName;
+        if (normalizedValues.lastName !== savedValues.lastName.trim())
+            changedFields.last_name = normalizedValues.lastName;
+        if (normalizedValues.address !== savedValues.address.trim())
+            changedFields.address = normalizedValues.address;
+
+        if (Object.keys(changedFields).length === 0) {
+            setIsEditing(false);
+            return;
+        }
+
+        try {
+            await updateClientProfile(changedFields).unwrap();
+            setSavedValues(normalizedValues);
+            setIsEditing(false);
+            Toast.show(t('client.profile.updateSuccess'), {
+                type: 'success',
+                placement: 'bottom',
+            });
+        } catch (error: any) {
+            Toast.show(error?.data?.message || t('client.profile.updateFailed'), {
+                type: 'danger',
+                placement: 'bottom',
+            });
+        }
+    };
+
+    const cancelEditing = () => {
+        setFirstName(user?.client?.first_name || '');
+        setLastName(user?.client?.last_name || '');
+        setEmail(user?.email || '');
+        setPhone(user?.phone_number || '');
+        setAddress(user?.address?.[0]?.address || '');
+        setErrors({});
+        setIsEditing(false);
+    };
+
+    return (
+        <ScreenContainer
+            mode={themeMode}
+            scrollable
+            paddingHorizontal={horizontalScale(18)}
+            paddingVertical={verticalScale(12)}
+            contentContainerStyle={{ paddingBottom: verticalScale(32) }}
+        >
+            <PhotoSourceModal
+                visible={isPhotoSourceVisible}
+                onClose={() => setIsPhotoSourceVisible(false)}
+                onSelect={source => { updatePhoto(source).catch(() => undefined); }}
+                title={t('client.profile.editPhoto')}
+                description={t('client.profile.photoSourceHint')}
+            />
+            <InterventionHeader title={t('client.profile.title')} showHelp={false} />
+            <ProfileIntro>
+                <AvatarWrap>
+                    <Avatar
+                        source={photo?.userId === user?.id && photo?.uri ? { uri: photo.uri } : require('@assets/images/worker_avatar.png')}
+                        resizeMode="cover"
+                    />
+                    <CameraButton
+                        onPress={() => setIsPhotoSourceVisible(true)}
+                        disabled={isUpdatingPhoto || !user}
+                        accessibilityState={{ busy: isUpdatingPhoto, disabled: isUpdatingPhoto || !user }}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('client.profile.editPhoto')}
+                    >
+                        <>{isUpdatingPhoto ? <ActivityIndicator size="small" color={theme.colors.white} /> : <SvgIcon name="fa-camera" size={15} color={theme.colors.white} />}</>
+                    </CameraButton>
+                </AvatarWrap>
+                <Text
+                    variant="title"
+                    color={theme.colors.textPrimary}
+                    style={{ marginTop: verticalScale(12) }}
+                >
+                    {displayName}
+                </Text>
+                <RoleBadge>
+                    <SvgIcon name="fa-user" size={13} color={theme.colors.primary} />
+                    <Text variant="bold" color={theme.colors.primary} fontSize={12}>
+                        {t('client.profile.role')}
+                    </Text>
+                </RoleBadge>
+                <IntroText>{t('client.profile.intro')}</IntroText>
+            </ProfileIntro>
+
+            <SectionHeader>
+                <SectionTitle>{t('client.profile.personalInfo')}</SectionTitle>
+                {!isEditing ? (
+                    <AnimatedEditButton
+                        style={{ transform: [{ scale: editButtonScale }] }}
+                    >
+                        <EditButton
+                            onPress={() => setIsEditing(true)}
+                            onPressIn={() =>
+                                Animated.spring(editButtonScale, {
+                                    toValue: 0.92,
+                                    useNativeDriver: true,
+                                }).start()
+                            }
+                            onPressOut={() =>
+                                Animated.spring(editButtonScale, {
+                                    toValue: 1,
+                                    useNativeDriver: true,
+                                }).start()
+                            }
+                            accessibilityRole="button"
+                            accessibilityLabel={t('client.profile.editInfo')}
+                        >
+                            <SvgIcon name="fa-pen" size={13} color={theme.colors.primary} />
+                            <Text variant="helper" color={theme.colors.primary} fontSize={12}>
+                                {t('client.profile.edit')}
+                            </Text>
+                        </EditButton>
+                    </AnimatedEditButton>
+                ) : (
+                    <EditingBadge>
+                        <SvgIcon name="fa-pen" size={11} color={theme.colors.primary} />
+                        <Text variant="notification" color={theme.colors.primary}>
+                            {t('client.profile.editing')}
+                        </Text>
+                    </EditingBadge>
+                )}
+            </SectionHeader>
+            <FormCard>
+                <FormGroupTitle>{t('client.profile.identity')}</FormGroupTitle>
+                <ProfileField
+                    editable={isEditing}
+                    icon="fa-user"
+                    label={t('ui.form.firstName.label')}
+                    value={firstName}
+                    error={errors.firstName}
+                    onChangeText={value => {
+                        setFirstName(value);
+                        setErrors(previous => ({ ...previous, firstName: '' }));
+                    }}
+                />
+                <ProfileField
+                    editable={isEditing}
+                    icon="fa-user"
+                    label={t('ui.form.lastName.label')}
+                    value={lastName}
+                    error={errors.lastName}
+                    onChangeText={value => {
+                        setLastName(value);
+                        setErrors(previous => ({ ...previous, lastName: '' }));
+                    }}
+                    last
+                />
+            </FormCard>
+
+            <FormCard>
+                <FormGroupTitle>{t('client.profile.coordinates')}</FormGroupTitle>
+                <ProfileField
+                    editable={false}
+                    icon="fa-envelope-open-text"
+                    label={t('client.profile.email')}
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                />
+                <ProfileField
+                    editable={false}
+                    icon="fa-user-circle"
+                    label={t('client.profile.phone')}
+                    value={phone}
+                    onChangeText={setPhone}
+                    keyboardType="phone-pad"
+                    last
+                />
+            </FormCard>
+
+            <FormCard>
+                <FormGroupTitle>{t('client.profile.mainAddress')}</FormGroupTitle>
+                <ProfileField
+                    editable={isEditing}
+                    icon="fa-map-marker-alt"
+                    label={t('ui.form.address.label')}
+                    value={address}
+                    error={errors.address}
+                    onChangeText={value => {
+                        setAddress(value);
+                        setErrors(previous => ({ ...previous, address: '' }));
+                    }}
+                    last
+                />
+            </FormCard>
+
+            {isEditing ? (
+                <Actions>
+                    <CancelButton onPress={cancelEditing} disabled={isLoading}>
+                        <Text variant="bold" color={theme.colors.gray700} fontSize={13}>
+                            {t('common.actions.cancel')}
+                        </Text>
+                    </CancelButton>
+                    <SaveButton
+                        onPress={saveProfile}
+                        disabled={isLoading}
+                        activeOpacity={0.85}
+                    >
+                        {isLoading ? (
+                            <ActivityIndicator color={theme.colors.white} />
+                        ) : (
+                            <>
+                                <SvgIcon name="fa-check" size={16} color={theme.colors.white} />
+                                <Text variant="bold" color={theme.colors.white} fontSize={14}>
+                                    {t('common.actions.save')}
+                                </Text>
+                            </>
+                        )}
+                    </SaveButton>
+                </Actions>
+            ) : null}
+        </ScreenContainer>
+    );
+};
+
+interface ProfileFieldProps {
+    icon:
+    | 'fa-user'
+    | 'fa-envelope-open-text'
+    | 'fa-user-circle'
+    | 'fa-map-marker-alt';
+    label: string;
+    value: string;
+    onChangeText: (value: string) => void;
+    error?: string;
+    editable?: boolean;
+    last?: boolean;
+    keyboardType?: 'default' | 'email-address' | 'phone-pad';
+    autoCapitalize?: 'none' | 'sentences';
+}
+
+const ProfileField = ({
+    icon,
+    label,
+    value,
+    onChangeText,
+    last,
+    error,
+    editable = false,
+    ...inputProps
+}: ProfileFieldProps) => {
+    const { theme } = useTheme();
+
+    return (
+        <FieldRow last={last}>
+            <FieldIcon>
+                <SvgIcon name={icon} size={17} color={theme.colors.primary} />
+            </FieldIcon>
+            <FieldContent editable={editable}>
+                <Text variant="regular" color={theme.colors.gray600} >
+                    {label}
+                </Text>
+                <FieldInput
+                    editable={editable}
+                    hasError={!!error}
+                    value={value}
+                    onChangeText={onChangeText}
+                    placeholder={label}
+                    placeholderTextColor={theme.colors.gray500}
+                    {...inputProps}
+                />
+                {error ? <ErrorText>{error}</ErrorText> : null}
+            </FieldContent>
+        </FieldRow>
+    );
+};
+
+export default ProfileScreen;
+
+const ProfileIntro = styled.View`
+  align-items: center;
+  padding-vertical: ${verticalScale(18)}px;
+`;
+const AvatarWrap = styled.View`
+  position: relative;
+`;
+const Avatar = styled(Image)`
+  width: ${horizontalScale(118)}px;
+  height: ${horizontalScale(118)}px;
+  border-radius: ${horizontalScale(59)}px;
+  border-width: 4px;
+  border-color: ${({ theme }) => theme.colors.surface};
+`;
+const CameraButton = styled.TouchableOpacity`
+  position: absolute;
+  right: 0;
+  bottom: 2px;
+  width: ${horizontalScale(34)}px;
+  height: ${horizontalScale(34)}px;
+  border-radius: ${horizontalScale(17)}px;
+  background-color: ${({ theme }) => theme.colors.primary};
+  align-items: center;
+  justify-content: center;
+  border-width: 3px;
+  border-color: ${({ theme }) => theme.colors.surface};
+`;
+const RoleBadge = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: ${horizontalScale(6)}px;
+  background-color: ${({ theme }) => theme.colors.primaryLighter};
+  border-radius: ${moderateScale(16)}px;
+  padding: ${verticalScale(6)}px ${horizontalScale(12)}px;
+  margin-top: ${verticalScale(8)}px;
+`;
+const IntroText = styled(Text).attrs(({ theme }) => ({
+    variant: 'regular',
+    color: theme.colors.gray600,
+}))`
+  text-align: center;
+  margin-top: ${verticalScale(12)}px;
+  max-width: ${horizontalScale(300)}px;
+`;
+const SectionTitle = styled(Text).attrs(({ theme }) => ({
+    variant: 'bold',
+    color: theme.colors.textPrimary,
+    fontSize: 15,
+}))`
+  margin-bottom: ${verticalScale(10)}px;
+`;
+const SectionHeader = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: ${verticalScale(10)}px;
+`;
+const AnimatedEditButton = styled(Animated.View)``;
+const EditButton = styled.TouchableOpacity`
+  flex-direction: row;
+  align-items: center;
+  gap: ${horizontalScale(5)}px;
+  padding: ${verticalScale(7)}px ${horizontalScale(10)}px;
+  border-width: 1px;
+  border-color: ${({ theme }) => theme.colors.primary};
+  border-radius: ${moderateScale(10)}px;
+`;
+const FormCard = styled.View`
+  border-width: 1px;
+  border-color: ${({ theme }) => theme.colors.border};
+  border-radius: ${moderateScale(16)}px;
+  background-color: ${({ theme }) => theme.colors.surface};
+  padding-horizontal: ${horizontalScale(12)}px;
+  padding-vertical: ${verticalScale(8)}px;
+  padding-bottom: ${verticalScale(12)}px;
+  margin-bottom: ${verticalScale(18)}px;
+`;
+const FormGroupTitle = styled(Text).attrs(({ theme }) => ({
+    variant: 'bold',
+    color: theme.colors.gray700,
+
+}))`
+  padding-top: ${verticalScale(12)}px;
+  padding-bottom: ${verticalScale(2)}px;
+`;
+const FieldRow = styled.View<{ last?: boolean }>`
+  min-height: ${verticalScale(68)}px;
+  flex-direction: row;
+  align-items: center;
+  border-bottom-width: ${({ last }) => (last ? 0 : 1)}px;
+  border-bottom-color: ${({ theme }) => theme.colors.borderLight};
+`;
+const FieldIcon = styled.View`
+  width: ${horizontalScale(36)}px;
+  height: ${horizontalScale(36)}px;
+  border-radius: ${moderateScale(11)}px;
+  background-color: ${({ theme }) => theme.colors.primaryLighter};
+  align-items: center;
+  justify-content: center;
+  margin-right: ${horizontalScale(10)}px;
+`;
+const FieldContent = styled.View<{ editable?: boolean }>`
+  flex: 1;
+  border-width: ${({ editable }) => (editable ? 1 : 0)}px;
+  border-color: ${({ editable, theme }) =>
+        editable ? theme.colors.primary : 'transparent'};
+  border-radius: ${moderateScale(9)}px;
+  background-color: ${({ editable, theme }) =>
+        editable ? theme.colors.surfaceVariant : 'transparent'};
+  padding: ${({ editable }) =>
+        editable ? `${verticalScale(5)}px ${horizontalScale(8)}px` : '0px'};
+`;
+const FieldInput = styled.TextInput<{ hasError?: boolean }>`
+  height: ${verticalScale(27)}px;
+  padding: 0;
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font-family: Inter-Regular;
+  font-size: 14px;
+  border-bottom-width: ${({ hasError }) => (hasError ? 1 : 0)}px;
+  border-bottom-color: ${({ theme }) => theme.colors.danger};
+`;
+const ErrorText = styled(Text).attrs(({ theme }) => ({
+    variant: 'notification',
+    color: theme.colors.danger,
+}))`
+  margin-top: ${verticalScale(2)}px;
+`;
+const EditingBadge = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: ${horizontalScale(4)}px;
+  padding: ${verticalScale(6)}px ${horizontalScale(8)}px;
+  border-radius: ${moderateScale(9)}px;
+  background-color: ${({ theme }) => theme.colors.surfaceVariant};
+`;
+const Actions = styled.View`
+  flex-direction: row;
+  gap: ${horizontalScale(10)}px;
+  margin-top: ${verticalScale(18)}px;
+`;
+const CancelButton = styled.TouchableOpacity`
+  flex: 1;
+  height: ${verticalScale(52)}px;
+  border-radius: ${moderateScale(13)}px;
+  border-width: 1px;
+  border-color: ${({ theme }) => theme.colors.border};
+  background-color: ${({ theme }) => theme.colors.surface};
+  align-items: center;
+  justify-content: center;
+`;
+const SaveButton = styled.TouchableOpacity`
+  flex: 1.7;
+  height: ${verticalScale(52)}px;
+  border-radius: ${moderateScale(13)}px;
+  background-color: ${({ theme }) => theme.colors.primary};
+  flex-direction: row;
+  gap: ${horizontalScale(8)}px;
+  align-items: center;
+  justify-content: center;
+  opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
+`;

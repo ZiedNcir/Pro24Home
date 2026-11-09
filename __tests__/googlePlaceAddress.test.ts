@@ -1,4 +1,4 @@
-import { mapGooglePlaceToAddress } from '../src/screens/Intervention/utils/googlePlaceAddress';
+import { mapGooglePlaceToAddress } from '../src/features/intervention-creation/model/google-place-address';
 
 describe('mapGooglePlaceToAddress', () => {
     it('extracts the address and coordinates selected from Google Places', () => {

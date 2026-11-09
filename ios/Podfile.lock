@@ -5,6 +5,11 @@ PODS:
   - FBLazyVector (0.83.1)
   - fmt (11.0.2)
   - glog (0.3.5)
+  - GoogleMaps (10.13.0):
+    - GoogleMaps/Maps (= 10.13.0)
+  - GoogleMaps/Maps (10.13.0)
+  - GoogleNavigation (10.13.0):
+    - GoogleMaps (= 10.13.0)
   - hermes-engine (0.14.0):
     - hermes-engine/Pre-built (= 0.14.0)
   - hermes-engine/Pre-built (0.14.0)
@@ -2109,11 +2114,38 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
+  - react-native-navigation-sdk (0.16.3):
+    - boost
+    - DoubleConversion
+    - fast_float
+    - fmt
+    - glog
+    - GoogleNavigation (= 10.13.0)
+    - hermes-engine
+    - RCT-Folly
+    - RCT-Folly/Fabric
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - SocketRocket
+    - Yoga
   - react-native-onesignal (5.2.16):
     - OneSignalXCFramework (= 5.2.15)
     - React (< 1.0.0, >= 0.13.0)
-  - react-native-orientation-locker (1.7.0):
-    - React-Core
   - react-native-safe-area-context (5.6.2):
     - boost
     - DoubleConversion
@@ -3069,8 +3101,8 @@ DEPENDENCIES:
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-maps (from `../node_modules/react-native-maps`)
+  - "react-native-navigation-sdk (from `../node_modules/@googlemaps/react-native-navigation-sdk`)"
   - react-native-onesignal (from `../node_modules/react-native-onesignal`)
-  - react-native-orientation-locker (from `../node_modules/react-native-orientation-locker`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -3118,6 +3150,8 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - GoogleMaps
+    - GoogleNavigation
     - OneSignalXCFramework
     - SocketRocket
 
@@ -3219,10 +3253,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-picker"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
+  react-native-navigation-sdk:
+    :path: "../node_modules/@googlemaps/react-native-navigation-sdk"
   react-native-onesignal:
     :path: "../node_modules/react-native-onesignal"
-  react-native-orientation-locker:
-    :path: "../node_modules/react-native-orientation-locker"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-splash-screen:
@@ -3317,6 +3351,8 @@ SPEC CHECKSUMS:
   FBLazyVector: 309703e71d3f2f1ed7dc7889d58309c9d77a95a4
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
+  GoogleMaps: 6204a0dfa2914b85f6e408cedff5fa19c7243618
+  GoogleNavigation: 805b2749c31c259857b4c9c96cb464615dac17f0
   hermes-engine: d06858f0c4efdc74172e512e3f172cd9e53b185e
   OneSignalXCFramework: ea9e14a95b92ad48d9b35037cbae88a9542bdea3
   RCT-Folly: 846fda9475e61ec7bcbf8a3fe81edfcaeb090669
@@ -3360,8 +3396,8 @@ SPEC CHECKSUMS:
   react-native-geolocation: 95e48fe2687e5a8280103085372fa62c2297c5d6
   react-native-image-picker: 0314366753615115fa55c3cc937ac44cb7e75702
   react-native-maps: 48cbc77581f2ffc121a296f9abe071fe4a7ea4ee
+  react-native-navigation-sdk: e8fcd38b6906c980e03faefe04bd898161d3a38c
   react-native-onesignal: 1634e96223d6a666b76f38f4a20fec6c87bbb0c4
-  react-native-orientation-locker: cc6f357b289a2e0dd2210fea0c52cb8e0727fdaa
   react-native-safe-area-context: c00143b4823773bba23f2f19f85663ae89ceb460
   react-native-splash-screen: 95994222cc95c236bd3cdc59fe45ed5f27969594
   React-NativeModulesApple: a2c3d2cbec893956a5b3e4060322db2984fff75b
@@ -3407,6 +3443,6 @@ SPEC CHECKSUMS:
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: 5456bb010373068fc92221140921b09d126b116e
 
-PODFILE CHECKSUM: 9e84fd7e9b0c5f03cf6aa0e1f28cfc681b380db9
+PODFILE CHECKSUM: 28cc74956b12fdabe7983fde4d39bba9020a88b8
 
 COCOAPODS: 1.16.2

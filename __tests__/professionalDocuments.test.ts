@@ -1,4 +1,4 @@
-import { getDocumentForType, getDocumentProgress } from '../src/screens/Home/client/utils/professionalDocuments';
+import { getDocumentForType, getDocumentProgress } from '../src/roles/professional/documents/model/professional-documents';
 
 describe('professional document progress', () => {
     it('counts only approved documents and resolves a document by type', () => {

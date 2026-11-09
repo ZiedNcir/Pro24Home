@@ -1,6 +1,6 @@
 // src/utils/notificationHelpers.ts
-import { Notification } from '@store/api/api.types';
-import { NotificationItem } from '@screens/Notification/components/NotificationCard';
+import { Notification } from '@entities/notification/model';
+import { NotificationItem } from '@features/notification-center/components/NotificationCard';
 
 export const formatTimeAgo = (dateString: string): string => {
     const now = new Date();
@@ -25,22 +25,24 @@ export const formatTimeAgo = (dateString: string): string => {
 };
 
 export const getNotificationIcon = (type: Notification['type']): NotificationItem['icon'] => {
+    if (type.endsWith('NewMessageNotification')) return 'fa-file-alt';
     switch (type) {
         case 'intervention':
-            return 'fa-tools';
+            return 'fa-file-alt';
         case 'devis':
-            return 'fa-file-invoice-dollar';
+            return 'fa-file-invoice';
         case 'reclamation':
-            return 'fa-exclamation-triangle';
+            return 'fa-exclamation-circle';
         case 'payment':
             return 'fa-credit-card';
         case 'system':
         default:
-            return 'fa-info-circle';
+            return 'fa-info';
     }
 };
 
 export const getNotificationColor = (type: Notification['type']): NotificationItem['color'] => {
+    if (type.endsWith('NewMessageNotification')) return 'success';
     switch (type) {
         case 'intervention':
             return 'success';
@@ -77,6 +79,7 @@ export const groupNotificationsByTime = (notifications: Notification[], transfor
     notifications.forEach((notification, index) => {
         const notificationDate = new Date(notification.created_at);
         const transformedItem = transformedNotifications[index];
+        if (!transformedItem) return;
 
         if (notificationDate >= todayStart) {
             today.push(transformedItem);

@@ -1,4 +1,4 @@
-import { ACCOUNT_PENDING_STEPS, getPendingStep } from '../src/screens/Home/client/utils/accountPending';
+import { ACCOUNT_PENDING_STEPS, getPendingStep } from '../src/roles/client/home/model/accountPending';
 
 describe('account pending content', () => {
     it('exposes the current verification step in the three-step timeline', () => {

@@ -1,0 +1,189 @@
+import React, { useCallback, useState } from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { Toast } from '@core/notifications/toast';
+
+import { Text, Spinner } from '@shared/ui';
+import { Button } from '@shared/ui/button/Button';
+import Field from '@shared/ui/form/HookFormField';
+import ScreenContainer from '@shared/ui/layout/ScreenContainer';
+import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
+import { useTheme } from '@theme';
+import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
+import { useForgotPasswordMutation } from '@features/auth/api/auth.api';
+import { AppStackType } from '../../../navigation/constant/core';
+
+type NavigationProp = NativeStackNavigationProp<AppStackType, 'ForgetPassword'>;
+
+type FormValues = { phone_number: string };
+
+export const ForgetPassword = () => {
+  const { t } = useTranslation();
+  const navigation = useNavigation<NavigationProp>();
+  const { theme, themeMode } = useTheme();
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
+  const [sent, setSent] = useState(false);
+  const { control, handleSubmit } = useForm<FormValues>({ defaultValues: { phone_number: '' } });
+
+  const onSubmit = useCallback(async ({ phone_number }: FormValues) => {
+    try {
+      const response = await forgotPassword({ phone_number }).unwrap();
+      setSent(true);
+      Toast.show(response?.message || t('auth.forgot.sentToast'), {
+        type: 'success', placement: 'bottom', duration: 4000,
+      });
+    } catch (error: any) {
+      Toast.show(error?.data?.message || error?.message || t('auth.forgot.failedToast'), {
+        type: 'danger', placement: 'bottom', duration: 4000,
+      });
+    }
+  }, [forgotPassword, t]);
+
+  return (
+    <ScreenContainer mode={themeMode} scrollable paddingHorizontal={0} paddingVertical={0}>
+      <View style={styles.primaryHeader}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+          accessibilityRole="button"
+          accessibilityLabel={t('accessibility.back')}
+        >
+          <Text style={[styles.backIcon, { color: theme.colors.primary }]}>‹</Text>
+        </TouchableOpacity>
+        <LogoMediumPro24Icon style={styles.logo} />
+      </View>
+
+      <View style={styles.cardContainer}>
+        <View style={[styles.card, { backgroundColor: theme.colors.background, shadowColor: theme.colors.black }]}>
+          <Text variant="title" style={[styles.title, { color: theme.colors.textPrimary }]}>{t('auth.forgot.title')}</Text>
+          <Text variant="regular" color={theme.colors.textSecondary} style={styles.description}>
+            {t('auth.forgot.description')}
+          </Text>
+
+          {sent ? (
+            <View style={styles.successState}>
+              <Text variant="bold" color={theme.colors.success} style={styles.successTitle}>{t('auth.forgot.successTitle')}</Text>
+              <Text variant="regular" color={theme.colors.textSecondary} style={styles.successText}>
+                {t('auth.forgot.successDescription')}
+              </Text>
+              <Button title={t('auth.forgot.backToLogin')} variant="primary" fullWidth onPress={() => navigation.navigate('SignIn', { role: 'client' })} />
+            </View>
+          ) : (
+            <>
+              <Field
+                name="phone_number"
+                label={t('ui.form.phone.label')}
+                required
+                isPhone
+                control={control}
+                placeholder={t('ui.form.phone.placeholder')}
+                returnKeyType="done"
+                rules={{
+                  required: t('ui.form.phone.required'),
+                  pattern: {
+                    value: /^[+]?\d[\d\s-]{9,}$/,
+                    message: t('ui.form.phone.invalid'),
+                  },
+                }}
+              />
+              <Button
+                title={t('auth.forgot.sendLink')}
+                variant="primary"
+                fullWidth
+                style={styles.submitButton}
+                onPress={handleSubmit(onSubmit)}
+                disabled={isLoading}
+                loading={isLoading}
+              />
+              <TouchableOpacity accessibilityRole="button" style={styles.signInLink} onPress={() => navigation.goBack()} disabled={isLoading}>
+                <Text variant="medium" color={theme.colors.primary}>{t('auth.forgot.backToLogin')}</Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+      </View>
+      {isLoading && <Spinner visible={isLoading} onRequestClose={() => undefined} />}
+    </ScreenContainer>
+  );
+};
+
+const styles = StyleSheet.create({
+  primaryHeader: {
+    height: verticalScale(78),
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  backButton: {
+    position: 'absolute',
+    left: horizontalScale(8),
+    top: verticalScale(17),
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1
+  },
+  backIcon: {
+    fontFamily: 'Inter-Regular',
+    fontSize: 34,
+    lineHeight: 34
+  },
+  logo: {
+    width: horizontalScale(150),
+    height: verticalScale(42)
+  },
+  cardContainer: {
+    width: '100%',
+    paddingHorizontal: 18,
+    marginTop: 20
+  },
+  card: {
+    width: '100%',
+    borderRadius: 0,
+    paddingHorizontal: 0,
+    paddingTop: 0,
+    paddingBottom: verticalScale(30),
+    shadowOffset: { width: 0, height: verticalScale(8) },
+    shadowOpacity: 0, shadowRadius: moderateScale(16),
+    elevation: 0
+  },
+  title: {
+    textAlign: 'left',
+    fontSize: 26,
+    lineHeight: 32,
+    marginBottom: verticalScale(12)
+  },
+  description: {
+    textAlign: 'left',
+    fontSize: moderateScale(14),
+    lineHeight: moderateScale(22),
+    marginBottom: verticalScale(24)
+  },
+  submitButton: {
+    marginTop: verticalScale(18)
+  },
+  signInLink: {
+    alignSelf: 'center',
+    minHeight: 44,
+    justifyContent: 'center',
+    marginTop: verticalScale(22)
+  },
+  successState: {
+    alignItems: 'center',
+    gap: verticalScale(16)
+  },
+  successTitle: {
+    textAlign: 'center'
+  },
+  successText: {
+    textAlign: 'left',
+    lineHeight: moderateScale(22),
+    marginBottom: verticalScale(8)
+  },
+});
+
+export default ForgetPassword;

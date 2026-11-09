@@ -1,0 +1,100 @@
+import React from 'react';
+import { StyleSheet } from 'react-native';
+import styled from 'styled-components/native';
+
+import Text from '@shared/ui/typography/Text';
+import { SvgIcon } from '@shared/ui/icon';
+import {
+    horizontalScale,
+    verticalScale,
+} from '@utils/normalizedCss';
+import { InterventionStep } from '@features/intervention-creation/screens/types';
+import { useTheme } from '@theme';
+
+const labels = ['Type de service', 'Détails', 'Adresse', 'Récapitulatif'];
+
+interface Props {
+    currentStep: InterventionStep;
+}
+
+const StepProgress: React.FC<Props> = ({ currentStep }) => {
+    const { theme } = useTheme();
+    return (
+        <Wrapper>
+            <Line />
+
+            <StepsRow>
+                {labels.map((label, index) => {
+                    const step = index + 1;
+                    const isActive = step === currentStep;
+                    const isDone = step < currentStep;
+
+                    return (
+                        <StepItem key={label}>
+                            <StepCircle isActive={isActive} isDone={isDone}>
+                                {isDone ? (
+                                    <SvgIcon name="fa-check" size={10} color={theme.colors.success} />
+                                ) : (
+                                    <Text
+                                        variant="notification"
+                                        color={isActive ? 'white' : 'gray600'}
+                                        fontWeight="700"
+                                    >
+                                        {step}
+                                    </Text>
+                                )}
+                            </StepCircle>
+
+                            <Text
+                                variant="notification"
+                                color={isActive ? 'primary' : 'gray600'}
+                                style={[styles.stepLabel, { marginTop: verticalScale(6) }]}
+                            >
+                                {label}
+                            </Text>
+                        </StepItem>
+                    );
+                })}
+            </StepsRow>
+        </Wrapper>
+    );
+};
+
+export default StepProgress;
+
+const styles = StyleSheet.create({ stepLabel: { textAlign: 'center' } });
+
+const Wrapper = styled.View`
+  margin-top: ${verticalScale(14)}px;
+  margin-bottom: ${verticalScale(20)}px;
+`;
+
+const Line = styled.View`
+  position: absolute;
+  left: ${horizontalScale(35)}px;
+  right: ${horizontalScale(35)}px;
+  top: ${verticalScale(12)}px;
+  height: 1px;
+  background-color: ${({ theme }) => theme.colors.border};
+`;
+
+const StepsRow = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+const StepItem = styled.View`
+  width: 25%;
+  align-items: center;
+`;
+
+const StepCircle = styled.View<{ isActive: boolean; isDone: boolean }>`
+  width: ${horizontalScale(24)}px;
+  height: ${horizontalScale(24)}px;
+  border-radius: ${horizontalScale(12)}px;
+  background-color: ${({ isActive, isDone, theme }) =>
+        isActive ? theme.colors.primary : isDone ? theme.colors.successLight : theme.colors.surfaceVariant};
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+`;
