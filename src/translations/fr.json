@@ -811,6 +811,17 @@
             "continue": "Continuer"
         },
         "verificationPending": {
+            "signInToCheck": "Se reconnecter pour vérifier",
+            "signInToCheckDescription": "Reconnectez-vous pour obtenir le statut le plus récent de votre dossier.",
+            "submittedTitle": "Documents envoyés",
+            "submittedDescription": "Votre dossier a été transmis.",
+            "reviewTitle": "Vérification en cours",
+            "reviewDescription": "Notre équipe examine votre dossier.",
+            "activationTitle": "Activation du compte",
+            "activationDescription": "Votre compte pourra être activé après validation.",
+            "documentsTitle": "Mes documents",
+            "documentsUnavailable": "La liste des documents n’est pas disponible pour le moment.",
+            "status": { "pending": "En cours", "approved": "Validé", "rejected": "À corriger", "unknown": "Statut indisponible" },
             "title": "Votre compte est en cours de vérification",
             "description": "Nous avons reçu vos documents. Notre équipe vérifie votre compte professionnel et vous avertira lorsque l’examen sera terminé.",
             "documentsReceived": "Documents reçus",

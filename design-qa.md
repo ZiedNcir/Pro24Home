@@ -1,5 +1,13 @@
 # Connexion — option 1
 
+## Vérification professionnelle — option 2 avec illustration
+
+- Source visuelle : `/Users/ziedncir/.codex/generated_images/01a17d83-409d-78a3-9673-f7d7de7dcc65/exec-2a9cabb6-48e9-4aad-8504-3290f45b4057.png`.
+- Capture de l'implémentation : indisponible. Le compte réel utilisé dans le simulateur n'a pas encore envoyé ses documents et ne peut donc pas atteindre cet écran sans modifier son dossier.
+- État cible : compte professionnel en attente, documents envoyés, thème clair. La comparaison de la typographie, des espacements, des couleurs, de l'illustration et des textes reste à effectuer sur un rendu natif de cet état.
+- Contrôles effectués : tests des états de documents et de navigation, vérification des traductions, TypeScript et ESLint ciblé.
+- final result: blocked
+
 final result: passed
 
 ## Source et rendu

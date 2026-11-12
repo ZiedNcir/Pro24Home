@@ -801,6 +801,17 @@
             "continue": "Continue"
         },
         "verificationPending": {
+            "signInToCheck": "Sign in to check status",
+            "signInToCheckDescription": "Sign in again to get the latest status of your application.",
+            "submittedTitle": "Documents submitted",
+            "submittedDescription": "Your application has been submitted.",
+            "reviewTitle": "Review in progress",
+            "reviewDescription": "Our team is reviewing your application.",
+            "activationTitle": "Account activation",
+            "activationDescription": "Your account can be activated after approval.",
+            "documentsTitle": "My documents",
+            "documentsUnavailable": "The document list is currently unavailable.",
+            "status": { "pending": "In review", "approved": "Approved", "rejected": "Needs attention", "unknown": "Status unavailable" },
             "title": "Your account is being reviewed",
             "description": "We’ve received your documents. Our team is checking your professional account and will notify you when the review is complete.",
             "documentsReceived": "Documents received",
