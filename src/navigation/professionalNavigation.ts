@@ -9,5 +9,5 @@ export const PROFESSIONAL_BOTTOM_TABS: Array<{ route: keyof BottomTabType; icon:
 
 export const PROFESSIONAL_SETTINGS_DOCUMENT: { icon: IconName; route: keyof AppStackType } = {
     icon: 'fa-file-alt',
-    route: 'Documents',
+    route: 'ProfessionalDocumentsManagement',
 };

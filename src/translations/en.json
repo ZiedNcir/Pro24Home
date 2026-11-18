@@ -811,7 +811,12 @@
             "activationDescription": "Your account can be activated after approval.",
             "documentsTitle": "My documents",
             "documentsUnavailable": "The document list is currently unavailable.",
-            "status": { "pending": "In review", "approved": "Approved", "rejected": "Needs attention", "unknown": "Status unavailable" },
+            "status": {
+                "pending": "In review",
+                "approved": "Approved",
+                "rejected": "Needs attention",
+                "unknown": "Status unavailable"
+            },
             "title": "Your account is being reviewed",
             "description": "We’ve received your documents. Our team is checking your professional account and will notify you when the review is complete.",
             "documentsReceived": "Documents received",
@@ -893,6 +898,39 @@
                 "rib": "Bank details",
                 "kbis": "Company registration"
             }
+        },
+        "documentManagement": {
+            "title": "Your professional documents",
+            "description": "View and update your documents.",
+            "view": "View",
+            "replace": "Replace",
+            "add": "Add",
+            "formats": "PDF, JPG or PNG · 5 MB maximum",
+            "help": "Choose View to open a document or Replace to upload its new version.",
+            "choose": "Choose a file",
+            "camera": "Take a photo",
+            "confirm": "Send this document?",
+            "confirmBody": "The new file will replace the selected document after a successful upload.",
+            "send": "Send",
+            "viewFailed": "Unable to open this document. Please try again.",
+            "uploadSuccess": "Document uploaded. Its status will be confirmed by the server.",
+            "status": {
+                "approved": "Approved",
+                "pending": "Under review",
+                "rejected": "Replace required",
+                "unknown": "Status unavailable",
+                "missing": "Not uploaded"
+            },
+            "names": {
+                "identity_front": "ID · front",
+                "identity_back": "ID · back",
+                "proof_of_address": "Proof of address",
+                "kbis": "Company registration",
+                "rib": "Bank details"
+            },
+            "sourceTitle": "Choose a document",
+            "filesTitle": "Browse files",
+            "filesHint": "Choose from your device folders or cloud storage."
         }
     },
     "services": {

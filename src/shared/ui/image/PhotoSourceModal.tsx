@@ -14,28 +14,34 @@ interface Props {
     visible: boolean;
     onClose: () => void;
     onSelect: (source: PhotoSource) => void;
+    onChooseFile?: () => void;
     title?: string;
     description?: string;
 }
 
-const PhotoSourceModal = ({ visible, onClose, onSelect, title, description }: Props) => {
+const PhotoSourceModal = ({ visible, onClose, onSelect, onChooseFile, title, description }: Props) => {
     const { t } = useTranslation();
     const { theme } = useTheme();
     const colors = theme.colors;
-    const pendingSource = useRef<PhotoSource | null>(null);
-    const chooseSource = (source: PhotoSource) => {
+    const pendingSource = useRef<PhotoSource | 'file' | null>(null);
+    const selectSource = (source: PhotoSource | 'file') => {
+        if (source === 'file') onChooseFile?.();
+        else onSelect(source);
+    };
+    const chooseSource = (source: PhotoSource | 'file') => {
+        if (pendingSource.current) return;
         pendingSource.current = source;
         onClose();
         // iOS cannot present its picker until the source sheet has dismissed.
         if (Platform.OS !== 'ios') {
             pendingSource.current = null;
-            onSelect(source);
+            selectSource(source);
         }
     };
     const handleDismiss = () => {
         const source = pendingSource.current;
         pendingSource.current = null;
-        if (source) onSelect(source);
+        if (source) selectSource(source);
     };
 
     return (
@@ -46,29 +52,39 @@ const PhotoSourceModal = ({ visible, onClose, onSelect, title, description }: Pr
                         <SourceModalHeader>
                             <SourceModalTitle>{title || t('intervention.creation.photoAdd')}</SourceModalTitle>
                             <SourceCloseButton accessibilityRole="button" accessibilityLabel={t('intervention.creation.closePhotoPicker')} onPress={onClose}>
-                                <SvgIcon name="fa-times" size={14} color={colors.gray600} />
+                                <SvgIcon name="fa-times" size={moderateScale(14)} color={colors.gray600} />
                             </SourceCloseButton>
                         </SourceModalHeader>
                         <SourceModalDescription>{description || t('intervention.creation.photoSourceHint')}</SourceModalDescription>
+                        {onChooseFile ? <SourceOption accessibilityRole="button" accessibilityLabel={t('professional.documentManagement.choose')} onPress={() => chooseSource('file')}>
+                            <SourceIconContainer>
+                                <SvgIcon name="fa-folder-open" size={moderateScale(20)} color={colors.primary} />
+                            </SourceIconContainer>
+                            <SourceOptionText>
+                                <SourceOptionTitle>{t('professional.documentManagement.filesTitle')}</SourceOptionTitle>
+                                <SourceOptionDescription>{t('professional.documentManagement.filesHint')}</SourceOptionDescription>
+                            </SourceOptionText>
+                            <SvgIcon name="fa-chevron-right" size={moderateScale(14)} color={colors.gray500} />
+                        </SourceOption> : null}
                         <SourceOption accessibilityRole="button" accessibilityLabel={t('intervention.creation.cameraAccessibility')} onPress={() => chooseSource('camera')}>
                             <SourceIconContainer>
-                                <SvgIcon name="fa-camera" size={20} color={colors.primary} />
+                                <SvgIcon name="fa-camera" size={moderateScale(20)} color={colors.primary} />
                             </SourceIconContainer>
                             <SourceOptionText>
                                 <SourceOptionTitle>{t('intervention.creation.camera')}</SourceOptionTitle>
                                 <SourceOptionDescription>{t('intervention.creation.cameraHint')}</SourceOptionDescription>
                             </SourceOptionText>
-                            <SvgIcon name="fa-chevron-right" size={14} color={colors.gray500} />
+                            <SvgIcon name="fa-chevron-right" size={moderateScale(14)} color={colors.gray500} />
                         </SourceOption>
                         <SourceOption accessibilityRole="button" accessibilityLabel={t('intervention.creation.galleryAccessibility')} onPress={() => chooseSource('gallery')}>
                             <SourceIconContainer>
-                                <SvgIcon name="image" size={20} color={colors.primary} />
+                                <SvgIcon name="image" size={moderateScale(20)} color={colors.primary} />
                             </SourceIconContainer>
                             <SourceOptionText>
                                 <SourceOptionTitle>{t('intervention.creation.gallery')}</SourceOptionTitle>
                                 <SourceOptionDescription>{t('intervention.creation.galleryHint')}</SourceOptionDescription>
                             </SourceOptionText>
-                            <SvgIcon name="fa-chevron-right" size={14} color={colors.gray500} />
+                            <SvgIcon name="fa-chevron-right" size={moderateScale(14)} color={colors.gray500} />
                         </SourceOption>
                         <SourceCancelButton accessibilityRole="button" accessibilityLabel={t('common.actions.cancel')} onPress={onClose}>
                             <SourceCancelText>{t('common.actions.cancel')}</SourceCancelText>

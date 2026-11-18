@@ -40,6 +40,7 @@ export type AppStackType = {
   Notifications: undefined;
   ProfessionnelHome: undefined;
   Documents: undefined;
+  ProfessionalDocumentsManagement: undefined;
   DocumentDetail: undefined;
   AddLocation: undefined;
   //InterventionDetail: { intervention: IIntervention };

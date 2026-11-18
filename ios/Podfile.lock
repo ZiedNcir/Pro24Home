@@ -2848,6 +2848,10 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
+  - RNFileViewer (2.1.5):
+    - React-Core
+  - RNFS (2.20.0):
+    - React-Core
   - RNGestureHandler (2.30.0):
     - boost
     - DoubleConversion
@@ -3140,6 +3144,8 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
+  - RNFileViewer (from `../node_modules/react-native-file-viewer`)
+  - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNLocalize (from `../node_modules/react-native-localize`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
@@ -3331,6 +3337,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCPicker:
     :path: "../node_modules/@react-native-picker/picker"
+  RNFileViewer:
+    :path: "../node_modules/react-native-file-viewer"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNLocalize:
@@ -3435,6 +3445,8 @@ SPEC CHECKSUMS:
   ReactCommon: ac934cb340aee91282ecd6f273a26d24d4c55cae
   RNCAsyncStorage: 29f0230e1a25f36c20b05f65e2eb8958d6526e82
   RNCPicker: bf95ec4b2483e2ab256047130bc536b437cd916c
+  RNFileViewer: 4b5d83358214347e4ab2d4ca8d5c1c90d869e251
+  RNFS: 89de7d7f4c0f6bafa05343c578f61118c8282ed8
   RNGestureHandler: cd4be101cfa17ea6bbd438710caa02e286a84381
   RNLocalize: 23e6689ec46c6cba49eb8cde959e30e49160a35b
   RNPermissions: 8ba66d84fb793626315ff5f7c73af572cb9517c9

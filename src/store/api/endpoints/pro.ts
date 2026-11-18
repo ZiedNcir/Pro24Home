@@ -41,6 +41,7 @@ export const professionalEndpoints = api.injectEndpoints({
 
         // Download Document
         downloadDocument: builder.query<Blob, DocumentType>({
+            keepUnusedDataFor: 0,
             query: (name) => ({
                 url: `/api/professional/download-document/${name}`,
                 method: 'GET',

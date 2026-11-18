@@ -114,3 +114,12 @@ TypeScript, targeted ESLint and diff whitespace checks passed. The isolated prev
 final result: blocked
 
 L’option 1 sélectionnée est intégrée sans bouton dans l’état vide. La comparaison visuelle native avec la maquette reste à effectuer. TypeScript et le contrôle i18n passent ; ESLint signale deux avertissements de styles en ligne.
+
+
+# Paramètres — Mes documents, option 1
+
+final result: blocked
+
+Dedicated settings management screen integrated with existing components, authenticated document viewing and per-document replacement. First-upload onboarding remains separate. The user requested no further simulator or task runs and will supply result screenshots. Visual comparison remains pending those screenshots. Temporary preview entry removed and normal app entry restored.
+
+Previously completed checks: 21 tests passed across management, preview, upload API, upload onboarding and onboarding scenarios; i18n passed. A separate pending-screen regression test failed after an existing action was removed; it is unrelated to the new settings route. No final build or visual approval claimed.

@@ -39,6 +39,7 @@ import { IconName } from '@shared/ui/icon';
 import { ProfileScreen } from '@roles/client/profile';
 import {
   DocumentsScreen as HomeProfessional,
+  DocumentManagementScreen,
   ProfessionalVerificationPendingScreen,
 } from '@roles/professional/documents';
 import { ProfessionalHomeDashboard } from '@roles/professional/dashboard';
@@ -254,6 +255,7 @@ const AppNavigator: React.FC = () => {
         />
         <Stack.Screen name="ContactSupport" component={ContactSupportScreen} />
         <Stack.Screen name="Documents" component={HomeProfessional} />
+        <Stack.Screen name="ProfessionalDocumentsManagement" component={DocumentManagementScreen} />
         <Stack.Screen
           name="ProfessionalVerificationPending"
           component={ProfessionalVerificationPendingScreen}

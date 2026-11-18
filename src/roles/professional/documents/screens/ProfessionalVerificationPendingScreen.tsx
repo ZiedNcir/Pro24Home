@@ -7,7 +7,8 @@ import { api } from '@store/api/baseApi';
 import { getHomeRouteFromAuthResponse } from '../../../../navigation/authNavigation';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
@@ -25,12 +26,11 @@ const ProfessionalVerificationPendingScreen = () => {
 
     const dispatch = useAppDispatch();
     const user = useAppSelector(selectUser);
-    const { data, isFetching, isError, error, refetch } = useGetProfileQuery(undefined, { skip: !user, refetchOnMountOrArgChange: true });
+    const { data, isFetching, isError } = useGetProfileQuery(undefined, { skip: !user, refetchOnMountOrArgChange: true });
     const [logoutRequest, { isLoading: isLoggingOut }] = useLogoutMutation();
     const documents = (user && data?.data?.id === user.id ? data?.data?.documents : undefined) ?? user?.documents ?? [];
     const progress = getDocumentSubmissionProgress(documents);
     const hasKnownDocumentStatuses = documents.length > 0 && documents.every(document => ['pending', 'approved', 'rejected'].includes(document.status));
-    const profileUnavailable = error && 'status' in error && error.status === 404;
 
     useEffect(() => {
         if (!user) {
@@ -58,92 +58,146 @@ const ProfessionalVerificationPendingScreen = () => {
     };
 
     return (
-        <ScreenContainer
+        <PendingContainer
             scrollable
             withBottomSafeArea
             mode={themeMode}
             paddingHorizontal={horizontalScale(20)}
-            paddingVertical={verticalScale(18)}
+            paddingVertical={verticalScale(12)}
             backgroundColor={theme.colors.background}
-            contentContainerStyle={styles.content}
         >
-            <LogoMediumPro24Icon width={moderateScale(140)} height={moderateScale(44)} style={styles.logo} />
-            <Image source={require('@assets/images/account-pending-illustration.png')} style={styles.illustration} resizeMode="contain" accessibilityIgnoresInvertColors />
-            <Text variant="title" color={theme.colors.textPrimary} style={styles.title}>
+            <Logo width={moderateScale(140)} height={moderateScale(44)} />
+            <Illustration source={require('@assets/images/account-pending-illustration.png')} resizeMode="contain" accessible={false} accessibilityIgnoresInvertColors />
+            <Title variant="title" accessibilityRole="header" color={theme.colors.textPrimary}>
                 {t('professional.verificationPending.title')}
-            </Text>
-            <Text variant="regular" color={theme.colors.textSecondary} style={styles.description}>
+            </Title>
+            <Description variant="regular" fontSize={15} lineHeight={22} color={theme.colors.textSecondary}>
                 {t('professional.verificationPending.description')}
-            </Text>
+            </Description>
 
-            <View style={styles.timeline}>
+            <Timeline>
                 {(['submitted', 'review', 'activation'] as const).map((step, index) => (
-                    <View key={step} style={styles.step}>
-                        <View style={styles.stepMarker}>
-                            <SvgIcon name={index === 0 ? 'fa-check-circle' : 'fa-clock'} size={22} color={index === 0 ? theme.colors.success : index === 1 ? theme.colors.primary : theme.colors.textDisabled} />
-                            {index < 2 ? <View style={[styles.stepLine, { backgroundColor: theme.colors.border }]} /> : null}
-                        </View>
-                        <View style={styles.stepCopy}>
-                            <Text variant="bold" color={theme.colors.textPrimary}>{t(`professional.verificationPending.${step}Title`)}</Text>
-                        </View>
-                    </View>
+                    <Step key={step}>
+                        <StepMarker>
+                            <SvgIcon name={index === 0 ? 'fa-check-circle' : 'fa-clock'} size={moderateScale(22)} color={index === 0 ? theme.colors.success : index === 1 ? theme.colors.primary : theme.colors.textSecondary} />
+                            {index < 2 ? <StepLine /> : null}
+                        </StepMarker>
+                        <StepCopy>
+                            <Text variant={index === 1 ? "bold" : "medium"} fontSize={15} color={index === 2 ? theme.colors.textSecondary : theme.colors.textPrimary}>{t(`professional.verificationPending.${step}Title`)}</Text>
+                        </StepCopy>
+                    </Step>
                 ))}
-            </View>
-            <View style={styles.refresh}>
-                {isError ? <Text variant="regularSmall" color={theme.colors.danger}>{t(profileUnavailable ? 'professional.verificationPending.signInToCheckDescription' : 'auth.onboarding.profileRefreshFailed')}</Text> : null}
-                <Button title={t(profileUnavailable ? 'professional.verificationPending.signInToCheck' : 'auth.onboarding.checkDossier')} icon="fa-sync-alt"
-                    onPress={() => {
-                        if (profileUnavailable) navigation.reset({ index: 0, routes: [{ name: 'SignIn', params: { role: 'professional' } }] });
-                        else refetch().unwrap().catch(() => undefined);
-                    }} loading={isFetching}
-                    disabled={isFetching || isLoggingOut || !user} fullWidth />
-            </View>
-            <Button title={t('professional.verificationPending.logout')} variant="outline" icon="fa-sign-out-alt"
-                onPress={handleLogout} disabled={isLoggingOut} loading={isLoggingOut} fullWidth />
+            </Timeline>
 
-            <Text variant="bold" fontSize={18} color={theme.colors.textPrimary} style={styles.documentsTitle}>
+            <DocumentsTitle variant="bold" accessibilityRole="header" fontSize={18} color={theme.colors.textPrimary}>
                 {t('professional.verificationPending.documentsTitle')}
-            </Text>
-            {hasKnownDocumentStatuses ? <View style={styles.progressHeader}>
+            </DocumentsTitle>
+            {hasKnownDocumentStatuses ? <ProgressHeader>
                 <Text variant="regularSmall" color={theme.colors.textPrimary}>{t('professional.documentDesign.progress', { sent: progress.submitted, total: progress.total })}</Text>
                 <Text variant="regularSmall" color={theme.colors.textSecondary}>{Math.round(progress.submitted / progress.total * 100)} %</Text>
-            </View> : null}
-            {hasKnownDocumentStatuses ? <View style={[styles.progressTrack, { backgroundColor: theme.colors.border }]} accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: progress.total, now: progress.submitted }}>
-                <View style={[styles.progressFill, { backgroundColor: theme.colors.primary, width: `${progress.submitted / progress.total * 100}%` }]} />
-            </View> : null}
+            </ProgressHeader> : null}
+            {hasKnownDocumentStatuses ? <ProgressTrack accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: progress.total, now: progress.submitted }}>
+                <ProgressFill $percent={progress.submitted / progress.total * 100} />
+            </ProgressTrack> : null}
             {PROFESSIONAL_DOCUMENTS.map(item => {
                 const document = getDocumentForType(documents, item.name);
                 if (!document) return null;
                 const statusKey = document.status === 'approved' ? 'approved' : document.status === 'rejected' ? 'rejected' : document.status === 'pending' ? 'pending' : 'unknown';
-                return <View key={item.name} style={[styles.documentRow, { borderBottomColor: theme.colors.borderLight }]}>
-                    <SvgIcon name={item.icon} size={18} color={theme.colors.textSecondary} />
-                    <Text variant="regular" color={theme.colors.textPrimary} style={styles.documentName}>{t(item.titleKey)}</Text>
-                    <Text variant="medium" fontSize={14} color={theme.colors.textPrimary}>{t(`professional.verificationPending.status.${statusKey}`)}</Text>
-                </View>;
+                return <DocumentRow key={item.name}>
+                    <SvgIcon name={item.icon} size={moderateScale(18)} color={theme.colors.textSecondary} />
+                    <DocumentCopy>
+                        <Text variant="medium" fontSize={15} color={theme.colors.textPrimary}>{t(item.titleKey)}</Text>
+                        <DocumentStatus variant="regularSmall" color={statusKey === 'rejected' ? theme.colors.danger : theme.colors.textSecondary}>{t(`professional.verificationPending.status.${statusKey}`)}</DocumentStatus>
+                    </DocumentCopy>
+                    {statusKey !== 'unknown' ? <SvgIcon name={statusKey === 'approved' ? 'fa-check-circle' : statusKey === 'rejected' ? 'fa-exclamation-circle' : 'fa-clock'} size={moderateScale(16)} color={statusKey === 'approved' ? theme.colors.success : statusKey === 'rejected' ? theme.colors.danger : theme.colors.primary} /> : null}
+                </DocumentRow>;
             })}
             {documents.length === 0 ? <Text variant="regularSmall" color={theme.colors.textSecondary}>{t('professional.verificationPending.documentsUnavailable')}</Text> : null}
-        </ScreenContainer>
+            <Logout>
+                <Button title={t('professional.verificationPending.logout')} variant="outline" icon="fa-sign-out-alt"
+                    textColor={theme.colors.textSecondary} onPress={handleLogout} disabled={isLoggingOut} loading={isLoggingOut} fullWidth />
+            </Logout>
+        </PendingContainer>
     );
 };
 
-const styles = StyleSheet.create({
-    content: { flexGrow: 1, paddingBottom: verticalScale(24) },
-    illustration: { width: '100%', height: verticalScale(170), marginVertical: verticalScale(8) },
-    logo: { alignSelf: 'center', marginBottom: verticalScale(4) },
-    title: { textAlign: 'center' },
-    description: { textAlign: 'center', lineHeight: 22, marginTop: verticalScale(10) },
-    timeline: { marginTop: verticalScale(20), alignSelf: 'center', width: '90%' },
-    step: { flexDirection: 'row', gap: horizontalScale(14), minHeight: verticalScale(46) },
-    stepMarker: { alignItems: 'center', width: moderateScale(24) },
-    stepLine: { width: 2, flex: 1, marginVertical: verticalScale(3) },
-    stepCopy: { flex: 1, paddingBottom: verticalScale(8) },
-    documentsTitle: { marginTop: verticalScale(22), marginBottom: verticalScale(8) },
-    progressHeader: { flexDirection: 'row', justifyContent: 'space-between', gap: horizontalScale(8) },
-    progressTrack: { height: verticalScale(7), borderRadius: moderateScale(4), overflow: 'hidden', marginVertical: verticalScale(10) },
-    progressFill: { height: '100%', borderRadius: moderateScale(4) },
-    documentRow: { flexDirection: 'row', alignItems: 'center', gap: horizontalScale(10), minHeight: verticalScale(48), borderBottomWidth: StyleSheet.hairlineWidth },
-    documentName: { flex: 1 },
-    refresh: { marginTop: verticalScale(12), marginBottom: verticalScale(10), gap: verticalScale(12) },
-});
+const PendingContainer = styled(ScreenContainer).attrs({
+    contentContainerStyle: { flexGrow: 1, paddingBottom: verticalScale(24) },
+})``;
+const Logo = styled(LogoMediumPro24Icon)`
+    align-self: center;
+    margin-bottom: ${verticalScale(4)}px;
+`;
+const Illustration = styled.Image`
+    width: 100%;
+    height: ${verticalScale(125)}px;
+    margin-top: ${verticalScale(4)}px;
+    margin-bottom: ${verticalScale(12)}px;
+`;
+const Title = styled(Text)`text-align: center;`;
+const Description = styled(Text)`
+    text-align: center;
+    margin-top: ${verticalScale(8)}px;
+`;
+const Timeline = styled.View`
+    margin-top: ${verticalScale(20)}px;
+    padding: ${moderateScale(16)}px;
+    padding-bottom: ${moderateScale(8)}px;
+    border-radius: ${moderateScale(14)}px;
+    background-color: ${({ theme }) => theme.colors.surfaceVariant};
+`;
+const Step = styled.View`
+    flex-direction: row;
+    gap: ${horizontalScale(14)}px;
+    min-height: ${verticalScale(38)}px;
+`;
+const StepMarker = styled.View`
+    align-items: center;
+    width: ${moderateScale(24)}px;
+`;
+const StepLine = styled.View`
+    width: ${horizontalScale(2)}px;
+    flex: 1;
+    margin-vertical: ${verticalScale(3)}px;
+    background-color: ${({ theme }) => theme.colors.border};
+`;
+const StepCopy = styled.View`
+    flex: 1;
+    padding-bottom: ${verticalScale(8)}px;
+`;
+const DocumentsTitle = styled(Text)`
+    margin-top: ${verticalScale(22)}px;
+    margin-bottom: ${verticalScale(8)}px;
+`;
+const ProgressHeader = styled.View`
+    flex-direction: row;
+    justify-content: space-between;
+    gap: ${horizontalScale(8)}px;
+`;
+const ProgressTrack = styled.View`
+    height: ${verticalScale(7)}px;
+    border-radius: ${moderateScale(4)}px;
+    overflow: hidden;
+    margin-vertical: ${verticalScale(10)}px;
+    background-color: ${({ theme }) => theme.colors.border};
+`;
+const ProgressFill = styled.View<{ $percent: number }>`
+    height: 100%;
+    width: ${({ $percent }) => $percent}%;
+    border-radius: ${moderateScale(4)}px;
+    background-color: ${({ theme }) => theme.colors.primary};
+`;
+const DocumentRow = styled.View`
+    flex-direction: row;
+    align-items: center;
+    gap: ${horizontalScale(12)}px;
+    padding-vertical: ${verticalScale(12)}px;
+    min-height: ${verticalScale(60)}px;
+    border-bottom-width: ${StyleSheet.hairlineWidth}px;
+    border-bottom-color: ${({ theme }) => theme.colors.borderLight};
+`;
+const DocumentCopy = styled.View`flex: 1;`;
+const DocumentStatus = styled(Text)`margin-top: ${verticalScale(3)}px;`;
+const Logout = styled.View`margin-top: ${verticalScale(20)}px;`;
 
 export default ProfessionalVerificationPendingScreen;

@@ -16,12 +16,14 @@ interface Props {
   title?: string;
   showHelp?: boolean;
   onClose?: () => void;
+  onHelp?: () => void;
 }
 
 const InterventionHeader: React.FC<Props> = ({
   title,
   showHelp = true,
   onClose,
+  onHelp,
 }) => {
   const navigation = useNavigation();
   const { theme } = useTheme();
@@ -36,7 +38,7 @@ const InterventionHeader: React.FC<Props> = ({
       >
         <SvgIcon
           name="fa-chevron-left"
-          size={18}
+          size={moderateScale(18)}
           color={theme.colors.textPrimary}
         />
       </IconButton>
@@ -45,11 +47,11 @@ const InterventionHeader: React.FC<Props> = ({
         {title ?? t('navigation.newIntervention')}
       </Text>
 
-      <IconButton>
+      <IconButton onPress={onHelp} accessibilityRole="button" accessibilityLabel={t('professional.documents.help')} disabled={!onHelp}>
         {showHelp ? (
           <SvgIcon
             name="fa-question-circle"
-            size={18}
+            size={moderateScale(18)}
             color={theme.colors.textPrimary}
           />
         ) : null}
