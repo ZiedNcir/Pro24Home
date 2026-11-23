@@ -46,6 +46,13 @@ describe('Google navigation route orchestration', () => {
         expect(getGoogleNavigationWaypoint({ latitude: 'bad', longitude: 2 })).toBeNull();
     });
 
+    it('rejects missing, blank, and out-of-range destination coordinates', () => {
+        expect(getGoogleNavigationWaypoint({ latitude: null, longitude: 10 })).toBeNull();
+        expect(getGoogleNavigationWaypoint({ latitude: ' ', longitude: 10 })).toBeNull();
+        expect(getGoogleNavigationWaypoint({ latitude: 91, longitude: 10 })).toBeNull();
+        expect(getGoogleNavigationWaypoint({ latitude: 36.8, longitude: 181 })).toBeNull();
+    });
+
     it('creates a waypoint and recoverable route error copy', () => {
         expect(getGoogleNavigationWaypoint({ latitude: 36.8, longitude: 10.1, address: 'Client' })).toEqual({
             title: 'Client', position: { lat: 36.8, lng: 10.1 },

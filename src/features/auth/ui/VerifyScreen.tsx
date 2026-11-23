@@ -1,4 +1,4 @@
-import { buildPhoneVerificationRequest } from '../model/phone-verification';
+import { buildPhoneVerificationRequest, normalizeVerificationPhone } from '../model/phone-verification';
 import { Text } from '@shared/ui';
 import { Button } from '@shared/ui/button/Button';
 import Field from '@shared/ui/form/HookFormField';
@@ -6,10 +6,10 @@ import AppImage from '@shared/ui/image/AppImage';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { IRole } from '@utils/constant';
-import useKeyboardOverlay from '@utils/kayboard';
+import { Keyboard, ScrollView, View, type KeyboardEvent } from 'react-native';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
 import { useTranslation } from 'react-i18next';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { Toast } from '@core/notifications/toast';
 import styled from 'styled-components/native';
@@ -29,9 +29,24 @@ interface RouteParams {
 }
 
 // Styled Components
+const FormViewport = styled(View)<{ $availableHeight: number | null }>`
+  flex: 1;
+  ${({ $availableHeight }) => $availableHeight !== null && `max-height: ${$availableHeight}px;`}
+`;
+
+const FormScrollView = styled(ScrollView)`
+  flex: 1;
+`;
+
+const InputSection = styled.View`
+  width: 100%;
+  align-items: center;
+`;
+
 const HeaderContainer = styled.View`
   align-items: center;
   padding-horizontal: ${horizontalScale(20)}px;
+  padding-bottom: ${verticalScale(24)}px;
 `;
 
 const BrandIconContainer = styled.View`
@@ -41,7 +56,7 @@ const BrandIconContainer = styled.View`
 const DescriptionText = styled.Text`
   margin-top: ${verticalScale(16)}px;
   text-align: center;
-  color: ${({ theme }) => theme.colors.black};
+  color: ${({ theme }) => theme.colors.textSecondary};
 `;
 
 const ResendTouchable = styled.TouchableOpacity`
@@ -60,7 +75,7 @@ const TimerContainer = styled.View`
 const TimerText = styled.Text`
   margin-top: ${verticalScale(16)}px;
   text-align: center;
-  color: ${({ theme }) => theme.colors.black};
+  color: ${({ theme }) => theme.colors.textSecondary};
 `;
 
 const LoaderContainer = styled.View`
@@ -80,7 +95,6 @@ export const VerifyAccountScreen = () => {
     const navigation = useNavigation<AppNavigationProp>();
     const params = (route.params || { role: 'client' }) as RouteParams;
 
-    const { Overlay } = useKeyboardOverlay();
     const { handleSubmit, control, getValues } = useForm({
         defaultValues: {
             code: '',
@@ -92,6 +106,43 @@ export const VerifyAccountScreen = () => {
     const [_resending, setResending] = useState(false);
     const [_verifying, setVerifying] = useState(false);
     const [timer, setTimer] = useState(5 * 60);
+    const [phoneNeedsCorrection, setPhoneNeedsCorrection] = useState(false);
+    const scrollRef = useRef<ScrollView>(null);
+    const viewportRef = useRef<View>(null);
+    const [availableHeight, setAvailableHeight] = useState<number | null>(null);
+    const inputSectionY = useRef(0);
+    const keyboardVisible = useRef(false);
+
+    const revealInputs = useCallback(() => {
+        if (keyboardVisible.current) {
+            scrollRef.current?.scrollTo({
+                y: Math.max(0, inputSectionY.current - verticalScale(16)),
+                animated: true,
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        const updateKeyboardSpace = (event: KeyboardEvent) => {
+            keyboardVisible.current = true;
+            viewportRef.current?.measureInWindow((_x, y) => {
+                if (!keyboardVisible.current) return;
+                setAvailableHeight(Math.max(0, event.endCoordinates.screenY - y - verticalScale(16)));
+                revealInputs();
+            });
+        };
+        const show = Keyboard.addListener('keyboardDidShow', updateKeyboardSpace);
+        const change = Keyboard.addListener('keyboardWillChangeFrame', updateKeyboardSpace);
+        const hide = Keyboard.addListener('keyboardDidHide', () => {
+            keyboardVisible.current = false;
+            setAvailableHeight(null);
+        });
+        return () => {
+            show.remove();
+            change.remove();
+            hide.remove();
+        };
+    }, [revealInputs]);
 
     // API mutations
     const [verifyAccount] = useVerifyAccountMutation();
@@ -127,9 +178,15 @@ export const VerifyAccountScreen = () => {
                 return;
             }
 
-            const phone = getValues('phone_number');
-            if (!phone.trim()) {
+            const phone = normalizeVerificationPhone(getValues('phone_number'));
+            if (!phone) {
+                setPhoneNeedsCorrection(true);
                 Toast.show(t('auth.onboarding.phoneRequired'), { type: 'danger', placement: 'bottom' });
+                return;
+            }
+            if (phone.length > 15 || !/^\+?\d+$/.test(phone)) {
+                setPhoneNeedsCorrection(true);
+                Toast.show(t(phone.length > 15 ? 'auth.onboarding.phoneTooLong' : 'ui.form.phone.invalid'), { type: 'danger', placement: 'bottom' });
                 return;
             }
             const result = await verifyAccount(buildPhoneVerificationRequest(code, phone)).unwrap();
@@ -225,8 +282,17 @@ export const VerifyAccountScreen = () => {
     };
 
     return (
-        <ScreenContainer>
+        <ScreenContainer withBottomSafeArea>
             <NavigationHeader showBackButton={true} logoSize={moderateScale(120)} />
+            <FormViewport ref={viewportRef} collapsable={false} $availableHeight={availableHeight}>
+            <FormScrollView
+                ref={scrollRef}
+                onLayout={revealInputs}
+                onContentSizeChange={revealInputs}
+                keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="on-drag"
+                showsVerticalScrollIndicator={false}
+            >
             <HeaderContainer>
                 <BrandIconContainer>
                     <AppImage
@@ -247,7 +313,11 @@ export const VerifyAccountScreen = () => {
                     {t('terms.labelCode')}
                 </DescriptionText>
 
-                {!params.phone_number ? <Field
+                <InputSection onLayout={event => {
+                    inputSectionY.current = event.nativeEvent.layout.y;
+                    revealInputs();
+                }}>
+                {!params.phone_number || phoneNeedsCorrection ? <Field
                     name="phone_number"
                     required
                     control={control}
@@ -298,8 +368,10 @@ export const VerifyAccountScreen = () => {
                         disabled={_verifying || _resending}
                     />
                 </VerifyButtonContainer>
+                </InputSection>
             </HeaderContainer>
-            <Overlay />
+            </FormScrollView>
+            </FormViewport>
         </ScreenContainer>
     );
 };

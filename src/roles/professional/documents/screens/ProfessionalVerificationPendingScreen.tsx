@@ -2,10 +2,9 @@ import { Button } from '@shared/ui/button/Button';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { logout, selectUser } from '@store/slices/authSlice';
 import { useLogoutMutation } from '@features/auth/api/auth.api';
-import { useGetProfileQuery } from '@entities/user/api/user.api';
 import { api } from '@store/api/baseApi';
 import { getHomeRouteFromAuthResponse } from '../../../../navigation/authNavigation';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
@@ -17,6 +16,8 @@ import { SvgIcon } from '@shared/ui/icon';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { useTheme } from '@theme';
 import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
+import { readProfessionalUploadState } from '@core/session/professional-upload-state';
+import type { Document, DocumentType } from '@entities/user/model';
 import { getDocumentForType, getDocumentSubmissionProgress, PROFESSIONAL_DOCUMENTS } from '../model/professional-documents';
 
 const ProfessionalVerificationPendingScreen = () => {
@@ -26,9 +27,28 @@ const ProfessionalVerificationPendingScreen = () => {
 
     const dispatch = useAppDispatch();
     const user = useAppSelector(selectUser);
-    const { data, isFetching, isError } = useGetProfileQuery(undefined, { skip: !user, refetchOnMountOrArgChange: true });
     const [logoutRequest, { isLoading: isLoggingOut }] = useLogoutMutation();
-    const documents = (user && data?.data?.id === user.id ? data?.data?.documents : undefined) ?? user?.documents ?? [];
+    const [localUploads, setLocalUploads] = useState<{ userId: number; names: string[] } | null>(null);
+    useEffect(() => {
+        let active = true;
+        if (!user) {
+            setLocalUploads(null);
+            return () => { active = false; };
+        }
+        readProfessionalUploadState(user).then(state => {
+            if (active) setLocalUploads({ userId: user.id, names: state.uploaded });
+        }).catch(() => {
+            if (active) setLocalUploads({ userId: user.id, names: [] });
+        });
+        return () => { active = false; };
+    }, [user]);
+    const sessionDocuments = user?.documents ?? [];
+    const localNames = localUploads && localUploads.userId === user?.id ? localUploads.names : [];
+    const confirmedDocuments: Document[] = localNames
+        .filter(name => !sessionDocuments.some(document => document.name === name))
+        .filter(name => PROFESSIONAL_DOCUMENTS.some(required => required.name === name))
+        .map(name => ({ id: 0, name: name as DocumentType, type: 'img', url: '', uploaded_at: '', status: 'pending' }));
+    const documents = [...sessionDocuments, ...confirmedDocuments];
     const progress = getDocumentSubmissionProgress(documents);
     const hasKnownDocumentStatuses = documents.length > 0 && documents.every(document => ['pending', 'approved', 'rejected'].includes(document.status));
 
@@ -37,13 +57,9 @@ const ProfessionalVerificationPendingScreen = () => {
             navigation.reset({ index: 0, routes: [{ name: 'SignIn', params: { role: 'professional' } }] });
             return;
         }
-        if (isFetching || isError || !data?.data || data.data.id !== user.id || data.success === false) return;
-        const profile = data.data;
-        // Entry into this screen follows a confirmed submission. Server decisions
-        // must remain usable even when local phone storage is unavailable.
-        const destination = getHomeRouteFromAuthResponse({ user: profile }, 'professional', true);
+        const destination = getHomeRouteFromAuthResponse({ user }, 'professional', true);
         if (destination !== 'ProfessionalVerificationPending') navigation.reset({ index: 0, routes: [{ name: destination }] });
-    }, [data, isFetching, isError, navigation, user]);
+    }, [navigation, user]);
 
     const handleLogout = async () => {
         try {

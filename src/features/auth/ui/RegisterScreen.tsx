@@ -26,6 +26,7 @@ import { useGetServicesQuery } from '@entities/service/api/service.api';
 
 // Types
 import { AppStackType } from '../../../navigation/constant/core';
+import type { RegisterProfessionalRequest } from '@entities/user/model';
 
 type AppNavigationProp = NativeStackNavigationProp<AppStackType>;
 
@@ -79,9 +80,13 @@ export const RegisterScreen = () => {
         // Error is handled in the FormUser component
     };
 
-    const handleProfessionalRegistrationSuccess = async () => {
+    const handleProfessionalRegistrationSuccess = async (data: Pick<RegisterProfessionalRequest, 'email' | 'phone_number'>) => {
         await markAccountCreated().catch(() => undefined);
-        navigation.reset({ index: 0, routes: [{ name: 'SignIn', params: { role: 'professional' } }] });
+        navigation.navigate('VerifyScreen', {
+            email: data.email,
+            phone_number: data.phone_number,
+            role: 'professional',
+        });
     };
 
     const navigateToSignIn = () => {

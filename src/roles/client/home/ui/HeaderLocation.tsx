@@ -9,6 +9,7 @@ import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import { useTheme } from '@theme';
 import { useNavigation } from '@react-navigation/native';
 import { selectAuthLoading, selectUser } from '@store/slices/authSlice';
+import { useGetUnreadNotificationCountQuery } from '@entities/notification/api/notification.api';
 
 const HeaderLocation = () => {
     const { t } = useTranslation();
@@ -16,6 +17,8 @@ const HeaderLocation = () => {
     const navigation = useNavigation();
     const user = useSelector(selectUser);
     const isLoading = useSelector(selectAuthLoading);
+    const { data: unreadData } = useGetUnreadNotificationCountQuery(undefined, { refetchOnMountOrArgChange: true });
+    const unreadCount = unreadData?.count ?? 0;
 
     // Extract name from nested client/professional data
     const displayName = user
@@ -40,11 +43,11 @@ const HeaderLocation = () => {
 
                     <IconButton onPress={() => navigation.navigate('Notifications' as never)}>
                         <SvgIcon name="fa-bell" size={20} color={theme.colors.textPrimary} />
-                        <Badge>
+                        {unreadCount > 0 && <Badge>
                             <Text variant="notification" color="white" fontWeight="700">
-                                2
+                                {unreadCount > 9 ? '9+' : unreadCount}
                             </Text>
-                        </Badge>
+                        </Badge>}
                     </IconButton>
                 </Actions>
             </TopRow>

@@ -10,11 +10,14 @@ import { SvgIcon } from '@shared/ui/icon';
 import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import { useTheme } from '@theme';
 import { selectUser } from '@store/slices/authSlice';
+import { useGetUnreadNotificationCountQuery } from '@entities/notification/api/notification.api';
 
 const ClientHomeHeader = () => {
     const { t } = useTranslation();
     const { theme } = useTheme();
     const user = useSelector(selectUser);
+    const { data: unreadData } = useGetUnreadNotificationCountQuery(undefined, { refetchOnMountOrArgChange: true });
+    const unreadCount = unreadData?.count ?? 0;
     const displayName = user?.client
         ? `${user.client.first_name} ${user.client.last_name}`.trim()
         : user?.name || t('client.home.user');
@@ -48,11 +51,11 @@ const ClientHomeHeader = () => {
 
             <Bell>
                 <SvgIcon name="fa-bell" size={22} color={theme.colors.textPrimary} />
-                <Badge>
+                {unreadCount > 0 && <Badge>
                     <Text variant="notification" color="white">
-                        2
+                        {unreadCount > 9 ? '9+' : unreadCount}
                     </Text>
-                </Badge>
+                </Badge>}
             </Bell>
         </Container>
     );

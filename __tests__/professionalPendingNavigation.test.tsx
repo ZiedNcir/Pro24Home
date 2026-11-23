@@ -5,7 +5,6 @@ import { lightColors } from '../src/theme/colors/light';
 import PendingScreen from '../src/roles/professional/documents/screens/ProfessionalVerificationPendingScreen';
 
 let mockUser: any;
-let mockProfileError: any;
 const mockReset = jest.fn();
 const mockT = (key: string) => key;
 jest.mock('@store/hooks', () => ({ useAppDispatch: () => jest.fn(), useAppSelector: () => mockUser }));
@@ -18,21 +17,20 @@ jest.mock('@shared/ui/button/Button', () => ({ Button: (props: any) => require('
 jest.mock('@shared/ui/layout/ScreenContainer', () => ({ __esModule: true, default: ({ children }: any) => require('react').createElement(require('react-native').View, null, children) }));
 jest.mock('@shared/ui/icon', () => ({ SvgIcon: () => null }));
 jest.mock('@assets/svg/logo-mediumPro24.svg', () => ({ __esModule: true, default: () => null }));
-jest.mock('@entities/user/api/user.api', () => ({ useGetProfileQuery: () => ({ data: { success: true, data: mockUser }, isFetching: false, isError: !!mockProfileError, error: mockProfileError, refetch: jest.fn() }) }));
 jest.mock('@features/auth/api/auth.api', () => ({ useLogoutMutation: () => [jest.fn(), { isLoading: false }] }));
-jest.mock('@core/session/professional-upload-state', () => ({ hasFinishedProfessionalUpload: async () => { throw new Error('Phone storage unavailable'); } }));
-beforeEach(() => { mockReset.mockClear(); mockProfileError = null; mockUser = { id: 42, type: 'professional', email: 'pro@example.test', is_active: 0, documents: [] }; });
+jest.mock('@core/session/professional-upload-state', () => ({ readProfessionalUploadState: async () => ({ uploaded: [], finished: false }) }));
+beforeEach(() => { mockReset.mockClear(); mockUser = { id: 42, type: 'professional', email: 'pro@example.test', is_active: 0, documents: [] }; });
 const open = async () => {
     let tree!: ReactTestRenderer.ReactTestRenderer;
     await act(async () => { tree = ReactTestRenderer.create(<ThemeProvider theme={{ colors: lightColors }}><PendingScreen /></ThemeProvider>); });
     await act(async () => tree.unmount());
 };
-test('follows server activation even if phone metadata cannot be read', async () => {
+test('follows the account activation status stored at login', async () => {
     mockUser.is_active = 1;
     await open();
     expect(mockReset).toHaveBeenCalledWith({ index: 0, routes: [{ name: 'ProfessionnelHome' }] });
 });
-test('follows a server rejection even if phone metadata cannot be read', async () => {
+test('follows a rejected document stored on the account', async () => {
     mockUser.documents = [{ id: 1, name: 'rib', status: 'rejected', uploaded_at: '' }];
     await open();
     expect(mockReset).toHaveBeenCalledWith({ index: 0, routes: [{ name: 'Documents' }] });

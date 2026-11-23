@@ -6,6 +6,7 @@ import { validateProfessionalRegistration, mapApiError, prepareRegistrationPaylo
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import type { CountryCode } from 'react-native-country-picker-modal';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import styled from 'styled-components/native';
@@ -107,6 +108,7 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading, refer
 
     // State for multi-step form
     const [step, setStep] = useState(0);
+    const [phoneCountryCode, setPhoneCountryCode] = useState<CountryCode>('FR');
     const [selectedServices, setSelectedServices] = useState<number[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const submittingRef = useRef(false);
@@ -217,20 +219,20 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading, refer
                 { ...data, ...referral },
                 'professional',
                 onesignalKey,
-                selectedServices
+                selectedServices,
+                phoneCountryCode
             );
 
             await registerProfessional(registrationData as RegisterProfessionalRequest).unwrap();
 
-            // Show success message from API response
-            const successMessage = t('auth.onboarding.registrationToSignIn');
+            const successMessage = t('auth.onboarding.registrationToVerification');
             Toast.show(successMessage, {
                 type: 'success',
                 placement: 'bottom',
                 duration: 3000,
             });
 
-            await onSuccess?.({ email: data.email, phone_number: data.phone_number });
+            await onSuccess?.({ email: data.email, phone_number: registrationData.phone_number });
 
         } catch (err) {
             // Map API errors to structured format
@@ -394,13 +396,12 @@ const ProfessionalForm = ({ onSuccess, onError, services, servicesLoading, refer
                                 control={control}
                                 placeholder={t('ui.form.phone.placeholder')}
                                 isPhone={true}
+                                validatePhoneByCountry
+                                phoneCountryCode={phoneCountryCode}
+                                onPhoneCountryCodeChange={setPhoneCountryCode}
                                 returnKeyType="next"
                                 rules={{
                                     required: t('ui.form.phone.required'),
-                                    pattern: {
-                                        value: /^[+]?[\d\s-]{10,}$/,
-                                        message: t('ui.form.phone.invalid'),
-                                    },
                                 }}
                                 containerStyle={[styles.field, formWidth >= 335 && styles.phoneField]}
                                 animated

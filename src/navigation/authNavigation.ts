@@ -38,6 +38,8 @@ export const getHomeRouteFromAuthResponse = (
     const userType = payload.user?.type ?? fallbackRole;
     const isActive = accountStatus !== 0 && accountStatus !== '0' && accountStatus !== false;
 
+    if (isUnverifiedAccount(payload)) return 'VerifyScreen';
+
     if (userType === UserType.PROFESSIONAL) {
         const documents = payload.user?.documents;
         const submittedDocuments = Array.isArray(documents) ? documents : [];
@@ -54,7 +56,6 @@ export const getHomeRouteFromAuthResponse = (
             : 'ProfessionalVerificationPending';
     }
 
-    if (isUnverifiedAccount(payload)) return 'VerifyScreen';
     if (!isActive) return 'AccountPendingScreen';
     return 'Tabs';
 };

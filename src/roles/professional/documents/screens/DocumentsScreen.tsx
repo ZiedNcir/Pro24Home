@@ -12,7 +12,6 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
-import { useGetProfileQuery } from '@entities/user/api/user.api';
 import { useUploadDocumentMutation } from '@roles/professional/documents/api/documents.api';
 import { selectUser } from '@store/slices/authSlice';
 import type { Document, DocumentType } from '@entities/user/model';
@@ -29,7 +28,6 @@ const HomeProfessional = () => {
     const { t } = useTranslation();
     const navigation = useNavigation<NativeStackNavigationProp<AppStackType>>();
     const user = useSelector(selectUser);
-    const { data, isFetching, isError, refetch } = useGetProfileQuery(undefined, { skip: !user, refetchOnMountOrArgChange: true });
     const uploadBusy = useRef(false);
     useEffect(() => {
         if (!user) navigation.reset({ index: 0, routes: [{ name: 'SignIn', params: { role: 'professional' } }] });
@@ -54,14 +52,14 @@ const HomeProfessional = () => {
         return () => { active = false; if (currentUserId.current === owner?.id) currentUserId.current = undefined; };
     }, [user?.id, user?.email, t]);
     const documents = useMemo<Document[]>(() => {
-        const server = (data?.data?.id === user?.id ? data?.data?.documents : undefined) ?? user?.documents ?? [];
+        const server = user?.documents ?? [];
         const names = localUploads?.userId === user?.id ? localUploads?.names || [] : [];
         // These are confirmed uploads, used only when the server omits document metadata.
         const confirmed: Document[] = names.filter(name => !server.some(document => document.name === name))
             .filter(name => PROFESSIONAL_DOCUMENTS.some(required => required.name === name))
             .map(name => ({ id: 0, name: name as DocumentType, type: 'img', url: '', uploaded_at: '', status: 'pending' }));
         return [...server, ...confirmed];
-    }, [data?.data, user, localUploads]);
+    }, [user, localUploads]);
     const submission = getDocumentSubmissionProgress(documents);
     const firstMissing = submission.nextMissing ?? 'identity_front';
     const [activeType, setActiveType] = useState<DocumentType>(firstMissing);
@@ -110,15 +108,6 @@ const HomeProfessional = () => {
                 if (next) setActiveType(next);
             } catch {
                 Toast.show(t('auth.onboarding.uploadStateFailed'), { type: 'warning', placement: 'bottom' });
-                return;
-            }
-            try {
-                const refreshed = await refetch().unwrap();
-                if (refreshed.success === false || !refreshed.data || refreshed.data.id !== user?.id) throw new Error('Profile refresh rejected');
-                const next = PROFESSIONAL_DOCUMENTS.find(item => !confirmed.includes(item.name) && !['approved', 'pending'].includes(getDocumentForType(refreshed.data?.documents || [], item.name)?.status || ''))?.name;
-                if (next) setActiveType(next);
-            } catch {
-                Toast.show(t('auth.onboarding.uploadRefreshFailed'), { type: 'warning', placement: 'bottom' });
                 return;
             }
             Toast.show(t('professional.documents.uploadSuccess'), { type: 'success', placement: 'bottom' });
@@ -170,26 +159,18 @@ const HomeProfessional = () => {
         }
     };
 
-    const refreshDocuments = () => { refetch().unwrap().catch(() => undefined); };
-
     return (
         <ScreenContainer scrollable withBottomSafeArea paddingHorizontal={0} paddingVertical={0}>
             <ProfessionalDocumentsView
                 documents={documents}
                 activeType={activeType}
                 isUploading={isUploading || isProcessing}
-                isFetching={isFetching}
-                profileError={isError}
                 onChooseFile={chooseFile}
                 onTakePhoto={takePhoto}
                 onSelectType={setActiveType}
                 onContinue={continueToNext}
-                onRefresh={refreshDocuments}
                 onBack={() => navigation.canGoBack() ? navigation.goBack() : navigation.reset({ index: 0, routes: [{ name: 'SignIn', params: { role: 'professional' } }] })}
-                onHelp={() => Alert.alert(t('professional.documents.verificationTitle'), t('professional.documents.verificationDescription'), [
-                    { text: t('common.actions.cancel'), style: 'cancel' },
-                    { text: t('auth.onboarding.checkDossier'), onPress: refreshDocuments },
-                ])}
+                onHelp={() => Alert.alert(t('professional.documents.verificationTitle'), t('professional.documents.verificationDescription'))}
             />
         </ScreenContainer>
     );

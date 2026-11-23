@@ -8,6 +8,7 @@ import { horizontalScale } from '@utils/normalizedCss';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import type { CountryCode } from 'react-native-country-picker-modal';
 import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Toast } from '@core/notifications/toast';
@@ -84,6 +85,7 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
     const authLoading = useAppSelector(selectAuthLoading);
 
     const [step, setStep] = useState(0);
+    const [phoneCountryCode, setPhoneCountryCode] = useState<CountryCode>('FR');
     const [submittedData, setSubmittedData] = useState<RegisterClientRequest | null>(null);
     const { control, handleSubmit, trigger, formState: { errors, isValid } } = useForm<RegisterClientRequest>({
         defaultValues: {
@@ -195,12 +197,11 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
             // Set loading state in auth slice
             dispatch(setLoading(true));
 
-            // Store the submitted data for success callback
-            setSubmittedData(data);
-
             // Prepare the registration data with defaults
             const onesignalKey = await getOneSignalSubscriptionId();
-            const registrationData = prepareRegistrationPayload(data, 'client', onesignalKey);
+            const registrationData = prepareRegistrationPayload(data, 'client', onesignalKey, undefined, phoneCountryCode);
+            // Pass the canonical phone number to the verification screen after signup.
+            setSubmittedData(registrationData);
 
             // Call the API using RTK Query mutation
             const result = await registerClient(registrationData).unwrap();
@@ -359,13 +360,12 @@ const ClientForm = ({ onSuccess, onError }: ClientFormProps) => {
                             control={control}
                             placeholder={t('ui.form.phone.placeholder')}
                             isPhone={true}
+                            validatePhoneByCountry
+                            phoneCountryCode={phoneCountryCode}
+                            onPhoneCountryCodeChange={setPhoneCountryCode}
                             returnKeyType="next"
                             rules={{
                                 required: t('ui.form.phone.required'),
-                                pattern: {
-                                    value: /^[+]?[\d\s-]{10,}$/,
-                                    message: t('ui.form.phone.invalid'),
-                                },
                             }}
                             containerStyle={[fieldStyle, formWidth >= 335 && styles.phoneField]}
                             animated

@@ -19,6 +19,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import { PROFESSIONAL_SETTINGS_DOCUMENT } from '../../../../navigation/professionalNavigation';
+import type { SupportedLanguage } from '@utils/locale';
+import { saveLanguagePreference } from '@utils/language-preference';
 
 type ModalType = 'payment' | 'faq' | 'terms' | null;
 
@@ -28,15 +30,29 @@ const ClientSettingsScreen = ({
   professional?: boolean;
 }) => {
   const { t, i18n } = useTranslation();
-  const { theme, themeMode, toggleTheme } = useTheme();
+  const { theme, themeMode, setThemeMode } = useTheme();
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const [logoutRequest, { isLoading: isLoggingOut }] = useLogoutMutation();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [isLanguagePickerVisible, setIsLanguagePickerVisible] = useState(false);
+  const [isThemePickerVisible, setIsThemePickerVisible] = useState(false);
+  const currentLanguage: SupportedLanguage = (i18n.resolvedLanguage || i18n.language).startsWith('en') ? 'en' : 'fr';
 
   const closeModal = () => setActiveModal(null);
+
+  const handleLanguageSelection = async (language: SupportedLanguage) => {
+    await i18n.changeLanguage(language);
+    await saveLanguagePreference(language).catch(() => undefined);
+    setIsLanguagePickerVisible(false);
+  };
+
+  const handleThemeSelection = (mode: 'light' | 'dark') => {
+    setThemeMode(mode);
+    setIsThemePickerVisible(false);
+  };
 
   const handleLogout = async () => {
     try {
@@ -114,6 +130,7 @@ const ClientSettingsScreen = ({
           description={t('client.settings.notificationDescription')}
           accessory={
             <Switch
+              style={{ transform: [{ translateY: verticalScale(18) }] }}
               value={notificationsEnabled}
               onValueChange={setNotificationsEnabled}
               trackColor={{
@@ -128,15 +145,15 @@ const ClientSettingsScreen = ({
           icon="fa-info"
           title={t('client.settings.language')}
           description={t('client.settings.languageDescription')}
-          value={i18n.language === 'en' ? t('client.settings.languageEnglish') : t('client.settings.languageFrench')}
-          onPress={() => undefined}
+          value={currentLanguage === 'en' ? t('client.settings.languageEnglish') : t('client.settings.languageFrench')}
+          onPress={() => setIsLanguagePickerVisible(true)}
         />
         <SettingsRow
           icon="fa-cog"
           title={t('client.settings.theme')}
           description={t('client.settings.themeDescription')}
           value={themeMode === 'dark' ? t('client.settings.themeDark') : t('client.settings.themeLight')}
-          onPress={toggleTheme}
+          onPress={() => setIsThemePickerVisible(true)}
         />
       </SectionCard>
 
@@ -213,6 +230,18 @@ const ClientSettingsScreen = ({
         />
       </Brand>
 
+      <LanguagePickerModal
+        visible={isLanguagePickerVisible}
+        selectedLanguage={currentLanguage}
+        onSelect={handleLanguageSelection}
+        onClose={() => setIsLanguagePickerVisible(false)}
+      />
+      <ThemePickerModal
+        visible={isThemePickerVisible}
+        selectedMode={themeMode}
+        onSelect={handleThemeSelection}
+        onClose={() => setIsThemePickerVisible(false)}
+      />
       <SettingsModal type={activeModal} onClose={closeModal} />
     </ScreenContainer>
   );
@@ -330,6 +359,112 @@ const SettingsModal = ({
   );
 };
 
+const LanguagePickerModal = ({
+  visible,
+  selectedLanguage,
+  onSelect,
+  onClose,
+}: {
+  visible: boolean;
+  selectedLanguage: SupportedLanguage;
+  onSelect: (language: SupportedLanguage) => void;
+  onClose: () => void;
+}) => {
+  const { t } = useTranslation();
+  const { theme } = useTheme();
+
+  return (
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+      <ModalBackdrop>
+        <ModalSheet>
+          <ModalHandle />
+          <ModalHeader>
+            <Text variant="bold" color={theme.colors.textPrimary} fontSize={17}>
+              {t('client.settings.language')}
+            </Text>
+            <CloseButton onPress={onClose} accessibilityRole="button" accessibilityLabel={t('common.actions.cancel')}>
+              <Text variant="bold" color="gray600" fontSize={18}>×</Text>
+            </CloseButton>
+          </ModalHeader>
+          <PickerOption
+            accessibilityRole="button"
+            accessibilityState={{ selected: selectedLanguage === 'fr' }}
+            onPress={() => onSelect('fr')}
+          >
+            <Text variant={selectedLanguage === 'fr' ? 'bold' : 'regular'} color={theme.colors.textPrimary}>
+              {t('client.settings.languageFrench')}
+            </Text>
+            {selectedLanguage === 'fr' ? <SvgIcon name="fa-check" size={16} color={theme.colors.primary} /> : null}
+          </PickerOption>
+          <PickerOption
+            accessibilityRole="button"
+            accessibilityState={{ selected: selectedLanguage === 'en' }}
+            onPress={() => onSelect('en')}
+          >
+            <Text variant={selectedLanguage === 'en' ? 'bold' : 'regular'} color={theme.colors.textPrimary}>
+              {t('client.settings.languageEnglish')}
+            </Text>
+            {selectedLanguage === 'en' ? <SvgIcon name="fa-check" size={16} color={theme.colors.primary} /> : null}
+          </PickerOption>
+        </ModalSheet>
+      </ModalBackdrop>
+    </Modal>
+  );
+};
+
+const ThemePickerModal = ({
+  visible,
+  selectedMode,
+  onSelect,
+  onClose,
+}: {
+  visible: boolean;
+  selectedMode: 'light' | 'dark';
+  onSelect: (mode: 'light' | 'dark') => void;
+  onClose: () => void;
+}) => {
+  const { t } = useTranslation();
+  const { theme } = useTheme();
+
+  return (
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+      <ModalBackdrop>
+        <ModalSheet>
+          <ModalHandle />
+          <ModalHeader>
+            <Text variant="bold" color={theme.colors.textPrimary} fontSize={17}>
+              {t('client.settings.theme')}
+            </Text>
+            <CloseButton onPress={onClose} accessibilityRole="button" accessibilityLabel={t('common.actions.cancel')}>
+              <Text variant="bold" color="gray600" fontSize={18}>×</Text>
+            </CloseButton>
+          </ModalHeader>
+          <PickerOption
+            accessibilityRole="button"
+            accessibilityState={{ selected: selectedMode === 'light' }}
+            onPress={() => onSelect('light')}
+          >
+            <Text variant={selectedMode === 'light' ? 'bold' : 'regular'} color={theme.colors.textPrimary}>
+              {t('client.settings.themeLight')}
+            </Text>
+            {selectedMode === 'light' ? <SvgIcon name="fa-check" size={16} color={theme.colors.primary} /> : null}
+          </PickerOption>
+          <PickerOption
+            accessibilityRole="button"
+            accessibilityState={{ selected: selectedMode === 'dark' }}
+            onPress={() => onSelect('dark')}
+          >
+            <Text variant={selectedMode === 'dark' ? 'bold' : 'regular'} color={theme.colors.textPrimary}>
+              {t('client.settings.themeDark')}
+            </Text>
+            {selectedMode === 'dark' ? <SvgIcon name="fa-check" size={16} color={theme.colors.primary} /> : null}
+          </PickerOption>
+        </ModalSheet>
+      </ModalBackdrop>
+    </Modal>
+  );
+};
+
 export const ProfessionalSettingsScreen = () => (
   <ClientSettingsScreen professional />
 );
@@ -426,4 +561,12 @@ const CloseButton = styled.TouchableOpacity`
 const ModalText = styled(Text).attrs({ variant: 'regular', color: 'gray700' })`
   line-height: 22px;
   padding-bottom: ${verticalScale(12)}px;
+`;
+const PickerOption = styled.TouchableOpacity`
+  min-height: ${verticalScale(54)}px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom-width: 1px;
+  border-bottom-color: ${({ theme }) => theme.colors.borderLight};
 `;

@@ -82,7 +82,7 @@ export const ClientInterventionDetails = ({ intervention, addressDetails = [] }:
         {canRespondToDevis ? <DevisActions><DevisActionButton onPress={handleAcceptDevis} disabled={isAcceptingDevis || isRefusingDevis}><Text variant="bold" color={colors.white}>{isAcceptingDevis ? t('intervention.detail.accepting') : t('intervention.detail.acceptPrice')}</Text></DevisActionButton><DevisRefuseButton onPress={handleRefuseDevis} disabled={isAcceptingDevis || isRefusingDevis}><Text variant="bold" color={colors.danger}>{isRefusingDevis ? t('intervention.detail.refusing') : t('intervention.detail.refusePrice')}</Text></DevisRefuseButton></DevisActions> : null}
         {hasCoordinates ? <Section>
             <SectionLabel>{t('intervention.detail.place')}</SectionLabel>
-            <ClientMap
+            <InterventionMap
                 initialRegion={{ latitude, longitude, latitudeDelta: 0.012, longitudeDelta: 0.012 }}
                 provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
                 scrollEnabled={false}
@@ -93,7 +93,7 @@ export const ClientInterventionDetails = ({ intervention, addressDetails = [] }:
                 accessibilityLabel={t('intervention.detail.map')}
             >
                 <Marker coordinate={{ latitude, longitude }} pinColor={colors.primary} />
-            </ClientMap>
+            </InterventionMap>
         </Section> : null}
         {intervention.professional ? <Section><SectionLabel>{t('intervention.detail.assignedPro')}</SectionLabel><Text variant="regularSmall" color="gray600">{intervention.professional.first_name} {intervention.professional.last_name}</Text></Section> : null}
     </>;
@@ -108,6 +108,10 @@ export const ProfessionalInterventionDetails = ({ intervention, professionalLati
     const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
     const [addDevis, { isLoading: isSubmittingPrice }] = useAddDevisMutation();
     const address = getInterventionAddress(intervention);
+    const latitude = Number(address?.latitude);
+    const longitude = Number(address?.longitude);
+    const hasCoordinates = address?.latitude != null && address?.longitude != null
+        && Number.isFinite(latitude) && Number.isFinite(longitude);
     const imageUrls = getInterventionImageUrls(intervention);
     const price = getInterventionPrice(intervention);
     const brief = getProfessionalInterventionBrief(intervention);
@@ -142,6 +146,19 @@ export const ProfessionalInterventionDetails = ({ intervention, professionalLati
                     <Text variant="regularSmall" color="black">{item.primary}</Text>
                     {item.secondary ? <TimelineSecondary variant="regularSmall" color="gray600">{item.secondary}</TimelineSecondary> : null}
                     {item.key === 'location' ? <TimelineMeta><SvgIcon name="fa-map-marked-alt" size={14} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDistanceBetweenCoordinates(professionalLatitude, professionalLongitude, Number(address?.latitude), Number(address?.longitude))}</Text></TimelineMeta> : null}
+                    {item.key === 'location' && hasCoordinates ? <InterventionMap
+                        style={{ marginTop: verticalScale(12) }}
+                        initialRegion={{ latitude, longitude, latitudeDelta: 0.012, longitudeDelta: 0.012 }}
+                        provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
+                        scrollEnabled={false}
+                        zoomEnabled={false}
+                        rotateEnabled={false}
+                        pitchEnabled={false}
+                        showsCompass={false}
+                        accessibilityLabel={t('intervention.detail.map')}
+                    >
+                        <Marker coordinate={{ latitude, longitude }} pinColor={colors.primary} />
+                    </InterventionMap> : null}
                     {item.key === 'request' && requestedDate ? <TimelineMeta><SvgIcon name="fa-user-clock" size={14} color={colors.primary} /><Text variant="regularSmall" color="gray600">{formatDate(requestedDate, i18n.language, t('intervention.detail.dateInvalid'))}</Text></TimelineMeta> : null}
                 </TimelineContent>
             </TimelineStep>)}
@@ -222,7 +239,7 @@ const TimelineHeading = styled.View`flex-direction: row; align-items: center; ga
 const TimelineIcon = styled.View`width: ${moderateScale(30)}px; height: ${moderateScale(30)}px; border-radius: ${moderateScale(15)}px; background-color: ${({ theme }) => theme.colors.primaryLighter}; align-items: center; justify-content: center;`;
 const TimelineSecondary = styled(Text)`margin-top: ${verticalScale(4)}px;`;
 const TimelineMeta = styled.View`flex-direction: row; align-items: center; gap: ${horizontalScale(7)}px; margin-top: ${verticalScale(9)}px;`;
-const ClientMap = styled(MapView)`height: ${verticalScale(190)}px; border-radius: ${moderateScale(12)}px; overflow: hidden;`;
+const InterventionMap = styled(MapView)`height: ${verticalScale(190)}px; border-radius: ${moderateScale(12)}px; overflow: hidden;`;
 const ModalBackdrop = styled.View`flex: 1; justify-content: flex-end; background-color: rgba(0, 0, 0, 0.42);`;
 const PriceModalCard = styled.View`background-color: ${({ theme }) => theme.colors.white}; border-top-left-radius: ${moderateScale(24)}px; border-top-right-radius: ${moderateScale(24)}px; padding: ${verticalScale(14)}px ${horizontalScale(18)}px ${verticalScale(24)}px;`;
 const ModalHandle = styled.View`width: ${horizontalScale(42)}px; height: ${verticalScale(4)}px; border-radius: ${verticalScale(2)}px; background-color: ${({ theme }) => theme.colors.gray300}; align-self: center; margin-bottom: ${verticalScale(18)}px;`;

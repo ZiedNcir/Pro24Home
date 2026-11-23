@@ -74,7 +74,7 @@ export const SignIn = () => {
     const responseUser = response.data?.user || response.user;
     const actualRole = responseUser?.type || fallbackRole;
     let finishedUpload = false;
-    if (actualRole === 'professional') {
+    if (actualRole === 'professional' && !isUnverifiedAccount(response)) {
       const account = { id: responseUser?.id, email: responseUser?.email || submittedEmail };
       finishedUpload = await hasFinishedProfessionalUpload(account).catch(() => {
         Toast.show(t('auth.onboarding.uploadStateFailed'), { type: 'warning', placement: 'bottom' });
@@ -125,7 +125,7 @@ export const SignIn = () => {
       setIsFinishingLogin(true);
       try {
         const response = await login(data).unwrap();
-        const requiresVerification = (response.user?.type || role) !== 'professional' && isUnverifiedAccount(response);
+        const requiresVerification = isUnverifiedAccount(response);
         if (!requiresVerification && (!response.user?.id || typeof response.access_token !== 'string' || !response.access_token.trim())) {
           Toast.show(t('auth.loginFailed'), { type: 'danger', placement: 'bottom' });
           return;
@@ -134,14 +134,14 @@ export const SignIn = () => {
         await resetToHome(response, role, data.email);
       } catch (error: any) {
         const inactiveResponse = normalizeAuthResponse(error);
+        if (isUnverifiedAccount(error)) {
+          await resetToHome(error, role, data.email);
+          return;
+        }
         if (isInactiveAuthResponse(error) && inactiveResponse.user?.type === 'professional'
           && inactiveResponse.user.id && typeof inactiveResponse.access_token === 'string' && inactiveResponse.access_token.trim()) {
           dispatch(setCredentials({ user: inactiveResponse.user, token: inactiveResponse.access_token }));
           await resetToHome(inactiveResponse, 'professional', data.email);
-          return;
-        }
-        if (isUnverifiedAccount(error) && (inactiveResponse.user?.type || role) !== 'professional') {
-          await resetToHome(error, role, data.email);
           return;
         }
         if (isInactiveAuthResponse(error) && (inactiveResponse.user?.type || role) === 'client') {

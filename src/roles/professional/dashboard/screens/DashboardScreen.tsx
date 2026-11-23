@@ -14,7 +14,7 @@ import { SvgIcon } from '@shared/ui/icon';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import type { IconName } from '@shared/ui/icon';
 import { useGetInterventionsQuery } from '@entities/intervention/api/intervention.api';
-import { useGetUnreadNotificationCountQuery } from '@entities/notification/api/notification.api';
+import { useGetNotificationsQuery } from '@entities/notification/api/notification.api';
 import { useUpdateStatusMutation } from '@roles/professional/availability/api/availability.api';
 import { selectUser } from '@store/slices/authSlice';
 import type { Intervention } from '@entities/intervention/model';
@@ -48,7 +48,7 @@ const ProfessionalHomeDashboard = () => {
     const user = useSelector(selectUser);
     const [updateStatus] = useUpdateStatusMutation();
     const { data, isLoading, refetch } = useGetInterventionsQuery({ type: 'professional' });
-    const { data: unreadData } = useGetUnreadNotificationCountQuery();
+    const { data: notificationsData } = useGetNotificationsQuery({ per_page: 1 });
     const [localOnline, setLocalOnline] = useState<boolean | null>(null);
     const [dialog, setDialog] = useState<DashboardDialog | null>(null);
     const isOnline = localOnline ?? user?.professional?.online_status ?? false;
@@ -142,9 +142,8 @@ const ProfessionalHomeDashboard = () => {
                 <HeaderActions>
                     <NotificationButton accessibilityRole="button" accessibilityLabel={t('client.settings.notifications')} onPress={() => navigation.navigate('Notifications')}>
                         <SvgIcon name="fa-bell" size={21} color={colors.textPrimary} />
-                        {!!unreadData?.count && <NotificationDot><Text variant="notification" color={colors.textInverse}>{unreadData.count > 9 ? '9+' : unreadData.count}</Text></NotificationDot>}
+                        {!!notificationsData?.meta.total && <NotificationDot><Text variant="notification" color={colors.textInverse}>{notificationsData.meta.total > 9 ? '9+' : notificationsData.meta.total}</Text></NotificationDot>}
                     </NotificationButton>
-                    <Avatar><SvgIcon name="fa-user" size={18} color={colors.primary} /></Avatar>
                 </HeaderActions>
             </Header>
 
@@ -202,7 +201,6 @@ const Header = styled.View`flex-direction: row; align-items: center; justify-con
 const HeaderActions = styled.View`flex-direction: row; align-items: center; gap: ${horizontalScale(12)}px;`;
 const NotificationButton = styled(Pressable)`width: ${moderateScale(38)}px; height: ${moderateScale(38)}px; align-items: center; justify-content: center;`;
 const NotificationDot = styled.View`position: absolute; right: 0; top: 0; min-width: ${moderateScale(17)}px; height: ${moderateScale(17)}px; border-radius: ${moderateScale(10)}px; background-color: ${({ theme }) => theme.colors.primary}; align-items: center; justify-content: center; padding-horizontal: ${moderateScale(3)}px;`;
-const Avatar = styled.View`width: ${moderateScale(38)}px; height: ${moderateScale(38)}px; border-radius: ${moderateScale(20)}px; background-color: ${({ theme }) => theme.colors.primaryLighter}; align-items: center; justify-content: center;`;
 const StatusCard = styled.View<{ online: boolean }>`border-width: 1px; border-color: ${({ online, theme }) => online ? theme.colors.success : theme.colors.border}; background-color: ${({ online, theme }) => online ? theme.colors.successLight : theme.colors.surfaceVariant}; border-radius: ${moderateScale(17)}px; padding: ${moderateScale(15)}px; flex-direction: row; align-items: center; margin-bottom: ${verticalScale(24)}px;`;
 const StatusIcon = styled.View<{ online: boolean }>`width: ${moderateScale(44)}px; height: ${moderateScale(44)}px; border-radius: ${moderateScale(23)}px; background-color: ${({ online, theme }) => online ? theme.colors.success : theme.colors.gray500}; align-items: center; justify-content: center; margin-right: ${horizontalScale(12)}px;`;
 const StatusSwitch = styled(Pressable) <{ online: boolean }>`width: ${moderateScale(48)}px; height: ${moderateScale(28)}px; border-radius: ${moderateScale(16)}px; background-color: ${({ online, theme }) => online ? theme.colors.success : theme.colors.gray300}; padding: ${moderateScale(3)}px; justify-content: center;`;

@@ -4,6 +4,26 @@ export const formatRouteDistance = (distanceInKm?: number | null) => {
     return `${distanceInKm.toFixed(1).replace('.', ',')} km`;
 };
 
+export const getRoutePolylineDistanceMeters = (points: ReadonlyArray<{ lat: number; lng: number }>) => {
+    if (points.length < 2 || points.some(point => !Number.isFinite(point.lat) || !Number.isFinite(point.lng))) return null;
+    const radians = (degrees: number) => degrees * Math.PI / 180;
+    let distanceMeters = 0;
+    for (let index = 1; index < points.length; index += 1) {
+        const previous = points[index - 1];
+        const current = points[index];
+        if (!previous || !current) return null;
+        const latitudeDelta = radians(current.lat - previous.lat);
+        const longitudeDelta = radians(current.lng - previous.lng);
+        const previousLatitude = radians(previous.lat);
+        const currentLatitude = radians(current.lat);
+        const rawHaversine = Math.sin(latitudeDelta / 2) ** 2
+            + Math.cos(previousLatitude) * Math.cos(currentLatitude) * Math.sin(longitudeDelta / 2) ** 2;
+        const haversine = Math.min(1, Math.max(0, rawHaversine));
+        distanceMeters += 6371008.8 * 2 * Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine));
+    }
+    return Number.isFinite(distanceMeters) && distanceMeters > 0 ? distanceMeters : null;
+};
+
 export const getRouteFitCoordinates = <T extends { latitude: number; longitude: number }>(
     professional: T | null | undefined,
     client: T | null | undefined,
@@ -22,9 +42,14 @@ export const getProfessionalStatusActions = () => [
 ];
 
 export const getGoogleNavigationWaypoint = (address?: { latitude?: unknown; longitude?: unknown; address?: string | null }) => {
-    const latitude = Number(address?.latitude);
-    const longitude = Number(address?.longitude);
-    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null;
+    const parseCoordinate = (value: unknown, min: number, max: number) => {
+        if (value === null || value === undefined || (typeof value === 'string' && value.trim() === '')) return null;
+        const coordinate = Number(value);
+        return Number.isFinite(coordinate) && coordinate >= min && coordinate <= max ? coordinate : null;
+    };
+    const latitude = parseCoordinate(address?.latitude, -90, 90);
+    const longitude = parseCoordinate(address?.longitude, -180, 180);
+    if (latitude === null || longitude === null) return null;
     return { title: address?.address || '', position: { lat: latitude, lng: longitude } };
 };
 

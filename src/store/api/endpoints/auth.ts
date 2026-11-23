@@ -33,7 +33,7 @@ export const authApiEndpoints = api.injectEndpoints({
             async onQueryStarted(_, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
-                    if ((isUnverifiedAccount(data) && data.user?.type !== UserType.PROFESSIONAL) || !data.user?.id || typeof data.access_token !== 'string' || !data.access_token.trim()) return;
+                    if (isUnverifiedAccount(data) || !data.user?.id || typeof data.access_token !== 'string' || !data.access_token.trim()) return;
                     // Dispatch setCredentials action with the response data
                     dispatch({
                         type: 'auth/setCredentials',
@@ -184,30 +184,6 @@ export const authApiEndpoints = api.injectEndpoints({
             invalidatesTags: ['Auth'],
         }),
 
-        // Get current user profile
-        getProfile: builder.query<ApiResponse<User>, void>({
-            query: () => ({ url: '/api/profile', method: 'GET', validateStatus: acceptApiResponse }),
-            providesTags: ['User'],
-            async onQueryStarted(_, { dispatch, getState, queryFulfilled }) {
-                const session = (getState() as RootState).auth;
-                const userId = session.user?.id;
-                const token = session.token;
-                try {
-                    const { data } = await queryFulfilled;
-                    const current = (getState() as RootState).auth;
-                    if (data.data && current.user?.id === userId && current.token === token && data.data.id === userId) {
-                        // Update user profile in store
-                        dispatch({
-                            type: 'auth/updateUserProfile',
-                            payload: data.data,
-                        });
-                    }
-                } catch (error) {
-                    console.error('Failed to fetch profile:', error);
-                }
-            },
-        }),
-
         // Update user profile
         updateProfile: builder.mutation<ApiResponse<User>, Partial<User>>({
             query: (userData) => ({
@@ -309,7 +285,6 @@ export const {
     useForgotPasswordMutation,
     useResetPasswordMutation,
     useChangePasswordMutation,
-    useGetProfileQuery,
     useUpdateProfileMutation,
     useUpdateNotificationTokenMutation,
     useGetServicesQuery

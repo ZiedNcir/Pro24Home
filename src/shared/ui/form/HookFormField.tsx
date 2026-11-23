@@ -27,6 +27,7 @@ import moment from 'moment';
 import { getLocales } from 'react-native-localize';
 import CountryPicker, { CountryCode } from 'react-native-country-picker-modal';
 import PhoneInput from 'react-native-phone-input';
+import { isValidPhoneNumberForCountry } from '@utils/phone-number';
 
 // Components
 import Text from '@shared/ui/typography/Text';
@@ -73,6 +74,9 @@ export interface FieldProps<T extends FieldValues> extends TextInputProps {
     date?: boolean;
     code?: boolean;
     isPhone?: boolean;
+    validatePhoneByCountry?: boolean;
+    phoneCountryCode?: CountryCode;
+    onPhoneCountryCodeChange?: (countryCode: CountryCode) => void;
     multiline?: boolean;
     defaultDate?: number;
 
@@ -242,6 +246,7 @@ const CodeCell = styled(Text)`
   border-width: ${verticalScale(2)}px;
   border-radius: ${({ theme }) => theme.borderRadius.sm}px;
   border-color: ${({ theme }) => theme.colors.border};
+  background-color: ${({ theme }) => theme.colors.surface};
   text-align: center;
   padding: ${verticalScale(4)}px;
   margin: ${verticalScale(4)}px;
@@ -286,6 +291,9 @@ export function Field<T extends FieldValues>({
     code,
     multiline,
     isPhone,
+    validatePhoneByCountry,
+    phoneCountryCode: controlledPhoneCountryCode,
+    onPhoneCountryCodeChange,
     accessoryRight,
     accessoryLeft,
     disabled,
@@ -333,7 +341,8 @@ export function Field<T extends FieldValues>({
     const [securePassword, toggleSecurePassword] = useToggle(!!password);
     const [focus, setFocus] = useState(false);
     const [open, setOpen] = useState(false);
-    const [phoneCountryCode, setPhoneCountryCode] = useState<CountryCode>('FR');
+    const [internalPhoneCountryCode, setInternalPhoneCountryCode] = useState<CountryCode>('FR');
+    const phoneCountryCode = controlledPhoneCountryCode ?? internalPhoneCountryCode;
     const [showPhoneCountryPicker, setShowPhoneCountryPicker] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState('');
     const [characterCount, setCharacterCount] = useState(0);
@@ -413,6 +422,18 @@ export function Field<T extends FieldValues>({
 
         if (validate) {
             rules.validate = validate;
+        }
+
+        if (validatePhoneByCountry) {
+            const phoneCountryValidator = (value: string) =>
+                value === '' || isValidPhoneNumberForCountry(value, phoneCountryCode) || t('ui.form.phone.invalid');
+            const existingValidate = rules.validate;
+
+            rules.validate = typeof existingValidate === 'object' && existingValidate !== null
+                ? { ...existingValidate, phoneByCountry: phoneCountryValidator }
+                : typeof existingValidate === 'function'
+                    ? { custom: existingValidate, phoneByCountry: phoneCountryValidator }
+                    : phoneCountryValidator;
         }
 
         return rules;
@@ -801,6 +822,7 @@ export function Field<T extends FieldValues>({
                             ref={phoneInput}
                             initialValue={phoneNumber}
                             initialCountry={phoneCountryCode.toLowerCase()}
+                            allowZeroAfterCountryCode={validatePhoneByCountry}
                             onPressFlag={() => setShowPhoneCountryPicker(true)}
                             onChangePhoneNumber={(text) => {
                                 if (disabled || readOnly) return;
@@ -809,7 +831,12 @@ export function Field<T extends FieldValues>({
                             }}
                             autoFormat
                             renderFlag={({ imageSource }) => <View style={styles.countryFlag}>
-                                <Image source={imageSource} style={styles.flagImage} />
+                                <Image
+                                    source={validatePhoneByCountry
+                                        ? phoneInput.current?.getFlag(phoneCountryCode.toLowerCase()) ?? imageSource
+                                        : imageSource}
+                                    style={styles.flagImage}
+                                />
                                 <SvgIcon name="fa-chevron-down" size={9} color={theme.colors.textSecondary} />
                             </View>}
                             textProps={{
@@ -840,7 +867,8 @@ export function Field<T extends FieldValues>({
                         visible={showPhoneCountryPicker}
                         onSelect={(country) => {
                             const newPhone = `+${country.callingCode[0]}`;
-                            setPhoneCountryCode(country.cca2);
+                            setInternalPhoneCountryCode(country.cca2);
+                            onPhoneCountryCodeChange?.(country.cca2);
                             setPhoneNumber(newPhone);
                             handleChangeText(newPhone);
 

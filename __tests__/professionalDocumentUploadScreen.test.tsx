@@ -20,7 +20,6 @@ jest.mock('@shared/ui/layout/ScreenContainer', () => ({ __esModule: true, defaul
 jest.mock('@shared/ui/icon', () => ({ SvgIcon: () => null }));
 jest.mock('@assets/svg/logo-mediumPro24.svg', () => ({ __esModule: true, default: () => null }));
 jest.mock('@core/notifications/toast', () => ({ Toast: { show: jest.fn() } }));
-jest.mock('@entities/user/api/user.api', () => ({ useGetProfileQuery: () => ({ data: { success: true, data: mockUser }, isFetching: false, isError: false, refetch: () => ({ unwrap: async () => ({ success: true, data: mockUser }) }) }) }));
 jest.mock('@roles/professional/documents/api/documents.api', () => ({ useUploadDocumentMutation: () => [mockUpload, { isLoading: false }] }));
 jest.mock('react-native-document-picker', () => ({ __esModule: true, default: { pickSingle: async () => ({ uri: 'file:///document.pdf', name: 'document.pdf', type: 'application/pdf', size: 100 }), isCancel: () => false }, types: { images: 'images', pdf: 'pdf' } }));
 jest.mock('react-native-image-picker', () => ({ launchCamera: jest.fn() }));

@@ -3,7 +3,7 @@ import type { Intervention } from './types';
 
 type BackendIntervention = Partial<Intervention> & {
     adresse_id?: number;
-    adress?: Partial<Address> & { latitude?: number | string; longitude?: number | string };
+    adress?: Partial<Address> & { latitude?: number | string | null; longitude?: number | string | null };
     price?: number | string | null;
 };
 
@@ -12,7 +12,8 @@ export const normalizeInterventionResponse = (response: unknown): Intervention =
     const data = payload.intervention || (payload.data && 'intervention' in payload.data ? payload.data.intervention : payload.data) || response;
     const raw = (data || {}) as BackendIntervention;
     const rawAddress = raw.address || raw.adress;
-    const toNumber = (value?: number | string) => {
+    const toNumber = (value?: number | string | null) => {
+        if (value === null || value === undefined || (typeof value === 'string' && value.trim() === '')) return undefined;
         const number = Number(value);
         return Number.isFinite(number) ? number : undefined;
     };

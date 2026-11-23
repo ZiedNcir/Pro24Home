@@ -2,6 +2,7 @@
 import type { RegisterClientRequest, RegisterProfessionalRequest } from '@entities/user/model/types';
 import i18n from '@utils/i18n';
 import { resolveSupportedLanguage } from '@utils/locale';
+import { normalizePhoneNumberForCountry } from '@utils/phone-number';
 
 /**
  * Auth Service - Centralized authentication business logic
@@ -143,7 +144,8 @@ export const prepareRegistrationPayload = (
   data: any,
   role: 'client' | 'professional',
   onesignalKey: string,
-  selectedServices?: number[]
+  selectedServices?: number[],
+  phoneCountryCode = 'FR'
 ) => {
   if (!onesignalKey.trim()) {
     throw new Error(i18n.t('auth.onesignalKeyRequired'));
@@ -151,6 +153,9 @@ export const prepareRegistrationPayload = (
 
   const basePayload = {
     ...data,
+    phone_number: typeof data.phone_number === 'string'
+      ? normalizePhoneNumberForCountry(data.phone_number, phoneCountryCode)
+      : data.phone_number,
     onesignal_key: onesignalKey,
     lang: resolveSupportedLanguage([
       { languageCode: i18n.resolvedLanguage || i18n.language },

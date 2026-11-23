@@ -18,4 +18,16 @@ describe('intervention detail response normalization', () => {
             address: { id: 23, latitude: 35.3, longitude: 10.71 },
         });
     });
+
+    it('does not turn missing address coordinates into the valid coordinate zero', () => {
+        const result = normalizeInterventionResponse({
+            intervention: {
+                id: 86,
+                adress: { id: 23, address: 'Adresse sans coordonnées', latitude: null, longitude: '' },
+            },
+        });
+
+        expect(result.address?.latitude).toBeUndefined();
+        expect(result.address?.longitude).toBeUndefined();
+    });
 });

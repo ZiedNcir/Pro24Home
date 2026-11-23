@@ -11,19 +11,16 @@ export interface ProfessionalDocumentsViewProps {
     documents: Document[];
     activeType: DocumentType;
     isUploading: boolean;
-    isFetching: boolean;
-    profileError: boolean;
     onChooseFile: () => void | Promise<void>;
     onTakePhoto: () => void | Promise<void>;
     onSelectType: (type: DocumentType) => void;
     onContinue: () => void | Promise<void>;
-    onRefresh: () => void;
     onBack: () => void;
     onHelp: () => void;
 }
 
-const ProfessionalDocumentsView = ({ documents, activeType, isUploading, isFetching, profileError, onChooseFile,
-    onTakePhoto, onSelectType, onContinue, onRefresh, onBack, onHelp }: ProfessionalDocumentsViewProps) => {
+const ProfessionalDocumentsView = ({ documents, activeType, isUploading, onChooseFile,
+    onTakePhoto, onSelectType, onContinue, onBack, onHelp }: ProfessionalDocumentsViewProps) => {
     const { t } = useTranslation();
     const { theme } = useTheme();
     const colors = theme.colors;
@@ -61,11 +58,6 @@ const ProfessionalDocumentsView = ({ documents, activeType, isUploading, isFetch
             <View style={[styles.progressTrack, { backgroundColor: colors.border }]} accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: progress.total, now: progress.submitted, text: `${percent} %` }}>
                 <View style={[styles.progressFill, { backgroundColor: colors.primary, width: `${percent}%` }]} />
             </View>
-
-            {profileError ? <View style={[styles.errorNotice, { backgroundColor: colors.warningLight }]}>
-                <Text variant="regularSmall" color={colors.textPrimary}>{t('auth.onboarding.profileRefreshFailed')}</Text>
-                <Pressable onPress={onRefresh} disabled={isFetching || disabled} accessibilityRole="button"><Text variant="bold" fontSize={13} color={colors.primary}>{t('auth.onboarding.checkDossier')}</Text></Pressable>
-            </View> : null}
 
             {progress.submitted > 0 ? <View style={[styles.sentNotice, { backgroundColor: colors.successLight }]}>
                 <SvgIcon name="fa-check-circle" size={19} color={colors.success} />
@@ -114,7 +106,7 @@ const ProfessionalDocumentsView = ({ documents, activeType, isUploading, isFetch
                 </Pressable>
             </>}
 
-            {complete ? <Pressable onPress={onContinue} disabled={isUploading || isFetching} accessibilityRole="button"
+            {complete ? <Pressable onPress={onContinue} disabled={isUploading} accessibilityRole="button"
                 style={[styles.primaryButton, { backgroundColor: colors.primary }]}>
                 <Text variant="bold" fontSize={16} color={colors.textInverse}>{t('professional.documentDesign.followDossier')}</Text>
                 <SvgIcon name="fa-chevron-right" size={15} color={colors.textInverse} />
@@ -150,7 +142,6 @@ const styles = StyleSheet.create({
     progressTrack: { height: 10, borderRadius: 6, overflow: 'hidden' },
     progressFill: { height: '100%', borderRadius: 6 },
     sentNotice: { marginTop: 22, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 7, flexDirection: 'row', alignItems: 'center', gap: 9 },
-    errorNotice: { marginTop: 16, borderRadius: 10, padding: 12, gap: 8 },
     title: { marginTop: 18 },
     description: { marginTop: 6 },
     uploadArea: { marginTop: 15, minHeight: 160, borderWidth: 1.5, borderStyle: 'dashed', borderRadius: 14, alignItems: 'center', justifyContent: 'center', padding: 16, gap: 9 },
