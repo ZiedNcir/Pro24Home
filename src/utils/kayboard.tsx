@@ -1,5 +1,5 @@
 import React from 'react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import {
   Keyboard,
   TouchableWithoutFeedback,
@@ -24,7 +24,7 @@ export default function useKeyboardOverlay() {
     };
   }, []);
 
-  const Overlay = ({children}: {children?: React.ReactNode}) =>
+  const Overlay = ({ children }: { children?: React.ReactNode }) =>
     isKeyboardVisible ? (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.overlay} pointerEvents="box-none">

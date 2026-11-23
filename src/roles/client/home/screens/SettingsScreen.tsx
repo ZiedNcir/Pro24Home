@@ -15,6 +15,7 @@ import {
   horizontalScale,
   moderateScale,
   verticalScale,
+  fontPixel,
 } from '@utils/normalizedCss';
 import { useNavigation } from '@react-navigation/native';
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
@@ -39,7 +40,11 @@ const ClientSettingsScreen = ({
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [isLanguagePickerVisible, setIsLanguagePickerVisible] = useState(false);
   const [isThemePickerVisible, setIsThemePickerVisible] = useState(false);
-  const currentLanguage: SupportedLanguage = (i18n.resolvedLanguage || i18n.language).startsWith('en') ? 'en' : 'fr';
+  const currentLanguage: SupportedLanguage = (
+    i18n.resolvedLanguage || i18n.language
+  ).startsWith('en')
+    ? 'en'
+    : 'fr';
 
   const closeModal = () => setActiveModal(null);
 
@@ -137,7 +142,7 @@ const ClientSettingsScreen = ({
                 false: theme.colors.border,
                 true: theme.colors.primary,
               }}
-          thumbColor={theme.colors.white}
+              thumbColor={theme.colors.white}
             />
           }
         />
@@ -145,14 +150,22 @@ const ClientSettingsScreen = ({
           icon="fa-info"
           title={t('client.settings.language')}
           description={t('client.settings.languageDescription')}
-          value={currentLanguage === 'en' ? t('client.settings.languageEnglish') : t('client.settings.languageFrench')}
+          value={
+            currentLanguage === 'en'
+              ? t('client.settings.languageEnglish')
+              : t('client.settings.languageFrench')
+          }
           onPress={() => setIsLanguagePickerVisible(true)}
         />
         <SettingsRow
           icon="fa-cog"
           title={t('client.settings.theme')}
           description={t('client.settings.themeDescription')}
-          value={themeMode === 'dark' ? t('client.settings.themeDark') : t('client.settings.themeLight')}
+          value={
+            themeMode === 'dark'
+              ? t('client.settings.themeDark')
+              : t('client.settings.themeLight')
+          }
           onPress={() => setIsThemePickerVisible(true)}
         />
       </SectionCard>
@@ -201,7 +214,11 @@ const ClientSettingsScreen = ({
         activeOpacity={0.75}
       >
         <RowIcon background={theme.colors.dangerLight}>
-          <SvgIcon name="fa-sign-out-alt" size={18} color={theme.colors.danger} />
+          <SvgIcon
+            name="fa-sign-out-alt"
+            size={18}
+            color={theme.colors.danger}
+          />
         </RowIcon>
         <RowContent>
           <Text variant="bold" color={theme.colors.danger} fontSize={14}>
@@ -216,7 +233,11 @@ const ClientSettingsScreen = ({
         {isLoggingOut ? (
           <ActivityIndicator color={theme.colors.danger} />
         ) : (
-          <SvgIcon name="fa-chevron-right" size={14} color={theme.colors.danger} />
+          <SvgIcon
+            name="fa-chevron-right"
+            size={14}
+            color={theme.colors.danger}
+          />
         )}
       </LogoutRow>
 
@@ -264,35 +285,53 @@ const SettingsRow = ({
   accessory,
   onPress,
 }: SettingsRowProps) => (
-  <SettingsRowContent icon={icon} title={title} description={description} value={value} accessory={accessory} onPress={onPress} />
+  <SettingsRowContent
+    icon={icon}
+    title={title}
+    description={description}
+    value={value}
+    accessory={accessory}
+    onPress={onPress}
+  />
 );
 
-const SettingsRowContent = ({ icon, title, description, value, accessory, onPress }: SettingsRowProps) => {
+const SettingsRowContent = ({
+  icon,
+  title,
+  description,
+  value,
+  accessory,
+  onPress,
+}: SettingsRowProps) => {
   const { theme } = useTheme();
   return (
-  <Row onPress={onPress} disabled={!onPress} activeOpacity={0.75}>
-    <RowIcon>
-      <SvgIcon name={icon} size={18} color={theme.colors.primary} />
-    </RowIcon>
-    <RowContent>
-      <Text variant="bold" color={theme.colors.textPrimary} fontSize={14}>
-        {title}
-      </Text>
-      <Text variant="regularSmall" color={theme.colors.textSecondary}>
-        {description}
-      </Text>
-    </RowContent>
-    {accessory || (
-      <>
-        {value ? (
-          <Text variant="regular" color={theme.colors.gray700}>
-            {value}
-          </Text>
-        ) : null}
-        <SvgIcon name="fa-chevron-right" size={14} color={theme.colors.gray700} />
-      </>
-    )}
-  </Row>
+    <Row onPress={onPress} disabled={!onPress} activeOpacity={0.75}>
+      <RowIcon>
+        <SvgIcon name={icon} size={18} color={theme.colors.primary} />
+      </RowIcon>
+      <RowContent>
+        <Text variant="bold" color={theme.colors.textPrimary} fontSize={14}>
+          {title}
+        </Text>
+        <Text variant="regularSmall" color={theme.colors.textSecondary}>
+          {description}
+        </Text>
+      </RowContent>
+      {accessory || (
+        <>
+          {value ? (
+            <Text variant="regular" color={theme.colors.gray700}>
+              {value}
+            </Text>
+          ) : null}
+          <SvgIcon
+            name="fa-chevron-right"
+            size={14}
+            color={theme.colors.gray700}
+          />
+        </>
+      )}
+    </Row>
   );
 };
 
@@ -336,22 +375,21 @@ const SettingsModal = ({
               <Text variant="bold" color={theme.colors.textPrimary}>
                 {t('client.settings.faqTracking')}
               </Text>
-              {'\n'}{t('client.settings.faqTrackingAnswer')}{'\n\n'}
+              {'\n'}
+              {t('client.settings.faqTrackingAnswer')}
+              {'\n\n'}
               <Text variant="bold" color={theme.colors.textPrimary}>
                 {t('client.settings.faqPrice')}
               </Text>
-              {'\n'}{t('client.settings.faqPriceAnswer')}
+              {'\n'}
+              {t('client.settings.faqPriceAnswer')}
             </ModalText>
           ) : null}
           {type === 'terms' ? (
-            <ModalText>
-              {t('client.settings.termsCopy')}
-            </ModalText>
+            <ModalText>{t('client.settings.termsCopy')}</ModalText>
           ) : null}
           {type === 'payment' ? (
-            <ModalText>
-              {t('client.settings.paymentCopy')}
-            </ModalText>
+            <ModalText>{t('client.settings.paymentCopy')}</ModalText>
           ) : null}
         </ModalSheet>
       </ModalBackdrop>
@@ -374,7 +412,12 @@ const LanguagePickerModal = ({
   const { theme } = useTheme();
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={onClose}
+    >
       <ModalBackdrop>
         <ModalSheet>
           <ModalHandle />
@@ -382,8 +425,14 @@ const LanguagePickerModal = ({
             <Text variant="bold" color={theme.colors.textPrimary} fontSize={17}>
               {t('client.settings.language')}
             </Text>
-            <CloseButton onPress={onClose} accessibilityRole="button" accessibilityLabel={t('common.actions.cancel')}>
-              <Text variant="bold" color="gray600" fontSize={18}>×</Text>
+            <CloseButton
+              onPress={onClose}
+              accessibilityRole="button"
+              accessibilityLabel={t('common.actions.cancel')}
+            >
+              <Text variant="bold" color="gray600" fontSize={18}>
+                ×
+              </Text>
             </CloseButton>
           </ModalHeader>
           <PickerOption
@@ -391,20 +440,30 @@ const LanguagePickerModal = ({
             accessibilityState={{ selected: selectedLanguage === 'fr' }}
             onPress={() => onSelect('fr')}
           >
-            <Text variant={selectedLanguage === 'fr' ? 'bold' : 'regular'} color={theme.colors.textPrimary}>
+            <Text
+              variant={selectedLanguage === 'fr' ? 'bold' : 'regular'}
+              color={theme.colors.textPrimary}
+            >
               {t('client.settings.languageFrench')}
             </Text>
-            {selectedLanguage === 'fr' ? <SvgIcon name="fa-check" size={16} color={theme.colors.primary} /> : null}
+            {selectedLanguage === 'fr' ? (
+              <SvgIcon name="fa-check" size={16} color={theme.colors.primary} />
+            ) : null}
           </PickerOption>
           <PickerOption
             accessibilityRole="button"
             accessibilityState={{ selected: selectedLanguage === 'en' }}
             onPress={() => onSelect('en')}
           >
-            <Text variant={selectedLanguage === 'en' ? 'bold' : 'regular'} color={theme.colors.textPrimary}>
+            <Text
+              variant={selectedLanguage === 'en' ? 'bold' : 'regular'}
+              color={theme.colors.textPrimary}
+            >
               {t('client.settings.languageEnglish')}
             </Text>
-            {selectedLanguage === 'en' ? <SvgIcon name="fa-check" size={16} color={theme.colors.primary} /> : null}
+            {selectedLanguage === 'en' ? (
+              <SvgIcon name="fa-check" size={16} color={theme.colors.primary} />
+            ) : null}
           </PickerOption>
         </ModalSheet>
       </ModalBackdrop>
@@ -427,7 +486,12 @@ const ThemePickerModal = ({
   const { theme } = useTheme();
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={onClose}
+    >
       <ModalBackdrop>
         <ModalSheet>
           <ModalHandle />
@@ -435,8 +499,14 @@ const ThemePickerModal = ({
             <Text variant="bold" color={theme.colors.textPrimary} fontSize={17}>
               {t('client.settings.theme')}
             </Text>
-            <CloseButton onPress={onClose} accessibilityRole="button" accessibilityLabel={t('common.actions.cancel')}>
-              <Text variant="bold" color="gray600" fontSize={18}>×</Text>
+            <CloseButton
+              onPress={onClose}
+              accessibilityRole="button"
+              accessibilityLabel={t('common.actions.cancel')}
+            >
+              <Text variant="bold" color="gray600" fontSize={18}>
+                ×
+              </Text>
             </CloseButton>
           </ModalHeader>
           <PickerOption
@@ -444,20 +514,30 @@ const ThemePickerModal = ({
             accessibilityState={{ selected: selectedMode === 'light' }}
             onPress={() => onSelect('light')}
           >
-            <Text variant={selectedMode === 'light' ? 'bold' : 'regular'} color={theme.colors.textPrimary}>
+            <Text
+              variant={selectedMode === 'light' ? 'bold' : 'regular'}
+              color={theme.colors.textPrimary}
+            >
               {t('client.settings.themeLight')}
             </Text>
-            {selectedMode === 'light' ? <SvgIcon name="fa-check" size={16} color={theme.colors.primary} /> : null}
+            {selectedMode === 'light' ? (
+              <SvgIcon name="fa-check" size={16} color={theme.colors.primary} />
+            ) : null}
           </PickerOption>
           <PickerOption
             accessibilityRole="button"
             accessibilityState={{ selected: selectedMode === 'dark' }}
             onPress={() => onSelect('dark')}
           >
-            <Text variant={selectedMode === 'dark' ? 'bold' : 'regular'} color={theme.colors.textPrimary}>
+            <Text
+              variant={selectedMode === 'dark' ? 'bold' : 'regular'}
+              color={theme.colors.textPrimary}
+            >
               {t('client.settings.themeDark')}
             </Text>
-            {selectedMode === 'dark' ? <SvgIcon name="fa-check" size={16} color={theme.colors.primary} /> : null}
+            {selectedMode === 'dark' ? (
+              <SvgIcon name="fa-check" size={16} color={theme.colors.primary} />
+            ) : null}
           </PickerOption>
         </ModalSheet>
       </ModalBackdrop>
@@ -477,11 +557,11 @@ const Subtitle = styled(Text).attrs({ variant: 'regular', color: 'gray600' })`
 const SectionLabel = styled(Text).attrs({
   variant: 'bold',
   color: 'gray700',
-  fontSize: 12,
+  fontSize: fontPixel(12),
 })`
   margin-top: ${verticalScale(24)}px;
   margin-bottom: ${verticalScale(8)}px;
-  letter-spacing: 0.5px;
+  letter-spacing: ${fontPixel(0.5)}px;
 `;
 const SectionCard = styled.View`
   border-width: 1px;
@@ -501,7 +581,8 @@ const RowIcon = styled.View<{ background?: string }>`
   width: ${horizontalScale(38)}px;
   height: ${horizontalScale(38)}px;
   border-radius: ${moderateScale(12)}px;
-  background-color: ${({ background, theme }) => background || theme.colors.primaryLighter};
+  background-color: ${({ background, theme }) =>
+    background || theme.colors.primaryLighter};
   justify-content: center;
   align-items: center;
   margin-right: ${horizontalScale(12)}px;
@@ -539,7 +620,7 @@ const ModalSheet = styled.View`
 const ModalHandle = styled.View`
   width: ${horizontalScale(42)}px;
   height: ${verticalScale(4)}px;
-  border-radius: 2px;
+  border-radius: ${moderateScale(2)}px;
   background-color: ${({ theme }) => theme.colors.gray300};
   align-self: center;
   margin-bottom: ${verticalScale(14)}px;
@@ -553,13 +634,13 @@ const ModalHeader = styled.View`
 const CloseButton = styled.TouchableOpacity`
   width: ${horizontalScale(34)}px;
   height: ${horizontalScale(34)}px;
-  border-radius: 17px;
+  border-radius: ${moderateScale(17)}px;
   background-color: ${({ theme }) => theme.colors.surfaceVariant};
   justify-content: center;
   align-items: center;
 `;
 const ModalText = styled(Text).attrs({ variant: 'regular', color: 'gray700' })`
-  line-height: 22px;
+  line-height: ${fontPixel(22)}px;
   padding-bottom: ${verticalScale(12)}px;
 `;
 const PickerOption = styled.TouchableOpacity`

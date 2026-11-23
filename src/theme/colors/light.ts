@@ -2,8 +2,7 @@ import type { ThemeColors } from './types';
 
 export const lightColors: ThemeColors = {
   primary: '#FF6B00',
-  primaryDark:
-    '#E55E00',
+  primaryDark: '#E55E00',
   primaryLight: '#FF944D',
   primaryLighter: '#FFD9BF',
   secondary: '#1A1A1A',

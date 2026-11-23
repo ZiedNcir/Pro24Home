@@ -11,28 +11,27 @@ import FeatureHighlights from '@roles/client/home/ui/FeatureHighlights';
 import { useTheme } from '@theme';
 
 const ClientHome = () => {
-    const { themeMode } = useTheme();
+  const { themeMode } = useTheme();
 
-    return (
-        <ScreenContainer
-            mode={themeMode}
-            scrollable
-            paddingHorizontal={horizontalScale(18)}
-            paddingVertical={verticalScale(14)}
-            contentContainerStyle={{
-                paddingBottom: verticalScale(190),
-            }}
-        >
-            <HeaderLocation />
+  return (
+    <ScreenContainer
+      mode={themeMode}
+      scrollable
+      paddingHorizontal={horizontalScale(18)}
+      paddingVertical={verticalScale(14)}
+      contentContainerStyle={{
+        paddingBottom: verticalScale(190),
+      }}
+    >
+      <HeaderLocation />
 
-            <Content>
-                <HeroBanner />
-                <ServiceCategoryGrid />
-                <FeatureHighlights />
-
-            </Content>
-        </ScreenContainer>
-    );
+      <Content>
+        <HeroBanner />
+        <ServiceCategoryGrid />
+        <FeatureHighlights />
+      </Content>
+    </ScreenContainer>
+  );
 };
 
 export default ClientHome;

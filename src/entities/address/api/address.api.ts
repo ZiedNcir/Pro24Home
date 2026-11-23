@@ -1,1 +1,5 @@
-export { useAddAddressMutation, useDeleteAddressMutation, useGetAddressesQuery } from '../../../store/api/endpoints/client';
+export {
+  useAddAddressMutation,
+  useDeleteAddressMutation,
+  useGetAddressesQuery,
+} from '../../../store/api/endpoints/client';

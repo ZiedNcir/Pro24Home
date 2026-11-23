@@ -7,58 +7,75 @@ import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
-import { horizontalScale, verticalScale } from '@utils/normalizedCss';
+import {
+  horizontalScale,
+  verticalScale,
+  moderateScale,
+} from '@utils/normalizedCss';
 import { useTheme } from '@theme';
 import { selectUser } from '@store/slices/authSlice';
 import { useGetUnreadNotificationCountQuery } from '@entities/notification/api/notification.api';
 
 const ClientHomeHeader = () => {
-    const { t } = useTranslation();
-    const { theme } = useTheme();
-    const user = useSelector(selectUser);
-    const { data: unreadData } = useGetUnreadNotificationCountQuery(undefined, { refetchOnMountOrArgChange: true });
-    const unreadCount = unreadData?.count ?? 0;
-    const displayName = user?.client
-        ? `${user.client.first_name} ${user.client.last_name}`.trim()
-        : user?.name || t('client.home.user');
-    return (
-        <Container>
-            <Left>
-                <LocationRow>
-                    <SvgIcon name="fa-map-marker-alt" size={16} color={theme.colors.primary} />
-                    <Text variant="medium" color="black">
-                        {t('client.home.myLocation')}
-                    </Text>
-                    <SvgIcon name="fa-chevron-down" size={12} color={theme.colors.gray600} />
-                </LocationRow>
+  const { t } = useTranslation();
+  const { theme } = useTheme();
+  const user = useSelector(selectUser);
+  const { data: unreadData } = useGetUnreadNotificationCountQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+  const unreadCount = unreadData?.count ?? 0;
+  const displayName = user?.client
+    ? `${user.client.first_name} ${user.client.last_name}`.trim()
+    : user?.name || t('client.home.user');
+  return (
+    <Container>
+      <Left>
+        <LocationRow>
+          <SvgIcon
+            name="fa-map-marker-alt"
+            size={16}
+            color={theme.colors.primary}
+          />
+          <Text variant="medium" color="black">
+            {t('client.home.myLocation')}
+          </Text>
+          <SvgIcon
+            name="fa-chevron-down"
+            size={12}
+            color={theme.colors.gray600}
+          />
+        </LocationRow>
 
-                <Title>
-                    <Text variant="bold" fontSize={26}>
-                        {t('client.home.hello')}{' '}
-                    </Text>
-                    <Text variant="bold" color="primary" fontSize={26}>
-                        {displayName}
-                    </Text>
-                    <Text variant="bold" fontSize={26}>
-                        {' '}👋
-                    </Text>
-                </Title>
+        <Title>
+          <Text variant="bold" fontSize={26}>
+            {t('client.home.hello')}{' '}
+          </Text>
+          <Text variant="bold" color="primary" fontSize={26}>
+            {displayName}
+          </Text>
+          <Text variant="bold" fontSize={26}>
+            {' '}
+            👋
+          </Text>
+        </Title>
 
-                <Text variant="regular" color="gray600">
-                    {t('client.home.headline')}
-                </Text>
-            </Left>
+        <Text variant="regular" color="gray600">
+          {t('client.home.headline')}
+        </Text>
+      </Left>
 
-            <Bell>
-                <SvgIcon name="fa-bell" size={22} color={theme.colors.textPrimary} />
-                {unreadCount > 0 && <Badge>
-                    <Text variant="notification" color="white">
-                        {unreadCount > 9 ? '9+' : unreadCount}
-                    </Text>
-                </Badge>}
-            </Bell>
-        </Container>
-    );
+      <Bell>
+        <SvgIcon name="fa-bell" size={22} color={theme.colors.textPrimary} />
+        {unreadCount > 0 && (
+          <Badge>
+            <Text variant="notification" color="white">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </Text>
+          </Badge>
+        )}
+      </Bell>
+    </Container>
+  );
 };
 
 export default ClientHomeHeader;
@@ -95,12 +112,12 @@ const Bell = styled.TouchableOpacity`
 
 const Badge = styled.View`
   position: absolute;
-  top: 4px;
-  right: 2px;
+  top: ${verticalScale(4)}px;
+  right: ${horizontalScale(2)}px;
   background-color: ${({ theme }) => theme.colors.primary};
-  width: 20px;
-  height: 20px;
-  border-radius: 10px;
+  width: ${horizontalScale(20)}px;
+  height: ${verticalScale(20)}px;
+  border-radius: ${moderateScale(10)}px;
   justify-content: center;
   align-items: center;
 `;

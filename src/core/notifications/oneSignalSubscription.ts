@@ -21,17 +21,25 @@ const subscriptionListeners = new Set<SubscriptionListener>();
 const readSubscriptionId: SubscriptionIdReader = () =>
   OneSignal.User.pushSubscription.getIdAsync();
 
-const isRegisteredSubscriptionId = (subscriptionId: string | null): subscriptionId is string =>
+const isRegisteredSubscriptionId = (
+  subscriptionId: string | null,
+): subscriptionId is string =>
   Boolean(subscriptionId && !subscriptionId.startsWith('local-'));
 
 const publishSubscriptionId = (subscriptionId: string | null): void => {
-  if (!isRegisteredSubscriptionId(subscriptionId) || currentSubscriptionId === subscriptionId) return;
+  if (
+    !isRegisteredSubscriptionId(subscriptionId) ||
+    currentSubscriptionId === subscriptionId
+  )
+    return;
 
   currentSubscriptionId = subscriptionId;
   subscriptionListeners.forEach(listener => listener(subscriptionId));
 };
 
-const onPushSubscriptionChange = (event: { current: { id?: string } }): void => {
+const onPushSubscriptionChange = (event: {
+  current: { id?: string };
+}): void => {
   publishSubscriptionId(event.current.id ?? null);
 };
 
@@ -41,11 +49,18 @@ export const initializeOneSignal = (): void => {
   initialized = true;
   OneSignal.Debug.setLogLevel(LogLevel.Verbose);
   OneSignal.initialize(ONESIGNAL_APP_ID);
-  OneSignal.User.pushSubscription.addEventListener('change', onPushSubscriptionChange);
-  readSubscriptionId().then(publishSubscriptionId).catch(() => undefined);
+  OneSignal.User.pushSubscription.addEventListener(
+    'change',
+    onPushSubscriptionChange,
+  );
+  readSubscriptionId()
+    .then(publishSubscriptionId)
+    .catch(() => undefined);
 };
 
-export const subscribeToOneSignalSubscription = (listener: SubscriptionListener): (() => void) => {
+export const subscribeToOneSignalSubscription = (
+  listener: SubscriptionListener,
+): (() => void) => {
   subscriptionListeners.add(listener);
   if (currentSubscriptionId) listener(currentSubscriptionId);
 
@@ -86,7 +101,7 @@ export const getOneSignalSubscriptionId = async (
     : waitForId();
 
   const hasPermission = await permission.getPermission();
-  const granted = hasPermission || await permission.requestPermission(true);
+  const granted = hasPermission || (await permission.requestPermission(true));
 
   if (!granted) {
     throw new Error('Notification permission is required');

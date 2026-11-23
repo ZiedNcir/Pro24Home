@@ -1,57 +1,56 @@
-
 import React from 'react';
 import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import {
-    horizontalScale,
-    verticalScale,
-    moderateScale,
+  horizontalScale,
+  verticalScale,
+  moderateScale,
 } from '@utils/normalizedCss';
 import { useTheme } from '@theme';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
-    primaryTitle: string;
-    secondaryTitle?: string;
-    onPrimaryPress: () => void;
-    onSecondaryPress?: () => void;
-    primaryDisabled?: boolean;
+  primaryTitle: string;
+  secondaryTitle?: string;
+  onPrimaryPress: () => void;
+  onSecondaryPress?: () => void;
+  primaryDisabled?: boolean;
 }
 
 const BottomActions: React.FC<Props> = ({
-    primaryTitle,
-    secondaryTitle,
-    onPrimaryPress,
-    onSecondaryPress,
-    primaryDisabled = false,
+  primaryTitle,
+  secondaryTitle,
+  onPrimaryPress,
+  onSecondaryPress,
+  primaryDisabled = false,
 }) => {
-    const { theme } = useTheme();
-    const { t } = useTranslation();
-    return (
-        <Wrapper>
-            {onSecondaryPress ? (
-                <SecondaryButton onPress={onSecondaryPress}>
-                    <Text variant="bold" color="black" fontSize={13}>
-                        {secondaryTitle ?? t('common.actions.previous')}
-                    </Text>
-                </SecondaryButton>
-            ) : null}
+  const { theme } = useTheme();
+  const { t } = useTranslation();
+  return (
+    <Wrapper>
+      {onSecondaryPress ? (
+        <SecondaryButton onPress={onSecondaryPress}>
+          <Text variant="bold" color="black" fontSize={13}>
+            {secondaryTitle ?? t('common.actions.previous')}
+          </Text>
+        </SecondaryButton>
+      ) : null}
 
-            <PrimaryButton
-                onPress={onPrimaryPress}
-                disabled={primaryDisabled}
-                activeOpacity={0.8}
-                primaryDisabled={primaryDisabled}
-            >
-                <Text variant="bold" color="white" fontSize={13}>
-                    {primaryTitle}
-                </Text>
-                <SvgIcon name="fa-chevron-right" size={14} color={theme.colors.white} />
-            </PrimaryButton>
-        </Wrapper>
-    );
+      <PrimaryButton
+        onPress={onPrimaryPress}
+        disabled={primaryDisabled}
+        activeOpacity={0.8}
+        primaryDisabled={primaryDisabled}
+      >
+        <Text variant="bold" color="white" fontSize={13}>
+          {primaryTitle}
+        </Text>
+        <SvgIcon name="fa-chevron-right" size={14} color={theme.colors.white} />
+      </PrimaryButton>
+    </Wrapper>
+  );
 };
 
 export default BottomActions;
@@ -77,7 +76,8 @@ const PrimaryButton = styled.TouchableOpacity<{ primaryDisabled: boolean }>`
   flex: 2;
   height: ${verticalScale(50)}px;
   border-radius: ${moderateScale(12)}px;
-  background-color: ${({ primaryDisabled, theme }) => (primaryDisabled ? theme.colors.gray300 : theme.colors.primary)};
+  background-color: ${({ primaryDisabled, theme }) =>
+    primaryDisabled ? theme.colors.gray300 : theme.colors.primary};
   justify-content: center;
   align-items: center;
   flex-direction: row;

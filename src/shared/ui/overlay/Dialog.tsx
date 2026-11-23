@@ -1,3 +1,4 @@
+import { horizontalScale, moderateScale } from '@utils/normalizedCss';
 import React from 'react';
 import { Modal, Pressable, StyleSheet } from 'react-native';
 import { useTheme } from '@theme';
@@ -11,17 +12,33 @@ export interface DialogProps {
 export const Dialog = ({ visible, onDismiss, children }: DialogProps) => {
   const { theme } = useTheme();
   return (
-  <Modal transparent visible={visible} onRequestClose={onDismiss}>
-    <Pressable onPress={onDismiss} style={[styles.overlay, { backgroundColor: theme.colors.overlay }]}>
-      <Pressable onPress={event => event.stopPropagation()} style={[styles.content, { backgroundColor: theme.colors.surface }]}>
-        {children}
+    <Modal transparent visible={visible} onRequestClose={onDismiss}>
+      <Pressable
+        onPress={onDismiss}
+        style={[styles.overlay, { backgroundColor: theme.colors.overlay }]}
+      >
+        <Pressable
+          onPress={event => event.stopPropagation()}
+          style={[styles.content, { backgroundColor: theme.colors.surface }]}
+        >
+          {children}
+        </Pressable>
       </Pressable>
-    </Pressable>
-  </Modal>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  overlay: { alignItems: 'center', flex: 1, justifyContent: 'center', padding: 20 },
-  content: { borderRadius: 12, maxWidth: 400, padding: 20, width: '100%' },
+  overlay: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    padding: moderateScale(20),
+  },
+  content: {
+    borderRadius: moderateScale(12),
+    maxWidth: horizontalScale(400),
+    padding: moderateScale(20),
+    width: '100%',
+  },
 });

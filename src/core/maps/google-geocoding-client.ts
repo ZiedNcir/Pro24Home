@@ -6,7 +6,11 @@ export const reverseGeocode = async (latitude: number, longitude: number) => {
   );
   const body = await response.json();
 
-  if (!response.ok || body?.status !== 'OK' || !body.results?.[0]?.formatted_address) {
+  if (
+    !response.ok ||
+    body?.status !== 'OK' ||
+    !body.results?.[0]?.formatted_address
+  ) {
     throw new Error('Impossible de déterminer cette adresse.');
   }
 

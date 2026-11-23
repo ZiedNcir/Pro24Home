@@ -12,17 +12,11 @@ import {
   Platform,
 } from 'react-native';
 import styled, { css } from 'styled-components/native';
-import {
-  SafeAreaView,
-  Edge,
-} from 'react-native-safe-area-context';
+import { SafeAreaView, Edge } from 'react-native-safe-area-context';
 
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 
-import {
-  horizontalScale,
-  verticalScale,
-} from '@utils/normalizedCss';
+import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 
 import { useTheme } from '@theme';
 
@@ -163,7 +157,7 @@ const StyledScrollView = styled(ScrollView)`
   flex: 1;
 `;
 
-const ContentInner = styled(View) <{
+const ContentInner = styled(View)<{
   paddingHorizontal: number;
   paddingVertical: number;
   centered?: boolean;

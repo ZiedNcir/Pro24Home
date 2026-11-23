@@ -47,7 +47,12 @@ const InterventionHeader: React.FC<Props> = ({
         {title ?? t('navigation.newIntervention')}
       </Text>
 
-      <IconButton onPress={onHelp} accessibilityRole="button" accessibilityLabel={t('professional.documents.help')} disabled={!onHelp}>
+      <IconButton
+        onPress={onHelp}
+        accessibilityRole="button"
+        accessibilityLabel={t('professional.documents.help')}
+        disabled={!onHelp}
+      >
         {showHelp ? (
           <SvgIcon
             name="fa-question-circle"

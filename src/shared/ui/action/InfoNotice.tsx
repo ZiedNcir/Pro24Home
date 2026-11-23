@@ -1,45 +1,44 @@
-
 import React from 'react';
 import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import {
-    horizontalScale,
-    verticalScale,
-    moderateScale,
+  horizontalScale,
+  verticalScale,
+  moderateScale,
 } from '@utils/normalizedCss';
 import { useTheme } from '@theme';
 
 interface Props {
-    icon: string;
-    title: string;
-    description: string;
+  icon: string;
+  title: string;
+  description: string;
 }
 
 const InfoNotice: React.FC<Props> = ({ icon, title, description }) => {
-    const { theme } = useTheme();
-    return (
-        <Notice>
-            <IconBox>
-                <SvgIcon name={icon as any} size={18} color={theme.colors.primary} />
-            </IconBox>
+  const { theme } = useTheme();
+  return (
+    <Notice>
+      <IconBox>
+        <SvgIcon name={icon as any} size={18} color={theme.colors.primary} />
+      </IconBox>
 
-            <Content>
-                <Text variant="bold" color="black" fontSize={13}>
-                    {title}
-                </Text>
+      <Content>
+        <Text variant="bold" color="black" fontSize={13}>
+          {title}
+        </Text>
 
-                <Text
-                    variant="regularSmall"
-                    color="gray600"
-                    style={{ marginTop: verticalScale(4) }}
-                >
-                    {description}
-                </Text>
-            </Content>
-        </Notice>
-    );
+        <Text
+          variant="regularSmall"
+          color="gray600"
+          style={{ marginTop: verticalScale(4) }}
+        >
+          {description}
+        </Text>
+      </Content>
+    </Notice>
+  );
 };
 
 export default InfoNotice;

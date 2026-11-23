@@ -1,8 +1,14 @@
 import { useFindProfessionalsByAddressMutation } from '@store/api/endpoints/client';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '@store/slices/authSlice';
-import { localInterventionsApi, useGetLocalInterventionsQuery } from '@entities/intervention/api/local-interventions.api';
-import { LocalInterventionStorageError, submitInterventionRequest } from '@entities/intervention/model/local-interventions';
+import {
+  localInterventionsApi,
+  useGetLocalInterventionsQuery,
+} from '@entities/intervention/api/local-interventions.api';
+import {
+  LocalInterventionStorageError,
+  submitInterventionRequest,
+} from '@entities/intervention/model/local-interventions';
 
 import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +19,12 @@ import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
-import { horizontalScale, verticalScale, moderateScale } from '@utils/normalizedCss';
+import {
+  horizontalScale,
+  verticalScale,
+  moderateScale,
+  fontPixel,
+} from '@utils/normalizedCss';
 import { useTheme } from '@theme';
 import { useNavigation } from '@react-navigation/core';
 import { useRoute, type RouteProp } from '@react-navigation/native';
@@ -22,141 +33,170 @@ import { useAddInterventionMutation } from '@entities/intervention/api/intervent
 import { AppStackType } from '../../../../navigation/constant/core';
 
 export const PaymentTravelFeeScreen = () => {
-    const { t } = useTranslation();
-    const { theme } = useTheme();
-    const colors = theme.colors;
-    const [selectedCard, setSelectedCard] = useState('main');
-    const navigation = useNavigation();
-    const route = useRoute<RouteProp<AppStackType, 'PaymentTravelFee'>>();
-    const [addIntervention, { isLoading }] = useAddInterventionMutation();
-    const user = useSelector(selectUser);
-    const dispatch = useDispatch();
-    const localQuery = useGetLocalInterventionsQuery(user?.id ?? 0, { skip: !user });
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const submitting = useRef(false);
-    const recordId = useRef(route.params.localInterventionId || `local-${Date.now()}-${Math.random().toString(36).slice(2)}`);
-    const createdAt = useRef(new Date().toISOString());
-    const [findProfessionals] = useFindProfessionalsByAddressMutation();
-    const checkPriceWithProfessional = route.params?.checkPriceWithProfessional;
+  const { t } = useTranslation();
+  const { theme } = useTheme();
+  const colors = theme.colors;
+  const [selectedCard, setSelectedCard] = useState('main');
+  const navigation = useNavigation();
+  const route = useRoute<RouteProp<AppStackType, 'PaymentTravelFee'>>();
+  const [addIntervention, { isLoading }] = useAddInterventionMutation();
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+  const localQuery = useGetLocalInterventionsQuery(user?.id ?? 0, {
+    skip: !user,
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitting = useRef(false);
+  const recordId = useRef(
+    route.params.localInterventionId ||
+      `local-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+  );
+  const createdAt = useRef(new Date().toISOString());
+  const [findProfessionals] = useFindProfessionalsByAddressMutation();
+  const checkPriceWithProfessional = route.params?.checkPriceWithProfessional;
 
-    const handlePayment = async () => {
-        if (!user || submitting.current) return;
-        submitting.current = true;
-        setIsSubmitting(true);
-        try {
-            const existing = localQuery.currentData?.find(item => item.id === recordId.current);
-            const result = await submitInterventionRequest({
-                userId: user.id,
-                record: existing || {
-                    id: recordId.current,
-                    createdAt: createdAt.current,
-                    payload: route.params.intervention,
-                    snapshot: route.params.snapshot || { serviceName: route.params.intervention.title },
-                    checkPriceWithProfessional,
-                },
-                findProfessionals: location => findProfessionals(location).unwrap(),
-                submit: payload => addIntervention(payload).unwrap(),
-            });
-            dispatch(localInterventionsApi.util.invalidateTags([{ type: 'LocalInterventions', id: user.id }]));
-            if (result === 'unavailable') {
-                Toast.show(t('intervention.local.saved'), { type: 'warning', placement: 'bottom' });
-                (navigation as any).replace('InterventionDetail', { intervention_id: 0, localInterventionId: recordId.current });
-            } else {
-                (navigation as any).navigate('InterventionSuccess');
-            }
-        } catch (error: any) {
-            Toast.show(error instanceof LocalInterventionStorageError ? t('intervention.local.saveFailed') : error?.data?.message || error?.message || t('payment.travel.failed'), {
-                type: 'danger',
-                placement: 'bottom',
-            });
-        } finally {
-            submitting.current = false;
-            setIsSubmitting(false);
-        }
-    };
+  const handlePayment = async () => {
+    if (!user || submitting.current) return;
+    submitting.current = true;
+    setIsSubmitting(true);
+    try {
+      const existing = localQuery.currentData?.find(
+        item => item.id === recordId.current,
+      );
+      const result = await submitInterventionRequest({
+        userId: user.id,
+        record: existing || {
+          id: recordId.current,
+          createdAt: createdAt.current,
+          payload: route.params.intervention,
+          snapshot: route.params.snapshot || {
+            serviceName: route.params.intervention.title,
+          },
+          checkPriceWithProfessional,
+        },
+        findProfessionals: location => findProfessionals(location).unwrap(),
+        submit: payload => addIntervention(payload).unwrap(),
+      });
+      dispatch(
+        localInterventionsApi.util.invalidateTags([
+          { type: 'LocalInterventions', id: user.id },
+        ]),
+      );
+      if (result === 'unavailable') {
+        Toast.show(t('intervention.local.saved'), {
+          type: 'warning',
+          placement: 'bottom',
+        });
+        (navigation as any).replace('InterventionDetail', {
+          intervention_id: 0,
+          localInterventionId: recordId.current,
+        });
+      } else {
+        (navigation as any).navigate('InterventionSuccess');
+      }
+    } catch (error: any) {
+      Toast.show(
+        error instanceof LocalInterventionStorageError
+          ? t('intervention.local.saveFailed')
+          : error?.data?.message ||
+              error?.message ||
+              t('payment.travel.failed'),
+        {
+          type: 'danger',
+          placement: 'bottom',
+        },
+      );
+    } finally {
+      submitting.current = false;
+      setIsSubmitting(false);
+    }
+  };
 
-    return (
-        <ScreenContainer
-            paddingHorizontal={horizontalScale(18)}
-            paddingVertical={verticalScale(12)}
-        >
-            <InterventionHeader title={t('payment.travel.title')} showHelp={false} />
+  return (
+    <ScreenContainer
+      paddingHorizontal={horizontalScale(18)}
+      paddingVertical={verticalScale(12)}
+    >
+      <InterventionHeader title={t('payment.travel.title')} showHelp={false} />
 
-            <HeroIcon>
-                <SvgIcon name="fa-credit-card" size={42} color={colors.primary} />
-            </HeroIcon>
+      <HeroIcon>
+        <SvgIcon name="fa-credit-card" size={42} color={colors.primary} />
+      </HeroIcon>
 
-            <Title>{t('payment.travel.confirmRequest')}</Title>
+      <Title>{t('payment.travel.confirmRequest')}</Title>
 
-            <Description>
-                {t('payment.travel.description')}
-            </Description>
+      <Description>{t('payment.travel.description')}</Description>
 
-            {checkPriceWithProfessional ? (
-                <ProfessionalNote>
-                    <SvgIcon name="fa-user-check" size={16} color={colors.primary} />
-                    <Text variant="regularSmall" color="gray700">
-                        {t('payment.travel.proReview')}
-                    </Text>
-                </ProfessionalNote>
-            ) : null}
+      {checkPriceWithProfessional ? (
+        <ProfessionalNote>
+          <SvgIcon name="fa-user-check" size={16} color={colors.primary} />
+          <Text variant="regularSmall" color="gray700">
+            {t('payment.travel.proReview')}
+          </Text>
+        </ProfessionalNote>
+      ) : null}
 
-            <FeeCard>
-                <Text variant="bold" color="black" fontSize={15}>
-                    {t('payment.travel.fee')}
-                </Text>
-                <Text variant="bold" color="black" fontSize={24}>
-                    20 €
-                </Text>
-            </FeeCard>
+      <FeeCard>
+        <Text variant="bold" color="black" fontSize={15}>
+          {t('payment.travel.fee')}
+        </Text>
+        <Text variant="bold" color="black" fontSize={24}>
+          20 €
+        </Text>
+      </FeeCard>
 
-            <SecureRow>
-                <SvgIcon name="fa-lock" size={12} color={colors.gray600} />
-                <Text variant="regularSmall" color="gray600">
-                    {t('payment.travel.secure')}
-                </Text>
-            </SecureRow>
+      <SecureRow>
+        <SvgIcon name="fa-lock" size={12} color={colors.gray600} />
+        <Text variant="regularSmall" color="gray600">
+          {t('payment.travel.secure')}
+        </Text>
+      </SecureRow>
 
-            <SectionLabel>{t('payment.travel.method')}</SectionLabel>
+      <SectionLabel>{t('payment.travel.method')}</SectionLabel>
 
-            <PaymentOption
-                selected={selectedCard === 'main'}
-                onPress={() => setSelectedCard('main')}
-            >
-                <SvgIcon name="fa-credit-card" size={20} color={colors.primary} />
-                <PaymentText>
-                    <Text variant="bold" color="black" fontSize={13}>
-                        {t('payment.travel.card')}
-                    </Text>
-                    <Text variant="regularSmall" color="gray600">
-                        {t('payment.travel.sampleCard')}
-                    </Text>
-                </PaymentText>
-                <Radio selected={selectedCard === 'main'} />
-            </PaymentOption>
+      <PaymentOption
+        selected={selectedCard === 'main'}
+        onPress={() => setSelectedCard('main')}
+      >
+        <SvgIcon name="fa-credit-card" size={20} color={colors.primary} />
+        <PaymentText>
+          <Text variant="bold" color="black" fontSize={13}>
+            {t('payment.travel.card')}
+          </Text>
+          <Text variant="regularSmall" color="gray600">
+            {t('payment.travel.sampleCard')}
+          </Text>
+        </PaymentText>
+        <Radio selected={selectedCard === 'main'} />
+      </PaymentOption>
 
-            <PaymentOption
-                selected={selectedCard === 'other'}
-                onPress={() => setSelectedCard('other')}
-            >
-                <SvgIcon name="fa-credit-card" size={20} color={colors.gray600} />
-                <PaymentText>
-                    <Text variant="bold" color="black" fontSize={13}>
-                        {t('payment.travel.otherCard')}
-                    </Text>
-                </PaymentText>
-                <Radio selected={selectedCard === 'other'} />
-            </PaymentOption>
+      <PaymentOption
+        selected={selectedCard === 'other'}
+        onPress={() => setSelectedCard('other')}
+      >
+        <SvgIcon name="fa-credit-card" size={20} color={colors.gray600} />
+        <PaymentText>
+          <Text variant="bold" color="black" fontSize={13}>
+            {t('payment.travel.otherCard')}
+          </Text>
+        </PaymentText>
+        <Radio selected={selectedCard === 'other'} />
+      </PaymentOption>
 
-            <Spacer />
+      <Spacer />
 
-            <PayButton onPress={handlePayment} disabled={isLoading || isSubmitting}>
-                {isLoading || isSubmitting ? <ActivityIndicator color={colors.textInverse} /> : <Text variant="bold" color="white" fontSize={14}>{t('payment.travel.payAmount', { amount: '20 €' })}</Text>}
-            </PayButton>
-        </ScreenContainer>
-    );
+      <PayButton onPress={handlePayment} disabled={isLoading || isSubmitting}>
+        {isLoading || isSubmitting ? (
+          <ActivityIndicator color={colors.textInverse} />
+        ) : (
+          <Text variant="bold" color="white" fontSize={14}>
+            {t('payment.travel.payAmount', { amount: '20 €' })}
+          </Text>
+        )}
+      </PayButton>
+    </ScreenContainer>
+  );
 };
-
 
 const HeroIcon = styled.View`
   align-self: center;
@@ -170,21 +210,21 @@ const HeroIcon = styled.View`
 `;
 
 const Title = styled(Text).attrs(({ theme }) => ({
-    variant: 'bold',
-    color: theme.colors.textPrimary,
-    fontSize: 17,
+  variant: 'bold',
+  color: theme.colors.textPrimary,
+  fontSize: fontPixel(17),
 }))`
   text-align: center;
   margin-top: ${verticalScale(20)}px;
 `;
 
 const Description = styled(Text).attrs(({ theme }) => ({
-    variant: 'regularSmall',
-    color: theme.colors.textSecondary,
+  variant: 'regularSmall',
+  color: theme.colors.textSecondary,
 }))`
   text-align: center;
   margin-top: ${verticalScale(12)}px;
-  line-height: 18px;
+  line-height: ${fontPixel(18)}px;
 `;
 
 const FeeCard = styled.View`
@@ -206,7 +246,7 @@ const ProfessionalNote = styled.View`
   gap: ${horizontalScale(8)}px;
   margin-top: ${verticalScale(14)}px;
   padding: ${horizontalScale(12)}px;
-  border-radius: 12px;
+  border-radius: ${moderateScale(12)}px;
   background-color: ${({ theme }) => theme.colors.primaryLighter};
 `;
 
@@ -218,9 +258,9 @@ const SecureRow = styled.View`
 `;
 
 const SectionLabel = styled(Text).attrs(({ theme }) => ({
-    variant: 'bold',
-    color: theme.colors.textPrimary,
-    fontSize: 13,
+  variant: 'bold',
+  color: theme.colors.textPrimary,
+  fontSize: fontPixel(13),
 }))`
   margin-top: ${verticalScale(24)}px;
   margin-bottom: ${verticalScale(10)}px;
@@ -228,10 +268,12 @@ const SectionLabel = styled(Text).attrs(({ theme }) => ({
 
 const PaymentOption = styled.TouchableOpacity<{ selected: boolean }>`
   min-height: ${verticalScale(56)}px;
-  border-radius: 12px;
+  border-radius: ${moderateScale(12)}px;
   border-width: 1px;
-  border-color: ${({ selected, theme }) => (selected ? theme.colors.primary : theme.colors.border)};
-  background-color: ${({ selected, theme }) => (selected ? theme.colors.primaryLighter : theme.colors.surface)};
+  border-color: ${({ selected, theme }) =>
+    selected ? theme.colors.primary : theme.colors.border};
+  background-color: ${({ selected, theme }) =>
+    selected ? theme.colors.primaryLighter : theme.colors.surface};
   padding-horizontal: ${horizontalScale(14)}px;
   flex-direction: row;
   align-items: center;
@@ -248,8 +290,10 @@ const Radio = styled.View<{ selected: boolean }>`
   height: ${horizontalScale(18)}px;
   border-radius: ${horizontalScale(9)}px;
   border-width: 1px;
-  border-color: ${({ selected, theme }) => (selected ? theme.colors.primary : theme.colors.border)};
-  background-color: ${({ selected, theme }) => (selected ? theme.colors.primary : 'transparent')};
+  border-color: ${({ selected, theme }) =>
+    selected ? theme.colors.primary : theme.colors.border};
+  background-color: ${({ selected, theme }) =>
+    selected ? theme.colors.primary : 'transparent'};
 `;
 
 const Spacer = styled.View`
@@ -258,7 +302,7 @@ const Spacer = styled.View`
 
 const PayButton = styled.TouchableOpacity<{ disabled?: boolean }>`
   height: ${verticalScale(52)}px;
-  border-radius: 12px;
+  border-radius: ${moderateScale(12)}px;
   background-color: ${({ theme }) => theme.colors.primary};
   justify-content: center;
   align-items: center;

@@ -63,57 +63,57 @@ const ServiceSelectionModal: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation();
   return (
-  <Modal
-    visible={visible}
-    transparent
-    animationType="slide"
-    onRequestClose={onClose}
-  >
-    <Backdrop>
-      <Sheet>
-        <Handle />
-        <Header>
-          <Text variant="bold" color="black" fontSize={17}>
-            {t('intervention.creation.editService')}
-          </Text>
-          <CloseButton
-            onPress={onClose}
-            accessibilityRole="button"
-            accessibilityLabel={t('intervention.address.close')}
-          >
-            <Text variant="bold" color="gray600" fontSize={18}>
-              ×
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={onClose}
+    >
+      <Backdrop>
+        <Sheet>
+          <Handle />
+          <Header>
+            <Text variant="bold" color="black" fontSize={17}>
+              {t('intervention.creation.editService')}
             </Text>
-          </CloseButton>
-        </Header>
-        <Text
-          variant="regularSmall"
-          color="gray600"
-          style={{ marginBottom: verticalScale(14) }}
-        >
-          {t('intervention.creation.chooseCategory')}
-        </Text>
-        <List
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={listContentStyle}
-        >
-          {services.map(service => (
-            <CardService
-              key={service.id}
-              title={service.name}
-              description={
-                service.description ||
-                t('intervention.creation.chooseService')
-              }
-              image={getServiceImage(service)}
-              selected={service.id === selectedServiceId}
-              onClick={() => onSelect(service.id)}
-            />
-          ))}
-        </List>
-      </Sheet>
-    </Backdrop>
-  </Modal>
+            <CloseButton
+              onPress={onClose}
+              accessibilityRole="button"
+              accessibilityLabel={t('intervention.address.close')}
+            >
+              <Text variant="bold" color="gray600" fontSize={18}>
+                ×
+              </Text>
+            </CloseButton>
+          </Header>
+          <Text
+            variant="regularSmall"
+            color="gray600"
+            style={{ marginBottom: verticalScale(14) }}
+          >
+            {t('intervention.creation.chooseCategory')}
+          </Text>
+          <List
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={listContentStyle}
+          >
+            {services.map(service => (
+              <CardService
+                key={service.id}
+                title={service.name}
+                description={
+                  service.description ||
+                  t('intervention.creation.chooseService')
+                }
+                image={getServiceImage(service)}
+                selected={service.id === selectedServiceId}
+                onClick={() => onSelect(service.id)}
+              />
+            ))}
+          </List>
+        </Sheet>
+      </Backdrop>
+    </Modal>
   );
 };
 

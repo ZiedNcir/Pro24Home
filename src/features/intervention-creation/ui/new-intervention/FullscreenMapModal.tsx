@@ -12,6 +12,7 @@ import {
   horizontalScale,
   moderateScale,
   verticalScale,
+  fontPixel,
 } from '@utils/normalizedCss';
 import type { FullscreenMapModalProps } from './types';
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
@@ -122,12 +123,18 @@ const MapModalContent: React.FC<FullscreenMapModalProps> = ({
               active={mapType === type.value}
               onPress={() => setMapType(type.value)}
               accessibilityRole="button"
-              accessibilityLabel={t('intervention.creation.mapType', { type: t(type.labelKey) })}
+              accessibilityLabel={t('intervention.creation.mapType', {
+                type: t(type.labelKey),
+              })}
             >
               <SvgIcon
                 name={type.icon}
                 size={16}
-                color={mapType === type.value ? colors.textInverse : colors.textPrimary}
+                color={
+                  mapType === type.value
+                    ? colors.textInverse
+                    : colors.textPrimary
+                }
               />
             </MapTypeButton>
           ))}
@@ -152,7 +159,9 @@ const MapModalContent: React.FC<FullscreenMapModalProps> = ({
 
         <FullscreenMapFooter>
           <FooterHandle />
-          <FooterLabel>{t('intervention.creation.selectedAddress')}</FooterLabel>
+          <FooterLabel>
+            {t('intervention.creation.selectedAddress')}
+          </FooterLabel>
           <SelectedAddressRow>
             <SelectedAddressIcon>
               <SvgIcon
@@ -261,7 +270,8 @@ const MapTypeButton = styled.TouchableOpacity<{ active: boolean }>`
   border-radius: ${horizontalScale(23)}px;
   justify-content: center;
   align-items: center;
-  background-color: ${({ active, theme }) => (active ? theme.colors.primary : theme.colors.surface)};
+  background-color: ${({ active, theme }) =>
+    active ? theme.colors.primary : theme.colors.surface};
   border-width: 1px;
   border-color: ${({ active, theme }) =>
     active ? theme.colors.primary : theme.colors.borderLight};
@@ -299,9 +309,9 @@ const FooterHandle = styled.View`
 const FooterLabel = styled(Text).attrs({
   variant: 'bold',
   color: 'gray600',
-  fontSize: 11,
+  fontSize: fontPixel(11),
 })`
-  letter-spacing: 1.2px;
+  letter-spacing: ${fontPixel(1.2)}px;
   margin-bottom: ${verticalScale(10)}px;
 `;
 
@@ -324,7 +334,7 @@ const SelectedAddressIcon = styled.View`
 const SelectedAddressText = styled(Text).attrs({
   variant: 'bold',
   color: 'black',
-  fontSize: 14,
+  fontSize: fontPixel(14),
 })`
   flex: 1;
 `;

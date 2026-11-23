@@ -20,6 +20,7 @@ import {
   horizontalScale,
   moderateScale,
   verticalScale,
+  fontPixel,
 } from '@utils/normalizedCss';
 import {
   GOOGLE_PLACES_API_KEY,
@@ -56,7 +57,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
       backgroundColor: colors.surface,
       color: colors.inputText,
       paddingHorizontal: horizontalScale(12),
-      fontSize: 13,
+      fontSize: fontPixel(13),
     },
     listView: {
       borderWidth: 1,
@@ -66,175 +67,181 @@ const AddressModal: React.FC<AddressModalProps> = ({
       backgroundColor: colors.surface,
     },
     row: { padding: horizontalScale(12) },
-    description: { color: colors.textPrimary, fontSize: 13 },
+    description: { color: colors.textPrimary, fontSize: fontPixel(13) },
   };
   return (
-  <Modal
-    visible={visible}
-    transparent
-    animationType="slide"
-    onRequestClose={onClose}
-  >
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ModalBackdrop>
-        <ModalKeyboardAvoider
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
-          <TouchableWithoutFeedback>
-            <NewAddressPanel>
-              <ModalHandle />
-              <ModalHeader>
-                <PanelTitle>{t('intervention.address.addTitle')}</PanelTitle>
-                <ModalCloseButton
-                  accessibilityRole="button"
-                  accessibilityLabel={t('intervention.address.close')}
-                  onPress={onClose}
-                >
-                  <SvgIcon name="fa-times" size={14} color={colors.gray600} />
-                </ModalCloseButton>
-              </ModalHeader>
-
-              <ModalScroll
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-              >
-                <GooglePlacesAutocomplete
-                  placeholder={t('intervention.address.search')}
-                  fetchDetails={false}
-                  isNewPlacesAPI
-                  enablePoweredByContainer={false}
-                  keyboardShouldPersistTaps="handled"
-                  query={{
-                    key: GOOGLE_PLACES_API_KEY,
-                    ...GOOGLE_PLACES_SEARCH_OPTIONS,
-                  }}
-                  requestUrl={{
-                    url: 'https://places.googleapis.com',
-                    useOnPlatform: 'all',
-                    headers: GOOGLE_PLACES_REQUEST_HEADERS,
-                  }}
-                  onPress={data =>
-                    data?.place_id && onSelectPlace(data.place_id)
-                  }
-                  onNotFound={() =>
-                    Toast.show(t('intervention.address.notFound'), {
-                      type: 'warning',
-                      placement: 'bottom',
-                    })
-                  }
-                  onFail={() =>
-                    Toast.show(t('intervention.address.searchUnavailable'), {
-                      type: 'danger',
-                      placement: 'bottom',
-                    })
-                  }
-                  styles={googlePlacesStyles}
-                  textInputProps={{
-                    accessibilityLabel: t('intervention.address.searchGoogle'),
-                  }}
-                />
-
-                {selectedLocation ? (
-                  <SelectedPlace>
-                    <SvgIcon
-                      name="fa-check-circle"
-                      size={16}
-                      color={colors.success}
-                    />
-                    <Text
-                      variant="regularSmall"
-                      color="black"
-                      numberOfLines={2}
-                    >
-                      {selectedLocation.address}
-                    </Text>
-                  </SelectedPlace>
-                ) : null}
-
-                <AddressMapPreview>
-                  <AddressMap
-                    initialRegion={region}
-                    region={region}
-                    scrollEnabled={false}
-                    zoomEnabled={false}
-                    pitchEnabled={false}
-                    rotateEnabled={false}
-                    accessibilityLabel={t('intervention.address.newAddressPreview')}
-                  >
-                    {selectedLocation ? (
-                      <AddressMarker
-                        coordinate={selectedLocation}
-                        pinColor={colors.primary}
-                      />
-                    ) : null}
-                  </AddressMap>
-                  <PreviewOpenOverlay
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={onClose}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ModalBackdrop>
+          <ModalKeyboardAvoider
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          >
+            <TouchableWithoutFeedback>
+              <NewAddressPanel>
+                <ModalHandle />
+                <ModalHeader>
+                  <PanelTitle>{t('intervention.address.addTitle')}</PanelTitle>
+                  <ModalCloseButton
                     accessibilityRole="button"
-                    accessibilityLabel={t('intervention.address.openMapFullscreen')}
-                    onPress={onOpenMapFullscreen}
+                    accessibilityLabel={t('intervention.address.close')}
+                    onPress={onClose}
                   >
-                    <SvgIcon
-                      name="fa-map-marked-alt"
-                      size={14}
-                      color={colors.primary}
-                    />
-                    <Text variant="bold" color="black" fontSize={11}>
-                      {t('intervention.address.openMap')}
-                    </Text>
-                  </PreviewOpenOverlay>
-                </AddressMapPreview>
+                    <SvgIcon name="fa-times" size={14} color={colors.gray600} />
+                  </ModalCloseButton>
+                </ModalHeader>
 
-                {isLookingUpAddress ? (
-                  <AddressLoading>
-                    <ActivityIndicator color={colors.primary} />
-                    <Text variant="regularSmall" color="gray600">
-                      {t('intervention.address.fetching')}
-                    </Text>
-                  </AddressLoading>
-                ) : null}
-
-                <CompactInput
-                  placeholder={t('intervention.address.namePlaceholder')}
-                  placeholderTextColor={colors.gray500}
-                  value={locationName}
-                  onChangeText={onChangeLocationName}
-                />
-                <CompactInput
-                  placeholder={t('intervention.address.detailsPlaceholder')}
-                  placeholderTextColor={colors.gray500}
-                  value={locationDetails}
-                  onChangeText={onChangeLocationDetails}
-                />
-              </ModalScroll>
-
-              <PanelActions>
-                <CancelButton onPress={onClose}>
-                  <Text variant="bold" color="black" fontSize={13}>
-                    {t('common.actions.cancel')}
-                  </Text>
-                </CancelButton>
-                <SaveAddressButton
-                  onPress={onSave}
-                  disabled={
-                    !selectedLocation || isSavingAddress || isLookingUpAddress
-                  }
-                  activeOpacity={0.85}
+                <ModalScroll
+                  keyboardShouldPersistTaps="handled"
+                  showsVerticalScrollIndicator={false}
                 >
-                  {isSavingAddress ? (
-                    <ActivityIndicator color={colors.white} />
-                  ) : (
-                    <Text variant="bold" color="white" fontSize={13}>
-                      {t('common.actions.save')}
+                  <GooglePlacesAutocomplete
+                    placeholder={t('intervention.address.search')}
+                    fetchDetails={false}
+                    isNewPlacesAPI
+                    enablePoweredByContainer={false}
+                    keyboardShouldPersistTaps="handled"
+                    query={{
+                      key: GOOGLE_PLACES_API_KEY,
+                      ...GOOGLE_PLACES_SEARCH_OPTIONS,
+                    }}
+                    requestUrl={{
+                      url: 'https://places.googleapis.com',
+                      useOnPlatform: 'all',
+                      headers: GOOGLE_PLACES_REQUEST_HEADERS,
+                    }}
+                    onPress={data =>
+                      data?.place_id && onSelectPlace(data.place_id)
+                    }
+                    onNotFound={() =>
+                      Toast.show(t('intervention.address.notFound'), {
+                        type: 'warning',
+                        placement: 'bottom',
+                      })
+                    }
+                    onFail={() =>
+                      Toast.show(t('intervention.address.searchUnavailable'), {
+                        type: 'danger',
+                        placement: 'bottom',
+                      })
+                    }
+                    styles={googlePlacesStyles}
+                    textInputProps={{
+                      accessibilityLabel: t(
+                        'intervention.address.searchGoogle',
+                      ),
+                    }}
+                  />
+
+                  {selectedLocation ? (
+                    <SelectedPlace>
+                      <SvgIcon
+                        name="fa-check-circle"
+                        size={16}
+                        color={colors.success}
+                      />
+                      <Text
+                        variant="regularSmall"
+                        color="black"
+                        numberOfLines={2}
+                      >
+                        {selectedLocation.address}
+                      </Text>
+                    </SelectedPlace>
+                  ) : null}
+
+                  <AddressMapPreview>
+                    <AddressMap
+                      initialRegion={region}
+                      region={region}
+                      scrollEnabled={false}
+                      zoomEnabled={false}
+                      pitchEnabled={false}
+                      rotateEnabled={false}
+                      accessibilityLabel={t(
+                        'intervention.address.newAddressPreview',
+                      )}
+                    >
+                      {selectedLocation ? (
+                        <AddressMarker
+                          coordinate={selectedLocation}
+                          pinColor={colors.primary}
+                        />
+                      ) : null}
+                    </AddressMap>
+                    <PreviewOpenOverlay
+                      accessibilityRole="button"
+                      accessibilityLabel={t(
+                        'intervention.address.openMapFullscreen',
+                      )}
+                      onPress={onOpenMapFullscreen}
+                    >
+                      <SvgIcon
+                        name="fa-map-marked-alt"
+                        size={14}
+                        color={colors.primary}
+                      />
+                      <Text variant="bold" color="black" fontSize={11}>
+                        {t('intervention.address.openMap')}
+                      </Text>
+                    </PreviewOpenOverlay>
+                  </AddressMapPreview>
+
+                  {isLookingUpAddress ? (
+                    <AddressLoading>
+                      <ActivityIndicator color={colors.primary} />
+                      <Text variant="regularSmall" color="gray600">
+                        {t('intervention.address.fetching')}
+                      </Text>
+                    </AddressLoading>
+                  ) : null}
+
+                  <CompactInput
+                    placeholder={t('intervention.address.namePlaceholder')}
+                    placeholderTextColor={colors.gray500}
+                    value={locationName}
+                    onChangeText={onChangeLocationName}
+                  />
+                  <CompactInput
+                    placeholder={t('intervention.address.detailsPlaceholder')}
+                    placeholderTextColor={colors.gray500}
+                    value={locationDetails}
+                    onChangeText={onChangeLocationDetails}
+                  />
+                </ModalScroll>
+
+                <PanelActions>
+                  <CancelButton onPress={onClose}>
+                    <Text variant="bold" color="black" fontSize={13}>
+                      {t('common.actions.cancel')}
                     </Text>
-                  )}
-                </SaveAddressButton>
-              </PanelActions>
-            </NewAddressPanel>
-          </TouchableWithoutFeedback>
-        </ModalKeyboardAvoider>
-      </ModalBackdrop>
-    </TouchableWithoutFeedback>
-  </Modal>
+                  </CancelButton>
+                  <SaveAddressButton
+                    onPress={onSave}
+                    disabled={
+                      !selectedLocation || isSavingAddress || isLookingUpAddress
+                    }
+                    activeOpacity={0.85}
+                  >
+                    {isSavingAddress ? (
+                      <ActivityIndicator color={colors.white} />
+                    ) : (
+                      <Text variant="bold" color="white" fontSize={13}>
+                        {t('common.actions.save')}
+                      </Text>
+                    )}
+                  </SaveAddressButton>
+                </PanelActions>
+              </NewAddressPanel>
+            </TouchableWithoutFeedback>
+          </ModalKeyboardAvoider>
+        </ModalBackdrop>
+      </TouchableWithoutFeedback>
+    </Modal>
   );
 };
 
@@ -272,7 +279,7 @@ const ModalHeader = styled.View`
 const PanelTitle = styled(Text).attrs(({ theme }) => ({
   variant: 'bold',
   color: theme.colors.textPrimary,
-  fontSize: 13,
+  fontSize: fontPixel(13),
 }))`
   margin-bottom: ${verticalScale(10)}px;
 `;
@@ -301,7 +308,7 @@ const AddressMapPreview = styled.View`
   overflow: hidden;
   border-radius: ${moderateScale(16)}px;
   margin-top: ${verticalScale(12)}px;
-  border-width: 2px;
+  border-width: ${moderateScale(2)}px;
   border-color: ${({ theme }) => theme.colors.danger};
   background-color: ${({ theme }) => theme.colors.surfaceVariant};
 `;

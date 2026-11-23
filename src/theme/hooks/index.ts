@@ -3,44 +3,47 @@ import type { ThemeColors } from '../colors/types';
 import { elevation, type BorderRadius, type Spacing } from '../tokens';
 
 export const useColor = (color: keyof ThemeColors) => {
-    const { theme } = useTheme();
-    return theme.colors[color];
+  const { theme } = useTheme();
+  return theme.colors[color];
 };
 
 export const useSpacing = (size: Spacing) => {
-    const { theme } = useTheme();
-    return theme.spacing[size];
+  const { theme } = useTheme();
+  return theme.spacing[size];
 };
 
 export const useBorderRadius = (radius: BorderRadius) => {
-    const { theme } = useTheme();
-    return theme.borderRadius[radius];
+  const { theme } = useTheme();
+  return theme.borderRadius[radius];
 };
 
 export const useTypography = () => {
-    const { theme } = useTheme();
-    return theme.typography;
+  const { theme } = useTheme();
+  return theme.typography;
 };
 
 export const useElevation = (level: keyof typeof elevation) => {
-    const { theme } = useTheme();
-    return theme.elevation[level];
+  const { theme } = useTheme();
+  return theme.elevation[level];
 };
 
 // Responsive hooks (if needed)
 export const useResponsiveValue = <T>(values: {
-    base: T;
-    sm?: T;
-    md?: T;
-    lg?: T;
-    xl?: T;
+  base: T;
+  sm?: T;
+  md?: T;
+  lg?: T;
+  xl?: T;
 }): T => {
-    // You can implement screen size detection here
-    // For now, return base value
-    return values.base;
+  // You can implement screen size detection here
+  // For now, return base value
+  return values.base;
 };
 
 // Hook for component variants
-export const useVariant = <T>(variants: Record<string, T>, variant: string): T | undefined => {
-    return variants[variant] || variants.default;
+export const useVariant = <T>(
+  variants: Record<string, T>,
+  variant: string,
+): T | undefined => {
+  return variants[variant] || variants.default;
 };

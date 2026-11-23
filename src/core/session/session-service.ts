@@ -3,7 +3,9 @@ import { readSession } from './session-storage';
 
 type Dispatch = (action: unknown) => unknown;
 
-export const restoreStoredSession = async (dispatch: Dispatch): Promise<void> => {
+export const restoreStoredSession = async (
+  dispatch: Dispatch,
+): Promise<void> => {
   const session = await readSession();
   if (!session) return;
 

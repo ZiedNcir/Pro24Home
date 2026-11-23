@@ -30,68 +30,66 @@ import ImageIcon from '@assets/svg/image.svg';
 
 // Import FontAwesome icons
 import {
-    faBuilding,
-    faCamera,
-    faCheck,
-    faPlus,
-    faMinus,
-    faChevronRight,
-    faEnvelopeOpenText,
-    faIdCard,
-    faInfo,
-    faMapMarkedAlt,
-    faQuestion,
-    faTimes,
-    faTimesCircle,
-    faTrash,
-    faUser,
-    faUserCheck,
-    faHome as faHomeIcon,
-    faList,
-    faGrinHearts,
-    faCog,
-    faLayerGroup,
-    faCrosshairs,
-    faUserPlus,
-    faMapMarkerAlt,
-    faQuestionCircle,
-    faFileInvoice,
-    faEuroSign,
-    faCreditCard,
-    faLock,
-    faCar,
-    faPen as faPenIcon,
-    faChevronCircleLeft,
-    faFileAlt,
-    faFileUpload,
-    faUserClock,
-    faChevronLeft,
-    faUserCircle,
-    faTag,
-    faShield,
-    faExclamationCircle,
-    faFolderOpen,
-    faChevronUp,
-    faChevronDown,
-    faEye,
-    faEyeSlash,
-    faBell,
-    faClock,
-    faCalendar,
-    faHeadset,
-    faShieldAlt,
-    faSignOutAlt,
-    faCheckCircle,
-    faCertificate,
-    faAward,
-    faWrench,
-    faBolt,
-    faInbox,
-    faChartLine,
-    faSyncAlt,
-    faStar,
-
-
+  faBuilding,
+  faCamera,
+  faCheck,
+  faPlus,
+  faMinus,
+  faChevronRight,
+  faEnvelopeOpenText,
+  faIdCard,
+  faInfo,
+  faMapMarkedAlt,
+  faQuestion,
+  faTimes,
+  faTimesCircle,
+  faTrash,
+  faUser,
+  faUserCheck,
+  faHome as faHomeIcon,
+  faList,
+  faGrinHearts,
+  faCog,
+  faLayerGroup,
+  faCrosshairs,
+  faUserPlus,
+  faMapMarkerAlt,
+  faQuestionCircle,
+  faFileInvoice,
+  faEuroSign,
+  faCreditCard,
+  faLock,
+  faCar,
+  faPen as faPenIcon,
+  faChevronCircleLeft,
+  faFileAlt,
+  faFileUpload,
+  faUserClock,
+  faChevronLeft,
+  faUserCircle,
+  faTag,
+  faShield,
+  faExclamationCircle,
+  faFolderOpen,
+  faChevronUp,
+  faChevronDown,
+  faEye,
+  faEyeSlash,
+  faBell,
+  faClock,
+  faCalendar,
+  faHeadset,
+  faShieldAlt,
+  faSignOutAlt,
+  faCheckCircle,
+  faCertificate,
+  faAward,
+  faWrench,
+  faBolt,
+  faInbox,
+  faChartLine,
+  faSyncAlt,
+  faStar,
 } from '@fortawesome/free-solid-svg-icons';
 
 import { AppColor } from '@utils/constant';
@@ -99,234 +97,233 @@ import { useTheme } from '@theme';
 
 // Define icon names as union type - include both SVG and FontAwesome icons
 export type IconName =
-    // SVG Icons
-    | 'eye'
-    | 'eye-slashed'
-    | 'profile'
-    | 'home'
-    | 'arrow-left'
-    | 'empty-ellipse'
-    | 'ellipse'
-    | 'add-photo'
-    | 'settings'
-    | 'bureau'
-    | 'maison'
-    | 'localisation'
-    | 'appartement'
-    | 'hotel'
-    | 'pen'
-    | 'location'
-    | 'logo-pro24'
-    | 'logo-medium-pro24'
-    | 'list'
-    | 'marker-prof'
-    | 'pdf'
-    | 'delete'
-    | 'image'
-    // FontAwesome Icons
-    | 'fa-building'
-    | 'fa-camera'
-    | 'fa-check'
-    | 'fa-plus'
-    | 'fa-minus'
-    | 'fa-chevron-right'
-    | 'fa-envelope-open-text'
-    | 'fa-id-card'
-    | 'fa-info'
-    | 'fa-map-marked-alt'
-    | 'fa-question'
-    | 'fa-times'
-    | 'fa-times-circle'
-    | 'fa-trash'
-    | 'fa-user'
-    | 'fa-user-check'
-    | 'fa-home'
-    | 'fa-list'
-    | 'fa-grin-hearts'
-    | 'fa-cog'
-    | 'fa-layer-group'
-    | 'fa-crosshairs'
-    | 'fa-user-plus'
-    | 'fa-map-marker-alt'
-    | 'fa-question-circle'
-    | 'fa-file-invoice'
-    | 'fa-euro-sign'
-    | 'fa-credit-card'
-    | 'fa-lock'
-    | 'fa-car'
-    | 'fa-pen'
-    | 'fa-chevron-circle-left'
-    | 'fa-file-alt'
-    | 'fa-file-upload'
-    | 'fa-user-clock'
-    | 'fa-chevron-left'
-    | 'fa-user-circle'
-    | 'fa-tag'
-    | 'fa-shield'
-    | 'fa-exclamation-circle'
-    | 'fa-folder-open'
-    | 'fa-chevron-up'
-    | 'fa-chevron-down'
-    | 'fa-eye'
-    | 'fa-eye-slash'
-    | 'fa-clock'
-    | 'fa-bell'
-    | 'fa-calendar'
-    | 'fa-headset'
-    | 'fa-shield-alt'
-    | 'fa-sign-out-alt'
-    | 'fa-check-circle'
-    | 'fa-certificate'
-    | 'fa-award'
-    | 'fa-wrench'
-    | 'fa-bolt'
-    | 'fa-inbox'
-    | 'fa-chart-line'
-    | 'fa-sync-alt'
-    | 'fa-star';
+  // SVG Icons
+  | 'eye'
+  | 'eye-slashed'
+  | 'profile'
+  | 'home'
+  | 'arrow-left'
+  | 'empty-ellipse'
+  | 'ellipse'
+  | 'add-photo'
+  | 'settings'
+  | 'bureau'
+  | 'maison'
+  | 'localisation'
+  | 'appartement'
+  | 'hotel'
+  | 'pen'
+  | 'location'
+  | 'logo-pro24'
+  | 'logo-medium-pro24'
+  | 'list'
+  | 'marker-prof'
+  | 'pdf'
+  | 'delete'
+  | 'image'
+  // FontAwesome Icons
+  | 'fa-building'
+  | 'fa-camera'
+  | 'fa-check'
+  | 'fa-plus'
+  | 'fa-minus'
+  | 'fa-chevron-right'
+  | 'fa-envelope-open-text'
+  | 'fa-id-card'
+  | 'fa-info'
+  | 'fa-map-marked-alt'
+  | 'fa-question'
+  | 'fa-times'
+  | 'fa-times-circle'
+  | 'fa-trash'
+  | 'fa-user'
+  | 'fa-user-check'
+  | 'fa-home'
+  | 'fa-list'
+  | 'fa-grin-hearts'
+  | 'fa-cog'
+  | 'fa-layer-group'
+  | 'fa-crosshairs'
+  | 'fa-user-plus'
+  | 'fa-map-marker-alt'
+  | 'fa-question-circle'
+  | 'fa-file-invoice'
+  | 'fa-euro-sign'
+  | 'fa-credit-card'
+  | 'fa-lock'
+  | 'fa-car'
+  | 'fa-pen'
+  | 'fa-chevron-circle-left'
+  | 'fa-file-alt'
+  | 'fa-file-upload'
+  | 'fa-user-clock'
+  | 'fa-chevron-left'
+  | 'fa-user-circle'
+  | 'fa-tag'
+  | 'fa-shield'
+  | 'fa-exclamation-circle'
+  | 'fa-folder-open'
+  | 'fa-chevron-up'
+  | 'fa-chevron-down'
+  | 'fa-eye'
+  | 'fa-eye-slash'
+  | 'fa-clock'
+  | 'fa-bell'
+  | 'fa-calendar'
+  | 'fa-headset'
+  | 'fa-shield-alt'
+  | 'fa-sign-out-alt'
+  | 'fa-check-circle'
+  | 'fa-certificate'
+  | 'fa-award'
+  | 'fa-wrench'
+  | 'fa-bolt'
+  | 'fa-inbox'
+  | 'fa-chart-line'
+  | 'fa-sync-alt'
+  | 'fa-star';
 export interface SvgIconProps {
-    name: IconName;
-    size?: number;
-    color?: AppColor | string;
-    strokeWidth?: number;
-    style?: any;
-    testID?: string;
+  name: IconName;
+  size?: number;
+  color?: AppColor | string;
+  strokeWidth?: number;
+  style?: any;
+  testID?: string;
 }
 
 // Map SVG icon names to components
 const svgIconMap: Record<string, React.FC<SvgProps>> = {
-    'profile': profile,
-    'home': homeIcon,
-    'arrow-left': ArrowLeftIcon,
-    'empty-ellipse': EmptyEllipseIcon,
-    'ellipse': EllipseIcon,
-    'add-photo': AddPhotoIcon,
-    'settings': SettingIcon,
-    'bureau': BureauIcon,
-    'maison': MaisonIcon,
-    'localisation': LocalisationIcon,
-    'appartement': AppartementIcon,
-    'hotel': HotelIcon,
-    'pen': PenIcon,
-    'location': LocationIcon,
-    'logo-pro24': LogoPro24Icon,
-    'logo-medium-pro24': LogoMediumPro24Icon,
-    'list': ListIcon,
-    'marker-prof': MarkerProfIcon,
-    'pdf': PdfIcon,
-    'delete': DeleteIcon,
-    'image': ImageIcon,
+  profile: profile,
+  home: homeIcon,
+  'arrow-left': ArrowLeftIcon,
+  'empty-ellipse': EmptyEllipseIcon,
+  ellipse: EllipseIcon,
+  'add-photo': AddPhotoIcon,
+  settings: SettingIcon,
+  bureau: BureauIcon,
+  maison: MaisonIcon,
+  localisation: LocalisationIcon,
+  appartement: AppartementIcon,
+  hotel: HotelIcon,
+  pen: PenIcon,
+  location: LocationIcon,
+  'logo-pro24': LogoPro24Icon,
+  'logo-medium-pro24': LogoMediumPro24Icon,
+  list: ListIcon,
+  'marker-prof': MarkerProfIcon,
+  pdf: PdfIcon,
+  delete: DeleteIcon,
+  image: ImageIcon,
 };
 
 // Map FontAwesome icon names to components
 const faIconMap: Record<string, IconDefinition> = {
-    'fa-building': faBuilding,
-    'fa-camera': faCamera,
-    'fa-check': faCheck,
-    'fa-plus': faPlus,
-    'fa-minus': faMinus,
-    'fa-chevron-right': faChevronRight,
-    'fa-envelope-open-text': faEnvelopeOpenText,
-    'fa-id-card': faIdCard,
-    'fa-info': faInfo,
-    'fa-map-marked-alt': faMapMarkedAlt,
-    'fa-question': faQuestion,
-    'fa-times': faTimes,
-    'fa-times-circle': faTimesCircle,
-    'fa-trash': faTrash,
-    'fa-user': faUser,
-    'fa-user-check': faUserCheck,
-    'fa-home': faHomeIcon,
-    'fa-list': faList,
-    'fa-grin-hearts': faGrinHearts,
-    'fa-cog': faCog,
-    'fa-layer-group': faLayerGroup,
-    'fa-crosshairs': faCrosshairs,
-    'fa-user-plus': faUserPlus,
-    'fa-map-marker-alt': faMapMarkerAlt,
-    'fa-question-circle': faQuestionCircle,
-    'fa-file-invoice': faFileInvoice,
-    'fa-euro-sign': faEuroSign,
-    'fa-credit-card': faCreditCard,
-    'fa-lock': faLock,
-    'fa-car': faCar,
-    'fa-pen': faPenIcon,
-    'fa-chevron-circle-left': faChevronCircleLeft,
-    'fa-file-alt': faFileAlt,
-    'fa-file-upload': faFileUpload,
-    'fa-user-clock': faUserClock,
-    'fa-chevron-left': faChevronLeft,
-    'fa-user-circle': faUserCircle,
-    'fa-tag': faTag,
-    'fa-shield': faShield,
-    'fa-exclamation-circle': faExclamationCircle,
-    'fa-folder-open': faFolderOpen,
-    'fa-chevron-up': faChevronUp,
-    'fa-chevron-down': faChevronDown,
-    'fa-eye': faEye,
-    'fa-eye-slash': faEyeSlash,
-    'fa-bell': faBell,
-    'fa-clock': faClock,
-    'fa-calendar': faCalendar,
-    'fa-headset': faHeadset,
-    'fa-shield-alt': faShieldAlt,
-    'fa-sign-out-alt': faSignOutAlt,
-    'fa-check-circle': faCheckCircle,
-    'fa-certificate': faCertificate,
-    'fa-award': faAward,
-    'fa-wrench': faWrench,
-    'fa-bolt': faBolt,
-    'fa-inbox': faInbox,
-    'fa-chart-line': faChartLine,
-    'fa-sync-alt': faSyncAlt,
-    'fa-star': faStar,
+  'fa-building': faBuilding,
+  'fa-camera': faCamera,
+  'fa-check': faCheck,
+  'fa-plus': faPlus,
+  'fa-minus': faMinus,
+  'fa-chevron-right': faChevronRight,
+  'fa-envelope-open-text': faEnvelopeOpenText,
+  'fa-id-card': faIdCard,
+  'fa-info': faInfo,
+  'fa-map-marked-alt': faMapMarkedAlt,
+  'fa-question': faQuestion,
+  'fa-times': faTimes,
+  'fa-times-circle': faTimesCircle,
+  'fa-trash': faTrash,
+  'fa-user': faUser,
+  'fa-user-check': faUserCheck,
+  'fa-home': faHomeIcon,
+  'fa-list': faList,
+  'fa-grin-hearts': faGrinHearts,
+  'fa-cog': faCog,
+  'fa-layer-group': faLayerGroup,
+  'fa-crosshairs': faCrosshairs,
+  'fa-user-plus': faUserPlus,
+  'fa-map-marker-alt': faMapMarkerAlt,
+  'fa-question-circle': faQuestionCircle,
+  'fa-file-invoice': faFileInvoice,
+  'fa-euro-sign': faEuroSign,
+  'fa-credit-card': faCreditCard,
+  'fa-lock': faLock,
+  'fa-car': faCar,
+  'fa-pen': faPenIcon,
+  'fa-chevron-circle-left': faChevronCircleLeft,
+  'fa-file-alt': faFileAlt,
+  'fa-file-upload': faFileUpload,
+  'fa-user-clock': faUserClock,
+  'fa-chevron-left': faChevronLeft,
+  'fa-user-circle': faUserCircle,
+  'fa-tag': faTag,
+  'fa-shield': faShield,
+  'fa-exclamation-circle': faExclamationCircle,
+  'fa-folder-open': faFolderOpen,
+  'fa-chevron-up': faChevronUp,
+  'fa-chevron-down': faChevronDown,
+  'fa-eye': faEye,
+  'fa-eye-slash': faEyeSlash,
+  'fa-bell': faBell,
+  'fa-clock': faClock,
+  'fa-calendar': faCalendar,
+  'fa-headset': faHeadset,
+  'fa-shield-alt': faShieldAlt,
+  'fa-sign-out-alt': faSignOutAlt,
+  'fa-check-circle': faCheckCircle,
+  'fa-certificate': faCertificate,
+  'fa-award': faAward,
+  'fa-wrench': faWrench,
+  'fa-bolt': faBolt,
+  'fa-inbox': faInbox,
+  'fa-chart-line': faChartLine,
+  'fa-sync-alt': faSyncAlt,
+  'fa-star': faStar,
 };
 
 const SvgIcon: FC<SvgIconProps> = ({
-    name,
-    size = 20,
-    color = 'black',
-    strokeWidth = 1.5,
-    style,
-    testID,
-    ...rest
+  name,
+  size = 20,
+  color = 'black',
+  strokeWidth = 1.5,
+  style,
+  testID,
+  ...rest
 }) => {
-    const { theme } = useTheme();
-    const finalColor = color in theme.colors ? theme.colors[color as keyof typeof theme.colors] : color;
+  const { theme } = useTheme();
+  const finalColor =
+    color in theme.colors
+      ? theme.colors[color as keyof typeof theme.colors]
+      : color;
 
-    // Check if it's a FontAwesome icon
-    const faIcon = faIconMap[name];
-    if (faIcon) {
-        return (
-            <IconContainer size={size} style={style} testID={testID}>
-                <FaIcon
-                    icon={faIcon as any}
-                    size={size}
-                    color={finalColor}
-                />
-            </IconContainer>
-        );
-    }
+  // Check if it's a FontAwesome icon
+  const faIcon = faIconMap[name];
+  if (faIcon) {
+    return (
+      <IconContainer size={size} style={style} testID={testID}>
+        <FaIcon icon={faIcon as any} size={size} color={finalColor} />
+      </IconContainer>
+    );
+  }
 
-    // Check if it's an SVG icon
-    const IconComponent = svgIconMap[name];
-    if (IconComponent) {
-        return (
-            <IconContainer size={size} style={style} testID={testID}>
-                <IconComponent
-                    width={size}
-                    height={size}
-                    fill={finalColor}
-                    stroke={finalColor}
-                    strokeWidth={strokeWidth}
-                    {...rest as SvgProps}
-                />
-            </IconContainer>
-        );
-    }
+  // Check if it's an SVG icon
+  const IconComponent = svgIconMap[name];
+  if (IconComponent) {
+    return (
+      <IconContainer size={size} style={style} testID={testID}>
+        <IconComponent
+          width={size}
+          height={size}
+          fill={finalColor}
+          stroke={finalColor}
+          strokeWidth={strokeWidth}
+          {...(rest as SvgProps)}
+        />
+      </IconContainer>
+    );
+  }
 
-    console.warn(`Icon "${name}" not found`);
-    return null;
+  console.warn(`Icon "${name}" not found`);
+  return null;
 };
 
 const IconContainer = styled.View<{ size: number }>`
@@ -337,12 +334,15 @@ const IconContainer = styled.View<{ size: number }>`
 `;
 
 // Helper function to add new icons at runtime
-export const registerSvgIcon = (name: string, component: React.FC<SvgProps>) => {
-    svgIconMap[name] = component;
+export const registerSvgIcon = (
+  name: string,
+  component: React.FC<SvgProps>,
+) => {
+  svgIconMap[name] = component;
 };
 
 export const registerFontAwesomeIcon = (name: string, icon: IconDefinition) => {
-    faIconMap[name] = icon;
+  faIconMap[name] = icon;
 };
 
 export default SvgIcon;

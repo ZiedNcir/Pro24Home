@@ -6,93 +6,177 @@ import styled from 'styled-components/native';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import { useTheme } from '@theme';
-import { horizontalScale, verticalScale, moderateScale } from '@utils/normalizedCss';
+import {
+  horizontalScale,
+  verticalScale,
+  moderateScale,
+  fontPixel,
+} from '@utils/normalizedCss';
 
 export type PhotoSource = 'camera' | 'gallery';
 
 interface Props {
-    visible: boolean;
-    onClose: () => void;
-    onSelect: (source: PhotoSource) => void;
-    onChooseFile?: () => void;
-    title?: string;
-    description?: string;
+  visible: boolean;
+  onClose: () => void;
+  onSelect: (source: PhotoSource) => void;
+  onChooseFile?: () => void;
+  title?: string;
+  description?: string;
 }
 
-const PhotoSourceModal = ({ visible, onClose, onSelect, onChooseFile, title, description }: Props) => {
-    const { t } = useTranslation();
-    const { theme } = useTheme();
-    const colors = theme.colors;
-    const pendingSource = useRef<PhotoSource | 'file' | null>(null);
-    const selectSource = (source: PhotoSource | 'file') => {
-        if (source === 'file') onChooseFile?.();
-        else onSelect(source);
-    };
-    const chooseSource = (source: PhotoSource | 'file') => {
-        if (pendingSource.current) return;
-        pendingSource.current = source;
-        onClose();
-        // iOS cannot present its picker until the source sheet has dismissed.
-        if (Platform.OS !== 'ios') {
-            pendingSource.current = null;
-            selectSource(source);
-        }
-    };
-    const handleDismiss = () => {
-        const source = pendingSource.current;
-        pendingSource.current = null;
-        if (source) selectSource(source);
-    };
+const PhotoSourceModal = ({
+  visible,
+  onClose,
+  onSelect,
+  onChooseFile,
+  title,
+  description,
+}: Props) => {
+  const { t } = useTranslation();
+  const { theme } = useTheme();
+  const colors = theme.colors;
+  const pendingSource = useRef<PhotoSource | 'file' | null>(null);
+  const selectSource = (source: PhotoSource | 'file') => {
+    if (source === 'file') onChooseFile?.();
+    else onSelect(source);
+  };
+  const chooseSource = (source: PhotoSource | 'file') => {
+    if (pendingSource.current) return;
+    pendingSource.current = source;
+    onClose();
+    // iOS cannot present its picker until the source sheet has dismissed.
+    if (Platform.OS !== 'ios') {
+      pendingSource.current = null;
+      selectSource(source);
+    }
+  };
+  const handleDismiss = () => {
+    const source = pendingSource.current;
+    pendingSource.current = null;
+    if (source) selectSource(source);
+  };
 
-    return (
-            <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose} onDismiss={handleDismiss}>
-                <SourceModalBackdrop>
-                    <SourceModalSheet>
-                        <SourceModalHandle />
-                        <SourceModalHeader>
-                            <SourceModalTitle>{title || t('intervention.creation.photoAdd')}</SourceModalTitle>
-                            <SourceCloseButton accessibilityRole="button" accessibilityLabel={t('intervention.creation.closePhotoPicker')} onPress={onClose}>
-                                <SvgIcon name="fa-times" size={moderateScale(14)} color={colors.gray600} />
-                            </SourceCloseButton>
-                        </SourceModalHeader>
-                        <SourceModalDescription>{description || t('intervention.creation.photoSourceHint')}</SourceModalDescription>
-                        {onChooseFile ? <SourceOption accessibilityRole="button" accessibilityLabel={t('professional.documentManagement.choose')} onPress={() => chooseSource('file')}>
-                            <SourceIconContainer>
-                                <SvgIcon name="fa-folder-open" size={moderateScale(20)} color={colors.primary} />
-                            </SourceIconContainer>
-                            <SourceOptionText>
-                                <SourceOptionTitle>{t('professional.documentManagement.filesTitle')}</SourceOptionTitle>
-                                <SourceOptionDescription>{t('professional.documentManagement.filesHint')}</SourceOptionDescription>
-                            </SourceOptionText>
-                            <SvgIcon name="fa-chevron-right" size={moderateScale(14)} color={colors.gray500} />
-                        </SourceOption> : null}
-                        <SourceOption accessibilityRole="button" accessibilityLabel={t('intervention.creation.cameraAccessibility')} onPress={() => chooseSource('camera')}>
-                            <SourceIconContainer>
-                                <SvgIcon name="fa-camera" size={moderateScale(20)} color={colors.primary} />
-                            </SourceIconContainer>
-                            <SourceOptionText>
-                                <SourceOptionTitle>{t('intervention.creation.camera')}</SourceOptionTitle>
-                                <SourceOptionDescription>{t('intervention.creation.cameraHint')}</SourceOptionDescription>
-                            </SourceOptionText>
-                            <SvgIcon name="fa-chevron-right" size={moderateScale(14)} color={colors.gray500} />
-                        </SourceOption>
-                        <SourceOption accessibilityRole="button" accessibilityLabel={t('intervention.creation.galleryAccessibility')} onPress={() => chooseSource('gallery')}>
-                            <SourceIconContainer>
-                                <SvgIcon name="image" size={moderateScale(20)} color={colors.primary} />
-                            </SourceIconContainer>
-                            <SourceOptionText>
-                                <SourceOptionTitle>{t('intervention.creation.gallery')}</SourceOptionTitle>
-                                <SourceOptionDescription>{t('intervention.creation.galleryHint')}</SourceOptionDescription>
-                            </SourceOptionText>
-                            <SvgIcon name="fa-chevron-right" size={moderateScale(14)} color={colors.gray500} />
-                        </SourceOption>
-                        <SourceCancelButton accessibilityRole="button" accessibilityLabel={t('common.actions.cancel')} onPress={onClose}>
-                            <SourceCancelText>{t('common.actions.cancel')}</SourceCancelText>
-                        </SourceCancelButton>
-                    </SourceModalSheet>
-                </SourceModalBackdrop>
-            </Modal>
-    );
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={onClose}
+      onDismiss={handleDismiss}
+    >
+      <SourceModalBackdrop>
+        <SourceModalSheet>
+          <SourceModalHandle />
+          <SourceModalHeader>
+            <SourceModalTitle>
+              {title || t('intervention.creation.photoAdd')}
+            </SourceModalTitle>
+            <SourceCloseButton
+              accessibilityRole="button"
+              accessibilityLabel={t('intervention.creation.closePhotoPicker')}
+              onPress={onClose}
+            >
+              <SvgIcon
+                name="fa-times"
+                size={moderateScale(14)}
+                color={colors.gray600}
+              />
+            </SourceCloseButton>
+          </SourceModalHeader>
+          <SourceModalDescription>
+            {description || t('intervention.creation.photoSourceHint')}
+          </SourceModalDescription>
+          {onChooseFile ? (
+            <SourceOption
+              accessibilityRole="button"
+              accessibilityLabel={t('professional.documentManagement.choose')}
+              onPress={() => chooseSource('file')}
+            >
+              <SourceIconContainer>
+                <SvgIcon
+                  name="fa-folder-open"
+                  size={moderateScale(20)}
+                  color={colors.primary}
+                />
+              </SourceIconContainer>
+              <SourceOptionText>
+                <SourceOptionTitle>
+                  {t('professional.documentManagement.filesTitle')}
+                </SourceOptionTitle>
+                <SourceOptionDescription>
+                  {t('professional.documentManagement.filesHint')}
+                </SourceOptionDescription>
+              </SourceOptionText>
+              <SvgIcon
+                name="fa-chevron-right"
+                size={moderateScale(14)}
+                color={colors.gray500}
+              />
+            </SourceOption>
+          ) : null}
+          <SourceOption
+            accessibilityRole="button"
+            accessibilityLabel={t('intervention.creation.cameraAccessibility')}
+            onPress={() => chooseSource('camera')}
+          >
+            <SourceIconContainer>
+              <SvgIcon
+                name="fa-camera"
+                size={moderateScale(20)}
+                color={colors.primary}
+              />
+            </SourceIconContainer>
+            <SourceOptionText>
+              <SourceOptionTitle>
+                {t('intervention.creation.camera')}
+              </SourceOptionTitle>
+              <SourceOptionDescription>
+                {t('intervention.creation.cameraHint')}
+              </SourceOptionDescription>
+            </SourceOptionText>
+            <SvgIcon
+              name="fa-chevron-right"
+              size={moderateScale(14)}
+              color={colors.gray500}
+            />
+          </SourceOption>
+          <SourceOption
+            accessibilityRole="button"
+            accessibilityLabel={t('intervention.creation.galleryAccessibility')}
+            onPress={() => chooseSource('gallery')}
+          >
+            <SourceIconContainer>
+              <SvgIcon
+                name="image"
+                size={moderateScale(20)}
+                color={colors.primary}
+              />
+            </SourceIconContainer>
+            <SourceOptionText>
+              <SourceOptionTitle>
+                {t('intervention.creation.gallery')}
+              </SourceOptionTitle>
+              <SourceOptionDescription>
+                {t('intervention.creation.galleryHint')}
+              </SourceOptionDescription>
+            </SourceOptionText>
+            <SvgIcon
+              name="fa-chevron-right"
+              size={moderateScale(14)}
+              color={colors.gray500}
+            />
+          </SourceOption>
+          <SourceCancelButton
+            accessibilityRole="button"
+            accessibilityLabel={t('common.actions.cancel')}
+            onPress={onClose}
+          >
+            <SourceCancelText>{t('common.actions.cancel')}</SourceCancelText>
+          </SourceCancelButton>
+        </SourceModalSheet>
+      </SourceModalBackdrop>
+    </Modal>
+  );
 };
 
 export default PhotoSourceModal;
@@ -104,7 +188,8 @@ const SourceModalBackdrop = styled.View`
 `;
 
 const SourceModalSheet = styled.View`
-  padding: ${verticalScale(12)}px ${horizontalScale(18)}px ${verticalScale(22)}px;
+  padding: ${verticalScale(12)}px ${horizontalScale(18)}px
+    ${verticalScale(22)}px;
   border-top-left-radius: ${moderateScale(22)}px;
   border-top-right-radius: ${moderateScale(22)}px;
   background-color: ${({ theme }) => theme.colors.surface};
@@ -125,7 +210,11 @@ const SourceModalHeader = styled.View`
   justify-content: space-between;
 `;
 
-const SourceModalTitle = styled(Text).attrs({ variant: 'bold', color: 'black', fontSize: 17 })``;
+const SourceModalTitle = styled(Text).attrs({
+  variant: 'bold',
+  color: 'black',
+  fontSize: fontPixel(17),
+})``;
 const SourceCloseButton = styled(Pressable)`
   width: ${horizontalScale(34)}px;
   height: ${horizontalScale(34)}px;
@@ -134,7 +223,10 @@ const SourceCloseButton = styled(Pressable)`
   align-items: center;
   background-color: ${({ theme }) => theme.colors.surfaceVariant};
 `;
-const SourceModalDescription = styled(Text).attrs({ variant: 'regularSmall', color: 'gray600' })`
+const SourceModalDescription = styled(Text).attrs({
+  variant: 'regularSmall',
+  color: 'gray600',
+})`
   margin-top: ${verticalScale(4)}px;
   margin-bottom: ${verticalScale(14)}px;
 `;
@@ -159,8 +251,15 @@ const SourceOptionText = styled.View`
   flex: 1;
   margin-left: ${horizontalScale(12)}px;
 `;
-const SourceOptionTitle = styled(Text).attrs({ variant: 'bold', color: 'black', fontSize: 13 })``;
-const SourceOptionDescription = styled(Text).attrs({ variant: 'regularSmall', color: 'gray600' })``;
+const SourceOptionTitle = styled(Text).attrs({
+  variant: 'bold',
+  color: 'black',
+  fontSize: fontPixel(13),
+})``;
+const SourceOptionDescription = styled(Text).attrs({
+  variant: 'regularSmall',
+  color: 'gray600',
+})``;
 const SourceCancelButton = styled(Pressable)`
   height: ${verticalScale(46)}px;
   border-radius: ${moderateScale(12)}px;
@@ -170,4 +269,8 @@ const SourceCancelButton = styled(Pressable)`
   align-items: center;
   background-color: ${({ theme }) => theme.colors.surface};
 `;
-const SourceCancelText = styled(Text).attrs({ variant: 'bold', color: 'black', fontSize: 13 })``;
+const SourceCancelText = styled(Text).attrs({
+  variant: 'bold',
+  color: 'black',
+  fontSize: fontPixel(13),
+})``;

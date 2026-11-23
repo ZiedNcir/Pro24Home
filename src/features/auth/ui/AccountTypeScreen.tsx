@@ -4,7 +4,12 @@ import styled from 'styled-components/native';
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@shared/ui/typography/Text';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
-import { fontPixel, horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
+import {
+  fontPixel,
+  horizontalScale,
+  moderateScale,
+  verticalScale,
+} from '@utils/normalizedCss';
 import { useTheme } from '@theme';
 import { useTranslation } from 'react-i18next';
 
@@ -18,10 +23,20 @@ const AccountTypeScreen: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <ScreenContainer mode={themeMode} scrollable paddingHorizontal={0} paddingVertical={0} withTopSafeArea>
+    <ScreenContainer
+      mode={themeMode}
+      scrollable
+      paddingHorizontal={0}
+      paddingVertical={0}
+      withTopSafeArea
+    >
       <Page>
         <Header>
-          <BackButton onPress={() => navigation.goBack()} accessibilityRole="button" accessibilityLabel={t('accessibility.back')}>
+          <BackButton
+            onPress={() => navigation.goBack()}
+            accessibilityRole="button"
+            accessibilityLabel={t('accessibility.back')}
+          >
             <BackIcon>‹</BackIcon>
           </BackButton>
           <Logo />
@@ -33,30 +48,46 @@ const AccountTypeScreen: React.FC = () => {
           <Description>{t('auth.accountType.description')}</Description>
 
           <RoleCard
-            onPress={() => navigation.navigate('RegisterScreen', { role: 'client' })}
+            onPress={() =>
+              navigation.navigate('RegisterScreen', { role: 'client' })
+            }
             accessibilityRole="button"
             accessibilityLabel={t('auth.accountType.client')}
             activeOpacity={0.88}
           >
-            <IconCircle background={theme.colors.surfaceVariant}><IconText color={theme.colors.primary}>⌂</IconText></IconCircle>
+            <IconCircle background={theme.colors.surfaceVariant}>
+              <IconText color={theme.colors.primary}>⌂</IconText>
+            </IconCircle>
             <RoleCopy>
-              <RoleTitle variant="bold">{t('auth.accountType.client')}</RoleTitle>
-              <RoleDescription>{t('auth.accountType.clientDescription')}</RoleDescription>
+              <RoleTitle variant="bold">
+                {t('auth.accountType.client')}
+              </RoleTitle>
+              <RoleDescription>
+                {t('auth.accountType.clientDescription')}
+              </RoleDescription>
             </RoleCopy>
             <Arrow>›</Arrow>
           </RoleCard>
 
           <RoleCard
             secondary
-            onPress={() => navigation.navigate('RegisterScreen', { role: 'professional' })}
+            onPress={() =>
+              navigation.navigate('RegisterScreen', { role: 'professional' })
+            }
             accessibilityRole="button"
             accessibilityLabel={t('auth.accountType.professional')}
             activeOpacity={0.88}
           >
-            <IconCircle background={theme.colors.surfaceVariant}><IconText color={theme.colors.success}>✓</IconText></IconCircle>
+            <IconCircle background={theme.colors.surfaceVariant}>
+              <IconText color={theme.colors.success}>✓</IconText>
+            </IconCircle>
             <RoleCopy>
-              <RoleTitle variant="bold">{t('auth.accountType.professional')}</RoleTitle>
-              <RoleDescription>{t('auth.accountType.professionalDescription')}</RoleDescription>
+              <RoleTitle variant="bold">
+                {t('auth.accountType.professional')}
+              </RoleTitle>
+              <RoleDescription>
+                {t('auth.accountType.professionalDescription')}
+              </RoleDescription>
             </RoleCopy>
             <Arrow>›</Arrow>
           </RoleCard>
@@ -83,8 +114,8 @@ const Header = styled.View`
 `;
 
 const BackButton = styled.TouchableOpacity`
-  width: 44px;
-  height: 44px;
+  width: ${horizontalScale(44)}px;
+  height: ${verticalScale(44)}px;
   align-items: center;
   justify-content: center;
 `;
@@ -114,7 +145,7 @@ const Eyebrow = styled(Text)`
   color: ${({ theme }) => theme.colors.textSecondary};
   font-family: 'Inter-Bold';
   font-size: ${fontPixel(10)}px;
-  letter-spacing: 1px;
+  letter-spacing: ${fontPixel(1)}px;
   text-align: center;
   margin-bottom: ${verticalScale(13)}px;
 `;

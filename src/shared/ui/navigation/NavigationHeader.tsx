@@ -12,68 +12,67 @@ import { useTranslation } from 'react-i18next';
 type AppNavigationProp = NativeStackNavigationProp<AppStackType>;
 
 interface NavigationHeaderProps {
-    logoSize?: number;
-    showBackButton?: boolean;
-    backButtonTestID?: string;
-    onBackPress?: () => void;
+  logoSize?: number;
+  showBackButton?: boolean;
+  backButtonTestID?: string;
+  onBackPress?: () => void;
 }
 
 const NavigationHeader: React.FC<NavigationHeaderProps> = ({
-    logoSize = verticalScale(150),
-    showBackButton = true,
-    backButtonTestID = 'back-button',
-    onBackPress,
+  logoSize = verticalScale(150),
+  showBackButton = true,
+  backButtonTestID = 'back-button',
+  onBackPress,
 }) => {
-    const navigation = useNavigation<AppNavigationProp>();
-    const { theme } = useTheme();
-    const { t } = useTranslation();
+  const navigation = useNavigation<AppNavigationProp>();
+  const { theme } = useTheme();
+  const { t } = useTranslation();
 
-    const handleBackPress = () => {
-        if (onBackPress) {
-            onBackPress();
-        } else {
-            navigation.goBack();
-        }
-    };
+  const handleBackPress = () => {
+    if (onBackPress) {
+      onBackPress();
+    } else {
+      navigation.goBack();
+    }
+  };
 
-    return (
-        <>
-            {showBackButton && (
-                <TouchableOpacity
-                    style={[styles.backButton, { backgroundColor: theme.colors.surface }]}
-                    onPress={handleBackPress}
-                    testID={backButtonTestID}
-                    accessibilityRole="button"
-                    accessibilityLabel={t('accessibility.back')}
-                >
-                    <SvgIcon name="fa-chevron-left" size={verticalScale(20)} color={theme.colors.primary} />
-                </TouchableOpacity>
-            )}
+  return (
+    <>
+      {showBackButton && (
+        <TouchableOpacity
+          style={[styles.backButton, { backgroundColor: theme.colors.surface }]}
+          onPress={handleBackPress}
+          testID={backButtonTestID}
+          accessibilityRole="button"
+          accessibilityLabel={t('accessibility.back')}
+        >
+          <SvgIcon
+            name="fa-chevron-left"
+            size={verticalScale(20)}
+            color={theme.colors.primary}
+          />
+        </TouchableOpacity>
+      )}
 
-            <SvgIcon
-                name="logo-pro24"
-                style={styles.logo}
-                size={logoSize}
-            />
-        </>
-    );
+      <SvgIcon name="logo-pro24" style={styles.logo} size={logoSize} />
+    </>
+  );
 };
 
 const styles = StyleSheet.create({
-    backButton: {
-        position: 'absolute',
-        top: verticalScale(20),
-        left: verticalScale(20),
-        zIndex: 1,
-        padding: verticalScale(5),
-        borderRadius: verticalScale(30),
-    },
-    logo: {
-        alignSelf: 'center',
+  backButton: {
+    position: 'absolute',
+    top: verticalScale(20),
+    left: verticalScale(20),
+    zIndex: 1,
+    padding: verticalScale(5),
+    borderRadius: verticalScale(30),
+  },
+  logo: {
+    alignSelf: 'center',
 
-        marginTop: verticalScale(-40),
-
-    },
+    marginTop: verticalScale(-40),
+  },
 });
 
 export default NavigationHeader;

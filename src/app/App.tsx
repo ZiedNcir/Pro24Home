@@ -15,7 +15,9 @@ import { initializeNotificationOpenHandler } from '../core/notifications/notific
 
 library.add(fas as any);
 
-LogBox.ignoreLogs(['Non-serializable values were found in the navigation state']);
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 const App = (): React.JSX.Element => {
   const [isLanguageReady, setIsLanguageReady] = useState(false);

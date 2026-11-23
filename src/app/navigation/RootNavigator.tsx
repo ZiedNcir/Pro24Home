@@ -44,7 +44,10 @@ import {
 } from '@roles/professional/documents';
 import { ProfessionalHomeDashboard } from '@roles/professional/dashboard';
 import { NotificationsScreen } from '@features/notification-center';
-import { AddAddressScreen, SavedAddressesScreen } from '@features/address-management';
+import {
+  AddAddressScreen,
+  SavedAddressesScreen,
+} from '@features/address-management';
 import { NewInterventionScreen } from '@features/intervention-creation';
 import { InterventionDetailScreen } from '@features/intervention-detail';
 import { InterventionListScreen } from '@features/intervention-list';
@@ -74,7 +77,7 @@ const BottomTabsWrapper = styled(View)<{ insets: EdgeInsets }>`
   border-radius: ${moderateScale(16)}px;
 
   shadow-color: ${({ theme }) => theme.colors.black};
-  shadow-offset: 0px -4px;
+  shadow-offset: 0px ${verticalScale(-4)}px;
   shadow-opacity: 0.08;
   shadow-radius: ${moderateScale(16)}px;
   elevation: 12;
@@ -116,13 +119,29 @@ const BottomTabBar = ({
   }[] = isProfessional
     ? [
         { route: 'Home', icon: 'fa-home', title: t('navigation.home') },
-        { route: 'ListIntervention', icon: 'fa-list', title: t('navigation.interventions') },
-        { route: 'SettingPage', icon: 'fa-cog', title: t('navigation.settings') },
+        {
+          route: 'ListIntervention',
+          icon: 'fa-list',
+          title: t('navigation.interventions'),
+        },
+        {
+          route: 'SettingPage',
+          icon: 'fa-cog',
+          title: t('navigation.settings'),
+        },
       ]
     : [
         { route: 'Home', icon: 'fa-home', title: t('navigation.home') },
-        { route: 'ListIntervention', icon: 'fa-list', title: t('navigation.interventions') },
-        { route: 'SettingPage', icon: 'fa-cog', title: t('navigation.settings') },
+        {
+          route: 'ListIntervention',
+          icon: 'fa-list',
+          title: t('navigation.interventions'),
+        },
+        {
+          route: 'SettingPage',
+          icon: 'fa-cog',
+          title: t('navigation.settings'),
+        },
       ];
 
   return (
@@ -227,7 +246,10 @@ const AppNavigator: React.FC = () => {
   if (!initialRoute) return null;
 
   return (
-    <NavigationContainer ref={navigationRef} onReady={flushPendingNotificationOpen}>
+    <NavigationContainer
+      ref={navigationRef}
+      onReady={flushPendingNotificationOpen}
+    >
       <Stack.Navigator
         initialRouteName={initialRoute}
         screenOptions={{
@@ -255,7 +277,10 @@ const AppNavigator: React.FC = () => {
         />
         <Stack.Screen name="ContactSupport" component={ContactSupportScreen} />
         <Stack.Screen name="Documents" component={HomeProfessional} />
-        <Stack.Screen name="ProfessionalDocumentsManagement" component={DocumentManagementScreen} />
+        <Stack.Screen
+          name="ProfessionalDocumentsManagement"
+          component={DocumentManagementScreen}
+        />
         <Stack.Screen
           name="ProfessionalVerificationPending"
           component={ProfessionalVerificationPendingScreen}

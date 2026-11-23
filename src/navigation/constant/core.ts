@@ -5,14 +5,25 @@ import type { CreateInterventionRequest } from '@entities/intervention/model';
 export type AppStackType = {
   SignIn: { role?: 'client' | 'professional' };
   Profile: undefined;
-  RegisterScreen: { role?: 'client' | 'professional'; source?: string; commercial_id?: number };
-  VerifyScreen: { email?: string | null; phone_number?: string; role: IRole | null };
+  RegisterScreen: {
+    role?: 'client' | 'professional';
+    source?: string;
+    commercial_id?: number;
+  };
+  VerifyScreen: {
+    email?: string | null;
+    phone_number?: string;
+    role: IRole | null;
+  };
   AccountPendingScreen: undefined;
   ProfessionalVerificationPending: undefined;
   ContactSupport: undefined;
   AddAddress: undefined;
   SavedAddresses: undefined;
-  PriceEstimation: { intervention: CreateInterventionRequest; snapshot?: InterventionSnapshot };
+  PriceEstimation: {
+    intervention: CreateInterventionRequest;
+    snapshot?: InterventionSnapshot;
+  };
   PaymentTravelFee: {
     intervention: CreateInterventionRequest;
     checkPriceWithProfessional?: boolean;

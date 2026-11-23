@@ -1,3 +1,4 @@
+import { verticalScale } from '@utils/normalizedCss';
 import React from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from '@theme';
@@ -12,9 +13,16 @@ export const LoadingOverlay = ({ visible, message }: LoadingOverlayProps) => {
   if (!visible) return null;
 
   return (
-    <View testID="loading-overlay" style={[styles.overlay, { backgroundColor: theme.colors.overlay }]}>
+    <View
+      testID="loading-overlay"
+      style={[styles.overlay, { backgroundColor: theme.colors.overlay }]}
+    >
       <ActivityIndicator color={theme.colors.textInverse} />
-      {message ? <Text style={[styles.message, { color: theme.colors.textInverse }]}>{message}</Text> : null}
+      {message ? (
+        <Text style={[styles.message, { color: theme.colors.textInverse }]}>
+          {message}
+        </Text>
+      ) : null}
     </View>
   );
 };
@@ -30,5 +38,5 @@ const styles = StyleSheet.create({
     top: 0,
     zIndex: 10,
   },
-  message: { marginTop: 12 },
+  message: { marginTop: verticalScale(12) },
 });

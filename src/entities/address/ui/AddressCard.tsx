@@ -5,75 +5,77 @@ import styled from 'styled-components/native';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import {
-    horizontalScale,
-    verticalScale,
-    moderateScale,
+  horizontalScale,
+  verticalScale,
+  moderateScale,
 } from '@utils/normalizedCss';
 import { useTheme } from '@theme';
 
 interface Props {
-    title: string;
-    details?: string;
-    selected?: boolean;
-    isDefault?: boolean;
-    onPress?: () => void;
-    onEditPress?: () => void;
+  title: string;
+  details?: string;
+  selected?: boolean;
+  isDefault?: boolean;
+  onPress?: () => void;
+  onEditPress?: () => void;
 }
 
 const AddressCard: React.FC<Props> = ({
-    title,
-    details,
-    selected,
-    isDefault,
-    onPress,
-    onEditPress,
+  title,
+  details,
+  selected,
+  isDefault,
+  onPress,
+  onEditPress,
 }) => {
-    const { theme } = useTheme();
-    const { t } = useTranslation();
-    return (
-        <Card selected={!!selected} onPress={onPress} activeOpacity={0.86}>
-            <AddressIcon selected={!!selected}>
-                <SvgIcon name="fa-home" size={16} color={selected ? theme.colors.primary : theme.colors.gray600} />
-            </AddressIcon>
-            <Content>
-                <TopLine>
-                    <Text variant="bold" color="black" fontSize={13}>
-                        {title}
-                    </Text>
+  const { theme } = useTheme();
+  const { t } = useTranslation();
+  return (
+    <Card selected={!!selected} onPress={onPress} activeOpacity={0.86}>
+      <AddressIcon selected={!!selected}>
+        <SvgIcon
+          name="fa-home"
+          size={16}
+          color={selected ? theme.colors.primary : theme.colors.gray600}
+        />
+      </AddressIcon>
+      <Content>
+        <TopLine>
+          <Text variant="bold" color="black" fontSize={13}>
+            {title}
+          </Text>
 
-                    {isDefault ? (
-                        <DefaultBadge>
-                            <Text variant="notification" color="primary">
-                                {t('address.default')}
-                            </Text>
-                        </DefaultBadge>
-                    ) : null}
-                </TopLine>
+          {isDefault ? (
+            <DefaultBadge>
+              <Text variant="notification" color="primary">
+                {t('address.default')}
+              </Text>
+            </DefaultBadge>
+          ) : null}
+        </TopLine>
 
-                {details ? (
-                    <Text
-                        variant="regularSmall"
-                        color="gray600"
-                        style={{ marginTop: verticalScale(6) }}
-                    >
-                        {details}
-                    </Text>
-                ) : null}
-            </Content>
+        {details ? (
+          <Text
+            variant="regularSmall"
+            color="gray600"
+            style={{ marginTop: verticalScale(6) }}
+          >
+            {details}
+          </Text>
+        ) : null}
+      </Content>
 
-            <RightSide>
-                {onEditPress ? (
-                    <EditButton onPress={onEditPress}>
-                        <SvgIcon name="fa-pen" size={14} color={theme.colors.gray600} />
-                    </EditButton>
-                ) : null}
+      <RightSide>
+        {onEditPress ? (
+          <EditButton onPress={onEditPress}>
+            <SvgIcon name="fa-pen" size={14} color={theme.colors.gray600} />
+          </EditButton>
+        ) : null}
 
-                <Radio selected={!!selected}>
-                    {selected ? <InnerDot /> : null}
-                </Radio>
-            </RightSide>
-        </Card>
-    );
+        <Radio selected={!!selected}>{selected ? <InnerDot /> : null}</Radio>
+      </RightSide>
+    </Card>
+  );
 };
 
 export default AddressCard;
@@ -82,8 +84,10 @@ const Card = styled.TouchableOpacity<{ selected: boolean }>`
   min-height: ${verticalScale(72)}px;
   border-radius: ${moderateScale(14)}px;
   border-width: 1px;
-  border-color: ${({ selected, theme }) => (selected ? theme.colors.primary : theme.colors.border)};
-  background-color: ${({ selected, theme }) => (selected ? theme.colors.primaryLighter : theme.colors.surface)};
+  border-color: ${({ selected, theme }) =>
+    selected ? theme.colors.primary : theme.colors.border};
+  background-color: ${({ selected, theme }) =>
+    selected ? theme.colors.primaryLighter : theme.colors.surface};
   padding: ${horizontalScale(14)}px;
   flex-direction: row;
   align-items: center;
@@ -99,7 +103,8 @@ const AddressIcon = styled.View<{ selected: boolean }>`
   width: ${horizontalScale(36)}px;
   height: ${horizontalScale(36)}px;
   border-radius: ${horizontalScale(18)}px;
-  background-color: ${({ selected, theme }) => (selected ? theme.colors.primaryLighter : theme.colors.surfaceVariant)};
+  background-color: ${({ selected, theme }) =>
+    selected ? theme.colors.primaryLighter : theme.colors.surfaceVariant};
   justify-content: center;
   align-items: center;
 `;
@@ -136,7 +141,8 @@ const Radio = styled.View<{ selected: boolean }>`
   height: ${horizontalScale(18)}px;
   border-radius: ${horizontalScale(9)}px;
   border-width: 1px;
-  border-color: ${({ selected, theme }) => (selected ? theme.colors.primary : theme.colors.borderDark)};
+  border-color: ${({ selected, theme }) =>
+    selected ? theme.colors.primary : theme.colors.borderDark};
   justify-content: center;
   align-items: center;
 `;

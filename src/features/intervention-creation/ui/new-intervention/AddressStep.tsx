@@ -11,6 +11,7 @@ import {
   horizontalScale,
   moderateScale,
   verticalScale,
+  fontPixel,
 } from '@utils/normalizedCss';
 import AddressCard from '@entities/address/ui/AddressCard';
 import BottomActions from '@shared/ui/action/BottomActions';
@@ -110,9 +111,7 @@ const AddressStep: React.FC<AddressStepProps> = ({
           ))}
         </>
       ) : (
-        <EmptyAddress>
-          {t('intervention.address.empty')}
-        </EmptyAddress>
+        <EmptyAddress>{t('intervention.address.empty')}</EmptyAddress>
       )}
 
       <AddAddressButton
@@ -161,7 +160,7 @@ export default AddressStep;
 const SectionTitle = styled(Text).attrs({
   variant: 'bold',
   color: 'black',
-  fontSize: 15,
+  fontSize: fontPixel(15),
 })`
   margin-bottom: ${verticalScale(12)}px;
   margin-top: ${verticalScale(12)}px;
@@ -215,13 +214,13 @@ const EmptyAddress = styled(Text).attrs({
 const SmallLabel = styled(Text).attrs({
   variant: 'bold',
   color: 'black',
-  fontSize: 12,
+  fontSize: fontPixel(12),
 })`
   margin-bottom: ${verticalScale(8)}px;
 `;
 const AddAddressButton = styled.TouchableOpacity`
   height: ${verticalScale(48)}px;
-  border-radius: 12px;
+  border-radius: ${moderateScale(12)}px;
   border-width: 1px;
   border-color: ${({ theme }) => theme.colors.primary};
   flex-direction: row;

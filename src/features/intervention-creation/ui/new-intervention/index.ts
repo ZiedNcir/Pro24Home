@@ -1,8 +1,8 @@
 export type {
-    AddressModalProps,
-    AddressStepProps,
-    DetailsStepProps,
-    FullscreenMapModalProps,
-    ServiceStepProps,
-    SummaryStepProps,
+  AddressModalProps,
+  AddressStepProps,
+  DetailsStepProps,
+  FullscreenMapModalProps,
+  ServiceStepProps,
+  SummaryStepProps,
 } from './types';

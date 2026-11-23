@@ -74,7 +74,9 @@ export const baseQueryWithReauth: BaseQueryFn<
     const error = result.error as ApiError;
 
     if (error.data?.errors) {
-      error.data.formattedMessage = Object.values(error.data.errors).flat().join('\n');
+      error.data.formattedMessage = Object.values(error.data.errors)
+        .flat()
+        .join('\n');
     }
   }
 
@@ -93,7 +95,11 @@ export const api = createApi({
   reducerPath: 'api',
   baseQuery: staggeredBaseQuery,
   serializeQueryArgs: ({ endpointName, queryArgs, endpointDefinition }) =>
-    `${defaultSerializeQueryArgs({ endpointName, queryArgs, endpointDefinition })}|lang=${getApiLanguage()}`,
+    `${defaultSerializeQueryArgs({
+      endpointName,
+      queryArgs,
+      endpointDefinition,
+    })}|lang=${getApiLanguage()}`,
   tagTypes: [
     'Auth',
     'User',

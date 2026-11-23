@@ -4,45 +4,49 @@ import styled from 'styled-components/native';
 import { useTheme } from '@theme';
 
 export interface AppImageProps extends Omit<ImageProps, 'source'> {
-    uri?: string;
-    source?: ImageProps['source'];
-    showLoader?: boolean;
+  uri?: string;
+  source?: ImageProps['source'];
+  showLoader?: boolean;
 
-    onLoadStart?: () => void;
-    onLoadEnd?: () => void;
+  onLoadStart?: () => void;
+  onLoadEnd?: () => void;
 
-    fallbackSource?: ImageProps['source'];
-    renderError?: () => React.ReactNode;
-    renderLoading?: () => React.ReactNode;
+  fallbackSource?: ImageProps['source'];
+  renderError?: () => React.ReactNode;
+  renderLoading?: () => React.ReactNode;
 
-    width?: number;
-    height?: number;
-    borderRadius?: number;
-    resizeMode?: 'cover' | 'contain' | 'stretch' | 'repeat' | 'center';
+  width?: number;
+  height?: number;
+  borderRadius?: number;
+  resizeMode?: 'cover' | 'contain' | 'stretch' | 'repeat' | 'center';
 }
 
 const Container = styled.View<{
-    width?: number | string;
-    height?: number | string;
-    borderRadius?: number;
+  width?: number | string;
+  height?: number | string;
+  borderRadius?: number;
 }>`
   position: relative;
   overflow: hidden;
   width: ${({ width }) =>
-        width ? (typeof width === 'number' ? `${width}px` : width) : '100%'};
+    width ? (typeof width === 'number' ? `${width}px` : width) : '100%'};
   ${({ height }) =>
-        height ? `height: ${typeof height === 'number' ? `${height}px` : height};` : ''};
-  ${({ borderRadius }) => (borderRadius != null ? `border-radius: ${borderRadius}px;` : '')}
+    height
+      ? `height: ${typeof height === 'number' ? `${height}px` : height};`
+      : ''};
+  ${({ borderRadius }) =>
+    borderRadius != null ? `border-radius: ${borderRadius}px;` : ''}
 `;
 
 const StyledImage = styled.Image<{
-    resizeMode?: 'cover' | 'contain' | 'stretch' | 'repeat' | 'center';
-    borderRadius?: number;
+  resizeMode?: 'cover' | 'contain' | 'stretch' | 'repeat' | 'center';
+  borderRadius?: number;
 }>`
   width: 100%;
   height: 100%;
   resize-mode: ${({ resizeMode }) => resizeMode || 'cover'};
-  ${({ borderRadius }) => (borderRadius != null ? `border-radius: ${borderRadius}px;` : '')}
+  ${({ borderRadius }) =>
+    borderRadius != null ? `border-radius: ${borderRadius}px;` : ''}
 `;
 
 const LoaderContainer = styled.View`
@@ -69,89 +73,100 @@ const ErrorContainer = styled.View`
 `;
 
 const AppImage: React.FC<AppImageProps> = ({
-    uri,
-    source,
-    style,
-    showLoader = true,
-    onLoadStart,
-    onLoadEnd,
-    onLoad,
-    onError,
-    fallbackSource,
-    renderError,
-    renderLoading,
-    width,
-    height,
-    borderRadius,
-    resizeMode = 'cover',
-    ...rest
+  uri,
+  source,
+  style,
+  showLoader = true,
+  onLoadStart,
+  onLoadEnd,
+  onLoad,
+  onError,
+  fallbackSource,
+  renderError,
+  renderLoading,
+  width,
+  height,
+  borderRadius,
+  resizeMode = 'cover',
+  ...rest
 }) => {
-    const { theme } = useTheme();
-    const [isLoading, setIsLoading] = React.useState(true);
-    const [hasError, setHasError] = React.useState(false);
-    const [currentSource, setCurrentSource] = React.useState<ImageProps['source']>(
-        source ?? (uri ? { uri } : undefined)
-    );
+  const { theme } = useTheme();
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [hasError, setHasError] = React.useState(false);
+  const [currentSource, setCurrentSource] = React.useState<
+    ImageProps['source']
+  >(source ?? (uri ? { uri } : undefined));
 
-    React.useEffect(() => {
-        setCurrentSource(source ?? (uri ? { uri } : undefined));
-        setIsLoading(true);
-        setHasError(false);
-    }, [uri, source]);
+  React.useEffect(() => {
+    setCurrentSource(source ?? (uri ? { uri } : undefined));
+    setIsLoading(true);
+    setHasError(false);
+  }, [uri, source]);
 
-    const handleLoadStart = () => {
-        setIsLoading(true);
-        onLoadStart?.();
-    };
+  const handleLoadStart = () => {
+    setIsLoading(true);
+    onLoadStart?.();
+  };
 
-    const handleLoad = (e: any) => {
-        setIsLoading(false);
-        setHasError(false);
-        onLoad?.(e);
-        onLoadEnd?.();
-    };
+  const handleLoad = (e: any) => {
+    setIsLoading(false);
+    setHasError(false);
+    onLoad?.(e);
+    onLoadEnd?.();
+  };
 
-    const handleError = (e: any) => {
-        if (fallbackSource && currentSource !== fallbackSource) {
-            setCurrentSource(fallbackSource);
-            setIsLoading(true);
-            setHasError(false);
-            return;
-        }
-        setIsLoading(false);
-        setHasError(true);
-        onError?.(e);
-        onLoadEnd?.();
-    };
+  const handleError = (e: any) => {
+    if (fallbackSource && currentSource !== fallbackSource) {
+      setCurrentSource(fallbackSource);
+      setIsLoading(true);
+      setHasError(false);
+      return;
+    }
+    setIsLoading(false);
+    setHasError(true);
+    onError?.(e);
+    onLoadEnd?.();
+  };
 
-    const styleBorderRadius = (style as ImageStyle)?.borderRadius as number | undefined;
-    const finalRadius = borderRadius ?? styleBorderRadius;
+  const styleBorderRadius = (style as ImageStyle)?.borderRadius as
+    | number
+    | undefined;
+  const finalRadius = borderRadius ?? styleBorderRadius;
 
-    return (
-        <Container width={width} height={height} borderRadius={finalRadius} style={style}>
-            {showLoader && isLoading && (
-                <LoaderContainer>
-                    {renderLoading ? renderLoading() : <ActivityIndicator size="small" color={theme.colors.inputText} />}
-                </LoaderContainer>
-            )}
+  return (
+    <Container
+      width={width}
+      height={height}
+      borderRadius={finalRadius}
+      style={style}
+    >
+      {showLoader && isLoading && (
+        <LoaderContainer>
+          {renderLoading ? (
+            renderLoading()
+          ) : (
+            <ActivityIndicator size="small" color={theme.colors.inputText} />
+          )}
+        </LoaderContainer>
+      )}
 
-            {!hasError && currentSource && (
-                <StyledImage
-                    source={currentSource}
-                    resizeMode={resizeMode}
-                    borderRadius={finalRadius}
-                    onLoadStart={handleLoadStart}
-                    onLoad={handleLoad}
-                    onError={handleError}
-                    {...rest}
-                />
-            )}
+      {!hasError && currentSource && (
+        <StyledImage
+          source={currentSource}
+          resizeMode={resizeMode}
+          borderRadius={finalRadius}
+          onLoadStart={handleLoadStart}
+          onLoad={handleLoad}
+          onError={handleError}
+          {...rest}
+        />
+      )}
 
-            {hasError && !fallbackSource && renderError && (
-                <ErrorContainer>{renderError()}</ErrorContainer>
-            )}
-        </Container>
-    );
+      {hasError && !fallbackSource && renderError && (
+        <ErrorContainer>{renderError()}</ErrorContainer>
+      )}
+    </Container>
+  );
 };
 
 export default AppImage;

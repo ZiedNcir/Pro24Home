@@ -10,7 +10,12 @@ import { Text, Spinner } from '@shared/ui';
 import { Button } from '@shared/ui/button/Button';
 import Field from '@shared/ui/form/HookFormField';
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
-import { horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
+import {
+  horizontalScale,
+  moderateScale,
+  verticalScale,
+  fontPixel,
+} from '@utils/normalizedCss';
 import { useTheme } from '@theme';
 import LogoMediumPro24Icon from '@assets/svg/logo-mediumPro24.svg';
 import { useForgotPasswordMutation } from '@features/auth/api/auth.api';
@@ -26,24 +31,43 @@ export const ForgetPassword = () => {
   const { theme, themeMode } = useTheme();
   const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
   const [sent, setSent] = useState(false);
-  const { control, handleSubmit } = useForm<FormValues>({ defaultValues: { phone_number: '' } });
+  const { control, handleSubmit } = useForm<FormValues>({
+    defaultValues: { phone_number: '' },
+  });
 
-  const onSubmit = useCallback(async ({ phone_number }: FormValues) => {
-    try {
-      const response = await forgotPassword({ phone_number }).unwrap();
-      setSent(true);
-      Toast.show(response?.message || t('auth.forgot.sentToast'), {
-        type: 'success', placement: 'bottom', duration: 4000,
-      });
-    } catch (error: any) {
-      Toast.show(error?.data?.message || error?.message || t('auth.forgot.failedToast'), {
-        type: 'danger', placement: 'bottom', duration: 4000,
-      });
-    }
-  }, [forgotPassword, t]);
+  const onSubmit = useCallback(
+    async ({ phone_number }: FormValues) => {
+      try {
+        const response = await forgotPassword({ phone_number }).unwrap();
+        setSent(true);
+        Toast.show(response?.message || t('auth.forgot.sentToast'), {
+          type: 'success',
+          placement: 'bottom',
+          duration: 4000,
+        });
+      } catch (error: any) {
+        Toast.show(
+          error?.data?.message ||
+            error?.message ||
+            t('auth.forgot.failedToast'),
+          {
+            type: 'danger',
+            placement: 'bottom',
+            duration: 4000,
+          },
+        );
+      }
+    },
+    [forgotPassword, t],
+  );
 
   return (
-    <ScreenContainer mode={themeMode} scrollable paddingHorizontal={0} paddingVertical={0}>
+    <ScreenContainer
+      mode={themeMode}
+      scrollable
+      paddingHorizontal={0}
+      paddingVertical={0}
+    >
       <View style={styles.primaryHeader}>
         <TouchableOpacity
           style={styles.backButton}
@@ -51,25 +75,61 @@ export const ForgetPassword = () => {
           accessibilityRole="button"
           accessibilityLabel={t('accessibility.back')}
         >
-          <Text style={[styles.backIcon, { color: theme.colors.primary }]}>‹</Text>
+          <Text style={[styles.backIcon, { color: theme.colors.primary }]}>
+            ‹
+          </Text>
         </TouchableOpacity>
         <LogoMediumPro24Icon style={styles.logo} />
       </View>
 
       <View style={styles.cardContainer}>
-        <View style={[styles.card, { backgroundColor: theme.colors.background, shadowColor: theme.colors.black }]}>
-          <Text variant="title" style={[styles.title, { color: theme.colors.textPrimary }]}>{t('auth.forgot.title')}</Text>
-          <Text variant="regular" color={theme.colors.textSecondary} style={styles.description}>
+        <View
+          style={[
+            styles.card,
+            {
+              backgroundColor: theme.colors.background,
+              shadowColor: theme.colors.black,
+            },
+          ]}
+        >
+          <Text
+            variant="title"
+            style={[styles.title, { color: theme.colors.textPrimary }]}
+          >
+            {t('auth.forgot.title')}
+          </Text>
+          <Text
+            variant="regular"
+            color={theme.colors.textSecondary}
+            style={styles.description}
+          >
             {t('auth.forgot.description')}
           </Text>
 
           {sent ? (
             <View style={styles.successState}>
-              <Text variant="bold" color={theme.colors.success} style={styles.successTitle}>{t('auth.forgot.successTitle')}</Text>
-              <Text variant="regular" color={theme.colors.textSecondary} style={styles.successText}>
+              <Text
+                variant="bold"
+                color={theme.colors.success}
+                style={styles.successTitle}
+              >
+                {t('auth.forgot.successTitle')}
+              </Text>
+              <Text
+                variant="regular"
+                color={theme.colors.textSecondary}
+                style={styles.successText}
+              >
                 {t('auth.forgot.successDescription')}
               </Text>
-              <Button title={t('auth.forgot.backToLogin')} variant="primary" fullWidth onPress={() => navigation.navigate('SignIn', { role: 'client' })} />
+              <Button
+                title={t('auth.forgot.backToLogin')}
+                variant="primary"
+                fullWidth
+                onPress={() =>
+                  navigation.navigate('SignIn', { role: 'client' })
+                }
+              />
             </View>
           ) : (
             <>
@@ -98,14 +158,23 @@ export const ForgetPassword = () => {
                 disabled={isLoading}
                 loading={isLoading}
               />
-              <TouchableOpacity accessibilityRole="button" style={styles.signInLink} onPress={() => navigation.goBack()} disabled={isLoading}>
-                <Text variant="medium" color={theme.colors.primary}>{t('auth.forgot.backToLogin')}</Text>
+              <TouchableOpacity
+                accessibilityRole="button"
+                style={styles.signInLink}
+                onPress={() => navigation.goBack()}
+                disabled={isLoading}
+              >
+                <Text variant="medium" color={theme.colors.primary}>
+                  {t('auth.forgot.backToLogin')}
+                </Text>
               </TouchableOpacity>
             </>
           )}
         </View>
       </View>
-      {isLoading && <Spinner visible={isLoading} onRequestClose={() => undefined} />}
+      {isLoading && (
+        <Spinner visible={isLoading} onRequestClose={() => undefined} />
+      )}
     </ScreenContainer>
   );
 };
@@ -115,31 +184,31 @@ const styles = StyleSheet.create({
     height: verticalScale(78),
     position: 'relative',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   backButton: {
     position: 'absolute',
     left: horizontalScale(8),
     top: verticalScale(17),
-    width: 44,
-    height: 44,
+    width: horizontalScale(44),
+    height: verticalScale(44),
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 1
+    zIndex: 1,
   },
   backIcon: {
     fontFamily: 'Inter-Regular',
-    fontSize: 34,
-    lineHeight: 34
+    fontSize: fontPixel(34),
+    lineHeight: fontPixel(34),
   },
   logo: {
     width: horizontalScale(150),
-    height: verticalScale(42)
+    height: verticalScale(42),
   },
   cardContainer: {
     width: '100%',
-    paddingHorizontal: 18,
-    marginTop: 20
+    paddingHorizontal: horizontalScale(18),
+    marginTop: verticalScale(20),
   },
   card: {
     width: '100%',
@@ -148,41 +217,42 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     paddingBottom: verticalScale(30),
     shadowOffset: { width: 0, height: verticalScale(8) },
-    shadowOpacity: 0, shadowRadius: moderateScale(16),
-    elevation: 0
+    shadowOpacity: 0,
+    shadowRadius: moderateScale(16),
+    elevation: 0,
   },
   title: {
     textAlign: 'left',
-    fontSize: 26,
-    lineHeight: 32,
-    marginBottom: verticalScale(12)
+    fontSize: fontPixel(26),
+    lineHeight: fontPixel(32),
+    marginBottom: verticalScale(12),
   },
   description: {
     textAlign: 'left',
     fontSize: moderateScale(14),
     lineHeight: moderateScale(22),
-    marginBottom: verticalScale(24)
+    marginBottom: verticalScale(24),
   },
   submitButton: {
-    marginTop: verticalScale(18)
+    marginTop: verticalScale(18),
   },
   signInLink: {
     alignSelf: 'center',
-    minHeight: 44,
+    minHeight: verticalScale(44),
     justifyContent: 'center',
-    marginTop: verticalScale(22)
+    marginTop: verticalScale(22),
   },
   successState: {
     alignItems: 'center',
-    gap: verticalScale(16)
+    gap: verticalScale(16),
   },
   successTitle: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   successText: {
     textAlign: 'left',
     lineHeight: moderateScale(22),
-    marginBottom: verticalScale(8)
+    marginBottom: verticalScale(8),
   },
 });
 

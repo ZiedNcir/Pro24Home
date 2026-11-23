@@ -5,73 +5,93 @@ import styled from 'styled-components/native';
 import { useSelector } from 'react-redux';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
-import { horizontalScale, verticalScale } from '@utils/normalizedCss';
+import {
+  horizontalScale,
+  verticalScale,
+  moderateScale,
+} from '@utils/normalizedCss';
 import { useTheme } from '@theme';
 import { useNavigation } from '@react-navigation/native';
 import { selectAuthLoading, selectUser } from '@store/slices/authSlice';
 import { useGetUnreadNotificationCountQuery } from '@entities/notification/api/notification.api';
 
 const HeaderLocation = () => {
-    const { t } = useTranslation();
-    const { theme } = useTheme();
-    const navigation = useNavigation();
-    const user = useSelector(selectUser);
-    const isLoading = useSelector(selectAuthLoading);
-    const { data: unreadData } = useGetUnreadNotificationCountQuery(undefined, { refetchOnMountOrArgChange: true });
-    const unreadCount = unreadData?.count ?? 0;
+  const { t } = useTranslation();
+  const { theme } = useTheme();
+  const navigation = useNavigation();
+  const user = useSelector(selectUser);
+  const isLoading = useSelector(selectAuthLoading);
+  const { data: unreadData } = useGetUnreadNotificationCountQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+  const unreadCount = unreadData?.count ?? 0;
 
-    // Extract name from nested client/professional data
-    const displayName = user
-        ? user.type === 'client' && user.client
-            ? `${user.client.first_name} ${user.client.last_name}`.trim()
-            : user.type === 'professional' && user.professional
-            ? `${user.professional.first_name} ${user.professional.last_name}`.trim()
-            : user.name || t('client.home.user')
-        : t('client.home.user');
-    return (
-        <Container>
-            <TopRow>
-                <LocationRow>
-                    <SvgIcon name="fa-map-marker-alt" size={16} color={theme.colors.primary} />
-                    <Text variant="medium" color="primary" fontSize={13}>
-                        {t('client.home.myLocation')}
-                    </Text>
-                    <SvgIcon name="fa-chevron-down" size={11} color={theme.colors.primary} />
-                </LocationRow>
+  // Extract name from nested client/professional data
+  const displayName = user
+    ? user.type === 'client' && user.client
+      ? `${user.client.first_name} ${user.client.last_name}`.trim()
+      : user.type === 'professional' && user.professional
+      ? `${user.professional.first_name} ${user.professional.last_name}`.trim()
+      : user.name || t('client.home.user')
+    : t('client.home.user');
+  return (
+    <Container>
+      <TopRow>
+        <LocationRow>
+          <SvgIcon
+            name="fa-map-marker-alt"
+            size={16}
+            color={theme.colors.primary}
+          />
+          <Text variant="medium" color="primary" fontSize={13}>
+            {t('client.home.myLocation')}
+          </Text>
+          <SvgIcon
+            name="fa-chevron-down"
+            size={11}
+            color={theme.colors.primary}
+          />
+        </LocationRow>
 
-                <Actions>
+        <Actions>
+          <IconButton
+            onPress={() => navigation.navigate('Notifications' as never)}
+          >
+            <SvgIcon
+              name="fa-bell"
+              size={20}
+              color={theme.colors.textPrimary}
+            />
+            {unreadCount > 0 && (
+              <Badge>
+                <Text variant="notification" color="white" fontWeight="700">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </Text>
+              </Badge>
+            )}
+          </IconButton>
+        </Actions>
+      </TopRow>
 
-                    <IconButton onPress={() => navigation.navigate('Notifications' as never)}>
-                        <SvgIcon name="fa-bell" size={20} color={theme.colors.textPrimary} />
-                        {unreadCount > 0 && <Badge>
-                            <Text variant="notification" color="white" fontWeight="700">
-                                {unreadCount > 9 ? '9+' : unreadCount}
-                            </Text>
-                        </Badge>}
-                    </IconButton>
-                </Actions>
-            </TopRow>
+      <Text variant="bold" color="black" fontSize={27} lineHeight={34}>
+        {t('client.home.welcome')}{' '}
+        <Text variant="regular" color="black" fontSize={27} lineHeight={34}>
+          {isLoading ? t('client.home.loading') : displayName}
+        </Text>{' '}
+        👋
+      </Text>
 
-            <Text variant="bold" color="black" fontSize={27} lineHeight={34}>
-                {t('client.home.welcome')}{' '}
-                <Text variant="regular" color="black" fontSize={27} lineHeight={34}>
-                    {isLoading ? t('client.home.loading') : displayName}
-                </Text>{' '}
-                👋
-            </Text>
-
-            <Text
-                variant="regular"
-                color="gray600"
-                fontSize={14}
-                lineHeight={20}
-                style={{ marginTop: verticalScale(4) }}
-            >
-                {t('client.home.headline')}
-            </Text>
-
-        </Container>
-    );
+      <Text
+        variant="regular"
+        color="gray600"
+        fontSize={14}
+        lineHeight={20}
+        style={{ marginTop: verticalScale(4) }}
+      >
+        {t('client.home.headline')}
+      </Text>
+    </Container>
+  );
 };
 
 export default HeaderLocation;
@@ -107,16 +127,16 @@ const IconButton = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
   shadow-color: ${({ theme }) => theme.colors.black};
-  shadow-offset: 0px 4px;
+  shadow-offset: 0px ${verticalScale(4)}px;
   shadow-opacity: 0.06;
-  shadow-radius: 10px;
+  shadow-radius: ${moderateScale(10)}px;
   elevation: 3;
 `;
 
 const Badge = styled.View`
   position: absolute;
-  top: -2px;
-  right: -2px;
+  top: ${verticalScale(-2)}px;
+  right: ${horizontalScale(-2)}px;
   width: ${horizontalScale(22)}px;
   height: ${horizontalScale(22)}px;
   border-radius: ${horizontalScale(11)}px;

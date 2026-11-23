@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator } from 'react-native';
@@ -11,132 +10,145 @@ import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import BottomActions from '@shared/ui/action/BottomActions';
 import InfoNotice from '@shared/ui/action/InfoNotice';
 //import { appNavigate } from '@navigations/navigation';
-import { horizontalScale, verticalScale } from '@utils/normalizedCss';
-import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import {
+  horizontalScale,
+  verticalScale,
+  fontPixel,
+  moderateScale,
+} from '@utils/normalizedCss';
+import {
+  useNavigation,
+  useRoute,
+  type RouteProp,
+} from '@react-navigation/native';
 import { AppStackType } from '../../../../navigation/constant/core';
 import { useGetInterventionPriceQuery } from '@entities/payment/api/payment.api';
 import { useTheme } from '@theme';
 
 export const PriceEstimationScreen = () => {
-    const { t } = useTranslation();
-    const { theme } = useTheme();
-    const colors = theme.colors;
-    const navigation = useNavigation();
-    const route = useRoute<RouteProp<AppStackType, 'PriceEstimation'>>();
-    const [checkWithProfessional, setCheckWithProfessional] = useState(false);
-    const { data: price, isLoading: isPriceLoading } = useGetInterventionPriceQuery();
+  const { t } = useTranslation();
+  const { theme } = useTheme();
+  const colors = theme.colors;
+  const navigation = useNavigation();
+  const route = useRoute<RouteProp<AppStackType, 'PriceEstimation'>>();
+  const [checkWithProfessional, setCheckWithProfessional] = useState(false);
+  const { data: price, isLoading: isPriceLoading } =
+    useGetInterventionPriceQuery();
 
-    const priceLabel = price?.minPrice && price?.maxPrice
-        ? `${price.minPrice} € – ${price.maxPrice} €`
-        : price?.price
-            ? `${price.price} €`
-            : t('payment.estimate.defaultRange', { min: 50, max: 80 });
+  const priceLabel =
+    price?.minPrice && price?.maxPrice
+      ? `${price.minPrice} € – ${price.maxPrice} €`
+      : price?.price
+      ? `${price.price} €`
+      : t('payment.estimate.defaultRange', { min: 50, max: 80 });
 
-    const continueToPayment = () => {
-        const intervention = {
-            ...route.params.intervention,
-            price: checkWithProfessional
-                ? null
-                : price?.price ?? price?.minPrice ?? null,
-        };
-
-        (navigation as any).navigate('PaymentTravelFee', {
-            intervention,
-            checkPriceWithProfessional: checkWithProfessional,
-            snapshot: route.params.snapshot,
-        });
+  const continueToPayment = () => {
+    const intervention = {
+      ...route.params.intervention,
+      price: checkWithProfessional
+        ? null
+        : price?.price ?? price?.minPrice ?? null,
     };
 
-    return (
-        <ScreenContainer
-            scrollable
-            paddingHorizontal={horizontalScale(18)}
-            paddingVertical={verticalScale(12)}
-            contentContainerStyle={{ paddingBottom: verticalScale(18) }}
-        >
-            <InterventionHeader title={t('payment.estimate.title')} showHelp={false} />
+    (navigation as any).navigate('PaymentTravelFee', {
+      intervention,
+      checkPriceWithProfessional: checkWithProfessional,
+      snapshot: route.params.snapshot,
+    });
+  };
 
-            <PriceBox>
-                <PriceIcon>
-                    <SvgIcon name="fa-euro-sign" size={18} color={colors.primary} />
-                </PriceIcon>
-                <PriceContent>
-                    <Text variant="bold" color="black" fontSize={13}>
-                        {t('payment.estimate.average')}
-                    </Text>
-                    {isPriceLoading ? (
-                        <ActivityIndicator color={colors.primary} />
-                    ) : (
-                        <Text variant="bold" color="black" fontSize={24}>{priceLabel}</Text>
-                    )}
-                    <Text variant="regularSmall" color="gray600">
-                        {t('payment.estimate.range')}
-                    </Text>
-                </PriceContent>
-            </PriceBox>
+  return (
+    <ScreenContainer
+      scrollable
+      paddingHorizontal={horizontalScale(18)}
+      paddingVertical={verticalScale(12)}
+      contentContainerStyle={{ paddingBottom: verticalScale(18) }}
+    >
+      <InterventionHeader
+        title={t('payment.estimate.title')}
+        showHelp={false}
+      />
 
-            <SectionTitle>{t('payment.estimate.confirmation')}</SectionTitle>
+      <PriceBox>
+        <PriceIcon>
+          <SvgIcon name="fa-euro-sign" size={18} color={colors.primary} />
+        </PriceIcon>
+        <PriceContent>
+          <Text variant="bold" color="black" fontSize={13}>
+            {t('payment.estimate.average')}
+          </Text>
+          {isPriceLoading ? (
+            <ActivityIndicator color={colors.primary} />
+          ) : (
+            <Text variant="bold" color="black" fontSize={24}>
+              {priceLabel}
+            </Text>
+          )}
+          <Text variant="regularSmall" color="gray600">
+            {t('payment.estimate.range')}
+          </Text>
+        </PriceContent>
+      </PriceBox>
 
-            <ProfessionalOption
-                selected={checkWithProfessional}
-                onPress={() => setCheckWithProfessional(value => !value)}
-                activeOpacity={0.85}
-            >
-                <OptionIcon>
-                    <SvgIcon name="fa-user-check" size={18} color={colors.primary} />
-                </OptionIcon>
-                <OptionContent>
-                    <Text variant="bold" color="black" fontSize={13}>
-                        {t('payment.estimate.professionalCheck')}
-                    </Text>
-                    <Text variant="regularSmall" color="gray600">
-                        {t('payment.estimate.beforeIntervention')}
-                    </Text>
-                </OptionContent>
-                <Radio selected={checkWithProfessional} />
-            </ProfessionalOption>
+      <SectionTitle>{t('payment.estimate.confirmation')}</SectionTitle>
 
-            <SectionTitle>{t('payment.estimate.factors')}</SectionTitle>
+      <ProfessionalOption
+        selected={checkWithProfessional}
+        onPress={() => setCheckWithProfessional(value => !value)}
+        activeOpacity={0.85}
+      >
+        <OptionIcon>
+          <SvgIcon name="fa-user-check" size={18} color={colors.primary} />
+        </OptionIcon>
+        <OptionContent>
+          <Text variant="bold" color="black" fontSize={13}>
+            {t('payment.estimate.professionalCheck')}
+          </Text>
+          <Text variant="regularSmall" color="gray600">
+            {t('payment.estimate.beforeIntervention')}
+          </Text>
+        </OptionContent>
+        <Radio selected={checkWithProfessional} />
+      </ProfessionalOption>
 
-            <FactorsCard>
-                <InfoNotice
-                    icon="fa-exclamation-circle"
-                    title={t('payment.estimate.complexity')}
-                    description={t('payment.estimate.complexityDescription')}
-                />
+      <SectionTitle>{t('payment.estimate.factors')}</SectionTitle>
 
-                <InfoNotice
-                    icon="fa-tools"
-                    title={t('payment.estimate.equipment')}
-                    description={t('payment.estimate.equipmentDescription')}
-                />
+      <FactorsCard>
+        <InfoNotice
+          icon="fa-exclamation-circle"
+          title={t('payment.estimate.complexity')}
+          description={t('payment.estimate.complexityDescription')}
+        />
 
-                <InfoNotice
-                    icon="fa-clock"
-                    title={t('payment.estimate.time')}
-                    description={t('payment.estimate.timeDescription')}
-                />
-            </FactorsCard>
+        <InfoNotice
+          icon="fa-tools"
+          title={t('payment.estimate.equipment')}
+          description={t('payment.estimate.equipmentDescription')}
+        />
 
-            <FooterNote>
-                {t('payment.estimate.disclaimer')}
-            </FooterNote>
+        <InfoNotice
+          icon="fa-clock"
+          title={t('payment.estimate.time')}
+          description={t('payment.estimate.timeDescription')}
+        />
+      </FactorsCard>
 
-            <BottomActions
-                primaryTitle={t('payment.estimate.understood')}
-                onPrimaryPress={continueToPayment}
-                    //appNavigate('PaymentTravelFee')
-            />
-        </ScreenContainer>
-    );
+      <FooterNote>{t('payment.estimate.disclaimer')}</FooterNote>
+
+      <BottomActions
+        primaryTitle={t('payment.estimate.understood')}
+        onPrimaryPress={continueToPayment}
+        //appNavigate('PaymentTravelFee')
+      />
+    </ScreenContainer>
+  );
 };
-
 
 const PriceBox = styled.View`
   background-color: ${({ theme }) => theme.colors.successLight};
   border-width: 1px;
   border-color: ${({ theme }) => theme.colors.border};
-  border-radius: 16px;
+  border-radius: ${moderateScale(16)}px;
   padding: ${horizontalScale(16)}px;
   flex-direction: row;
   align-items: center;
@@ -159,34 +171,37 @@ const PriceContent = styled.View`
 `;
 
 const SectionTitle = styled(Text).attrs({
-    variant: 'bold',
-    color: 'black',
-    fontSize: 15,
+  variant: 'bold',
+  color: 'black',
+  fontSize: fontPixel(15),
 })`
   margin-bottom: ${verticalScale(12)}px;
 `;
 
 const FooterNote = styled(Text).attrs({
-    variant: 'regularSmall',
-    color: 'gray600',
+  variant: 'regularSmall',
+  color: 'gray600',
 })`
   background-color: ${({ theme }) => theme.colors.surfaceVariant};
   padding: ${horizontalScale(14)}px;
-  border-radius: 12px;
+  border-radius: ${moderateScale(12)}px;
 `;
 
 const FactorsCard = styled.View`
-  border-radius: 14px;
+  border-radius: ${moderateScale(14)}px;
   background-color: ${({ theme }) => theme.colors.surface};
-  padding: ${horizontalScale(2)}px ${horizontalScale(12)}px ${horizontalScale(12)}px;
+  padding: ${horizontalScale(2)}px ${horizontalScale(12)}px
+    ${horizontalScale(12)}px;
 `;
 
 const ProfessionalOption = styled.TouchableOpacity<{ selected: boolean }>`
   min-height: ${verticalScale(70)}px;
-  border-radius: 14px;
+  border-radius: ${moderateScale(14)}px;
   border-width: 1px;
-  border-color: ${({ selected, theme }) => selected ? theme.colors.primary : theme.colors.border};
-  background-color: ${({ selected, theme }) => selected ? theme.colors.primaryLighter : theme.colors.surface};
+  border-color: ${({ selected, theme }) =>
+    selected ? theme.colors.primary : theme.colors.border};
+  background-color: ${({ selected, theme }) =>
+    selected ? theme.colors.primaryLighter : theme.colors.surface};
   padding: ${horizontalScale(12)}px;
   flex-direction: row;
   align-items: center;
@@ -195,7 +210,7 @@ const ProfessionalOption = styled.TouchableOpacity<{ selected: boolean }>`
 const OptionIcon = styled.View`
   width: ${horizontalScale(36)}px;
   height: ${horizontalScale(36)}px;
-  border-radius: 18px;
+  border-radius: ${moderateScale(18)}px;
   background-color: ${({ theme }) => theme.colors.primaryLighter};
   align-items: center;
   justify-content: center;
@@ -211,6 +226,8 @@ const Radio = styled.View<{ selected: boolean }>`
   height: ${horizontalScale(20)}px;
   border-radius: ${horizontalScale(10)}px;
   border-width: 1px;
-  border-color: ${({ selected, theme }) => selected ? theme.colors.primary : theme.colors.border};
-  background-color: ${({ selected, theme }) => selected ? theme.colors.primary : 'transparent'};
+  border-color: ${({ selected, theme }) =>
+    selected ? theme.colors.primary : theme.colors.border};
+  background-color: ${({ selected, theme }) =>
+    selected ? theme.colors.primary : 'transparent'};
 `;

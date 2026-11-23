@@ -1,162 +1,188 @@
+import {
+  moderateScale,
+  verticalScale,
+  horizontalScale,
+} from '@utils/normalizedCss';
 import React, { useCallback } from 'react';
 import {
-    Modal,
-    ModalProps,
-    StyleSheet,
-    TouchableWithoutFeedback,
+  Modal,
+  ModalProps,
+  StyleSheet,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import styled from 'styled-components/native';
 
 interface CustomModalProps extends Partial<ModalProps> {
-    /** Controls modal visibility */
-    visible: boolean;
-    /** Callback when modal should close */
-    onRequestClose: () => void;
-    /** Modal content */
-    children: React.ReactNode;
-    /** Clicking overlay closes modal (default: true) */
-    closeOnOverlayClick?: boolean;
-    /** Animation type (default: 'fade') */
-    animationType?: 'none' | 'slide' | 'fade';
-    /** Overlay opacity (default: 0.5) */
-    overlayOpacity?: number;
-    /** Overlay color (default: black) */
-    overlayColor?: string;
-    /** Modal position (default: 'center') */
-    position?: 'center' | 'top' | 'bottom' | 'fullScreen';
-    /** Custom container style */
-    containerStyle?: object;
-    /** Custom content style */
-    contentStyle?: object;
-    /** Prevent keyboard dismiss (default: false) */
-    preventKeyboardDismiss?: boolean;
-    /** Status bar style (iOS only) */
-    statusBarTranslucent?: boolean;
-    /** Handle hardware back button (Android only) */
-    hardwareAccelerated?: boolean;
+  /** Controls modal visibility */
+  visible: boolean;
+  /** Callback when modal should close */
+  onRequestClose: () => void;
+  /** Modal content */
+  children: React.ReactNode;
+  /** Clicking overlay closes modal (default: true) */
+  closeOnOverlayClick?: boolean;
+  /** Animation type (default: 'fade') */
+  animationType?: 'none' | 'slide' | 'fade';
+  /** Overlay opacity (default: 0.5) */
+  overlayOpacity?: number;
+  /** Overlay color (default: black) */
+  overlayColor?: string;
+  /** Modal position (default: 'center') */
+  position?: 'center' | 'top' | 'bottom' | 'fullScreen';
+  /** Custom container style */
+  containerStyle?: object;
+  /** Custom content style */
+  contentStyle?: object;
+  /** Prevent keyboard dismiss (default: false) */
+  preventKeyboardDismiss?: boolean;
+  /** Status bar style (iOS only) */
+  statusBarTranslucent?: boolean;
+  /** Handle hardware back button (Android only) */
+  hardwareAccelerated?: boolean;
 }
 
 // Styled Components
 const Overlay = styled.Pressable<{
-    $overlayOpacity: number;
-    $overlayColor: string;
-    $position: string;
+  $overlayOpacity: number;
+  $overlayColor: string;
+  $position: string;
 }>`
   flex: 1;
-  background-color: ${({ $overlayColor, $overlayOpacity }) => `rgba(${hexToRgb($overlayColor)}, ${$overlayOpacity})`};
+  background-color: ${({ $overlayColor, $overlayOpacity }) =>
+    `rgba(${hexToRgb($overlayColor)}, ${$overlayOpacity})`};
   justify-content: ${({ $position }) => {
-        switch ($position) {
-            case 'top': return 'flex-start';
-            case 'bottom': return 'flex-end';
-            case 'center': return 'center';
-            case 'fullScreen': return 'flex-start';
-            default: return 'center';
-        }
-    }};
-  align-items: ${({ $position }) => $position === 'fullScreen' ? 'stretch' : 'center'};
-  padding: ${({ $position }) => $position === 'fullScreen' ? '0px' : '20px'};
+    switch ($position) {
+      case 'top':
+        return 'flex-start';
+      case 'bottom':
+        return 'flex-end';
+      case 'center':
+        return 'center';
+      case 'fullScreen':
+        return 'flex-start';
+      default:
+        return 'center';
+    }
+  }};
+  align-items: ${({ $position }) =>
+    $position === 'fullScreen' ? 'stretch' : 'center'};
+  padding: ${({ $position }) =>
+    $position === 'fullScreen'
+      ? '0px'
+      : `${verticalScale(20)}px ${horizontalScale(20)}px`};
 `;
 
 const ModalContent = styled.View<{
-    $position: string;
+  $position: string;
 }>`
-  background-color: ${({ theme }) => theme?.colors?.surface || theme?.colors?.background || '#FFFFFF'};
-  border-radius: ${({ $position }) => $position === 'fullScreen' ? '0px' : '12px'};
+  background-color: ${({ theme }) =>
+    theme?.colors?.surface || theme?.colors?.background || '#FFFFFF'};
+  border-radius: ${({ $position }) =>
+    $position === 'fullScreen' ? '0px' : `${moderateScale(12)}px`};
   width: ${({ $position }) => {
-        switch ($position) {
-            case 'fullScreen': return '100%';
-            case 'center': return '100%';
-            default: return '100%';
-        }
-    }};
-  max-width: ${({ $position }) => $position === 'center' ? '400px' : '100%'};
-  max-height: ${({ $position }) => $position === 'fullScreen' ? '100%' : '90%'};
+    switch ($position) {
+      case 'fullScreen':
+        return '100%';
+      case 'center':
+        return '100%';
+      default:
+        return '100%';
+    }
+  }};
+  max-width: ${({ $position }) =>
+    $position === 'center' ? `${horizontalScale(400)}px` : '100%'};
+  max-height: ${({ $position }) =>
+    $position === 'fullScreen' ? '100%' : '90%'};
   elevation: 5;
   shadow-color: ${({ theme }) => theme?.colors?.black || '#000'};
-  shadow-offset: 0px 2px;
+  shadow-offset: 0px ${verticalScale(2)}px;
   shadow-opacity: 0.25;
-  shadow-radius: 3.84px;
+  shadow-radius: ${moderateScale(3.84)}px;
 `;
 
 // Helper function to convert hex to rgba
 const hexToRgb = (hex: string): string => {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result
-        ? `${parseInt(result[1] as string, 16)}, ${parseInt(result[2] as string, 16)}, ${parseInt(result[3] as string, 16)}`
-        : '0, 0, 0';
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? `${parseInt(result[1] as string, 16)}, ${parseInt(
+        result[2] as string,
+        16,
+      )}, ${parseInt(result[3] as string, 16)}`
+    : '0, 0, 0';
 };
 
 const CustomModal: React.FC<CustomModalProps> = ({
-    visible,
-    onRequestClose,
-    children,
-    closeOnOverlayClick = true,
-    animationType = 'fade',
-    overlayOpacity = 0.5,
-    overlayColor = '#000000',
-    position = 'center',
-    containerStyle,
-    contentStyle,
-    preventKeyboardDismiss = false,
-    statusBarTranslucent = true,
-    hardwareAccelerated = true,
-    ...modalProps
+  visible,
+  onRequestClose,
+  children,
+  closeOnOverlayClick = true,
+  animationType = 'fade',
+  overlayOpacity = 0.5,
+  overlayColor = '#000000',
+  position = 'center',
+  containerStyle,
+  contentStyle,
+  preventKeyboardDismiss = false,
+  statusBarTranslucent = true,
+  hardwareAccelerated = true,
+  ...modalProps
 }) => {
-    const handleOverlayPress = useCallback(() => {
-        if (closeOnOverlayClick) {
-            onRequestClose();
-        }
-    }, [closeOnOverlayClick, onRequestClose]);
+  const handleOverlayPress = useCallback(() => {
+    if (closeOnOverlayClick) {
+      onRequestClose();
+    }
+  }, [closeOnOverlayClick, onRequestClose]);
 
-    const handleContentPress = useCallback((e: any) => {
-        // Prevent overlay click when clicking modal content
-        e.stopPropagation();
-    }, []);
+  const handleContentPress = useCallback((e: any) => {
+    // Prevent overlay click when clicking modal content
+    e.stopPropagation();
+  }, []);
 
-    return (
-        <Modal
-            transparent={true}
-            animationType={animationType}
-            visible={visible}
-            onRequestClose={onRequestClose}
-            statusBarTranslucent={statusBarTranslucent}
-            hardwareAccelerated={hardwareAccelerated}
-            presentationStyle={position === 'fullScreen' ? 'fullScreen' : 'overFullScreen'}
-            {...modalProps}
+  return (
+    <Modal
+      transparent={true}
+      animationType={animationType}
+      visible={visible}
+      onRequestClose={onRequestClose}
+      statusBarTranslucent={statusBarTranslucent}
+      hardwareAccelerated={hardwareAccelerated}
+      presentationStyle={
+        position === 'fullScreen' ? 'fullScreen' : 'overFullScreen'
+      }
+      {...modalProps}
+    >
+      <TouchableWithoutFeedback
+        onPress={handleOverlayPress}
+        disabled={!closeOnOverlayClick || preventKeyboardDismiss}
+        accessible={false}
+      >
+        <Overlay
+          $overlayOpacity={overlayOpacity}
+          $overlayColor={overlayColor}
+          $position={position}
+          style={containerStyle}
         >
-            <TouchableWithoutFeedback
-                onPress={handleOverlayPress}
-                disabled={!closeOnOverlayClick || preventKeyboardDismiss}
-                accessible={false}
+          <TouchableWithoutFeedback onPress={handleContentPress}>
+            <ModalContent
+              $position={position}
+              style={[
+                position === 'bottom' && styles.bottomContent,
+                position === 'top' && styles.topContent,
+                contentStyle,
+              ]}
             >
-                <Overlay
-                    $overlayOpacity={overlayOpacity}
-                    $overlayColor={overlayColor}
-                    $position={position}
-                    style={containerStyle}
-                >
-                    <TouchableWithoutFeedback onPress={handleContentPress}>
-                        <ModalContent
-                            $position={position}
-                            style={[
-                                position === 'bottom' && styles.bottomContent,
-                                position === 'top' && styles.topContent,
-                                contentStyle,
-                            ]}
-                        >
-                            {children}
-                        </ModalContent>
-                    </TouchableWithoutFeedback>
-                </Overlay>
-            </TouchableWithoutFeedback>
-        </Modal>
-    );
+              {children}
+            </ModalContent>
+          </TouchableWithoutFeedback>
+        </Overlay>
+      </TouchableWithoutFeedback>
+    </Modal>
+  );
 };
-
 
 export default CustomModal;
 
 const styles = StyleSheet.create({
-    bottomContent: { borderBottomLeftRadius: 0, borderBottomRightRadius: 0 },
-    topContent: { borderTopLeftRadius: 0, borderTopRightRadius: 0 },
+  bottomContent: { borderBottomLeftRadius: 0, borderBottomRightRadius: 0 },
+  topContent: { borderTopLeftRadius: 0, borderTopRightRadius: 0 },
 });

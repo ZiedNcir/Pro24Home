@@ -7,25 +7,28 @@ import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import { moderateScale, verticalScale } from '@utils/normalizedCss';
 
 const InterventionDetailSkeleton = () => {
-    const { t } = useTranslation();
-    return (
+  const { t } = useTranslation();
+  return (
     <ScreenContainer scrollable paddingHorizontal={18} paddingVertical={12}>
-        <InterventionHeader title={t('intervention.detail.detailTitle')} showHelp={false} />
-        <StatusSkeleton />
-        <TitleSkeleton />
-        <SectionSkeleton>
-            <LineSkeleton width="42%" height={16} />
-            <LineSkeleton width="100%" height={13} />
-            <LineSkeleton width="78%" height={13} />
-        </SectionSkeleton>
-        <SectionSkeleton>
-            <LineSkeleton width="38%" height={16} />
-            <LineSkeleton width="92%" height={13} />
-            <LineSkeleton width="70%" height={13} />
-        </SectionSkeleton>
-        <MapSkeleton />
+      <InterventionHeader
+        title={t('intervention.detail.detailTitle')}
+        showHelp={false}
+      />
+      <StatusSkeleton />
+      <TitleSkeleton />
+      <SectionSkeleton>
+        <LineSkeleton width="42%" height={16} />
+        <LineSkeleton width="100%" height={13} />
+        <LineSkeleton width="78%" height={13} />
+      </SectionSkeleton>
+      <SectionSkeleton>
+        <LineSkeleton width="38%" height={16} />
+        <LineSkeleton width="92%" height={13} />
+        <LineSkeleton width="70%" height={13} />
+      </SectionSkeleton>
+      <MapSkeleton />
     </ScreenContainer>
-    );
+  );
 };
 
 export default InterventionDetailSkeleton;
@@ -37,11 +40,17 @@ const SkeletonBlock = styled.View<{ width?: string; height?: number }>`
   background-color: ${({ theme }) => theme.colors.surfaceVariant};
 `;
 
-const StatusSkeleton = styled(SkeletonBlock).attrs({ width: '28%', height: 30 })`
+const StatusSkeleton = styled(SkeletonBlock).attrs({
+  width: '28%',
+  height: verticalScale(30),
+})`
   margin-top: ${verticalScale(18)}px;
 `;
 
-const TitleSkeleton = styled(SkeletonBlock).attrs({ width: '72%', height: 25 })`
+const TitleSkeleton = styled(SkeletonBlock).attrs({
+  width: '72%',
+  height: verticalScale(25),
+})`
   margin-top: ${verticalScale(14)}px;
 `;
 
@@ -59,7 +68,10 @@ const LineSkeleton = styled(SkeletonBlock)<{ width: string }>`
   margin-bottom: ${verticalScale(2)}px;
 `;
 
-const MapSkeleton = styled(SkeletonBlock).attrs({ width: '100%', height: 190 })`
+const MapSkeleton = styled(SkeletonBlock).attrs({
+  width: '100%',
+  height: verticalScale(190),
+})`
   margin-top: ${verticalScale(16)}px;
   border-radius: ${moderateScale(14)}px;
 `;

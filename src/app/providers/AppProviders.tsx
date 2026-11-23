@@ -1,3 +1,4 @@
+import { fontPixel } from '@utils/normalizedCss';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -32,7 +33,11 @@ const ThemedToastProvider = ({ children }: AppProvidersProps) => {
       dangerColor={theme.colors.danger}
       warningColor={theme.colors.warning}
       normalColor={theme.colors.primary}
-      textStyle={{ fontFamily: 'Inter-Regular', fontSize: 14, color: theme.colors.textInverse }}
+      textStyle={{
+        fontFamily: 'Inter-Regular',
+        fontSize: fontPixel(14),
+        color: theme.colors.textInverse,
+      }}
       offset={50}
       offsetTop={30}
       offsetBottom={40}

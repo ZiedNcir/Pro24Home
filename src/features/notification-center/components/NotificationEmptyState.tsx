@@ -9,27 +9,27 @@ import { horizontalScale, verticalScale } from '@utils/normalizedCss';
 import { useTheme } from '@theme';
 
 const NotificationEmptyState = () => {
-    const { theme } = useTheme();
-    const { t } = useTranslation();
-    return (
-        <Wrapper>
-            <Circle>
-                <SvgIcon name="fa-bell" size={44} color={theme.colors.primary} />
-            </Circle>
+  const { theme } = useTheme();
+  const { t } = useTranslation();
+  return (
+    <Wrapper>
+      <Circle>
+        <SvgIcon name="fa-bell" size={44} color={theme.colors.primary} />
+      </Circle>
 
-            <Text variant="bold" color="black" fontSize={14}>
-                {t('notifications.emptyTitle')}
-            </Text>
+      <Text variant="bold" color="black" fontSize={14}>
+        {t('notifications.emptyTitle')}
+      </Text>
 
-            <Text
-                variant="regularSmall"
-                color="gray600"
-                style={[styles.description, { marginTop: verticalScale(4) }]}
-            >
-                {t('notifications.emptyDescription')}
-            </Text>
-        </Wrapper>
-    );
+      <Text
+        variant="regularSmall"
+        color="gray600"
+        style={[styles.description, { marginTop: verticalScale(4) }]}
+      >
+        {t('notifications.emptyDescription')}
+      </Text>
+    </Wrapper>
+  );
 };
 
 export default NotificationEmptyState;

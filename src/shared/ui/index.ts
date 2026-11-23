@@ -18,12 +18,7 @@ export * from './navigation/BackHeader';
 export { default as NavigationHeader } from './navigation/NavigationHeader';
 export { default as Text } from './typography/Text';
 export { default as AppImage } from './image/AppImage';
-export {
-  Icon,
-  SvgIcon,
-  IconRegistryProvider,
-  useIconRegistry,
-} from './icon';
+export { Icon, SvgIcon, IconRegistryProvider, useIconRegistry } from './icon';
 export type {
   IconConfig,
   IconName,
@@ -31,11 +26,7 @@ export type {
   IconRegistryContextType,
   SvgIconProps,
 } from './icon';
-export {
-  Spinner,
-  CustomModal,
-  DialogModal,
-} from './overlay';
+export { Spinner, CustomModal, DialogModal } from './overlay';
 export { CustomToast } from './toast/ToastConfig';
 export { ToastProvider } from 'react-native-toast-notifications';
 export * from './overlay/LoadingOverlay';

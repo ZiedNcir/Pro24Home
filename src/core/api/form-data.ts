@@ -17,7 +17,8 @@ export const createFormData = (
 
     if (Array.isArray(value)) {
       value.forEach(item => {
-        if (item !== null && item !== undefined) formData.append(`${key}[]`, String(item));
+        if (item !== null && item !== undefined)
+          formData.append(`${key}[]`, String(item));
       });
       return;
     }
@@ -26,7 +27,8 @@ export const createFormData = (
       const file = value as FileValue;
       if (file.uri) {
         formData.append(key, {
-          uri: Platform.OS === 'ios' ? file.uri.replace('file://', '') : file.uri,
+          uri:
+            Platform.OS === 'ios' ? file.uri.replace('file://', '') : file.uri,
           type: file.type || 'image/jpeg',
           name: file.name || `photo_${Date.now()}.jpg`,
         } as never);
@@ -39,7 +41,10 @@ export const createFormData = (
       return;
     }
 
-    formData.append(key, typeof value === 'object' ? JSON.stringify(value) : String(value));
+    formData.append(
+      key,
+      typeof value === 'object' ? JSON.stringify(value) : String(value),
+    );
   });
 
   return formData;

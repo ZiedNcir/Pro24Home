@@ -7,12 +7,17 @@ import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
 import { verticalScale } from '@utils/normalizedCss';
 
 const NotificationHeader = () => {
-    const { t } = useTranslation();
+  const { t } = useTranslation();
 
-    return <>
-        <InterventionHeader title={t('client.settings.notifications')} showHelp={false} />
-        <Subtitle>{t('notifications.subtitle')}</Subtitle>
-    </>;
+  return (
+    <>
+      <InterventionHeader
+        title={t('client.settings.notifications')}
+        showHelp={false}
+      />
+      <Subtitle>{t('notifications.subtitle')}</Subtitle>
+    </>
+  );
 };
 
 export default NotificationHeader;

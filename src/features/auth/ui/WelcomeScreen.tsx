@@ -5,7 +5,12 @@ import styled from 'styled-components/native';
 import { useNavigation, NavigationProp } from '@react-navigation/core';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@theme';
-import { fontPixel, horizontalScale, moderateScale, verticalScale } from '@utils/normalizedCss';
+import {
+  fontPixel,
+  horizontalScale,
+  moderateScale,
+  verticalScale,
+} from '@utils/normalizedCss';
 import Text from '@shared/ui/typography/Text';
 import { Spinner } from '@shared/ui/overlay/AppSpinner';
 import ScreenContainer from '@shared/ui/layout/ScreenContainer';
@@ -19,7 +24,10 @@ type RootStackParamList = {
 
 type TutorialStep = {
   titleKey: 'describeTitle' | 'matchTitle' | 'completeTitle';
-  descriptionKey: 'describeDescription' | 'matchDescription' | 'completeDescription';
+  descriptionKey:
+    | 'describeDescription'
+    | 'matchDescription'
+    | 'completeDescription';
   image: ReturnType<typeof require>;
   actionLabelKey: 'next' | 'start';
 };
@@ -65,8 +73,16 @@ const Welcome: React.FC = () => {
     slideAnim.setValue(20);
 
     const transition = Animated.parallel([
-      Animated.timing(fadeAnim, { toValue: 1, duration: 650, useNativeDriver: true }),
-      Animated.spring(slideAnim, { toValue: 0, friction: 8, useNativeDriver: true }),
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 650,
+        useNativeDriver: true,
+      }),
+      Animated.spring(slideAnim, {
+        toValue: 0,
+        friction: 8,
+        useNativeDriver: true,
+      }),
     ]);
 
     transition.start();
@@ -109,20 +125,35 @@ const Welcome: React.FC = () => {
         <MainContent>
           <AnimatedStepContent
             testID="tutorial-step-content"
-            style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}
+            style={{
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            }}
           >
-            <Eyebrow>{t('auth.welcome.step', { current: currentStep + 1, total: tutorialSteps.length })}</Eyebrow>
+            <Eyebrow>
+              {t('auth.welcome.step', {
+                current: currentStep + 1,
+                total: tutorialSteps.length,
+              })}
+            </Eyebrow>
             <HeroFrame>
               <HeroImage
                 testID="tutorial-hero-image"
                 source={activeStep.image}
                 resizeMode="cover"
                 accessible
-                accessibilityLabel={t('auth.welcome.illustration', { title: activeTitle })}
+                accessibilityLabel={t('auth.welcome.illustration', {
+                  title: activeTitle,
+                })}
               />
             </HeroFrame>
 
-            <BottomContent paddingBottom={Math.max(insets.bottom + verticalScale(8), verticalScale(18))}>
+            <BottomContent
+              paddingBottom={Math.max(
+                insets.bottom + verticalScale(8),
+                verticalScale(18),
+              )}
+            >
               <Title variant="bold">{activeTitle}</Title>
               <Description>{activeDescription}</Description>
 
@@ -140,12 +171,18 @@ const Welcome: React.FC = () => {
                 testID="tutorial-progress"
                 accessible
                 accessibilityRole="progressbar"
-                accessibilityLabel={t('auth.welcome.step', { current: currentStep + 1, total: tutorialSteps.length })}
+                accessibilityLabel={t('auth.welcome.step', {
+                  current: currentStep + 1,
+                  total: tutorialSteps.length,
+                })}
                 accessibilityValue={{
                   min: 1,
                   max: 3,
                   now: currentStep + 1,
-                  text: t('auth.welcome.step', { current: currentStep + 1, total: tutorialSteps.length }),
+                  text: t('auth.welcome.step', {
+                    current: currentStep + 1,
+                    total: tutorialSteps.length,
+                  }),
                 }}
               >
                 {tutorialSteps.map((step, index) => (
@@ -160,12 +197,19 @@ const Welcome: React.FC = () => {
               </ProgressRow>
 
               <LoginButton
-                onPress={() => navigation.navigate('SignIn', { role: 'client' })}
+                onPress={() =>
+                  navigation.navigate('SignIn', { role: 'client' })
+                }
                 accessibilityRole="button"
                 accessibilityLabel={t('auth.welcome.login')}
                 hitSlop={8}
               >
-                <LoginHint>{t('auth.welcome.loginPrompt')} <LoginLink variant="bold">{t('auth.welcome.login')}</LoginLink></LoginHint>
+                <LoginHint>
+                  {t('auth.welcome.loginPrompt')}{' '}
+                  <LoginLink variant="bold">
+                    {t('auth.welcome.login')}
+                  </LoginLink>
+                </LoginHint>
               </LoginButton>
             </BottomContent>
           </AnimatedStepContent>
@@ -204,7 +248,7 @@ const BrandLogo = styled(LogoMediumPro24Icon)`
 `;
 
 const SkipButton = styled.TouchableOpacity`
-  min-height: 44px;
+  min-height: ${verticalScale(44)}px;
   align-items: center;
   justify-content: center;
   padding-vertical: ${verticalScale(8)}px;
@@ -230,7 +274,7 @@ const Eyebrow = styled(Text)`
   color: ${({ theme }) => theme.colors.textSecondary};
   font-family: 'Inter-Bold';
   font-size: ${fontPixel(10)}px;
-  letter-spacing: 1.1px;
+  letter-spacing: ${fontPixel(1.1)}px;
   margin-top: ${verticalScale(4)}px;
   margin-bottom: ${verticalScale(10)}px;
   text-align: center;
@@ -243,9 +287,9 @@ const HeroFrame = styled.View`
   border-radius: ${moderateScale(28)}px;
   background-color: ${({ theme }) => theme.colors.surfaceVariant};
   shadow-color: ${({ theme }) => theme.colors.black};
-  shadow-offset: 0px 8px;
+  shadow-offset: 0px ${verticalScale(8)}px;
   shadow-opacity: 0.12;
-  shadow-radius: 18px;
+  shadow-radius: ${moderateScale(18)}px;
   elevation: 5;
 `;
 
@@ -289,9 +333,9 @@ const PrimaryAction = styled.TouchableOpacity`
   background-color: ${({ theme }) => theme.colors.primary};
   border-radius: ${moderateScale(16)}px;
   shadow-color: ${({ theme }) => theme.colors.primary};
-  shadow-offset: 0px 6px;
+  shadow-offset: 0px ${verticalScale(6)}px;
   shadow-opacity: 0.22;
-  shadow-radius: 12px;
+  shadow-radius: ${moderateScale(12)}px;
   elevation: 4;
 `;
 
@@ -312,7 +356,8 @@ const ProgressDot = styled.View<{ active?: boolean }>`
   width: ${({ active }) => horizontalScale(active ? 20 : 7)}px;
   height: ${verticalScale(7)}px;
   border-radius: ${moderateScale(8)}px;
-  background-color: ${({ active, theme }) => active ? theme.colors.primary : theme.colors.border};
+  background-color: ${({ active, theme }) =>
+    active ? theme.colors.primary : theme.colors.border};
 `;
 
 const LoginHint = styled(Text)`
@@ -323,7 +368,7 @@ const LoginHint = styled(Text)`
 `;
 
 const LoginButton = styled(Pressable)`
-  min-height: 44px;
+  min-height: ${verticalScale(44)}px;
   align-items: center;
   justify-content: center;
 `;

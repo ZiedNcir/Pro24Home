@@ -8,69 +8,73 @@ import styled from 'styled-components/native';
 import Text from '@shared/ui/typography/Text';
 import { IconProps, SvgIcon } from '@shared/ui/icon';
 import {
-    horizontalScale,
-    verticalScale,
-    moderateScale,
+  horizontalScale,
+  verticalScale,
+  moderateScale,
 } from '@utils/normalizedCss';
 import { useTheme } from '@theme';
 
 const features = [
-    {
-        icon: 'fa-shield-alt',
-        titleKey: 'client.home.features.verifiedTitle',
-        descriptionKey: 'client.home.features.verifiedDescription',
-    },
-    {
-        icon: 'fa-clock',
-        titleKey: 'client.home.features.fastTitle',
-        descriptionKey: 'client.home.features.fastDescription',
-    },
-    {
-        icon: 'fa-award',
-        titleKey: 'client.home.features.transparentTitle',
-        descriptionKey: 'client.home.features.transparentDescription',
-    },
-    {
-        icon: 'fa-headset',
-        titleKey: 'client.home.features.supportTitle',
-        descriptionKey: 'client.home.features.supportDescription',
-    },
+  {
+    icon: 'fa-shield-alt',
+    titleKey: 'client.home.features.verifiedTitle',
+    descriptionKey: 'client.home.features.verifiedDescription',
+  },
+  {
+    icon: 'fa-clock',
+    titleKey: 'client.home.features.fastTitle',
+    descriptionKey: 'client.home.features.fastDescription',
+  },
+  {
+    icon: 'fa-award',
+    titleKey: 'client.home.features.transparentTitle',
+    descriptionKey: 'client.home.features.transparentDescription',
+  },
+  {
+    icon: 'fa-headset',
+    titleKey: 'client.home.features.supportTitle',
+    descriptionKey: 'client.home.features.supportDescription',
+  },
 ];
 
 const FeatureHighlights = () => {
-    const { t } = useTranslation();
-    const { theme } = useTheme();
-    return (
-        <Container>
-            {features.map((item, index) => (
-                <FeatureItem key={item.titleKey}>
-                    <SvgIcon name={item.icon as IconProps['name']} size={24} color={theme.colors.primary} />
+  const { t } = useTranslation();
+  const { theme } = useTheme();
+  return (
+    <Container>
+      {features.map((item, index) => (
+        <FeatureItem key={item.titleKey}>
+          <SvgIcon
+            name={item.icon as IconProps['name']}
+            size={24}
+            color={theme.colors.primary}
+          />
 
-                    <Text
-                        variant="bold"
-                        color="black"
-                        fontSize={12}
-                        lineHeight={16}
-                        style={[styles.featureText, { marginTop: verticalScale(8) }]}
-                    >
-                        {t(item.titleKey)}
-                    </Text>
+          <Text
+            variant="bold"
+            color="black"
+            fontSize={12}
+            lineHeight={16}
+            style={[styles.featureText, { marginTop: verticalScale(8) }]}
+          >
+            {t(item.titleKey)}
+          </Text>
 
-                    <Text
-                        variant="regularSmall"
-                        color="gray600"
-                        fontSize={11}
-                        lineHeight={15}
-                        style={[styles.featureText, { marginTop: verticalScale(8) }]}
-                    >
-                        {t(item.descriptionKey)}
-                    </Text>
+          <Text
+            variant="regularSmall"
+            color="gray600"
+            fontSize={11}
+            lineHeight={15}
+            style={[styles.featureText, { marginTop: verticalScale(8) }]}
+          >
+            {t(item.descriptionKey)}
+          </Text>
 
-                    {index < features.length - 1 && <Divider />}
-                </FeatureItem>
-            ))}
-        </Container>
-    );
+          {index < features.length - 1 && <Divider />}
+        </FeatureItem>
+      ))}
+    </Container>
+  );
 };
 
 export default FeatureHighlights;

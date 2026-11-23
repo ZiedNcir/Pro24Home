@@ -8,8 +8,13 @@ type NotificationTarget = { notificationId?: string; interventionId?: number };
 let pendingTarget: NotificationTarget | null = null;
 let listening = false;
 
-const parseTarget = (data: Record<string, unknown> | undefined): NotificationTarget => ({
-  notificationId: typeof data?.notification_id === 'string' ? data.notification_id : undefined,
+const parseTarget = (
+  data: Record<string, unknown> | undefined,
+): NotificationTarget => ({
+  notificationId:
+    typeof data?.notification_id === 'string'
+      ? data.notification_id
+      : undefined,
   interventionId: getNotificationInterventionId(data),
 });
 
@@ -20,11 +25,20 @@ const openTarget = (target: NotificationTarget): void => {
   }
 
   if (target.notificationId) {
-    store.dispatch(notificationEndpoints.endpoints.readNotification.initiate(target.notificationId)).unwrap().catch(() => undefined);
+    store
+      .dispatch(
+        notificationEndpoints.endpoints.readNotification.initiate(
+          target.notificationId,
+        ),
+      )
+      .unwrap()
+      .catch(() => undefined);
   }
 
   if (target.interventionId !== undefined) {
-    navigationRef.navigate('InterventionDetail', { intervention_id: target.interventionId });
+    navigationRef.navigate('InterventionDetail', {
+      intervention_id: target.interventionId,
+    });
   } else {
     navigationRef.navigate('Notifications');
   }

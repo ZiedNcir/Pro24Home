@@ -1,37 +1,42 @@
 export interface GooglePlaceDetailsLike {
-    formatted_address?: string;
-    formattedAddress?: string;
-    geometry?: {
-        location?: {
-            lat?: number;
-            lng?: number;
-        };
-    };
+  formatted_address?: string;
+  formattedAddress?: string;
+  geometry?: {
     location?: {
-        latitude?: number;
-        longitude?: number;
+      lat?: number;
+      lng?: number;
     };
+  };
+  location?: {
+    latitude?: number;
+    longitude?: number;
+  };
 }
 
 export interface SelectedAddressLocation {
-    address: string;
-    latitude: number;
-    longitude: number;
+  address: string;
+  latitude: number;
+  longitude: number;
 }
 
 export const mapGooglePlaceToAddress = (
-    details?: GooglePlaceDetailsLike | null,
+  details?: GooglePlaceDetailsLike | null,
 ): SelectedAddressLocation | null => {
-    const latitude = details?.geometry?.location?.lat ?? details?.location?.latitude;
-    const longitude = details?.geometry?.location?.lng ?? details?.location?.longitude;
+  const latitude =
+    details?.geometry?.location?.lat ?? details?.location?.latitude;
+  const longitude =
+    details?.geometry?.location?.lng ?? details?.location?.longitude;
 
-    if (typeof latitude !== 'number' || typeof longitude !== 'number') {
-        return null;
-    }
+  if (typeof latitude !== 'number' || typeof longitude !== 'number') {
+    return null;
+  }
 
-    return {
-        address: details?.formatted_address || details?.formattedAddress || 'Adresse sélectionnée',
-        latitude,
-        longitude,
-    };
+  return {
+    address:
+      details?.formatted_address ||
+      details?.formattedAddress ||
+      'Adresse sélectionnée',
+    latitude,
+    longitude,
+  };
 };

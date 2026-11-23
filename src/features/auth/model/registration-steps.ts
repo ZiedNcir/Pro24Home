@@ -5,7 +5,9 @@ export const createClientRegistrationSteps = (): RegistrationStep[] => [
   'security',
 ];
 
-export const createProfessionalRegistrationSteps = (_services: number[]): RegistrationStep[] => [
+export const createProfessionalRegistrationSteps = (
+  _services: number[],
+): RegistrationStep[] => [
   ...createClientRegistrationSteps(),
   'company',
   'services',

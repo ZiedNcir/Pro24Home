@@ -9,7 +9,11 @@ interface RegistrationWizardProps {
   children: React.ReactNode;
 }
 
-export const RegistrationWizard = ({ steps, activeStep, children }: RegistrationWizardProps) => (
+export const RegistrationWizard = ({
+  steps,
+  activeStep,
+  children,
+}: RegistrationWizardProps) => (
   <View accessibilityLabel={`Étape ${activeStep + 1} sur ${steps.length}`}>
     {children}
   </View>

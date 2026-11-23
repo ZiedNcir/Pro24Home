@@ -5,53 +5,57 @@ import styled from 'styled-components/native';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import {
-    horizontalScale,
-    verticalScale,
-    moderateScale,
+  horizontalScale,
+  verticalScale,
+  moderateScale,
 } from '@utils/normalizedCss';
 import { useTheme } from '@theme';
 
 interface Props {
-    title: string;
-    description: string;
-    image: ImageSourcePropType;
-    onEditPress?: () => void;
+  title: string;
+  description: string;
+  image: ImageSourcePropType;
+  onEditPress?: () => void;
 }
 
 const ServiceSummaryCard: React.FC<Props> = ({
-    title,
-    description,
-    image,
-    onEditPress,
+  title,
+  description,
+  image,
+  onEditPress,
 }) => {
-    const { theme } = useTheme();
-    return (
-        <Card>
-            <ServiceImage source={image} resizeMode="contain" />
+  const { theme } = useTheme();
+  return (
+    <Card>
+      <ServiceImage source={image} resizeMode="contain" />
 
-            <Content>
-                <Text variant="bold" color="black" fontSize={13}>
-                    {title}
-                </Text>
+      <Content>
+        <Text variant="bold" color="black" fontSize={13}>
+          {title}
+        </Text>
 
-                <Text
-                    variant="regularSmall"
-                    color="gray600"
-                    numberOfLines={1}
-                    style={{ marginTop: verticalScale(3) }}
-                >
-                    {description}
-                </Text>
-            </Content>
+        <Text
+          variant="regularSmall"
+          color="gray600"
+          numberOfLines={1}
+          style={{ marginTop: verticalScale(3) }}
+        >
+          {description}
+        </Text>
+      </Content>
 
-            <EditButton onPress={onEditPress}>
-                <Text variant="notification" color="primary" fontWeight="700">
-                    Modifier
-                </Text>
-                <SvgIcon name="fa-chevron-right" size={10} color={theme.colors.primary} />
-            </EditButton>
-        </Card>
-    );
+      <EditButton onPress={onEditPress}>
+        <Text variant="notification" color="primary" fontWeight="700">
+          Modifier
+        </Text>
+        <SvgIcon
+          name="fa-chevron-right"
+          size={10}
+          color={theme.colors.primary}
+        />
+      </EditButton>
+    </Card>
+  );
 };
 
 export default ServiceSummaryCard;

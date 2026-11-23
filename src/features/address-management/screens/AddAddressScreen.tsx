@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
@@ -9,9 +8,10 @@ import ScreenContainer from '@shared/ui/layout/ScreenContainer';
 import Text from '@shared/ui/typography/Text';
 import { SvgIcon } from '@shared/ui/icon';
 import {
-    horizontalScale,
-    verticalScale,
-    moderateScale,
+  horizontalScale,
+  verticalScale,
+  moderateScale,
+  fontPixel,
 } from '@utils/normalizedCss';
 
 import InterventionHeader from '@shared/ui/navigation/InterventionHeader';
@@ -20,97 +20,131 @@ import type { SelectedAddressLocation } from '@features/intervention-creation/mo
 import { useTheme } from '@theme';
 
 export const AddAddressScreen = () => {
-    const { t } = useTranslation();
-    const { theme } = useTheme();
-    const colors = theme.colors;
-    const [frequent, setFrequent] = useState(true);
-    const [isMapFullscreen, setIsMapFullscreen] = useState(false);
-    const [selectedLocation, setSelectedLocation] = useState<SelectedAddressLocation>({
-        address: t('intervention.address.preview'),
-        latitude: 36.8065,
-        longitude: 10.1815,
+  const { t } = useTranslation();
+  const { theme } = useTheme();
+  const colors = theme.colors;
+  const [frequent, setFrequent] = useState(true);
+  const [isMapFullscreen, setIsMapFullscreen] = useState(false);
+  const [selectedLocation, setSelectedLocation] =
+    useState<SelectedAddressLocation>({
+      address: t('intervention.address.preview'),
+      latitude: 36.8065,
+      longitude: 10.1815,
     });
 
-    const mapRegion = {
-        latitude: selectedLocation.latitude,
-        longitude: selectedLocation.longitude,
-        latitudeDelta: 0.012,
-        longitudeDelta: 0.012,
-    };
+  const mapRegion = {
+    latitude: selectedLocation.latitude,
+    longitude: selectedLocation.longitude,
+    latitudeDelta: 0.012,
+    longitudeDelta: 0.012,
+  };
 
-    return (
-        <ScreenContainer
-            scrollable
-            paddingHorizontal={horizontalScale(18)}
-            paddingVertical={verticalScale(12)}
-            contentContainerStyle={{ paddingBottom: verticalScale(24) }}
-        >
-            <InterventionHeader title={t('intervention.address.addTitle')} showHelp={false} />
+  return (
+    <ScreenContainer
+      scrollable
+      paddingHorizontal={horizontalScale(18)}
+      paddingVertical={verticalScale(12)}
+      contentContainerStyle={{ paddingBottom: verticalScale(24) }}
+    >
+      <InterventionHeader
+        title={t('intervention.address.addTitle')}
+        showHelp={false}
+      />
 
-            <Form>
-                <Label>{t('intervention.address.locationName')}</Label>
-                <Input placeholder={t('intervention.address.locationPlaceholder')} placeholderTextColor={colors.gray500} />
+      <Form>
+        <Label>{t('intervention.address.locationName')}</Label>
+        <Input
+          placeholder={t('intervention.address.locationPlaceholder')}
+          placeholderTextColor={colors.gray500}
+        />
 
-                <Label>Adresse</Label>
-                <InputRow>
-                    <InputInner
-                        placeholder={t('intervention.address.addressPlaceholder')}
-                        placeholderTextColor={colors.gray500}
-                    />
-                    <SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} />
-                </InputRow>
+        <Label>Adresse</Label>
+        <InputRow>
+          <InputInner
+            placeholder={t('intervention.address.addressPlaceholder')}
+            placeholderTextColor={colors.gray500}
+          />
+          <SvgIcon name="fa-map-marker-alt" size={16} color={colors.primary} />
+        </InputRow>
 
-                <Label>{t('intervention.address.complement')}</Label>
-                <Input
-                    placeholder={t('intervention.address.complementPlaceholder')}
-                    placeholderTextColor={colors.gray500}
-                />
+        <Label>{t('intervention.address.complement')}</Label>
+        <Input
+          placeholder={t('intervention.address.complementPlaceholder')}
+          placeholderTextColor={colors.gray500}
+        />
 
-                <MapPreview>
-                    <AddressMap initialRegion={mapRegion} region={mapRegion} scrollEnabled={false} zoomEnabled={false}>
-                        <Marker coordinate={selectedLocation} pinColor={colors.primary} />
-                    </AddressMap>
-                    <MapHint accessibilityRole="button" accessibilityLabel={t('intervention.address.openMapFullscreen')} onPress={() => setIsMapFullscreen(true)}><SvgIcon name="fa-map-marked-alt" size={14} color={colors.primary} /><Text variant="bold" color="black" fontSize={11}>{t('intervention.address.openMap')}</Text></MapHint>
-                </MapPreview>
-
-                <SwitchRow>
-                    <View>
-                        <Text variant="bold" color="black" fontSize={13}>
-                            {t('intervention.address.saveFrequent')}
-                        </Text>
-                        <SwitchDescription>
-                            {t('intervention.address.frequentHint')}
-                        </SwitchDescription>
-                    </View>
-
-                    <Switch
-                        value={frequent}
-                        onValueChange={setFrequent}
-                        trackColor={{ true: colors.success, false: colors.gray300 }}
-                        thumbColor={colors.surface}
-                    />
-                </SwitchRow>
-            </Form>
-
-            <Spacer />
-
-            <SaveButton onPress={() => { /* Handle save action */ }}>
-                <Text variant="bold" color="white" fontSize={14}>
-                    {t('common.actions.save')}
-                </Text>
-            </SaveButton>
-            <FullscreenMapModal
-                visible={isMapFullscreen}
-                region={mapRegion}
-                selectedLocation={selectedLocation}
-                isLookingUpAddress={false}
-                onClose={() => setIsMapFullscreen(false)}
-                onSelectCoordinate={(latitude, longitude) => setSelectedLocation({ address: t('intervention.address.preview'), latitude, longitude })}
+        <MapPreview>
+          <AddressMap
+            initialRegion={mapRegion}
+            region={mapRegion}
+            scrollEnabled={false}
+            zoomEnabled={false}
+          >
+            <Marker coordinate={selectedLocation} pinColor={colors.primary} />
+          </AddressMap>
+          <MapHint
+            accessibilityRole="button"
+            accessibilityLabel={t('intervention.address.openMapFullscreen')}
+            onPress={() => setIsMapFullscreen(true)}
+          >
+            <SvgIcon
+              name="fa-map-marked-alt"
+              size={14}
+              color={colors.primary}
             />
-        </ScreenContainer>
-    );
-};
+            <Text variant="bold" color="black" fontSize={11}>
+              {t('intervention.address.openMap')}
+            </Text>
+          </MapHint>
+        </MapPreview>
 
+        <SwitchRow>
+          <View>
+            <Text variant="bold" color="black" fontSize={13}>
+              {t('intervention.address.saveFrequent')}
+            </Text>
+            <SwitchDescription>
+              {t('intervention.address.frequentHint')}
+            </SwitchDescription>
+          </View>
+
+          <Switch
+            value={frequent}
+            onValueChange={setFrequent}
+            trackColor={{ true: colors.success, false: colors.gray300 }}
+            thumbColor={colors.surface}
+          />
+        </SwitchRow>
+      </Form>
+
+      <Spacer />
+
+      <SaveButton
+        onPress={() => {
+          /* Handle save action */
+        }}
+      >
+        <Text variant="bold" color="white" fontSize={14}>
+          {t('common.actions.save')}
+        </Text>
+      </SaveButton>
+      <FullscreenMapModal
+        visible={isMapFullscreen}
+        region={mapRegion}
+        selectedLocation={selectedLocation}
+        isLookingUpAddress={false}
+        onClose={() => setIsMapFullscreen(false)}
+        onSelectCoordinate={(latitude, longitude) =>
+          setSelectedLocation({
+            address: t('intervention.address.preview'),
+            latitude,
+            longitude,
+          })
+        }
+      />
+    </ScreenContainer>
+  );
+};
 
 const View = styled.View``;
 
@@ -119,9 +153,9 @@ const Form = styled.View`
 `;
 
 const Label = styled(Text).attrs({
-    variant: 'bold',
-    color: 'black',
-    fontSize: 12,
+  variant: 'bold',
+  color: 'black',
+  fontSize: fontPixel(12),
 })`
   margin-bottom: ${verticalScale(8)}px;
   margin-top: ${verticalScale(14)}px;
@@ -156,13 +190,15 @@ const InputInner = styled.TextInput`
 const MapPreview = styled.View`
   height: ${verticalScale(140)}px;
   border-radius: ${moderateScale(14)}px;
-  border-width: 2px;
+  border-width: ${moderateScale(2)}px;
   border-color: ${({ theme }) => theme.colors.danger};
   overflow: hidden;
   margin-top: ${verticalScale(18)}px;
 `;
 
-const AddressMap = styled(MapView).attrs({ provider: Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined })`
+const AddressMap = styled(MapView).attrs({
+  provider: Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined,
+})`
   flex: 1;
 `;
 
@@ -185,8 +221,11 @@ const SwitchRow = styled.View`
   align-items: center;
 `;
 
-const SwitchDescription = styled(Text).attrs({ variant: 'regularSmall', color: 'gray600' })`
-  margin-top: 3px;
+const SwitchDescription = styled(Text).attrs({
+  variant: 'regularSmall',
+  color: 'gray600',
+})`
+  margin-top: ${verticalScale(3)}px;
 `;
 
 const Spacer = styled.View`

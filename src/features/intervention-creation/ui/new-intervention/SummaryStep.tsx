@@ -4,7 +4,12 @@ import { Image } from 'react-native';
 import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
-import { horizontalScale, verticalScale } from '@utils/normalizedCss';
+import {
+  horizontalScale,
+  verticalScale,
+  fontPixel,
+  moderateScale,
+} from '@utils/normalizedCss';
 import BottomActions from '@shared/ui/action/BottomActions';
 import type { SummaryStepProps } from './types';
 
@@ -20,65 +25,73 @@ const SummaryStep: React.FC<SummaryStepProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
   return (
-  <>
-    <SectionTitle>{t('intervention.creation.summary')}</SectionTitle>
-    <SummaryBlock>
-      <SummaryLine title={t('intervention.creation.service')} value={serviceName} />
-      <SummaryLine
-        title={t('intervention.creation.details')}
-        value={description.trim() || t('intervention.creation.noDescription')}
+    <>
+      <SectionTitle>{t('intervention.creation.summary')}</SectionTitle>
+      <SummaryBlock>
+        <SummaryLine
+          title={t('intervention.creation.service')}
+          value={serviceName}
+        />
+        <SummaryLine
+          title={t('intervention.creation.details')}
+          value={description.trim() || t('intervention.creation.noDescription')}
+        />
+        <SummaryLine
+          title={t('intervention.creation.address')}
+          value={address}
+        />
+        <SummaryLine
+          title={t('intervention.creation.desiredDate')}
+          value={
+            timing === 'schedule' && scheduledDate
+              ? scheduledDate.toLocaleString(i18n.language)
+              : timing === 'schedule'
+              ? t('intervention.creation.dateChosen')
+              : t('intervention.creation.asap')
+          }
+        />
+      </SummaryBlock>
+
+      {photos.length > 0 ? (
+        <PhotosSummary>
+          <PhotosSummaryHeader>
+            <Text variant="bold" color="black" fontSize={12}>
+              {t('intervention.creation.photosAdded')}
+            </Text>
+            <Text variant="regularSmall" color="gray600">
+              {photos.length}/3
+            </Text>
+          </PhotosSummaryHeader>
+          <PhotosRow>
+            {photos.map((photo, index) => (
+              <SummaryPhoto
+                key={`${photo.uri}-${index}`}
+                source={{ uri: photo.uri }}
+                resizeMode="cover"
+              />
+            ))}
+          </PhotosRow>
+        </PhotosSummary>
+      ) : null}
+
+      <EstimationBox>
+        <Text variant="bold" color="black" fontSize={14}>
+          {t('intervention.creation.priceEstimate')}
+        </Text>
+        <EstimationPrice>
+          {t('intervention.creation.priceToEstimate')}
+        </EstimationPrice>
+        <EstimationDescription>
+          {t('intervention.creation.priceNextStep')}
+        </EstimationDescription>
+      </EstimationBox>
+
+      <BottomActions
+        primaryTitle={t('intervention.creation.seeAveragePrice')}
+        onPrimaryPress={onNext}
+        onSecondaryPress={onPrevious}
       />
-      <SummaryLine title={t('intervention.creation.address')} value={address} />
-      <SummaryLine
-        title={t('intervention.creation.desiredDate')}
-        value={
-          timing === 'schedule' && scheduledDate
-            ? scheduledDate.toLocaleString(i18n.language)
-            : timing === 'schedule'
-            ? t('intervention.creation.dateChosen')
-            : t('intervention.creation.asap')
-        }
-      />
-    </SummaryBlock>
-
-    {photos.length > 0 ? (
-      <PhotosSummary>
-        <PhotosSummaryHeader>
-          <Text variant="bold" color="black" fontSize={12}>
-            {t('intervention.creation.photosAdded')}
-          </Text>
-          <Text variant="regularSmall" color="gray600">
-            {photos.length}/3
-          </Text>
-        </PhotosSummaryHeader>
-        <PhotosRow>
-          {photos.map((photo, index) => (
-            <SummaryPhoto
-              key={`${photo.uri}-${index}`}
-              source={{ uri: photo.uri }}
-              resizeMode="cover"
-            />
-          ))}
-        </PhotosRow>
-      </PhotosSummary>
-    ) : null}
-
-    <EstimationBox>
-      <Text variant="bold" color="black" fontSize={14}>
-        {t('intervention.creation.priceEstimate')}
-      </Text>
-      <EstimationPrice>{t('intervention.creation.priceToEstimate')}</EstimationPrice>
-      <EstimationDescription>
-        {t('intervention.creation.priceNextStep')}
-      </EstimationDescription>
-    </EstimationBox>
-
-    <BottomActions
-      primaryTitle={t('intervention.creation.seeAveragePrice')}
-      onPrimaryPress={onNext}
-      onSecondaryPress={onPrevious}
-    />
-  </>
+    </>
   );
 };
 
@@ -87,7 +100,7 @@ export default SummaryStep;
 const SectionTitle = styled(Text).attrs({
   variant: 'bold',
   color: 'black',
-  fontSize: 15,
+  fontSize: fontPixel(15),
 })`
   margin-bottom: ${verticalScale(12)}px;
   margin-top: ${verticalScale(12)}px;
@@ -95,7 +108,7 @@ const SectionTitle = styled(Text).attrs({
 
 const SummaryBlock = styled.View`
   background-color: ${({ theme }) => theme.colors.surface};
-  border-radius: 14px;
+  border-radius: ${moderateScale(14)}px;
   border-width: 1px;
   border-color: ${({ theme }) => theme.colors.borderLight};
   padding: ${horizontalScale(14)}px;
@@ -103,7 +116,7 @@ const SummaryBlock = styled.View`
 
 const EstimationBox = styled.View`
   background-color: ${({ theme }) => theme.colors.primaryLighter};
-  border-radius: 14px;
+  border-radius: ${moderateScale(14)}px;
   padding: ${horizontalScale(14)}px;
   margin-top: ${verticalScale(14)}px;
 `;
@@ -111,7 +124,7 @@ const EstimationBox = styled.View`
 const EstimationPrice = styled(Text).attrs({
   variant: 'bold',
   color: 'black',
-  fontSize: 18,
+  fontSize: fontPixel(18),
 })`
   margin-top: ${verticalScale(6)}px;
 `;
@@ -126,7 +139,7 @@ const EstimationDescription = styled(Text).attrs({
 const PhotosSummary = styled.View`
   margin-top: ${verticalScale(14)}px;
   padding: ${horizontalScale(14)}px;
-  border-radius: 14px;
+  border-radius: ${moderateScale(14)}px;
   background-color: ${({ theme }) => theme.colors.surface};
   border-width: 1px;
   border-color: ${({ theme }) => theme.colors.borderLight};
@@ -147,7 +160,7 @@ const PhotosRow = styled.View`
 const SummaryPhoto = styled(Image)`
   width: ${horizontalScale(72)}px;
   height: ${horizontalScale(72)}px;
-  border-radius: 12px;
+  border-radius: ${moderateScale(12)}px;
   background-color: ${({ theme }) => theme.colors.gray200};
 `;
 

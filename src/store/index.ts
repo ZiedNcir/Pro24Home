@@ -7,27 +7,33 @@ import uiReducer from './slices/ui.slice';
 import { sessionPersistenceMiddleware } from '../app/store/session-persistence';
 
 export const store = configureStore({
-    reducer: {
-        [api.reducerPath]: api.reducer,
-        auth: authReducer,
-        ui: uiReducer,
-    },
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware({
-            serializableCheck: {
-                // Ignore these action types
-                ignoredActions: [
-                    'auth/login/fulfilled',
-                    'auth/register/fulfilled',
-                    'auth/getServices/fulfilled'
-                ],
-                // Ignore these field paths in all actions
-                ignoredActionPaths: ['meta.arg', 'payload.timestamp', 'meta.baseQueryMeta'],
+  reducer: {
+    [api.reducerPath]: api.reducer,
+    auth: authReducer,
+    ui: uiReducer,
+  },
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        // Ignore these action types
+        ignoredActions: [
+          'auth/login/fulfilled',
+          'auth/register/fulfilled',
+          'auth/getServices/fulfilled',
+        ],
+        // Ignore these field paths in all actions
+        ignoredActionPaths: [
+          'meta.arg',
+          'payload.timestamp',
+          'meta.baseQueryMeta',
+        ],
 
-                // Ignore these paths in the state
-                ignoredPaths: ['items.dates'],
-            },
-        }).prepend(sessionPersistenceMiddleware.middleware).concat(api.middleware),
+        // Ignore these paths in the state
+        ignoredPaths: ['items.dates'],
+      },
+    })
+      .prepend(sessionPersistenceMiddleware.middleware)
+      .concat(api.middleware),
 });
 
 // Optional, but required for refetchOnFocus/refetchOnReconnect behaviors
@@ -38,5 +44,12 @@ export type AppDispatch = typeof store.dispatch;
 
 // Barrel exports for hooks and selectors
 export { useAppDispatch, useAppSelector } from './hooks';
-export { selectAuthLoading, selectIsAuthenticated, selectUser, setCredentials, setLoading, setError } from './slices/authSlice';
+export {
+  selectAuthLoading,
+  selectIsAuthenticated,
+  selectUser,
+  setCredentials,
+  setLoading,
+  setError,
+} from './slices/authSlice';
 export * from './api/index';

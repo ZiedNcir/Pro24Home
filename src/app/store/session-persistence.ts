@@ -25,7 +25,9 @@ export const sessionPersistenceMiddleware = createListenerMiddleware();
 let persistenceQueue: Promise<void> = Promise.resolve();
 
 const enqueuePersistence = (operation: () => Promise<void>) => {
-  persistenceQueue = persistenceQueue.then(operation, operation).catch(() => undefined);
+  persistenceQueue = persistenceQueue
+    .then(operation, operation)
+    .catch(() => undefined);
   return persistenceQueue;
 };
 
@@ -59,7 +61,9 @@ sessionPersistenceMiddleware.startListening({
     updateNotificationToken,
   ),
   effect: async (_, listenerApi) =>
-    enqueuePersistence(() => persistAuthState(listenerApi.getState() as StateWithAuth)),
+    enqueuePersistence(() =>
+      persistAuthState(listenerApi.getState() as StateWithAuth),
+    ),
 });
 
 sessionPersistenceMiddleware.startListening({

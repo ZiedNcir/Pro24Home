@@ -4,7 +4,12 @@ import styled from 'styled-components/native';
 
 import Text from '@shared/ui/typography/Text';
 import { useTheme } from '@theme';
-import { horizontalScale, verticalScale } from '@utils/normalizedCss';
+import {
+  horizontalScale,
+  verticalScale,
+  fontPixel,
+  moderateScale,
+} from '@utils/normalizedCss';
 import SelectableCard from '@shared/ui/selection/SelectableCard';
 import PhotoPickerRow from '@features/intervention-creation/ui/PhotoPickerRow';
 import BottomActions from '@shared/ui/action/BottomActions';
@@ -90,7 +95,7 @@ export default DetailsStep;
 const SectionTitle = styled(Text).attrs({
   variant: 'bold',
   color: 'black',
-  fontSize: 15,
+  fontSize: fontPixel(15),
 })`
   margin-bottom: ${verticalScale(12)}px;
   margin-top: ${verticalScale(12)}px;
@@ -100,7 +105,7 @@ const InputBox = styled.TextInput`
   height: ${verticalScale(110)}px;
   border-width: 1px;
   border-color: ${({ theme }) => theme.colors.borderLight};
-  border-radius: 12px;
+  border-radius: ${moderateScale(12)}px;
   padding: ${horizontalScale(14)}px;
   text-align-vertical: top;
   background-color: ${({ theme }) => theme.colors.surface};

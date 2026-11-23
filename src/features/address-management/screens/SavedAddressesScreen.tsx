@@ -30,6 +30,7 @@ import {
   horizontalScale,
   moderateScale,
   verticalScale,
+  fontPixel,
 } from '@utils/normalizedCss';
 import type { Address } from '@entities/address/model';
 
@@ -148,7 +149,8 @@ const SavedAddressesScreen = () => {
         latitude: newAddress.latitude,
         longitude: newAddress.longitude,
         address: newAddress.address,
-        location_name: locationName.trim() || t('intervention.address.locationName'),
+        location_name:
+          locationName.trim() || t('intervention.address.locationName'),
         details: locationDetails.trim(),
         phone: user?.phone_number || '',
         zone_id: 1,
@@ -172,7 +174,10 @@ const SavedAddressesScreen = () => {
       paddingVertical={verticalScale(12)}
       contentContainerStyle={{ paddingBottom: verticalScale(110) }}
     >
-      <InterventionHeader title={t('intervention.address.savedTitle')} showHelp={false} />
+      <InterventionHeader
+        title={t('intervention.address.savedTitle')}
+        showHelp={false}
+      />
       <Text
         variant="regular"
         color="gray600"
@@ -373,44 +378,52 @@ const AddressItem = ({
   const { theme } = useTheme();
   const colors = theme.colors;
   return (
-  <AddressCard selected={selected} onPress={onSelect} activeOpacity={0.85}>
-    <AddressIcon>
-      <SvgIcon name="fa-home" size={17} color={colors.primary} />
-    </AddressIcon>
-    <AddressContent>
-      <AddressTitleRow>
-        <Text variant="bold" color="black" fontSize={14}>
-          {address.location_name || address.type || t('intervention.address.generic')}
+    <AddressCard selected={selected} onPress={onSelect} activeOpacity={0.85}>
+      <AddressIcon>
+        <SvgIcon name="fa-home" size={17} color={colors.primary} />
+      </AddressIcon>
+      <AddressContent>
+        <AddressTitleRow>
+          <Text variant="bold" color="black" fontSize={14}>
+            {address.location_name ||
+              address.type ||
+              t('intervention.address.generic')}
+          </Text>
+          {address.is_default ? (
+            <DefaultBadge>
+              <Text variant="bold" color="primary" fontSize={10}>
+                {t('intervention.address.default')}
+              </Text>
+            </DefaultBadge>
+          ) : null}
+        </AddressTitleRow>
+        <Text variant="regularSmall" color="gray700" numberOfLines={1}>
+          {address.address || t('intervention.address.unspecified')}
         </Text>
-        {address.is_default ? (
-          <DefaultBadge>
-            <Text variant="bold" color="primary" fontSize={10}>
-              {t('intervention.address.default')}
-            </Text>
-          </DefaultBadge>
+        {address.details ? (
+          <Text variant="regularSmall" color="gray600" numberOfLines={1}>
+            {address.details}
+          </Text>
         ) : null}
-      </AddressTitleRow>
-      <Text variant="regularSmall" color="gray700" numberOfLines={1}>
-        {address.address || t('intervention.address.unspecified')}
-      </Text>
-      {address.details ? (
-        <Text variant="regularSmall" color="gray600" numberOfLines={1}>
-          {address.details}
-        </Text>
+      </AddressContent>
+      <ActionColumn>
+        <ActionButton
+          onPress={onEdit}
+          accessibilityLabel={t('intervention.address.edit')}
+        >
+          <SvgIcon name="fa-pen" size={14} color={colors.gray600} />
+        </ActionButton>
+        <ActionButton
+          onPress={onDelete}
+          accessibilityLabel={t('intervention.address.delete')}
+        >
+          <SvgIcon name="fa-trash" size={14} color={colors.gray600} />
+        </ActionButton>
+      </ActionColumn>
+      {selected ? (
+        <SvgIcon name="fa-check-circle" size={18} color={colors.primary} />
       ) : null}
-    </AddressContent>
-    <ActionColumn>
-      <ActionButton onPress={onEdit} accessibilityLabel={t('intervention.address.edit')}>
-        <SvgIcon name="fa-pen" size={14} color={colors.gray600} />
-      </ActionButton>
-      <ActionButton onPress={onDelete} accessibilityLabel={t('intervention.address.delete')}>
-        <SvgIcon name="fa-trash" size={14} color={colors.gray600} />
-      </ActionButton>
-    </ActionColumn>
-    {selected ? (
-      <SvgIcon name="fa-check-circle" size={18} color={colors.primary} />
-    ) : null}
-  </AddressCard>
+    </AddressCard>
   );
 };
 
@@ -462,11 +475,11 @@ const OpenMap = styled.View`
 const SectionTitle = styled(Text).attrs({
   variant: 'bold',
   color: 'gray700',
-  fontSize: 11,
+  fontSize: fontPixel(11),
 })`
   margin-top: ${verticalScale(24)}px;
   margin-bottom: ${verticalScale(9)}px;
-  letter-spacing: 0.5px;
+  letter-spacing: ${fontPixel(0.5)}px;
 `;
 const EmptyState = styled.View`
   padding: ${verticalScale(24)}px;
@@ -481,7 +494,7 @@ const AddressCard = styled.TouchableOpacity<{ selected: boolean }>`
   flex-direction: row;
   align-items: center;
   border-radius: ${moderateScale(16)}px;
-  border-width: 1.5px;
+  border-width: ${moderateScale(1.5)}px;
   border-color: ${({ selected, theme }) =>
     selected ? theme.colors.primary : theme.colors.borderLight};
   background-color: ${({ selected, theme }) =>
