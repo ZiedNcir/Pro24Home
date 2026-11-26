@@ -1,10 +1,11 @@
 # OSX
 #
 .DS_Store
-
+.Affaire.txt
 # Local isolated worktrees
 .worktrees/
 
+.superpowers/
 # Xcode
 #
 build/
@@ -68,7 +69,8 @@ yarn-error.log
 
 # testing
 /coverage
-/artifacts/ios
+/artifacts/
+/docs/
 
 # Yarn
 .yarn/*
