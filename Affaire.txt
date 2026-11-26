@@ -1,8 +1,0 @@
-1- notification par email l'ors d activation de compte 
-2- picker un document photo/ image/ pdf 
-3- params affichage des document 
-4- acception des conditions url f web => appstore / mobile f création de compte 
-5- changer les service with id home client 
-6- liste des services modifier a refaire 
-7- mode dark: decriver votre panne en blanc 
-8- intervention réfuser screen 3lech
